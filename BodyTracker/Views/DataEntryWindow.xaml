@@ -1,0 +1,65 @@
+<Window x:Class="BodyTracker.Views.DataEntryWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Neue Daten" Height="560" Width="420">
+    <Grid Margin="12" KeyboardNavigation.TabNavigation="Cycle">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Text="Datum"/>
+        <DatePicker Grid.Column="1" SelectedDate="{Binding Datum}"/>
+
+        <TextBlock Grid.Row="1" Text="Gewicht (kg)" Margin="0,8,8,0"/>
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding GewichtKg}"
+                 PreviewTextInput="Decimal_PreviewTextInput" GotKeyboardFocus="SelectAllOnFocus"/>
+
+        <TextBlock Grid.Row="2" Text="BMI" Margin="0,8,8,0"/>
+        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Bmi}"
+                 PreviewTextInput="Decimal_PreviewTextInput" GotKeyboardFocus="SelectAllOnFocus"/>
+
+        <TextBlock Grid.Row="3" Text="Körperfett (%)" Margin="0,8,8,0"/>
+        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding KoerperfettProzent}"
+                 PreviewTextInput="Decimal_PreviewTextInput" GotKeyboardFocus="SelectAllOnFocus"/>
+
+        <TextBlock Grid.Row="4" Text="Muskelmasse (%)" Margin="0,8,8,0"/>
+        <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding MuskelmasseProzent}"
+                 PreviewTextInput="Decimal_PreviewTextInput" GotKeyboardFocus="SelectAllOnFocus"/>
+
+        <TextBlock Grid.Row="5" Text="Viszeralfett" Margin="0,8,8,0"/>
+        <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Viszeralfett}"
+                 GotKeyboardFocus="SelectAllOnFocus"/>
+
+        <TextBlock Grid.Row="6" Text="Brustumfang (cm)" Margin="0,8,8,0"/>
+        <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding BrustumfangCm}"
+                 PreviewTextInput="Decimal_PreviewTextInput" GotKeyboardFocus="SelectAllOnFocus"/>
+
+        <TextBlock Grid.Row="7" Text="Bauchumfang (cm)" Margin="0,8,8,0"/>
+        <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding BauchumfangCm}"
+                 PreviewTextInput="Decimal_PreviewTextInput" GotKeyboardFocus="SelectAllOnFocus"/>
+
+        <TextBlock Grid.Row="8" Text="Hüftumfang (cm)" Margin="0,8,8,0"/>
+        <TextBox Grid.Row="8" Grid.Column="1" Text="{Binding HueftumfangCm}"
+                 PreviewTextInput="Decimal_PreviewTextInput" GotKeyboardFocus="SelectAllOnFocus"/>
+
+        <StackPanel Grid.Row="10" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
+            <Button Content="Speichern" Command="{Binding SaveCommand}" Click="OnSaved"/>
+            <Button Content="Schließen" Margin="8,0,0,0" Click="OnClose"/>
+        </StackPanel>
+    </Grid>
+</Window>
