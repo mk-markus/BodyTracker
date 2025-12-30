@@ -28,14 +28,14 @@ namespace BodyTracker.ViewModels
         public async Task InitializeAsync()
         {
             var pid = AppState.SelectedPersonId;
-            var lastM = await _db.GetLastMetrikAsync(pid, DateTime.Today);
+            var lastM = await _db.GetLastBodyMetricAsync(pid, DateTime.Today);
             GewichtKg = lastM?.BodyWeight ?? null;
             Bmi = lastM?.BMI ?? null;
             KoerperfettProzent = lastM?.BodyFatPercentage ?? null;
             MuskelmasseProzent = lastM?.BodyMusclePercentage ?? null;
             Viszeralfett = lastM?.BodyVisceralFat ?? null;
 
-            var lastA = await _db.GetLastAbmessungAsync(pid, DateTime.Today);
+            var lastA = await _db.GetLastBodyDimensionsAsync(pid, DateTime.Today);
             BrustumfangCm = lastA?.Chestcircumference ?? null;
             BauchumfangCm = lastA?.WaistCircumference ?? null;
             HueftumfangCm = lastA?.HipsCircumference ?? null;

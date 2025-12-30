@@ -3,119 +3,182 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using MySqlConnector;
 using BodyTracker.Models;
+using System.Windows;
 
 namespace BodyTracker.Services
 {
     public class DatabaseService
     {
-        private readonly string _cs;
-        public DatabaseService(string connectionString) { _cs = connectionString; }
+        /// <summary>
+        /// Contains the current connection string
+        /// </summary>
+        public string sConnectionString { get; private set; }
 
-        public async Task InitializeAsync()
-        {
-            await using var conn = new MySqlConnection(_cs);
-            await conn.OpenAsync();
-            var sql = @"CREATE TABLE IF NOT EXISTS tbl_Personen (
-    ID INT AUTO_INCREMENT PRIMARY KEY,
-    PersonFirstName VARCHAR(50),
-    PersonLastName VARCHAR(50),
-    PersonBirthDate DATE
-);
-CREATE TABLE IF NOT EXISTS tbl_KoerperMetriken (
-    MetrikID INT AUTO_INCREMENT PRIMARY KEY,
-    PersonID_FK INT NOT NULL,
-    MeasurementDate DATETIME DEFAULT CURRENT_TIMESTAMP,
-    Gewicht_kg DECIMAL(5,2),
-    BMI DECIMAL(4,2),
-    Koerperfett_Prozent DECIMAL(4,1),
-    Muskelmasse_Prozent DECIMAL(4,1),
-    BodyVisceralFat TINYINT,
-    CONSTRAINT FK_PersonMetrik FOREIGN KEY (PersonID_FK) REFERENCES tbl_Personen (ID) ON DELETE CASCADE
-);
-CREATE TABLE IF NOT EXISTS tbl_Abmessungen (
-    AbmessungID INT AUTO_INCREMENT PRIMARY KEY,
-    PersonID_FK INT NOT NULL,
-    MeasurementDate DATETIME DEFAULT CURRENT_TIMESTAMP,
-    Brustumfang_cm DECIMAL(5,2),
-    Bauchumfang_cm DECIMAL(5,2),
-    Hueftumfang_cm DECIMAL(5,2),
-    CONSTRAINT FK_PersonAbmessung FOREIGN KEY (PersonID_FK) REFERENCES tbl_Personen (ID) ON DELETE CASCADE
-);";
-            await using var cmd = new MySqlCommand(sql, conn);
-            await cmd.ExecuteNonQueryAsync();
+        /// <summary>
+        /// Represents the available database commands to insert, delete and read table values.
+        /// </summary>
+        public SqlCommandProvider DatabaseCommands { get; private set; } = new SqlCommandProvider();
+
+        /// <summary>
+        /// Databass Service Contructor
+        /// </summary>
+        /// <param name="sConnectionString">Connection String for SQL Server Connection</param>
+        public DatabaseService(string sConnectionString) 
+        { 
+            this.sConnectionString = sConnectionString; 
         }
 
+
+        /// <summary>
+        /// Asynchronously establishes a connection to the SQL server and initializes the database schema.
+        /// It ensures that all required tables (e.g., persons, metrics, dimensions) exist by executing 
+        /// the corresponding 'CREATE TABLE IF NOT EXISTS' commands.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous initialization operation.</returns>
+        /// <exception cref="MySqlException">Thrown when the connection fails or the SQL command execution encounters a database error.</exception>
+        public async Task InitializeAsync()
+        {
+            var SqlServerConnection = await EtablishSqlServerConnection();
+            await using var SqlCommand = new MySqlCommand(DatabaseCommands.CmdCreateTableIfNotExist(), SqlServerConnection);
+            await SqlCommand.ExecuteNonQueryAsync();
+        }
+
+        /// <summary>
+        /// Asynchronously retrieves all person records from the database.
+        /// Iterates through the result set and maps each row to a <see cref="PersonModel"/>, 
+        /// handling potential database null values for optional fields.
+        /// </summary>
+        /// <returns>
+        /// A task that represents the asynchronous operation. 
+        /// The task result contains a <see cref="List{PersonModel}"/> containing all persons found in the database.
+        /// </returns>
+        /// <remarks>
+        /// This method ensures that null values in the 'FirstName', 'LastName', or 'BirthDate' columns 
+        /// are safely converted to their respective C# defaults (empty string or null).
+        /// </remarks>
         public async Task<List<PersonModel>> GetPersonsAsync()
         {
             var list = new List<PersonModel>();
-            await using var conn = new MySqlConnection(_cs);
-            await conn.OpenAsync();
-            var sql = "SELECT ID, Vorname, Nachname, Geburtsdatum FROM tbl_Personen ORDER BY Nachname, Vorname";
-            await using var cmd = new MySqlCommand(sql, conn);
-            await using var rdr = await cmd.ExecuteReaderAsync();
-            while (await rdr.ReadAsync())
+            var SqlServerConnection = await EtablishSqlServerConnection();
+            await using var SqlCommand = new MySqlCommand(DatabaseCommands.CmdGetPerson(), SqlServerConnection);
+            await using var SqlDataReader = await SqlCommand.ExecuteReaderAsync();
+            while (await SqlDataReader.ReadAsync())
             {
                 list.Add(new PersonModel
                 {
-                    PersonID = rdr.GetInt32(0),
-                    PersonFirstName = rdr.IsDBNull(1) ? string.Empty : rdr.GetString(1),
-                    PersonLastName = rdr.IsDBNull(2) ? string.Empty : rdr.GetString(2),
-                    PersonBirthDate = rdr.IsDBNull(3) ? null : rdr.GetDateTime(3)
+                    PersonID = SqlDataReader.GetInt32(0),
+                    PersonFirstName = SqlDataReader.IsDBNull(1) ? string.Empty : SqlDataReader.GetString(1),
+                    PersonLastName = SqlDataReader.IsDBNull(2) ? string.Empty : SqlDataReader.GetString(2),
+                    PersonBirthDate = SqlDataReader.IsDBNull(3) ? null : SqlDataReader.GetDateTime(3)
                 });
             }
             return list;
         }
 
-        public async Task<int> CreatePersonAsync(string vorname, string nachname, DateTime? geburtsdatum)
+        // <summary>
+        /// Asynchronously creates and opens a new connection to the MySQL database server.
+        /// </summary>
+        /// <returns>
+        /// A task that represents the asynchronous operation. 
+        /// The task result contains an open <see cref="MySqlConnection"/> object.
+        /// </returns>
+        /// <remarks>
+        /// This method attempts to open the connection immediately. If the connection fails, 
+        /// a <see cref="MessageBox"/> displays the error message. 
+        /// Note: The caller is responsible for disposing of the returned connection.
+        /// </remarks>
+        public async Task<MySqlConnection> EtablishSqlServerConnection()
         {
-            await using var conn = new MySqlConnection(_cs);
-            await conn.OpenAsync();
-            var sql = "INSERT INTO tbl_Personen (Vorname, Nachname, Geburtsdatum) VALUES (@v, @n, @g); SELECT LAST_INSERT_ID();";
-            await using var cmd = new MySqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("@v", vorname);
-            cmd.Parameters.AddWithValue("@n", nachname);
-            cmd.Parameters.AddWithValue("@g", geburtsdatum.HasValue ? geburtsdatum.Value : (object)DBNull.Value);
-            var idObj = await cmd.ExecuteScalarAsync();
+            await using var SqlServerConnection = new MySqlConnection(sConnectionString);
+            
+            try
+            {
+                await SqlServerConnection.OpenAsync();
+
+            }
+            catch (Exception ex) { MessageBox.Show(ex.Message, "Error"); }
+
+            return SqlServerConnection;
+        }
+
+
+        /// <summary>
+        /// Asynchronously creates a new person record in the database and returns the newly generated unique identifier.
+        /// </summary>
+        /// <param name="FirstName">The first name of the person to be created.</param>
+        /// <param name="LastName">The last name of the person to be created.</param>
+        /// <param name="BirthDate">The date of birth of the person. If null, a DBNull value will be stored in the database.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the auto-incremented ID (primary key) of the newly inserted record.</returns>
+        /// <returns></returns>
+        public async Task<int> CreatePersonAsync(string FirstName, string LastName, DateTime? BirthDate)
+        {
+            var SqlServerConnection = await EtablishSqlServerConnection();
+            await using var SqlCommand = new MySqlCommand(DatabaseCommands.CmdCreatePerson(), SqlServerConnection);
+            SqlCommand.Parameters.AddWithValue("@v", FirstName);
+            SqlCommand.Parameters.AddWithValue("@n", LastName);
+            SqlCommand.Parameters.AddWithValue("@g", BirthDate.HasValue ? BirthDate.Value : (object)DBNull.Value);
+            var idObj = await SqlCommand.ExecuteScalarAsync();
             return Convert.ToInt32(idObj);
         }
 
-        public async Task<BodyMetricModel?> GetLastMetrikAsync(int personId, DateTime today)
+        /// <summary>
+        /// Asynchronously retrieves the most recent body metric record for a specific person, 
+        /// filtered by the provided date to ensure context-sensitive data retrieval.
+        /// </summary>
+        /// <param name="personId">The unique identifier of the person whose metrics are being retrieved.</param>
+        /// <param name="today">The reference date used to filter or identify the relevant measurement period.</param>
+        /// <returns>
+        /// A task that represents the asynchronous operation. 
+        /// The task result contains a <see cref="BodyMetricModel"/> if a record is found; otherwise, null.
+        /// </returns>
+        /// <remarks>
+        /// This method handles nullable database fields for Weight, BMI, Fat, and Muscle percentages 
+        /// by converting DBNull values to C# nullable types (float? or int?).
+        /// </remarks>
+        public async Task<BodyMetricModel?> GetLastBodyMetricAsync(int personId, DateTime today)
         {
-            await using var conn = new MySqlConnection(_cs);
-            await conn.OpenAsync();
-            var sql = @"SELECT MetrikID, PersonID_FK, Messdatum, Gewicht_kg, BMI, Koerperfett_Prozent, Muskelmasse_Prozent, Viszeralfett
-                        FROM tbl_KoerperMetriken
-                        WHERE PersonID_FK=@pid AND DATE(Messdatum) < @today
-                        ORDER BY Messdatum DESC LIMIT 1";
-            await using var cmd = new MySqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("@pid", personId);
-            cmd.Parameters.AddWithValue("@today", today.Date);
-            await using var rdr = await cmd.ExecuteReaderAsync();
-            if (await rdr.ReadAsync())
+            var SqlServerConnection = await EtablishSqlServerConnection();
+            await using var SqlCommand = new MySqlCommand(DatabaseCommands.CmdGetLastPersonMetric(), SqlServerConnection);
+            SqlCommand.Parameters.AddWithValue("@pid", personId);
+            SqlCommand.Parameters.AddWithValue("@today", today.Date);
+            await using var SqlDataReader = await SqlCommand.ExecuteReaderAsync();
+            if (await SqlDataReader.ReadAsync())
             {
                 return new BodyMetricModel
                 {
-                    MetricID = rdr.GetInt32(0),
-                    PersonID = rdr.GetInt32(1),
-                    MeasurementDate = rdr.GetDateTime(2),
-                    BodyWeight = rdr.IsDBNull(3)?(float?)null:rdr.GetFloat(3),
-                    BMI = rdr.IsDBNull(4)?(float?)null:rdr.GetFloat(4),
-                    BodyFatPercentage = rdr.IsDBNull(5)?(float?)null:rdr.GetFloat(5),
-                    BodyMusclePercentage = rdr.IsDBNull(6)?(float?)null:rdr.GetFloat(6),
-                    BodyVisceralFat = rdr.IsDBNull(7)?(int?)null:rdr.GetInt32(7)
+                    MetricID = SqlDataReader.GetInt32(0),
+                    PersonID = SqlDataReader.GetInt32(1),
+                    MeasurementDate = SqlDataReader.GetDateTime(2),
+                    BodyWeight = SqlDataReader.IsDBNull(3)?(float?)null:SqlDataReader.GetFloat(3),
+                    BMI = SqlDataReader.IsDBNull(4)?(float?)null:SqlDataReader.GetFloat(4),
+                    BodyFatPercentage = SqlDataReader.IsDBNull(5)?(float?)null:SqlDataReader.GetFloat(5),
+                    BodyMusclePercentage = SqlDataReader.IsDBNull(6)?(float?)null:SqlDataReader.GetFloat(6),
+                    BodyVisceralFat = SqlDataReader.IsDBNull(7)?(int?)null:SqlDataReader.GetInt32(7)
                 };
             }
             return null;
         }
 
-        public async Task<BodyDimensionsModel?> GetLastAbmessungAsync(int personId, DateTime today)
+        /// <summary>
+        /// Asynchronously retrieves the most recent physical body dimensions (e.g., chest, waist, hips) 
+        /// for a specific person, filtered by a reference date.
+        /// </summary>
+        /// <param name="personId">The unique identifier of the person whose dimensions are being retrieved.</param>
+        /// <param name="today">The reference date used to identify the relevant measurement record.</param>
+        /// <returns>
+        /// A task that represents the asynchronous operation. 
+        /// The task result contains a <see cref="BodyDimensionsModel"/> if a record exists; otherwise, null.
+        /// </returns>
+        /// <remarks>
+        /// This method safely handles optional circumference values by checking for <see cref="DBNull"/> 
+        /// and mapping them to nullable float properties. It utilizes a self-contained connection 
+        /// management to ensure resources are released immediately after execution.
+        /// </remarks>
+        public async Task<BodyDimensionsModel?> GetLastBodyDimensionsAsync(int personId, DateTime today)
         {
-            await using var conn = new MySqlConnection(_cs);
+            await using var conn = new MySqlConnection(sConnectionString);
             await conn.OpenAsync();
-            var sql = @"SELECT AbmessungID, PersonID_FK, Messdatum, Brustumfang_cm, Bauchumfang_cm, Hueftumfang_cm
-                        FROM tbl_Abmessungen
-                        WHERE PersonID_FK=@pid AND DATE(Messdatum) < @today
-                        ORDER BY Messdatum DESC LIMIT 1";
+            var sql = DatabaseCommands.CmdGetLastPersonDimension();
             await using var cmd = new MySqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@pid", personId);
             cmd.Parameters.AddWithValue("@today", today.Date);
@@ -137,11 +200,9 @@ CREATE TABLE IF NOT EXISTS tbl_Abmessungen (
 
         public async Task InsertMetrikAsync(BodyMetricModel m)
         {
-            await using var conn = new MySqlConnection(_cs);
+            await using var conn = new MySqlConnection(sConnectionString);
             await conn.OpenAsync();
-            var sql = @"INSERT INTO tbl_KoerperMetriken
-                        (PersonID_FK, Messdatum, Gewicht_kg, BMI, Koerperfett_Prozent, Muskelmasse_Prozent, Viszeralfett)
-                        VALUES (@pid, @dt, @gw, @bmi, @kf, @mm, @vf)";
+            var sql = DatabaseCommands.CmdInsertPersonMetric();
             await using var cmd = new MySqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@pid", m.PersonID);
             cmd.Parameters.AddWithValue("@dt", m.MeasurementDate);
@@ -155,11 +216,9 @@ CREATE TABLE IF NOT EXISTS tbl_Abmessungen (
 
         public async Task InsertAbmessungAsync(BodyDimensionsModel a)
         {
-            await using var conn = new MySqlConnection(_cs);
+            await using var conn = new MySqlConnection(sConnectionString);
             await conn.OpenAsync();
-            var sql = @"INSERT INTO tbl_Abmessungen
-                        (PersonID_FK, Messdatum, Brustumfang_cm, Bauchumfang_cm, Hueftumfang_cm)
-                        VALUES (@pid, @dt, @br, @ba, @hu)";
+            var sql = DatabaseCommands.CmdInsertPersonDimension();
             await using var cmd = new MySqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@pid", a.PersonID);
             cmd.Parameters.AddWithValue("@dt", a.MeasurementDate);
@@ -172,15 +231,9 @@ CREATE TABLE IF NOT EXISTS tbl_Abmessungen (
         public async Task<List<FullBodyMeasurementDatasViewModel>> GetMessungenAsync(int personId)
         {
             var list = new List<FullBodyMeasurementDatasViewModel>();
-            await using var conn = new MySqlConnection(_cs);
+            await using var conn = new MySqlConnection(sConnectionString);
             await conn.OpenAsync();
-            var sql = @"SELECT m.MetrikID, a.AbmessungID, m.Messdatum,
-               m.Gewicht_kg, m.BMI, m.Koerperfett_Prozent, m.Muskelmasse_Prozent, m.Viszeralfett,
-               a.Brustumfang_cm, a.Bauchumfang_cm, a.Hueftumfang_cm
-            FROM tbl_KoerperMetriken m
-            LEFT JOIN tbl_Abmessungen a ON DATE(m.Messdatum) = DATE(a.Messdatum) AND a.PersonID_FK = m.PersonID_FK
-            WHERE m.PersonID_FK = @pid
-            ORDER BY m.Messdatum";
+            var sql = DatabaseCommands.CmdGetMeasurement();
             await using var cmd = new MySqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@pid", personId);
             await using var rdr = await cmd.ExecuteReaderAsync();
@@ -206,18 +259,18 @@ CREATE TABLE IF NOT EXISTS tbl_Abmessungen (
 
         public async Task DeleteMetrikAsync(int metrikId)
         {
-            await using var conn = new MySqlConnection(_cs);
+            await using var conn = new MySqlConnection(sConnectionString);
             await conn.OpenAsync();
-            var cmd = new MySqlCommand("DELETE FROM tbl_KoerperMetriken WHERE MetrikID=@id", conn);
+            var cmd = new MySqlCommand(DatabaseCommands.CmdDeletePersonMetric(), conn);
             cmd.Parameters.AddWithValue("@id", metrikId);
             await cmd.ExecuteNonQueryAsync();
         }
 
         public async Task DeleteAbmessungAsync(int abmessungId)
         {
-            await using var conn = new MySqlConnection(_cs);
+            await using var conn = new MySqlConnection(sConnectionString);
             await conn.OpenAsync();
-            var cmd = new MySqlCommand("DELETE FROM tbl_Abmessungen WHERE AbmessungID=@id", conn);
+            var cmd = new MySqlCommand(DatabaseCommands.CmdDeletePersonDimension(), conn);
             cmd.Parameters.AddWithValue("@id", abmessungId);
             await cmd.ExecuteNonQueryAsync();
         }

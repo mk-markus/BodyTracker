@@ -25,32 +25,43 @@ namespace BodyTracker.ViewModels
         public UserSelectViewModel(DatabaseService db)
         {
             _db = db;
-            LadenCommand = new AsyncRelayCommand(LadenAsync);
-            NeuAnlegenCommand = new AsyncRelayCommand(NeuAnlegenAsync);
-            BestaetigenCommand = new RelayCommand(Bestaetigen);
+            LadenCommand = new AsyncRelayCommand(LoadPersonAsync);
+            NeuAnlegenCommand = new AsyncRelayCommand(CreatePersonAsync);
+            BestaetigenCommand = new RelayCommand(ConfirmSelectedPerson);
         }
 
+        /// <summary>
+        /// initialize the connection to the sql server and loads the person from the table.
+        /// </summary>
         public async Task InitializeAsync()
         {
             await _db.InitializeAsync();
-            await LadenAsync();
+            await LoadPersonAsync();
         }
 
-        private async Task LadenAsync()
+        /// <summary>
+        /// Load the Perons from the table and store it into the list
+        /// </summary>
+        /// <returns></returns>
+        private async Task LoadPersonAsync()
         {
             Personen.Clear();
             var list = await _db.GetPersonsAsync();
             foreach (var p in list) Personen.Add(p);
         }
 
-        private async Task NeuAnlegenAsync()
+        /// <summary>
+        /// Creates 
+        /// </summary>
+        /// <returns></returns>
+        private async Task CreatePersonAsync()
         {
             var id = await _db.CreatePersonAsync(Vorname.Trim(), Nachname.Trim(), Geburtsdatum);
-            await LadenAsync();
+            await LoadPersonAsync();
             Ausgewaehlt = new PersonModel { PersonID = id, PersonFirstName = Vorname.Trim(), PersonLastName = Nachname.Trim(), PersonBirthDate = Geburtsdatum };
         }
 
-        private void Bestaetigen()
+        private void ConfirmSelectedPerson()
         {
             if (Ausgewaehlt != null)
             {
