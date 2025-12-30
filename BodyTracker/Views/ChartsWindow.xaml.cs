@@ -24,27 +24,27 @@ namespace BodyTracker.Views
             Loaded += async (s,e) =>
             {
                 var data = await _db.GetMessungenAsync(AppState.SelectedPersonId);
-                var ordered = data.OrderBy(d => d.Messdatum).ToList();
+                var ordered = data.OrderBy(d => d.MeasurementDate).ToList();
                 Series = new ISeries[]
                 {
                     new LineSeries<DateTimePoint>
                     {
                         Name = "Gewicht (kg)",
-                        Values = ordered.Select(d => new DateTimePoint(d.Messdatum, (double)(d.GewichtKg ?? 0))).ToArray(),
+                        Values = ordered.Select(d => new DateTimePoint(d.MeasurementDate, (double)(d.GewichtKg ?? 0))).ToArray(),
                         Fill = null,
                         ScalesYAt = 0
                     },
                     new LineSeries<DateTimePoint>
                     {
                         Name = "Körperfett (%)",
-                        Values = ordered.Select(d => new DateTimePoint(d.Messdatum, (double)(d.KoerperfettProzent ?? 0))).ToArray(),
+                        Values = ordered.Select(d => new DateTimePoint(d.MeasurementDate, (double)(d.BodyFatPercentage ?? 0))).ToArray(),
                         Fill = null,
                         ScalesYAt = 1
                     },
                     new LineSeries<DateTimePoint>
                     {
                         Name = "Muskelmasse (%)",
-                        Values = ordered.Select(d => new DateTimePoint(d.Messdatum, (double)(d.MuskelmasseProzent ?? 0))).ToArray(),
+                        Values = ordered.Select(d => new DateTimePoint(d.MeasurementDate, (double)(d.BodyMusclePercentage ?? 0))).ToArray(),
                         Fill = null,
                         ScalesYAt = 1
                     }

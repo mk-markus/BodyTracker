@@ -12,8 +12,8 @@ namespace BodyTracker.ViewModels
     public partial class UserSelectViewModel : ObservableObject
     {
         private readonly DatabaseService _db;
-        [ObservableProperty] private ObservableCollection<Person> personen = new();
-        [ObservableProperty] private Person? ausgewaehlt;
+        [ObservableProperty] private ObservableCollection<PersonModel> personen = new();
+        [ObservableProperty] private PersonModel? ausgewaehlt;
         [ObservableProperty] private string vorname = string.Empty;
         [ObservableProperty] private string nachname = string.Empty;
         [ObservableProperty] private DateTime? geburtsdatum = null;
@@ -47,14 +47,14 @@ namespace BodyTracker.ViewModels
         {
             var id = await _db.CreatePersonAsync(Vorname.Trim(), Nachname.Trim(), Geburtsdatum);
             await LadenAsync();
-            Ausgewaehlt = new Person { Id = id, Vorname = Vorname.Trim(), Nachname = Nachname.Trim(), Geburtsdatum = Geburtsdatum };
+            Ausgewaehlt = new PersonModel { PersonID = id, PersonFirstName = Vorname.Trim(), PersonLastName = Nachname.Trim(), PersonBirthDate = Geburtsdatum };
         }
 
         private void Bestaetigen()
         {
             if (Ausgewaehlt != null)
             {
-                AppState.SelectedPersonId = Ausgewaehlt.Id;
+                AppState.SelectedPersonId = Ausgewaehlt.PersonID;
                 AppState.SelectedPersonName = Ausgewaehlt.ToString();
             }
         }

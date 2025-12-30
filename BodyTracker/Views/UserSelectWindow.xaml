@@ -13,11 +13,21 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <TextBlock Text="Benutzer"/>
                 <TextBox Grid.Column="1" x:Name="DbUserBox"/>
                 <TextBlock Grid.Row="1" Text="Passwort" Margin="0,8,0,0"/>
                 <PasswordBox Grid.Row="1" Grid.Column="1" x:Name="DbPassBox"/>
+                <TextBlock Grid.Row="2" Text="Datenbank" Margin="0,8,0,0"/>
+                <TextBox Grid.Row="2" Grid.Column="1" x:Name="DbDatenbank"/>
+                <TextBlock Grid.Row="3" Text="Serveradresse" Margin="0,8,0,0"/>
+                <TextBox Grid.Row="3" Grid.Column="1" x:Name="DbServer"/>
+                <TextBlock Grid.Row="4" Text="Portnummer" Margin="0,8,0,0"/>
+                <TextBox Grid.Row="4" Grid.Column="1" x:Name="DbPort"/>
+
             </Grid>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,8,0,0">
                 <Button Content="Verbindung speichern" Click="OnSaveCredentials"/>
@@ -36,10 +46,10 @@
             <DataGrid Grid.Row="0" Margin="0,24,0,0" ItemsSource="{Binding Personen}" SelectedItem="{Binding Ausgewaehlt}"
                       AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60"/>
-                    <DataGridTextColumn Header="Vorname" Binding="{Binding Vorname}"/>
-                    <DataGridTextColumn Header="Nachname" Binding="{Binding Nachname}"/>
-                    <DataGridTextColumn Header="Geburtsdatum" Binding="{Binding Geburtsdatum, StringFormat=d}"/>
+                    <DataGridTextColumn Header="ID" Binding="{Binding PersonID}" Width="60"/>
+                    <DataGridTextColumn Header="Vorname" Binding="{Binding PersonFirstName}"/>
+                    <DataGridTextColumn Header="Nachname" Binding="{Binding PersonLastName}"/>
+                    <DataGridTextColumn Header="Geburtsdatum" Binding="{Binding PersonBirthDate, StringFormat=d}"/>
                 </DataGrid.Columns>
             </DataGrid>
 

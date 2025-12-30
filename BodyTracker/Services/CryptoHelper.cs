@@ -17,6 +17,8 @@ namespace BodyTracker.Services
             var cipher = encryptor.TransformFinalBlock(bytes, 0, bytes.Length);
             return Convert.ToBase64String(cipher);
         }
+
+
         public static string Decrypt(string cipherText, string keyBase64, string ivBase64)
         {
             var key = Convert.FromBase64String(keyBase64);
@@ -28,6 +30,8 @@ namespace BodyTracker.Services
             var plain = decryptor.TransformFinalBlock(bytes, 0, bytes.Length);
             return Encoding.UTF8.GetString(plain);
         }
+
+
         public static (string key, string iv) GenerateKeyIv()
         {
             using var aes = Aes.Create();

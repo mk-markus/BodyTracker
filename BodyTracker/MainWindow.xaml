@@ -15,15 +15,15 @@
         <DataGrid ItemsSource="{Binding Messungen}" SelectedItem="{Binding SelectedMessung}"
                   AutoGenerateColumns="False" CanUserAddRows="False" Margin="8">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Datum" Binding="{Binding Messdatum, StringFormat=d}" Width="100"/>
-                <DataGridTextColumn Header="Gewicht (kg)" Binding="{Binding GewichtKg, StringFormat=N2}" Width="100"/>
-                <DataGridTextColumn Header="BMI" Binding="{Binding Bmi, StringFormat=N2}" Width="80"/>
-                <DataGridTextColumn Header="Körperfett (%)" Binding="{Binding KoerperfettProzent, StringFormat=N1}" Width="120"/>
-                <DataGridTextColumn Header="Muskelmasse (%)" Binding="{Binding MuskelmasseProzent, StringFormat=N1}" Width="120"/>
-                <DataGridTextColumn Header="Viszeralfett" Binding="{Binding Viszeralfett}" Width="100"/>
-                <DataGridTextColumn Header="Brustumfang (cm)" Binding="{Binding BrustumfangCm, StringFormat=N2}" Width="140"/>
-                <DataGridTextColumn Header="Bauchumfang (cm)" Binding="{Binding BauchumfangCm, StringFormat=N2}" Width="140"/>
-                <DataGridTextColumn Header="Hüftumfang (cm)" Binding="{Binding HueftumfangCm, StringFormat=N2}" Width="140"/>
+                <DataGridTextColumn Header="Datum" Binding="{Binding MeasurementDate, StringFormat=d}" Width="100"/>
+                <DataGridTextColumn Header="Gewicht (kg)" Binding="{Binding BodyWeight, StringFormat=N2}" Width="100"/>
+                <DataGridTextColumn Header="BMI" Binding="{Binding BMI, StringFormat=N2}" Width="80"/>
+                <DataGridTextColumn Header="Körperfett (%)" Binding="{Binding BodyFatPercentage, StringFormat=N1}" Width="120"/>
+                <DataGridTextColumn Header="Muskelmasse (%)" Binding="{Binding BodyMusclePercentage, StringFormat=N1}" Width="120"/>
+                <DataGridTextColumn Header="Viszeralfett" Binding="{Binding BodyVisceralFat}" Width="100"/>
+                <DataGridTextColumn Header="Brustumfang (cm)" Binding="{Binding Chestcircumference, StringFormat=N2}" Width="140"/>
+                <DataGridTextColumn Header="Bauchumfang (cm)" Binding="{Binding WaistCircumference, StringFormat=N2}" Width="140"/>
+                <DataGridTextColumn Header="Hüftumfang (cm)" Binding="{Binding HipsCircumference, StringFormat=N2}" Width="140"/>
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>

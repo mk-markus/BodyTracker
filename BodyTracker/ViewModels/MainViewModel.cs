@@ -11,8 +11,8 @@ namespace BodyTracker.ViewModels
     public partial class MainViewModel : ObservableObject
     {
         private readonly DatabaseService _db;
-        [ObservableProperty] private ObservableCollection<MessungView> messungen = new();
-        [ObservableProperty] private MessungView? selectedMessung;
+        [ObservableProperty] private ObservableCollection<FullBodyMeasurementDatasViewModel> messungen = new();
+        [ObservableProperty] private FullBodyMeasurementDatasViewModel? selectedMessung;
         [ObservableProperty] private string benutzerName = string.Empty;
 
         public IAsyncRelayCommand ReloadCommand { get; }
@@ -37,14 +37,14 @@ namespace BodyTracker.ViewModels
         }
 
         private bool CanDelete() => SelectedMessung != null;
-        partial void OnSelectedMessungChanged(MessungView? value)
+        partial void OnSelectedMessungChanged(FullBodyMeasurementDatasViewModel? value)
             => (DeleteCommand as AsyncRelayCommand)?.NotifyCanExecuteChanged();
 
         private async Task DeleteSelectedAsync()
         {
             if (SelectedMessung == null) return;
-            if (SelectedMessung.MetrikId.HasValue) await _db.DeleteMetrikAsync(SelectedMessung.MetrikId.Value);
-            if (SelectedMessung.AbmessungId.HasValue) await _db.DeleteAbmessungAsync(SelectedMessung.AbmessungId.Value);
+            if (SelectedMessung.MetricID.HasValue) await _db.DeleteMetrikAsync(SelectedMessung.MetricID.Value);
+            if (SelectedMessung.DemensionID.HasValue) await _db.DeleteAbmessungAsync(SelectedMessung.DemensionID.Value);
             await ReloadAsync();
         }
     }

@@ -12,14 +12,14 @@ namespace BodyTracker.ViewModels
     {
         private readonly DatabaseService _db;
         [ObservableProperty] private DateTime datum = DateTime.Today;
-        [ObservableProperty] private decimal? gewichtKg;
-        [ObservableProperty] private decimal? bmi;
-        [ObservableProperty] private decimal? koerperfettProzent;
-        [ObservableProperty] private decimal? muskelmasseProzent;
+        [ObservableProperty] private float? gewichtKg;
+        [ObservableProperty] private float? bmi;
+        [ObservableProperty] private float? koerperfettProzent;
+        [ObservableProperty] private float? muskelmasseProzent;
         [ObservableProperty] private int? viszeralfett;
-        [ObservableProperty] private decimal? brustumfangCm;
-        [ObservableProperty] private decimal? bauchumfangCm;
-        [ObservableProperty] private decimal? hueftumfangCm;
+        [ObservableProperty] private float? brustumfangCm;
+        [ObservableProperty] private float? bauchumfangCm;
+        [ObservableProperty] private float? hueftumfangCm;
 
         public IAsyncRelayCommand SaveCommand { get; }
 
@@ -29,38 +29,38 @@ namespace BodyTracker.ViewModels
         {
             var pid = AppState.SelectedPersonId;
             var lastM = await _db.GetLastMetrikAsync(pid, DateTime.Today);
-            GewichtKg = lastM?.GewichtKg ?? null;
-            Bmi = lastM?.Bmi ?? null;
-            KoerperfettProzent = lastM?.KoerperfettProzent ?? null;
-            MuskelmasseProzent = lastM?.MuskelmasseProzent ?? null;
-            Viszeralfett = lastM?.Viszeralfett ?? null;
+            GewichtKg = lastM?.BodyWeight ?? null;
+            Bmi = lastM?.BMI ?? null;
+            KoerperfettProzent = lastM?.BodyFatPercentage ?? null;
+            MuskelmasseProzent = lastM?.BodyMusclePercentage ?? null;
+            Viszeralfett = lastM?.BodyVisceralFat ?? null;
 
             var lastA = await _db.GetLastAbmessungAsync(pid, DateTime.Today);
-            BrustumfangCm = lastA?.BrustumfangCm ?? null;
-            BauchumfangCm = lastA?.BauchumfangCm ?? null;
-            HueftumfangCm = lastA?.HueftumfangCm ?? null;
+            BrustumfangCm = lastA?.Chestcircumference ?? null;
+            BauchumfangCm = lastA?.WaistCircumference ?? null;
+            HueftumfangCm = lastA?.HipsCircumference ?? null;
         }
 
         private async Task SaveAsync()
         {
             var pid = AppState.SelectedPersonId;
-            await _db.InsertMetrikAsync(new KoerperMetrik
+            await _db.InsertMetrikAsync(new BodyMetricModel
             {
-                PersonId = pid,
-                Messdatum = Datum,
-                GewichtKg = GewichtKg,
-                Bmi = Bmi,
-                KoerperfettProzent = KoerperfettProzent,
-                MuskelmasseProzent = MuskelmasseProzent,
-                Viszeralfett = Viszeralfett
+                PersonID = pid,
+                MeasurementDate = Datum,
+                BodyWeight = GewichtKg,
+                BMI = Bmi,
+                BodyFatPercentage = KoerperfettProzent,
+                BodyMusclePercentage = MuskelmasseProzent,
+                BodyVisceralFat = Viszeralfett
             });
-            await _db.InsertAbmessungAsync(new Abmessung
+            await _db.InsertAbmessungAsync(new BodyDimensionsModel
             {
-                PersonId = pid,
-                Messdatum = Datum,
-                BrustumfangCm = BrustumfangCm,
-                BauchumfangCm = BauchumfangCm,
-                HueftumfangCm = HueftumfangCm
+                PersonID = pid,
+                MeasurementDate = Datum,
+                Chestcircumference = BrustumfangCm,
+                WaistCircumference = BauchumfangCm,
+                HipsCircumference = HueftumfangCm
             });
         }
     }
