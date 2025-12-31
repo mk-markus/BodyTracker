@@ -1,4 +1,4 @@
-namespace BodyTracker.Models
+namespace BodyTracker.MVVM.Models
 {
     /// <summary>
     /// This class contains the structure of the json file that represents the configuration parameters for the connection string.

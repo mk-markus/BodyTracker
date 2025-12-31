@@ -1,21 +1,21 @@
 using System;
 
-namespace BodyTracker.Models
+namespace BodyTracker.MVVM.Models
 {
     /// <summary>
-    /// Represent the structure of a human person value like Weight, BMI, Muscle Percentage, Fat Percentage,...
-    /// </summary>
-    public class BodyMetricModel
+    /// Represents the table structure of a human person's data for the view model.
+    /// </summary
+    public class FullBodyMeasurementDatasViewModel
     {
         /// <summary>
         /// Contains the Metric ID from the database table
         /// </summary>
-        public int MetricID { get; set; }
+        public int? MetricID { get; set; }
 
         /// <summary>
-        /// Contains the PersonModel ID from the database table
+        /// Contains the Demension ID from the database table
         /// </summary>
-        public int PersonID { get; set; }
+        public int? DemensionID { get; set; }
 
         /// <summary>
         /// Cotnains the the date of the measurement entry --> When the measurement is entered into the database table.
@@ -31,7 +31,7 @@ namespace BodyTracker.Models
         /// Contains the perons Weight
         /// </summary>
         public float? BMI { get; set; }
-
+        
         /// <summary>
         /// Contains the perons body fat percentage
         /// </summary>
@@ -46,5 +46,20 @@ namespace BodyTracker.Models
         /// Contains the perons body visceral fat
         /// </summary>
         public int? BodyVisceralFat { get; set; }
+
+        /// <summary>
+        /// Contains the value of the Chest circumfernce in cm or inch, depends on the structure of the database table or the programm structure.
+        /// </summary>
+        public float? ChestCircumference { get; set; }
+
+        /// <summary>
+        /// Contains the value of the Waist circumfernce in cm or inch, depends on the structure of the database table or the programm structure.
+        /// </summary>
+        public float? WaistCircumference { get; set; }
+
+        /// <summary>
+        /// Contains the value of the Hips circumfernce in cm or inch, depends on the structure of the database table or the programm structure.
+        /// </summary>
+        public float? HipsCircumference { get; set; }
     }
 }

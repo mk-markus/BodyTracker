@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BodyTracker.Services
+﻿namespace BodyTracker.Services
 {
     public interface ISqlCommandProvider
     {
@@ -77,7 +71,11 @@ namespace BodyTracker.Services
         /// <returns>SQL SELECT command for historical measurement data.</returns>
         string CmdGetMeasurement();
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        string CmdCountPersonsInTable();
 
 
 

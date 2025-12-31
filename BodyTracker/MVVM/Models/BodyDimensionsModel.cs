@@ -1,6 +1,6 @@
 using System;
 
-namespace BodyTracker.Models
+namespace BodyTracker.MVVM.Models
 {
     /// <summary>
     /// Represents the structure of a human person value like hips-, waist-, chest-circumfernce
@@ -25,7 +25,7 @@ namespace BodyTracker.Models
         /// <summary>
         /// Contains the value of the Chest circumfernce in cm or inch, depends on the structure of the database table or the programm structure.
         /// </summary>
-        public float? Chestcircumference { get; set; }
+        public float? ChestCircumference { get; set; }
 
         /// <summary>
         /// Contains the value of the Waist circumfernce in cm or inch, depends on the structure of the database table or the programm structure.

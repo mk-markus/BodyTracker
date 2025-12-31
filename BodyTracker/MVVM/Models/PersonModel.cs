@@ -1,6 +1,6 @@
 using System;
 
-namespace BodyTracker.Models
+namespace BodyTracker.MVVM.Models
 {
 
     /// <summary>

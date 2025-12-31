@@ -10,9 +10,9 @@
             <Button Content="Löschen" Click="OnDeleteClick" Margin="8,0,0,0"/>
             <Button Content="Schließen" Margin="16,0,0,0" Click="OnSchliessen"/>
             <TextBlock Text="  Benutzer: " Margin="16,0,0,0"/>
-            <TextBlock Text="{Binding BenutzerName}" FontWeight="Bold"/>
+            <TextBlock Text="{Binding UserName}" FontWeight="Bold"/>
         </StackPanel>
-        <DataGrid ItemsSource="{Binding Messungen}" SelectedItem="{Binding SelectedMessung}"
+        <DataGrid ItemsSource="{Binding Measurement}" SelectedItem="{Binding SelectedMeasurement}"
                   AutoGenerateColumns="False" CanUserAddRows="False" Margin="8">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Datum" Binding="{Binding MeasurementDate, StringFormat=d}" Width="100"/>
@@ -21,7 +21,7 @@
                 <DataGridTextColumn Header="Körperfett (%)" Binding="{Binding BodyFatPercentage, StringFormat=N1}" Width="120"/>
                 <DataGridTextColumn Header="Muskelmasse (%)" Binding="{Binding BodyMusclePercentage, StringFormat=N1}" Width="120"/>
                 <DataGridTextColumn Header="Viszeralfett" Binding="{Binding BodyVisceralFat}" Width="100"/>
-                <DataGridTextColumn Header="Brustumfang (cm)" Binding="{Binding Chestcircumference, StringFormat=N2}" Width="140"/>
+                <DataGridTextColumn Header="Brustumfang (cm)" Binding="{Binding ChestCircumference, StringFormat=N2}" Width="140"/>
                 <DataGridTextColumn Header="Bauchumfang (cm)" Binding="{Binding WaistCircumference, StringFormat=N2}" Width="140"/>
                 <DataGridTextColumn Header="Hüftumfang (cm)" Binding="{Binding HipsCircumference, StringFormat=N2}" Width="140"/>
             </DataGrid.Columns>

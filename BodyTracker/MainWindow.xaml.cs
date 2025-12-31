@@ -37,12 +37,12 @@ namespace BodyTracker
 
         private async void OnDeleteClick(object sender, RoutedEventArgs e)
         {
-            if (_vm.SelectedMessung == null)
+            if (_vm.SelectedMeasurement == null)
             {
                 MessageBox.Show("Bitte zuerst eine Zeile markieren.");
                 return;
             }
-            var m = _vm.SelectedMessung;
+            var m = _vm.SelectedMeasurement;
             var res = MessageBox.Show($"Eintrag vom {m.MeasurementDate:d} löschen?", "Löschen bestätigen", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (res == MessageBoxResult.Yes)
             {

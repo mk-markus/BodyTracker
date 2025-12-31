@@ -23,14 +23,14 @@ namespace BodyTracker.Views
             _db = db;
             Loaded += async (s,e) =>
             {
-                var data = await _db.GetMessungenAsync(AppState.SelectedPersonId);
+                var data = await _db.GetBodyMeasurementAsync(AppState.SelectedPersonId);
                 var ordered = data.OrderBy(d => d.MeasurementDate).ToList();
                 Series = new ISeries[]
                 {
                     new LineSeries<DateTimePoint>
                     {
                         Name = "Gewicht (kg)",
-                        Values = ordered.Select(d => new DateTimePoint(d.MeasurementDate, (double)(d.GewichtKg ?? 0))).ToArray(),
+                        Values = ordered.Select(d => new DateTimePoint(d.MeasurementDate, (double)(d.BodyWeight ?? 0))).ToArray(),
                         Fill = null,
                         ScalesYAt = 0
                     },

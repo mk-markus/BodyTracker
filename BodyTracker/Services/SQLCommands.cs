@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BodyTracker.Services
+﻿namespace BodyTracker.Services
 {
     public class SqlCommandProvider : ISqlCommandProvider
     {
@@ -16,31 +10,31 @@ namespace BodyTracker.Services
         public string CmdCreateTableIfNotExist()
         {
             return @"CREATE TABLE IF NOT EXISTS tbl_Personen (
-                    ID INT AUTO_INCREMENT PRIMARY KEY,
-                    PersonFirstName VARCHAR(50),
-                    PersonLastName VARCHAR(50),
-                    PersonBirthDate DATE
-                    );
-                    CREATE TABLE IF NOT EXISTS tbl_KoerperMetriken (
-                    MetrikID INT AUTO_INCREMENT PRIMARY KEY,
-                    PersonID_FK INT NOT NULL,
-                    MeasurementDate DATETIME DEFAULT CURRENT_TIMESTAMP,
-                    Gewicht_kg DECIMAL(5,2),
-                    BMI DECIMAL(4,2),
-                    Koerperfett_Prozent DECIMAL(4,1),
-                    Muskelmasse_Prozent DECIMAL(4,1),
-                    BodyVisceralFat TINYINT,
-                    CONSTRAINT FK_PersonMetrik FOREIGN KEY (PersonID_FK) REFERENCES tbl_Personen (ID) ON DELETE CASCADE
-                    );
-                    CREATE TABLE IF NOT EXISTS tbl_Abmessungen (
-                    AbmessungID INT AUTO_INCREMENT PRIMARY KEY,
-                    PersonID_FK INT NOT NULL,
-                    MeasurementDate DATETIME DEFAULT CURRENT_TIMESTAMP,
-                    Brustumfang_cm DECIMAL(5,2),
-                    Bauchumfang_cm DECIMAL(5,2),
-                    Hueftumfang_cm DECIMAL(5,2),
-                    CONSTRAINT FK_PersonAbmessung FOREIGN KEY (PersonID_FK) REFERENCES tbl_Personen (ID) ON DELETE CASCADE
-                    );";
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    Vorname VARCHAR(50),
+    Nachname VARCHAR(50),
+    Geburtsdatum DATE
+);
+CREATE TABLE IF NOT EXISTS tbl_KoerperMetriken (
+    MetrikID INT AUTO_INCREMENT PRIMARY KEY,
+    PersonID_FK INT NOT NULL,
+    Messdatum DATETIME DEFAULT CURRENT_TIMESTAMP,
+    Gewicht_kg DECIMAL(5,2),
+    BMI DECIMAL(4,2),
+    Koerperfett_Prozent DECIMAL(4,1),
+    Muskelmasse_Prozent DECIMAL(4,1),
+    Viszeralfett TINYINT,
+    CONSTRAINT FK_PersonMetrik FOREIGN KEY (PersonID_FK) REFERENCES tbl_Personen (ID) ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS tbl_Abmessungen (
+    AbmessungID INT AUTO_INCREMENT PRIMARY KEY,
+    PersonID_FK INT NOT NULL,
+    Messdatum DATETIME DEFAULT CURRENT_TIMESTAMP,
+    Brustumfang_cm DECIMAL(5,2),
+    Bauchumfang_cm DECIMAL(5,2),
+    Hueftumfang_cm DECIMAL(5,2),
+    CONSTRAINT FK_PersonAbmessung FOREIGN KEY (PersonID_FK) REFERENCES tbl_Personen (ID) ON DELETE CASCADE
+);";
         }
 
         public string CmdDeletePersonDimension()
@@ -98,5 +92,11 @@ namespace BodyTracker.Services
                         (PersonID_FK, Messdatum, Gewicht_kg, BMI, Koerperfett_Prozent, Muskelmasse_Prozent, Viszeralfett)
                         VALUES (@pid, @dt, @gw, @bmi, @kf, @mm, @vf)";
         }
+
+        public string CmdCountPersonsInTable()
+        {
+            return "SELECT COUNT(*) FROM tbl_Personen";
+        }
+
     }
 }

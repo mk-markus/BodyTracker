@@ -1,28 +1,37 @@
+using BodyTracker.MVVM.Models;
+using MySqlConnector;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MySqlConnector;
-using BodyTracker.Models;
 using System.Windows;
 
 namespace BodyTracker.Services
 {
+    /// <summary>
+    /// Orchestrates all database interactions for the application. 
+    /// It manages the connection lifecycle and utilizes a command provider to execute 
+    /// operations against the MySQL database.
+    /// </summary>
     public class DatabaseService
     {
         /// <summary>
-        /// Contains the current connection string
-        /// </summary>
+        /// Provides the connection string used to establish communication with the MySQL database server.
+       /// </summary>
         public string sConnectionString { get; private set; }
 
         /// <summary>
-        /// Represents the available database commands to insert, delete and read table values.
+        /// Gets the provider for SQL command strings. 
+        /// This property grants access to standardized SQL statements for CRUD operations (Create, Read, Update, Delete).
         /// </summary>
         public SqlCommandProvider DatabaseCommands { get; private set; } = new SqlCommandProvider();
 
         /// <summary>
-        /// Databass Service Contructor
+        /// Initializes a new instance of the <see cref="DatabaseService"/> class.
+        /// Sets up the service with the required connection details to interact with the SQL server.
         /// </summary>
-        /// <param name="sConnectionString">Connection String for SQL Server Connection</param>
+        /// <param name="sConnectionString">
+        /// The full connection string, including server address, database name, and authentication credentials.
+        /// </param>
         public DatabaseService(string sConnectionString) 
         { 
             this.sConnectionString = sConnectionString; 
@@ -39,6 +48,7 @@ namespace BodyTracker.Services
         public async Task InitializeAsync()
         {
             var SqlServerConnection = await EtablishSqlServerConnection();
+            
             await using var SqlCommand = new MySqlCommand(DatabaseCommands.CmdCreateTableIfNotExist(), SqlServerConnection);
             await SqlCommand.ExecuteNonQueryAsync();
         }
@@ -59,7 +69,7 @@ namespace BodyTracker.Services
         public async Task<List<PersonModel>> GetPersonsAsync()
         {
             var list = new List<PersonModel>();
-            var SqlServerConnection = await EtablishSqlServerConnection();
+            await using var SqlServerConnection = await EtablishSqlServerConnection();
             await using var SqlCommand = new MySqlCommand(DatabaseCommands.CmdGetPerson(), SqlServerConnection);
             await using var SqlDataReader = await SqlCommand.ExecuteReaderAsync();
             while (await SqlDataReader.ReadAsync())
@@ -73,6 +83,32 @@ namespace BodyTracker.Services
                 });
             }
             return list;
+        }
+
+        /// <summary>
+        /// Asynchronously retrieves the total number of records stored in the 'tbl_Personen' table.
+        /// </summary>
+        /// <remarks>
+        /// This method utilizes <see cref="MySqlCommand.ExecuteScalarAsync"/> to efficiently fetch the count result. 
+        /// It includes validation logic to ensure that 0 is returned if the database result is null or non-positive, 
+        /// preventing potential conversion errors.
+        /// </remarks>
+        /// <returns>
+        /// A task representing the asynchronous operation. 
+        /// The task result contains the number of persons as an <see cref="int"/>. 
+        /// Returns 0 if no records are found or if the result is null.
+        /// </returns>
+        public async Task<int> CountPersonAsync()
+        {
+            await using var SqlServerConnection = await EtablishSqlServerConnection();
+            await using var SqlCommand = new MySqlCommand(DatabaseCommands.CmdCountPersonsInTable(), SqlServerConnection);
+            var result = await SqlCommand.ExecuteScalarAsync();
+
+            // Validation: If the result is null (DBNull), count is set to 0 to avoid exceptions
+            int count = result != null ? Convert.ToInt32(result) : 0;
+
+            // Return logic: Ensures the method never returns negative values, maintaining UI consistency
+            return count > 0 ? count : 0;
         }
 
         // <summary>
@@ -89,7 +125,7 @@ namespace BodyTracker.Services
         /// </remarks>
         public async Task<MySqlConnection> EtablishSqlServerConnection()
         {
-            await using var SqlServerConnection = new MySqlConnection(sConnectionString);
+            var SqlServerConnection = new MySqlConnection(sConnectionString);
             
             try
             {
@@ -176,13 +212,13 @@ namespace BodyTracker.Services
         /// </remarks>
         public async Task<BodyDimensionsModel?> GetLastBodyDimensionsAsync(int personId, DateTime today)
         {
-            await using var conn = new MySqlConnection(sConnectionString);
-            await conn.OpenAsync();
-            var sql = DatabaseCommands.CmdGetLastPersonDimension();
-            await using var cmd = new MySqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("@pid", personId);
-            cmd.Parameters.AddWithValue("@today", today.Date);
-            await using var rdr = await cmd.ExecuteReaderAsync();
+            var SqlServerConnection = await EtablishSqlServerConnection();
+            await using var SqlCommand = new MySqlCommand(DatabaseCommands.CmdGetLastPersonDimension(), SqlServerConnection);
+
+            SqlCommand.Parameters.AddWithValue("@pid", personId);
+            SqlCommand.Parameters.AddWithValue("@today", today.Date);
+            await using var rdr = await SqlCommand.ExecuteReaderAsync();
+            
             if (await rdr.ReadAsync())
             {
                 return new BodyDimensionsModel
@@ -190,7 +226,7 @@ namespace BodyTracker.Services
                     DimensionID = rdr.GetInt32(0),
                     PersonID = rdr.GetInt32(1),
                     MeasurementDate = rdr.GetDateTime(2),
-                    Chestcircumference = rdr.IsDBNull(3)?(float?)null:rdr.GetFloat(3),
+                    ChestCircumference = rdr.IsDBNull(3)?(float?)null:rdr.GetFloat(3),
                     WaistCircumference = rdr.IsDBNull(4)?(float?)null:rdr.GetFloat(4),
                     HipsCircumference = rdr.IsDBNull(5)?(float?)null:rdr.GetFloat(5)
                 };
@@ -198,81 +234,119 @@ namespace BodyTracker.Services
             return null;
         }
 
-        public async Task InsertMetrikAsync(BodyMetricModel m)
+        /// <summary>
+        /// Asynchronously inserts a new body metric record into the database.
+        /// This includes physiological data such as weight, BMI, and body fat percentages.
+        /// </summary>
+        /// <param name="m">The <see cref="BodyMetricModel"/> containing the data to be stored.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task InsertBodyMetricAsync(BodyMetricModel bodyMetricModel)
         {
-            await using var conn = new MySqlConnection(sConnectionString);
-            await conn.OpenAsync();
-            var sql = DatabaseCommands.CmdInsertPersonMetric();
-            await using var cmd = new MySqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("@pid", m.PersonID);
-            cmd.Parameters.AddWithValue("@dt", m.MeasurementDate);
-            cmd.Parameters.AddWithValue("@gw", (object?)m.BodyWeight ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@bmi", (object?)m.BMI ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@kf", (object?)m.BodyFatPercentage ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@mm", (object?)m.BodyMusclePercentage ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@vf", (object?)m.BodyVisceralFat ?? DBNull.Value);
-            await cmd.ExecuteNonQueryAsync();
+            var SqlServerConnection = await EtablishSqlServerConnection();
+            await using var SqlCommand = new MySqlCommand(DatabaseCommands.CmdInsertPersonMetric(), SqlServerConnection);
+
+            SqlCommand.Parameters.AddWithValue("@pid", bodyMetricModel.PersonID);
+            SqlCommand.Parameters.AddWithValue("@dt", bodyMetricModel.MeasurementDate);
+            SqlCommand.Parameters.AddWithValue("@gw", (object?)bodyMetricModel.BodyWeight ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@bmi", (object?)bodyMetricModel.BMI ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@kf", (object?)bodyMetricModel.BodyFatPercentage ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@mm", (object?)bodyMetricModel.BodyMusclePercentage ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@vf", (object?)bodyMetricModel.BodyVisceralFat ?? DBNull.Value);
+            
+            await SqlCommand.ExecuteNonQueryAsync();
         }
 
-        public async Task InsertAbmessungAsync(BodyDimensionsModel a)
+        /// <summary>
+        /// Asynchronously inserts a new body dimension record (circumferences) into the database.
+        /// </summary>
+        /// <param name="a">The <see cref="BodyDimensionsModel"/> containing the measurements.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task InsertBodyDimensionAsync(BodyDimensionsModel bodyDemensionModel)
         {
-            await using var conn = new MySqlConnection(sConnectionString);
-            await conn.OpenAsync();
-            var sql = DatabaseCommands.CmdInsertPersonDimension();
-            await using var cmd = new MySqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("@pid", a.PersonID);
-            cmd.Parameters.AddWithValue("@dt", a.MeasurementDate);
-            cmd.Parameters.AddWithValue("@br", (object?)a.Chestcircumference ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@ba", (object?)a.WaistCircumference ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@hu", (object?)a.HipsCircumference ?? DBNull.Value);
-            await cmd.ExecuteNonQueryAsync();
+            var SqlServerConnection = await EtablishSqlServerConnection();
+            await using var SqlCommand = new MySqlCommand(DatabaseCommands.CmdInsertPersonDimension(), SqlServerConnection);
+
+            SqlCommand.Parameters.AddWithValue("@pid", bodyDemensionModel.PersonID);
+            SqlCommand.Parameters.AddWithValue("@dt", bodyDemensionModel.MeasurementDate);
+            SqlCommand.Parameters.AddWithValue("@br", (object?)bodyDemensionModel.ChestCircumference ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@ba", (object?)bodyDemensionModel.WaistCircumference ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@hu", (object?)bodyDemensionModel.HipsCircumference ?? DBNull.Value);
+            
+            await SqlCommand.ExecuteNonQueryAsync();
         }
 
-        public async Task<List<FullBodyMeasurementDatasViewModel>> GetMessungenAsync(int personId)
+
+        /// <summary>
+        /// Asynchronously retrieves a comprehensive list of all measurements for a specific person, 
+        /// combining physiological metrics and physical dimensions into a single view model.
+        /// </summary>
+        /// <param name="personId">The unique identifier of the person whose history is being retrieved.</param>
+        /// <returns>
+        /// A task that represents the asynchronous operation. 
+        /// The task result contains a <see cref="List{FullBodyMeasurementDatasViewModel}"/>.
+        /// </returns>
+        /// <remarks>
+        /// This method performs a complex mapping of combined result sets. It handles cases where 
+        /// either a metric or a dimension record might be missing for a specific date by using 
+        /// nullable types for all measurement values.
+        /// </remarks>
+        public async Task<List<FullBodyMeasurementDatasViewModel>> GetBodyMeasurementAsync(int personId)
         {
             var list = new List<FullBodyMeasurementDatasViewModel>();
-            await using var conn = new MySqlConnection(sConnectionString);
-            await conn.OpenAsync();
-            var sql = DatabaseCommands.CmdGetMeasurement();
-            await using var cmd = new MySqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("@pid", personId);
-            await using var rdr = await cmd.ExecuteReaderAsync();
-            while (await rdr.ReadAsync())
+            
+            var SqlServerConnection = await EtablishSqlServerConnection();
+            await using var SqlCommand = new MySqlCommand(DatabaseCommands.CmdGetMeasurement(), SqlServerConnection);
+            
+            SqlCommand.Parameters.AddWithValue("@pid", personId);
+            
+            await using var SqlDataReader = await SqlCommand.ExecuteReaderAsync();
+            
+            while (await SqlDataReader.ReadAsync())
             {
                 list.Add(new FullBodyMeasurementDatasViewModel
                 {
-                    MetricID = rdr.IsDBNull(0)?(int?)null:rdr.GetInt32(0),
-                    DemensionID = rdr.IsDBNull(1)?(int?)null:rdr.GetInt32(1),
-                    MeasurementDate = rdr.GetDateTime(2),
-                    GewichtKg = rdr.IsDBNull(3)?(float?)null:rdr.GetFloat(3),
-                    Bmi = rdr.IsDBNull(4)?(float?)null:rdr.GetFloat(4),
-                    BodyFatPercentage = rdr.IsDBNull(5)?(float?)null:rdr.GetFloat(5),
-                    BodyMusclePercentage = rdr.IsDBNull(6)?(float?)null:rdr.GetFloat(6),
-                    BodyVisceralFat = rdr.IsDBNull(7)?(int?)null:rdr.GetInt32(7),
-                    Chestcircumference = rdr.IsDBNull(8)?(float?)null:rdr.GetFloat(8),
-                    WaistCircumference = rdr.IsDBNull(9)?(float?)null:rdr.GetFloat(9),
-                    HipsCircumference = rdr.IsDBNull(10)?(float?)null:rdr.GetFloat(10)
+                    MetricID = SqlDataReader.IsDBNull(0)?(int?)null:SqlDataReader.GetInt32(0),
+                    DemensionID = SqlDataReader.IsDBNull(1)?(int?)null:SqlDataReader.GetInt32(1),
+                    MeasurementDate = SqlDataReader.GetDateTime(2),
+                    BodyWeight = SqlDataReader.IsDBNull(3)?(float?)null:SqlDataReader.GetFloat(3),
+                    BMI = SqlDataReader.IsDBNull(4)?(float?)null:SqlDataReader.GetFloat(4),
+                    BodyFatPercentage = SqlDataReader.IsDBNull(5)?(float?)null:SqlDataReader.GetFloat(5),
+                    BodyMusclePercentage = SqlDataReader.IsDBNull(6)?(float?)null:SqlDataReader.GetFloat(6),
+                    BodyVisceralFat = SqlDataReader.IsDBNull(7)?(int?)null:SqlDataReader.GetInt32(7),
+                    ChestCircumference = SqlDataReader.IsDBNull(8)?(float?)null:SqlDataReader.GetFloat(8),
+                    WaistCircumference = SqlDataReader.IsDBNull(9)?(float?)null:SqlDataReader.GetFloat(9),
+                    HipsCircumference = SqlDataReader.IsDBNull(10)?(float?)null:SqlDataReader.GetFloat(10)
                 });
             }
+
             return list;
         }
 
-        public async Task DeleteMetrikAsync(int metrikId)
+        /// <summary>
+        /// Asynchronously deletes a specific metric record from the database using its unique identifier.
+        /// </summary>
+        /// <param name="bodyMetricId">The primary key (ID) of the metric record to be removed.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task DeleteBodyMetricAsync(int bodyMetricId)
         {
-            await using var conn = new MySqlConnection(sConnectionString);
-            await conn.OpenAsync();
-            var cmd = new MySqlCommand(DatabaseCommands.CmdDeletePersonMetric(), conn);
-            cmd.Parameters.AddWithValue("@id", metrikId);
-            await cmd.ExecuteNonQueryAsync();
+            var SqlServerConnection = await EtablishSqlServerConnection();
+            var SqlCommand = new MySqlCommand(DatabaseCommands.CmdDeletePersonMetric(), SqlServerConnection);
+            SqlCommand.Parameters.AddWithValue("@id", bodyMetricId);
+            await SqlCommand.ExecuteNonQueryAsync();
         }
 
-        public async Task DeleteAbmessungAsync(int abmessungId)
+        /// <summary>
+        /// Asynchronously deletes a specific dimension record from the database using its unique identifier.
+        /// </summary>
+        /// <param name="bodyDimensionId">The primary key (ID) of the dimension record to be removed.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task DeleteBodyDimensionAsync(int bodyDimensionId)
         {
-            await using var conn = new MySqlConnection(sConnectionString);
-            await conn.OpenAsync();
-            var cmd = new MySqlCommand(DatabaseCommands.CmdDeletePersonDimension(), conn);
-            cmd.Parameters.AddWithValue("@id", abmessungId);
-            await cmd.ExecuteNonQueryAsync();
+            var SqlServerConnection = await EtablishSqlServerConnection();
+            var SqlCommand = new MySqlCommand(DatabaseCommands.CmdDeletePersonDimension(), SqlServerConnection);
+            SqlCommand.Parameters.AddWithValue("@id", bodyDimensionId);
+
+            await SqlCommand.ExecuteNonQueryAsync();
         }
     }
 }

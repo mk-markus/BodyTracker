@@ -23,38 +23,38 @@
         </Grid.ColumnDefinitions>
 
         <TextBlock Text="Datum"/>
-        <DatePicker Grid.Column="1" SelectedDate="{Binding Datum}"/>
+        <DatePicker Grid.Column="1" SelectedDate="{Binding Date}"/>
 
         <TextBlock Grid.Row="1" Text="Gewicht (kg)" Margin="0,8,8,0"/>
-        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding GewichtKg}"
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding BodyWeight}"
                  PreviewTextInput="Decimal_PreviewTextInput" GotKeyboardFocus="SelectAllOnFocus"/>
 
         <TextBlock Grid.Row="2" Text="BMI" Margin="0,8,8,0"/>
-        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Bmi}"
+        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding BMI}"
                  PreviewTextInput="Decimal_PreviewTextInput" GotKeyboardFocus="SelectAllOnFocus"/>
 
         <TextBlock Grid.Row="3" Text="Körperfett (%)" Margin="0,8,8,0"/>
-        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding KoerperfettProzent}"
+        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding BodyFatPercentage}"
                  PreviewTextInput="Decimal_PreviewTextInput" GotKeyboardFocus="SelectAllOnFocus"/>
 
         <TextBlock Grid.Row="4" Text="Muskelmasse (%)" Margin="0,8,8,0"/>
-        <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding MuskelmasseProzent}"
+        <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding BodyMusclePercentage}"
                  PreviewTextInput="Decimal_PreviewTextInput" GotKeyboardFocus="SelectAllOnFocus"/>
 
         <TextBlock Grid.Row="5" Text="Viszeralfett" Margin="0,8,8,0"/>
-        <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Viszeralfett}"
+        <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding BodyVisceralFat}"
                  GotKeyboardFocus="SelectAllOnFocus"/>
 
         <TextBlock Grid.Row="6" Text="Brustumfang (cm)" Margin="0,8,8,0"/>
-        <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding BrustumfangCm}"
+        <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding ChestCircumference}"
                  PreviewTextInput="Decimal_PreviewTextInput" GotKeyboardFocus="SelectAllOnFocus"/>
 
         <TextBlock Grid.Row="7" Text="Bauchumfang (cm)" Margin="0,8,8,0"/>
-        <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding BauchumfangCm}"
+        <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding WaistCircumference}"
                  PreviewTextInput="Decimal_PreviewTextInput" GotKeyboardFocus="SelectAllOnFocus"/>
 
         <TextBlock Grid.Row="8" Text="Hüftumfang (cm)" Margin="0,8,8,0"/>
-        <TextBox Grid.Row="8" Grid.Column="1" Text="{Binding HueftumfangCm}"
+        <TextBox Grid.Row="8" Grid.Column="1" Text="{Binding HipsCircumference}"
                  PreviewTextInput="Decimal_PreviewTextInput" GotKeyboardFocus="SelectAllOnFocus"/>
 
         <StackPanel Grid.Row="10" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
