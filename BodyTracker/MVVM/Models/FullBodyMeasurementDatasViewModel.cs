@@ -61,5 +61,8 @@ namespace BodyTracker.MVVM.Models
         /// Contains the value of the Hips circumfernce in cm or inch, depends on the structure of the database table or the programm structure.
         /// </summary>
         public float? HipsCircumference { get; set; }
+
+
+        public float? FatTong {  get; set; }
     }
 }

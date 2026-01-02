@@ -11,7 +11,7 @@ namespace BodyTracker.ViewModels
     // <summary>
     /// Serves as the primary logic controller for the main application view, managing body measurement data and user interactions.
     /// </summary>
-    public partial class MainViewModel : ObservableObject
+    public partial class MeasurementViewModel : ObservableObject
     {
         /// <summary>
         /// A private, read-only reference to the <see cref="DatabaseService"/>.
@@ -61,7 +61,7 @@ namespace BodyTracker.ViewModels
         public IAsyncRelayCommand DeleteCommand { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MainViewModel"/> class.
+        /// Initializes a new instance of the <see cref="MeasurementViewModel"/> class.
         /// Sets up database access, initializes asynchronous commands, and retrieves 
         /// context information from the global application state.
         /// </summary>
@@ -74,7 +74,7 @@ namespace BodyTracker.ViewModels
         /// and ensures that the <see cref="DeleteCommand"/> is governed by selection-based 
         /// execution logic (<see cref="CanDelete"/>).
         /// </remarks>
-        public MainViewModel(DatabaseService db)
+        public MeasurementViewModel(DatabaseService db)
         {
             databaseServerice = db;
             ReloadCommand = new AsyncRelayCommand(ReloadAsync);
@@ -164,6 +164,24 @@ namespace BodyTracker.ViewModels
             if (SelectedMeasurement.MetricID.HasValue) await databaseServerice.DeleteBodyMetricAsync(SelectedMeasurement.MetricID.Value);
             if (SelectedMeasurement.DemensionID.HasValue) await databaseServerice.DeleteBodyDimensionAsync(SelectedMeasurement.DemensionID.Value);
             await ReloadAsync();
+        }
+
+
+        public async Task UpsertMeasurementAsync(int personId, FullBodyMeasurementDatasViewModel row)
+        {
+            await databaseServerice.UpsertMeasurementAsync(
+                personId,
+                row.MetricID, row.DemensionID,
+                row.MeasurementDate,
+                row.BodyWeight, row.BMI,
+                row.BodyFatPercentage,
+                row.BodyMusclePercentage,
+                row.BodyVisceralFat,
+                row.ChestCircumference,
+                row.WaistCircumference,
+                row.HipsCircumference,
+                row.FatTong
+            );
         }
     }
 }

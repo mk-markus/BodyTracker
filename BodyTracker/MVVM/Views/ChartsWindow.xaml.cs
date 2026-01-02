@@ -17,6 +17,7 @@ namespace BodyTracker.Views
         public ICartesianAxis[] XAxes { get; set; } = Array.Empty<ICartesianAxis>();
         public ICartesianAxis[] YAxes { get; set; } = Array.Empty<ICartesianAxis>();
         private readonly DatabaseService _db;
+        
         public ChartsWindow(DatabaseService db)
         {
             InitializeComponent();

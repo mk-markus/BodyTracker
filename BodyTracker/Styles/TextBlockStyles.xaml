@@ -6,9 +6,10 @@
         <Setter Property="Foreground" Value="Black"/>
         <Setter Property="Padding" Value="8,5"/>
         <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontFamily" Value="Arial"/>
         <Setter Property="TextAlignment" Value="Right"/>
         <Setter Property="FontWeight" Value="Bold"/>
-        <Setter Property="MinWidth" Value="130"/>
+        <Setter Property="MinWidth" Value="150"/>
         <Setter Property="Margin" Value="3"/>
 
     </Style>

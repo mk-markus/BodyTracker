@@ -271,7 +271,8 @@ namespace BodyTracker.Services
             SqlCommand.Parameters.AddWithValue("@br", (object?)bodyDemensionModel.ChestCircumference ?? DBNull.Value);
             SqlCommand.Parameters.AddWithValue("@ba", (object?)bodyDemensionModel.WaistCircumference ?? DBNull.Value);
             SqlCommand.Parameters.AddWithValue("@hu", (object?)bodyDemensionModel.HipsCircumference ?? DBNull.Value);
-            
+            SqlCommand.Parameters.AddWithValue("@fz", (object?)bodyDemensionModel.FatTongs ?? DBNull.Value);
+
             await SqlCommand.ExecuteNonQueryAsync();
         }
 
@@ -315,7 +316,8 @@ namespace BodyTracker.Services
                     BodyVisceralFat = SqlDataReader.IsDBNull(7)?(int?)null:SqlDataReader.GetInt32(7),
                     ChestCircumference = SqlDataReader.IsDBNull(8)?(float?)null:SqlDataReader.GetFloat(8),
                     WaistCircumference = SqlDataReader.IsDBNull(9)?(float?)null:SqlDataReader.GetFloat(9),
-                    HipsCircumference = SqlDataReader.IsDBNull(10)?(float?)null:SqlDataReader.GetFloat(10)
+                    HipsCircumference = SqlDataReader.IsDBNull(10)?(float?)null:SqlDataReader.GetFloat(10),
+                    FatTong = SqlDataReader.IsDBNull(11)?(float?)null:SqlDataReader.GetFloat(11)
                 });
             }
 
@@ -347,6 +349,78 @@ namespace BodyTracker.Services
             SqlCommand.Parameters.AddWithValue("@id", bodyDimensionId);
 
             await SqlCommand.ExecuteNonQueryAsync();
+        }
+
+        /// <summary>
+        /// Upserts a combined measurement row (metrics + dimensions) within a single transaction.
+        /// If IDs are present -> UPDATE; otherwise -> INSERT. Ensures consistency across both tables.
+        /// </summary>
+        public async Task UpsertMeasurementAsync(
+            int personId,
+            int? metricId, int? dimensionId,
+            DateTime measurementDate,
+            float? bodyWeight, float? bmi, float? fat, float? muscle, int? visceralFat,
+            float? chest, float? waist, float? hips, float? fattongs)
+        {
+            await using var conn = await EtablishSqlServerConnection();
+            await using var tx = await conn.BeginTransactionAsync();
+            try
+            {
+                // Metrics
+                if (metricId.HasValue)
+                {
+                    await using var cmdUpdateMetric = new MySqlCommand(DatabaseCommands.CmdUpdatePersonMetric(), conn, (MySqlTransaction)tx);
+                    cmdUpdateMetric.Parameters.AddWithValue("@mid", metricId.Value);
+                    cmdUpdateMetric.Parameters.AddWithValue("@gw", (object?)bodyWeight ?? DBNull.Value);
+                    cmdUpdateMetric.Parameters.AddWithValue("@bmi", (object?)bmi ?? DBNull.Value);
+                    cmdUpdateMetric.Parameters.AddWithValue("@kf", (object?)fat ?? DBNull.Value);
+                    cmdUpdateMetric.Parameters.AddWithValue("@mm", (object?)muscle ?? DBNull.Value);
+                    cmdUpdateMetric.Parameters.AddWithValue("@vf", (object?)visceralFat ?? DBNull.Value);
+                    await cmdUpdateMetric.ExecuteNonQueryAsync();
+                }
+                else
+                {
+                    await using var cmdInsertMetric = new MySqlCommand(DatabaseCommands.CmdInsertPersonMetric(), conn, (MySqlTransaction)tx);
+                    cmdInsertMetric.Parameters.AddWithValue("@pid", personId);
+                    cmdInsertMetric.Parameters.AddWithValue("@dt", measurementDate);
+                    cmdInsertMetric.Parameters.AddWithValue("@gw", (object?)bodyWeight ?? DBNull.Value);
+                    cmdInsertMetric.Parameters.AddWithValue("@bmi", (object?)bmi ?? DBNull.Value);
+                    cmdInsertMetric.Parameters.AddWithValue("@kf", (object?)fat ?? DBNull.Value);
+                    cmdInsertMetric.Parameters.AddWithValue("@mm", (object?)muscle ?? DBNull.Value);
+                    cmdInsertMetric.Parameters.AddWithValue("@vf", (object?)visceralFat ?? DBNull.Value);
+                    await cmdInsertMetric.ExecuteNonQueryAsync();
+                }
+
+                // Dimensions
+                if (dimensionId.HasValue)
+                {
+                    await using var cmdUpdateDim = new MySqlCommand(DatabaseCommands.CmdUpdatePersonDimension(), conn, (MySqlTransaction)tx);
+                    cmdUpdateDim.Parameters.AddWithValue("@aid", dimensionId.Value);
+                    cmdUpdateDim.Parameters.AddWithValue("@br", (object?)chest ?? DBNull.Value);
+                    cmdUpdateDim.Parameters.AddWithValue("@ba", (object?)waist ?? DBNull.Value);
+                    cmdUpdateDim.Parameters.AddWithValue("@hu", (object?)hips ?? DBNull.Value);
+                    cmdUpdateDim.Parameters.AddWithValue("@fz", (object?)fattongs ?? DBNull.Value);
+                    await cmdUpdateDim.ExecuteNonQueryAsync();
+                }
+                else
+                {
+                    await using var cmdInsertDim = new MySqlCommand(DatabaseCommands.CmdInsertPersonDimension(), conn, (MySqlTransaction)tx);
+                    cmdInsertDim.Parameters.AddWithValue("@pid", personId);
+                    cmdInsertDim.Parameters.AddWithValue("@dt", measurementDate);
+                    cmdInsertDim.Parameters.AddWithValue("@br", (object?)chest ?? DBNull.Value);
+                    cmdInsertDim.Parameters.AddWithValue("@ba", (object?)waist ?? DBNull.Value);
+                    cmdInsertDim.Parameters.AddWithValue("@hu", (object?)hips ?? DBNull.Value);
+                    cmdInsertDim.Parameters.AddWithValue("@fz", (object?)fattongs ?? DBNull.Value);
+                    await cmdInsertDim.ExecuteNonQueryAsync();
+                }
+
+                await tx.CommitAsync();
+            }
+            catch
+            {
+                await tx.RollbackAsync();
+                throw;
+            }
         }
     }
 }

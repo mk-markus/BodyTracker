@@ -78,7 +78,9 @@
         string CmdCountPersonsInTable();
 
 
+        string CmdUpdatePersonMetric();
 
+        string CmdUpdatePersonDimension();
 
 
 

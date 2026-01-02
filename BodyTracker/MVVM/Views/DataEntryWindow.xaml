@@ -1,7 +1,9 @@
 <Window x:Class="BodyTracker.Views.DataEntryWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Neue Daten" Height="560" Width="420">
+        Title="Neue Daten" 
+        Height="Auto" 
+        Width="420">
     <Grid Margin="12" KeyboardNavigation.TabNavigation="Cycle">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -30,7 +32,7 @@
                  PreviewTextInput="Decimal_PreviewTextInput" GotKeyboardFocus="SelectAllOnFocus"/>
 
         <TextBlock Grid.Row="2" Text="BMI" Margin="0,8,8,0"/>
-        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding BMI}"
+        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Bmi}"
                  PreviewTextInput="Decimal_PreviewTextInput" GotKeyboardFocus="SelectAllOnFocus"/>
 
         <TextBlock Grid.Row="3" Text="Körperfett (%)" Margin="0,8,8,0"/>

@@ -10,6 +10,7 @@
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Padding" Value="4,4,4,4"/>
         <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontFamily" Value="Arial"/>
         <Setter Property="FontWeight" Value="Normal"/>
         <Setter Property="TextAlignment" Value="Left"/>
         <Setter Property="MinWidth" Value="350"/>

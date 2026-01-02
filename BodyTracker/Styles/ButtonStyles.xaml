@@ -10,6 +10,7 @@
         <Setter Property="MinHeight" Value="10"/>
         <Setter Property="Height" Value="Auto"/>
         <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontFamily" Value="Arial"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="BorderBrush" Value="Black"/>

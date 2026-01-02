@@ -18,7 +18,9 @@ namespace BodyTracker.Views
         private ConfigrationService configurationService;
 
         /// <summary>
-        /// 
+        /// A private reference to the <see cref="DatabaseService"/>.
+        /// This service acts as the primary data gateway for all persistence 
+        /// operations initiated by the ViewModel.
         /// </summary>
         private DatabaseService? databaseService;
 
@@ -193,8 +195,10 @@ namespace BodyTracker.Views
                 return;
             }
             
+
             var main = new MainWindow(databaseService!);
             
+
             Application.Current.MainWindow = main;
 
             main.Show();

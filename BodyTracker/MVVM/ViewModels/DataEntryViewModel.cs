@@ -15,17 +15,12 @@ namespace BodyTracker.ViewModels
         /// This service acts as the primary data gateway for all persistence 
         /// operations initiated by the ViewModel.
         /// </summary>
-        /// <remarks>
-        /// Marked as <c>readonly</c> to ensure that the service reference remains 
-        /// immutable throughout the lifetime of the ViewModel instance, preventing 
-        /// accidental reassignment and ensuring architectural stability.
-        /// </remarks>
         private readonly DatabaseService databaseService;
                 
         /// <summary>
         /// Gets or sets the date of the measurement. Defaults to the current system date.
         /// </summary>
-        [ObservableProperty] private DateTime date = DateTime.Today;
+        [ObservableProperty] private DateTime measurementDate = DateTime.Today;
 
         /// <summary>
         /// Gets or sets the body weight in kilograms. 
@@ -66,7 +61,13 @@ namespace BodyTracker.ViewModels
         /// <summary>
         /// Gets or sets the hip circumference measurement.
         /// </summary>
-        [ObservableProperty] private float? hipCircumference;
+        [ObservableProperty] private float? hipsCircumference;
+
+
+        /// <summary>
+        /// Gets or sets the fat tong measurement.
+        /// </summary>
+        [ObservableProperty] private float? fatTongs;
 
         /// <summary>
         /// Gets the command that triggers the asynchronous saving of entered data.
@@ -115,7 +116,7 @@ namespace BodyTracker.ViewModels
             var lastA = await databaseService.GetLastBodyDimensionsAsync(pid, DateTime.Today);
             ChestCircumference = lastA?.ChestCircumference ?? null;
             WaistCircumference = lastA?.WaistCircumference ?? null;
-            HipCircumference = lastA?.HipsCircumference ?? null;
+            HipsCircumference = lastA?.HipsCircumference ?? null;
         }
 
         /// <summary>
@@ -137,7 +138,7 @@ namespace BodyTracker.ViewModels
             await databaseService.InsertBodyMetricAsync(new BodyMetricModel
             {
                 PersonID = pid,
-                MeasurementDate = Date,
+                MeasurementDate = MeasurementDate,
                 BodyWeight = BodyWeight,
                 BMI = Bmi,
                 BodyFatPercentage = BodyFatPercentage,
@@ -148,10 +149,11 @@ namespace BodyTracker.ViewModels
             await databaseService.InsertBodyDimensionAsync(new BodyDimensionsModel
             {
                 PersonID = pid,
-                MeasurementDate = Date,
+                MeasurementDate = MeasurementDate,
                 ChestCircumference = ChestCircumference,
                 WaistCircumference = WaistCircumference,
-                HipsCircumference = HipCircumference
+                HipsCircumference = HipsCircumference,
+                FatTongs = FatTongs,
             });
         }
     }

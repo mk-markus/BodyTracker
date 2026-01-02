@@ -1,57 +1,42 @@
-using System.Windows;
-using BodyTracker.ViewModels;
+﻿using BodyTracker.MVVM.Views;
 using BodyTracker.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 namespace BodyTracker
 {
+    /// <summary>
+    /// Interaktionslogik für MainWindow.xaml
+    /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly MainViewModel _vm;
+        /// <summary>
+        /// A private, read-only reference to the <see cref="DatabaseService"/>.
+        /// This service acts as the primary data gateway for all persistence 
+        /// operations initiated by the ViewModel.
+        /// </summary>
         private readonly DatabaseService _db;
-        
-        
+
         public MainWindow(DatabaseService db)
         {
             InitializeComponent();
+
             _db = db;
-            _vm = new MainViewModel(_db);
-            DataContext = _vm;
-            Loaded += async (s,e) => await _vm.InitializeAsync();
-        }
-
-
-        private void Eingabe_Click(object sender, RoutedEventArgs e)
-        {
-            var w = new BodyTracker.Views.DataEntryWindow(_db) { Owner = this };
-            w.ShowDialog();
-            _vm.ReloadCommand.Execute(null);
-        }
-
-
-        private void Diagramm_Click(object sender, RoutedEventArgs e)
-        {
-            var w = new BodyTracker.Views.ChartsWindow(_db) { Owner = this };
-            w.ShowDialog();
-        }
-
-
-        private async void OnDeleteClick(object sender, RoutedEventArgs e)
-        {
-            if (_vm.SelectedMeasurement == null)
-            {
-                MessageBox.Show("Bitte zuerst eine Zeile markieren.");
-                return;
-            }
-            var m = _vm.SelectedMeasurement;
-            var res = MessageBox.Show($"Eintrag vom {m.MeasurementDate:d} löschen?", "Löschen bestätigen", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-            if (res == MessageBoxResult.Yes)
-            {
-                await _vm.DeleteCommand.ExecuteAsync(null);
-            }
-        }
-        private void OnSchliessen(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Shutdown();
+            
+            var entry = new StartPage(this, _db);
+            
+            MainFrame.Navigate(entry);
         }
     }
 }
