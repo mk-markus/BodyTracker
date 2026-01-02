@@ -1,5 +1,4 @@
-﻿using BodyTracker.MVVM.Views;
-using BodyTracker.Services;
+﻿using BodyTracker.Services;
 using BodyTracker.State;
 using CommunityToolkit.Mvvm.ComponentModel;
 using LiveChartsCore;
@@ -8,59 +7,119 @@ using LiveChartsCore.Kernel.Sketches;
 using LiveChartsCore.Measure;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SkiaSharp;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BodyTracker.MVVM.ViewModels
 {
 
     public partial class ChartsPageViewModel : ObservableObject
     {
+        /// <summary>
+        /// A private, read-only reference to the <see cref="DatabaseService"/>.
+        /// This service provides the low-level infrastructure for all SQL Server interactions, 
+        /// including CRUD operations for body metrics and dimensions.
+        /// </summary>
         private readonly DatabaseService _db;
 
-        [ObservableProperty]
-        private ISeries[] series = Array.Empty<ISeries>();
+        /// <summary>
+        /// Gets or sets the collection of data series to be displayed in the chart.
+        /// This property is observable, meaning any changes to the series (e.g., adding or removing metrics) 
+        /// will automatically trigger a UI update in the view.
+        /// </summary>
+        [ObservableProperty] private ISeries[] series = Array.Empty<ISeries>();
 
-        [ObservableProperty]
-        private ICartesianAxis[] xAxes = Array.Empty<ICartesianAxis>();
+        /// <summary>
+        /// Gets or sets the X-axes configuration for the Cartesian chart.
+        /// This property defines the horizontal scale, including labels (e.g., dates), 
+        /// unit spacing, and title formatting.
+        /// </summary>
+        [ObservableProperty] private ICartesianAxis[] xAxes = Array.Empty<ICartesianAxis>();
 
-        [ObservableProperty]
-        private ICartesianAxis[] yAxes = Array.Empty<ICartesianAxis>();
+        /// <summary>
+        /// Gets or sets the Y-axes configuration for the Cartesian chart.
+        /// This property defines the vertical scale, including the numerical range, 
+        /// value formatting (e.g., "kg" or "%"), and grid line intervals.
+        /// </summary>
+        [ObservableProperty] private ICartesianAxis[] yAxes = Array.Empty<ICartesianAxis>();
 
-        [ObservableProperty]
-        private DateTime startDate = new DateTime(2025,1,1);
+        // <summary>
+        /// Gets or sets the inclusive start date for the measurement data filter.
+        /// This property determines the earliest record to be displayed in the charts and lists.
+        /// </summary>
+        [ObservableProperty] private DateTime startDate = new DateTime(2025,1,1);
 
-        [ObservableProperty]
-        private DateTime endDate = DateTime.Now;
+        /// <summary>
+        /// Gets or sets the inclusive end date for the measurement data filter.
+        /// This property defines the latest point in time for which records are retrieved 
+        /// and displayed in the UI components.
+        /// </summary>
+        [ObservableProperty] private DateTime endDate = DateTime.Now;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChartsPageViewModel"/> class.
+        /// Sets up the database dependency and configures the default Cartesian axes 
+        /// for time-series data visualization.
+        /// </summary>
+        /// <param name="db">The database service instance used to retrieve measurement data for chart generation.</param>
+        /// <remarks>
+        /// During initialization, a <see cref="DateTimeAxis"/> is established as the primary X-axis. 
+        /// It is configured with a one-day interval and a German date format (dd.MM.yyyy) 
+        /// to ensure that body measurements are plotted accurately over time.
+        /// </remarks>
         public ChartsPageViewModel(DatabaseService db)
         {
             _db = db;
-          
-
-            XAxes = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yyyy")) { Name = "Datum" }
-        };
+           XAxes = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yyyy")) { Name = "Datum" }};
         }
 
         /// <summary>
-        /// Wird automatisch aufgerufen, wenn sich das StartDatum ändert.
+        /// Executed automatically by the source generator when the <see cref="StartDate"/> property changes.
+        /// Initiates an asynchronous refresh of the chart data to reflect the newly selected time range.
         /// </summary>
+        /// <param name="value">The new <see cref="DateTime"/> value assigned to the start date filter.</param>
+        /// <remarks>
+        /// This method uses a "fire-and-forget" pattern (<c>_ = ...</c>) because partial methods 
+        /// generated by the toolkit are synchronous by design. The actual data retrieval and 
+        /// UI update are handled within the asynchronous <see cref="RefreshChartAsync"/> method 
+        /// to maintain UI responsiveness.
+        /// </remarks>
         partial void OnStartDateChanged(DateTime value)
         {
             _ = RefreshChartAsync();
         }
+
         /// <summary>
-        /// Wird automatisch aufgerufen, wenn sich das EndDatum ändert.
+        /// Executed automatically by the source generator when the <see cref="EndDate"/> property changes.
+        /// Triggers an asynchronous update of the chart data to reflect the newly defined end of the observation period.
         /// </summary>
+        /// <param name="value">The new <see cref="DateTime"/> value assigned to the end date filter.</param>
+        /// <remarks>
+        /// This partial method acts as an event hook provided by the CommunityToolkit.Mvvm. 
+        /// Using the discard pattern (<c>_ = ...</c>) allows the UI to remain responsive by 
+        /// launching the <see cref="RefreshChartAsync"/> task without blocking the property setter's execution thread.
+        /// </remarks>
         partial void OnEndDateChanged(DateTime value)
         {
            _ = RefreshChartAsync();
         }
 
+        /// <summary>
+        /// Asynchronously refreshes the chart data by retrieving records from the database, 
+        /// filtering them by the selected date range, and transforming them into <see cref="ISeries"/> for the UI.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous update operation.</returns>
+        /// <remarks>
+        /// This method performs several key operations:
+        /// <list type="bullet">
+        /// <item><description>Validates the current user context via <see cref="AppState"/>.</description></item>
+        /// <item><description>Executes a temporal filter based on <see cref="StartDate"/> and <see cref="EndDate"/>.</description></item>
+        /// <item><description>Maps database models to <see cref="DateTimePoint"/> structures for LiveCharts2.</description></item>
+        /// <item><description>Configures primary (kg) and secondary (%) Y-axes for multi-unit visualization.</description></item>
+        /// </list>
+        /// </remarks>
         public async Task RefreshChartAsync()
         {
             if (AppState.SelectedPersonId <= 0) return;

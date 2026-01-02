@@ -106,8 +106,7 @@
                              Style="{StaticResource StandardTextBox}"/>
                 </StackPanel>
 
-                <Button Content="Speichern" 
-                        Command="{Binding SaveCommand}" 
+                <Button Content="Speichern"  
                         Click="OnSaved"
                         Style="{StaticResource SaveButton}"/>
 

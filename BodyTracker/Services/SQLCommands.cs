@@ -104,9 +104,10 @@ CREATE TABLE IF NOT EXISTS tbl_Abmessungen (
         {
             return @"UPDATE tbl_KoerperMetriken SET Gewicht_kg=@gw, BMI=@bmi, Koerperfett_Prozent=@kf, Muskelmasse_Prozent=@mm, Viszeralfett=@vf WHERE MetrikID=@mid;";
         }
+        
         public string CmdUpdatePersonDimension()
         {
-            return @"UPDATE tbl_Abmessungen SET Brustumfang_cm=@br, Bauchumfang_cm=@ba, Hueftumfang_cm=@hu, , Fettzange_mm=@fz WHERE AbmessungID=@aid;";
+            return @"UPDATE tbl_Abmessungen SET Brustumfang_cm=@br, Bauchumfang_cm=@ba, Hueftumfang_cm=@hu, Fettzange_mm=@fz WHERE AbmessungID=@aid;";
         }
 
     }

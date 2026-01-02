@@ -131,7 +131,7 @@ namespace BodyTracker.ViewModels
         /// Note: This operation currently lacks a database transaction; an error in the second 
         /// insert will not roll back the first one.
         /// </remarks>
-        private async Task SaveAsync()
+        public async Task SaveAsync()
         {
             var pid = AppState.SelectedPersonId;
 

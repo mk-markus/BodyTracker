@@ -1,16 +1,5 @@
 ﻿using BodyTracker.MVVM.ViewModels;
 using BodyTracker.Services;
-using BodyTracker.State;
-using CommunityToolkit.Mvvm.ComponentModel;
-using LiveChartsCore;
-using LiveChartsCore.Defaults;
-using LiveChartsCore.Kernel.Sketches;
-using LiveChartsCore.Measure;
-using LiveChartsCore.SkiaSharpView;
-using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 
 namespace BodyTracker.MVVM.Views
@@ -22,140 +11,55 @@ namespace BodyTracker.MVVM.Views
     /// </summary>
     public partial class ChartsPage : Page
     {
-
-        //public ISeries[] Series { get; set; } = Array.Empty<ISeries>();
+        /// <summary>
+        /// A private, read-only reference to the application's <see cref="MainWindow"/>.
+        /// This reference, often referred to as the 'shell', is used to coordinate 
+        /// top-level UI actions, such as navigation between different pages or 
+        /// accessing global window states.
+        /// </summary>
         private readonly MainWindow _shell;
-        //public ICartesianAxis[] XAxes { get; set; } = Array.Empty<ICartesianAxis>();
-       // public ICartesianAxis[] YAxes { get; set; } = Array.Empty<ICartesianAxis>();
-        private readonly DatabaseService _db;
 
-       //private DateTime startDate = new DateTime();
-       //private DateTime endDate = new DateTime();
+        /// <summary>
+        /// A private, read-only reference to the <see cref="DatabaseService"/>.
+        /// Serves as the primary Data Access Layer (DAL) for retrieving and persisting 
+        /// body measurement records and user profiles.
+        /// </summary>
+        private readonly DatabaseService databaseService;
+
+        /// <summary>
+        /// A private, read-only reference to the <see cref="ChartsPageViewModel"/>.
+        /// Acts as the primary data context for the view, holding the business logic, 
+        /// chart configurations, and observable data collections required for visualization.
+        /// </summary>
+        private readonly ChartsPageViewModel chartsPageViewModel;
 
 
-
-        private readonly ChartsPageViewModel _chartsPageViewModel;
-
-
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChartsPage"/> class.
+        /// Configures dependency injection, establishes the data context for LiveCharts2, 
+        /// and registers the initial data load routine.
+        /// </summary>
+        /// <param name="shell">The main application window (<see cref="MainWindow"/>) used for shell-level coordination.</param>
+        /// <param name="db">The database service providing access to the body measurement records.</param>
+        /// <remarks>
+        /// This constructor facilitates the MVVM pattern by instantiating the <see cref="ChartsPageViewModel"/> 
+        /// with the provided database service. It also utilizes the <see cref="FrameworkElement.Loaded"/> 
+        /// event to trigger an asynchronous chart refresh, ensuring that the visual data is 
+        /// populated immediately after the page is rendered.
+        /// </remarks>
         public ChartsPage(MainWindow shell, DatabaseService db)
         {
             InitializeComponent();
+            
             _shell = shell;
-            _db = db;
             
-            _chartsPageViewModel = new ChartsPageViewModel(_db);
-            DataContext = _chartsPageViewModel;
-            Debug.WriteLine($"DataContext ist: {this.DataContext?.GetType().Name}");
-            Loaded += async (s, e) => await _chartsPageViewModel.RefreshChartAsync();
+            databaseService = db;
             
+            chartsPageViewModel = new ChartsPageViewModel(databaseService);
+            
+            DataContext = chartsPageViewModel;
+         
+            Loaded += async (s, e) => await chartsPageViewModel.RefreshChartAsync();
         }
-
-
-
-        //public ChartsPage(MainWindow shell, DatabaseService db)
-        //{
-        //    InitializeComponent();
-        //    _db = db;
-        //    _shell = shell;
-
-        //    dpEndDate.SelectedDate = DateTime.Now;
-        //    dpStartDate.SelectedDate = DateTime.Parse("01.01.2025");
-
-        //    Loaded += async (s, e) => await RefreshChart();
-
-        //    //Loaded += async (s, e) =>
-        //    //{
-        //    //    var data = await _db.GetBodyMeasurementAsync(AppState.SelectedPersonId);
-        //    //    //var ordered = data.OrderBy(d => d.MeasurementDate).ToList();
-        //    //    var ordered = data.Where(d => d.MeasurementDate >= dpStartDate.SelectedDate && d.MeasurementDate <= dpEndDate.SelectedDate).ToList();
-        //    //    Series = new ISeries[]
-        //    //    {
-        //    //        new LineSeries<DateTimePoint>
-        //    //        {
-        //    //            Name = "Gewicht (kg)",
-        //    //            Values = ordered.Select(d => new DateTimePoint(d.MeasurementDate, (double)(d.BodyWeight ?? 0))).ToArray(),
-        //    //            Fill = null,
-        //    //            ScalesYAt = 0
-        //    //        },
-        //    //        new LineSeries<DateTimePoint>
-        //    //        {
-        //    //            Name = "Körperfett (%)",
-        //    //            Values = ordered.Select(d => new DateTimePoint(d.MeasurementDate, (double)(d.BodyFatPercentage ?? 0))).ToArray(),
-        //    //            Fill = null,
-        //    //            ScalesYAt = 1
-        //    //        },
-        //    //        new LineSeries<DateTimePoint>
-        //    //        {
-        //    //            Name = "Muskelmasse (%)",
-        //    //            Values = ordered.Select(d => new DateTimePoint(d.MeasurementDate, (double)(d.BodyMusclePercentage ?? 0))).ToArray(),
-        //    //            Fill = null,
-        //    //            ScalesYAt = 1
-        //    //        }
-        //    //    };
-        //    //    XAxes = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yyyy")) { Name = "Datum" } };
-        //    //    YAxes = new ICartesianAxis[]
-        //    //    {
-        //    //        new Axis { Name = "kg" },
-        //    //        new Axis { Name = "%", Position = AxisPosition.End, ShowSeparatorLines = false }
-        //    //    };
-        //    //    DataContext = this;
-        //    //};
-        //}
-
-
-
-        //private async Task RefreshChart()
-        //{
-        //    var data = await _db.GetBodyMeasurementAsync(AppState.SelectedPersonId);
-        //    //var ordered = data.OrderBy(d => d.MeasurementDate).ToList();
-        //    var ordered = data.Where(d => d.MeasurementDate >= dpStartDate.SelectedDate && d.MeasurementDate <= dpEndDate.SelectedDate).ToList();
-        //    Series = new ISeries[]
-        //    {
-        //            new LineSeries<DateTimePoint>
-        //            {
-        //                Name = "Gewicht (kg)",
-        //                Values = ordered.Select(d => new DateTimePoint(d.MeasurementDate, (double)(d.BodyWeight ?? 0))).ToArray(),
-        //                Fill = null,
-        //                ScalesYAt = 0
-        //            },
-        //            new LineSeries<DateTimePoint>
-        //            {
-        //                Name = "Körperfett (%)",
-        //                Values = ordered.Select(d => new DateTimePoint(d.MeasurementDate, (double)(d.BodyFatPercentage ?? 0))).ToArray(),
-        //                Fill = null,
-        //                ScalesYAt = 1
-        //            },
-        //            new LineSeries<DateTimePoint>
-        //            {
-        //                Name = "Muskelmasse (%)",
-        //                Values = ordered.Select(d => new DateTimePoint(d.MeasurementDate, (double)(d.BodyMusclePercentage ?? 0))).ToArray(),
-        //                Fill = null,
-        //                ScalesYAt = 1
-        //            }
-        //    };
-        //    XAxes = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yyyy")) { Name = "Datum" } };
-        //    YAxes = new ICartesianAxis[]
-        //    {
-        //            new Axis { Name = "kg" },
-        //            new Axis { Name = "%", Position = AxisPosition.End, ShowSeparatorLines = false }
-        //    };
-
-        //    DataContext = null;
-        //    DataContext = this;
-        //}
-
-
-        ////private void RefreshChart()
-        ////{
-        ////    var start = dpStartDate.SelectedDate ?? DateTime.Parse("01.01.2025");
-
-
-        ////}
-
-        //public async void dpStartDate_SelectedChanged(object sender, SelectionChangedEventArgs e)
-        //{
-        //   await RefreshChart();
-        //}
     }
 }

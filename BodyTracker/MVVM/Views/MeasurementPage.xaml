@@ -32,7 +32,8 @@
                     </GroupBox.Header>
 
                     
-                    <DataGrid ItemsSource="{Binding Measurement}" 
+                    <DataGrid x:Name="MeasurementsGrid"
+                              ItemsSource="{Binding Measurement, UpdateSourceTrigger=PropertyChanged}" 
                               CellStyle="{StaticResource DataGrid_CellStyle}"
                               ColumnHeaderStyle="{StaticResource DataGrid_ColumnHeaderStyle}"
                               SelectedItem="{Binding SelectedMeasurement}"
@@ -51,7 +52,7 @@
                             <DataGridTextColumn Header="Datum" 
                                                 Binding="{Binding MeasurementDate,StringFormat=d}"/>
                             <DataGridTextColumn Header="Gewicht (kg)" 
-                                                Binding="{Binding BodyWeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"/>
+                                                Binding="{Binding BodyWeight, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"/>
                             <DataGridTextColumn Header="BMI" 
                                                 Binding="{Binding BMI, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"/>
                             <DataGridTextColumn Header="Körperfett (%)" 

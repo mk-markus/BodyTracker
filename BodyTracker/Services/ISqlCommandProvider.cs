@@ -72,14 +72,33 @@
         string CmdGetMeasurement();
 
         /// <summary>
-        /// 
+        /// Generates or executes the SQL command string required to count the total number of records 
+        /// in the persons table.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>
+        /// A formatted string containing the SQL <c>COUNT</c> statement or the result of the operation, 
+        /// depending on the specific implementation within the service.
+        /// </returns>
         string CmdCountPersonsInTable();
 
-
+        /// <summary>
+        /// Provides the SQL command string required to update a person's biometric metrics 
+        /// within the database.
+        /// </summary>
+        /// <returns>
+        /// A SQL <c>UPDATE</c> statement string, specifically tailored to synchronize 
+        /// modified user properties from the application state back to the database.
+        /// </returns>
         string CmdUpdatePersonMetric();
 
+        /// <summary>
+        /// Provides the SQL command string required to update a person's physical dimensions 
+        /// (e.g., height) within the database.
+        /// </summary>
+        /// <returns>
+        /// A SQL <c>UPDATE</c> statement string designed to modify existing dimension 
+        /// records for a specific user.
+        /// </returns>
         string CmdUpdatePersonDimension();
 
 

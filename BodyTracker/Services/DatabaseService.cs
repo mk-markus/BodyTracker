@@ -37,7 +37,6 @@ namespace BodyTracker.Services
             this.sConnectionString = sConnectionString; 
         }
 
-
         /// <summary>
         /// Asynchronously establishes a connection to the SQL server and initializes the database schema.
         /// It ensures that all required tables (e.g., persons, metrics, dimensions) exist by executing 
@@ -352,9 +351,23 @@ namespace BodyTracker.Services
         }
 
         /// <summary>
-        /// Upserts a combined measurement row (metrics + dimensions) within a single transaction.
-        /// If IDs are present -> UPDATE; otherwise -> INSERT. Ensures consistency across both tables.
+        /// Performs an atomic upsert operation for both metric and dimension datasets within a single database transaction.
         /// </summary>
+        /// <param name="personId">The unique identifier of the target user.</param>
+        /// <param name="metricId">Optional ID for existing metric records; if null, an INSERT is performed.</param>
+        /// <param name="dimensionId">Optional ID for existing dimension records; if null, an INSERT is performed.</param>
+        /// <param name="measurementDate">The effective timestamp for the measurement record.</param>
+        /// <param name="bodyWeight">Measured body weight in kilograms.</param>
+        /// <param name="bmi">Calculated Body Mass Index.</param>
+        /// <param name="fat">Body fat percentage.</param>
+        /// <param name="muscle">Muscle mass percentage.</param>
+        /// <param name="visceralFat">Visceral fat level indicator.</param>
+        /// <param name="chest">Chest circumference in centimeters.</param>
+        /// <param name="waist">Waist circumference in centimeters.</param>
+        /// <param name="hips">Hip circumference in centimeters.</param>
+        /// <param name="fattongs">Skinfold measurement (caliper) value.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous database operation.</returns>
+        /// <exception cref="MySqlException">Thrown if the transaction fails or the connection is interrupted.</exception>
         public async Task UpsertMeasurementAsync(
             int personId,
             int? metricId, int? dimensionId,
@@ -366,7 +379,6 @@ namespace BodyTracker.Services
             await using var tx = await conn.BeginTransactionAsync();
             try
             {
-                // Metrics
                 if (metricId.HasValue)
                 {
                     await using var cmdUpdateMetric = new MySqlCommand(DatabaseCommands.CmdUpdatePersonMetric(), conn, (MySqlTransaction)tx);
@@ -391,7 +403,6 @@ namespace BodyTracker.Services
                     await cmdInsertMetric.ExecuteNonQueryAsync();
                 }
 
-                // Dimensions
                 if (dimensionId.HasValue)
                 {
                     await using var cmdUpdateDim = new MySqlCommand(DatabaseCommands.CmdUpdatePersonDimension(), conn, (MySqlTransaction)tx);

@@ -110,10 +110,16 @@ namespace BodyTracker.ViewModels
         /// </remarks>
         private async Task ReloadAsync()
         {
-            Measurement.Clear();
             var pid = AppState.SelectedPersonId;
             var all = await databaseServerice.GetBodyMeasurementAsync(pid);
-            foreach (var m in all) Measurement.Add(m);
+
+            Measurement.Clear();
+            foreach (var m in all)
+            {
+                Measurement.Add(m);
+            }
+
+            OnPropertyChanged(nameof(Measurement));
         }
 
         /// <summary>
@@ -165,8 +171,20 @@ namespace BodyTracker.ViewModels
             if (SelectedMeasurement.DemensionID.HasValue) await databaseServerice.DeleteBodyDimensionAsync(SelectedMeasurement.DemensionID.Value);
             await ReloadAsync();
         }
-
-
+        /// <summary>
+        /// Asynchronously updates an existing measurement record or inserts a new one into the database.
+        /// This method acts as a wrapper for the data access layer, ensuring that all metric and 
+        /// dimensional data is persisted before triggering a full UI refresh.
+        /// </summary>
+        /// <param name="personId">The unique identifier of the person to whom the measurements belong.</param>
+        /// <param name="row">The view model containing the measurement data to be synchronized.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <remarks>
+        /// The "Upsert" logic (Update or Insert) is determined by the presence of existing IDs 
+        /// within the <paramref name="row"/>. Post-execution, <see cref="ReloadAsync"/> is invoked 
+        /// to ensure the local collection remains consistent with the database state, 
+        /// including any server-generated identifiers.
+        /// </remarks>
         public async Task UpsertMeasurementAsync(int personId, FullBodyMeasurementDatasViewModel row)
         {
             await databaseServerice.UpsertMeasurementAsync(
@@ -182,6 +200,8 @@ namespace BodyTracker.ViewModels
                 row.HipsCircumference,
                 row.FatTong
             );
+
+            await ReloadAsync();
         }
     }
 }
