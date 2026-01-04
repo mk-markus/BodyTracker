@@ -117,6 +117,7 @@ namespace BodyTracker.ViewModels
             ChestCircumference = lastA?.ChestCircumference ?? null;
             WaistCircumference = lastA?.WaistCircumference ?? null;
             HipsCircumference = lastA?.HipsCircumference ?? null;
+            FatTongs = lastA?.FatTongs ?? null;
         }
 
         /// <summary>

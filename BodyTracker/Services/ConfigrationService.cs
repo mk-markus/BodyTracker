@@ -12,9 +12,15 @@ namespace BodyTracker.Services
     public class ConfigrationService
     {
         /// <summary>
-        /// Gets the absolute path to the appsettings.json file.
+        /// Gets the absolute path to the appsettings.json file. 
         /// </summary>
         public string   sAppSettingsPath {  get; private set; } = string.Empty;
+
+        /// <summary>
+        /// The default directory path for application settings, 
+        /// using environment variables for user-specific local storage.
+        /// </summary>
+        private string sDefautlPath = @"%Userprofile%\AppData\Local\BodyTracker";
 
         /// <summary>
         /// Gets a value indicating whether a valid configuration file was found or created.
@@ -51,10 +57,10 @@ namespace BodyTracker.Services
         /// </summary>
         /// <param name="sAppSettingsPath">The preferred path to the configuration file.</param>
         /// <exception cref="ArgumentException">Thrown if no valid configuration file can be accessed.</exception>
-        public ConfigrationService(string sAppSettingsPath)
-        {
+        public ConfigrationService()
+        { 
             // Check if path is empty than use an default path. 
-            (bPathOK, this.sAppSettingsPath) = checkConfigFileAvialable(sAppSettingsPath);
+            (bPathOK, this.sAppSettingsPath) = checkConfigFileAvialable(sDefautlPath);
          
             if(!bPathOK) throw new ArgumentException("The app setting file does not exist at: " + sAppSettingsPath);
             
@@ -142,40 +148,50 @@ namespace BodyTracker.Services
         }
 
         /// <summary>
-        /// Validates the existence of the configuration file and manages fallback scenarios.
-        /// If the primary path is invalid, it searches the application's current directory or triggers 
-        /// the automatic generation of a new template file.
+        /// Ensures the configuration directory exists and validates the presence of the settings file.
         /// </summary>
-        /// <param name="sPath">The initial file path to be checked for the configuration file.</param>
+        /// <param name="directoryPath">
+        /// The File Path needs the structure like %UserProfile\AppData\BodyTracker without the file name !!!!
+        /// The target directory path. If null or empty, the method falls back to <see cref="sDefautlPath"/>.
+        /// Supports environment variables (e.g., %UserProfile%).
+        /// </param>
         /// <returns>
         /// A tuple containing:
         /// <list type="bullet">
-        /// <item><description><c>bool</c>: True if a valid file path was identified or created, otherwise false.</description></item>
-        /// <item><description><c>string</c>: The confirmed absolute path to the configuration file.</description></item>
+        /// <item><description><c>bool</c>: True if the file exists or was successfully generated; otherwise, false.</description></item>
+        /// <item><description><c>string</c>: The absolute file path to 'appsettings.json' if successful, or an empty string.</description></item>
         /// </list>
         /// </returns>
         /// <remarks>
-        /// This method acts as a fail-safe mechanism during service initialization to prevent 
-        /// file-not-found exceptions in subsequent load or save operations.
+        /// This method resolves environment variables, creates missing directories, and 
+        /// automatically triggers <see cref="generateAppSettingsFile"/> if the file is missing.
         /// </remarks>
-        public (bool, string) checkConfigFileAvialable(string sPath)
+        public (bool, string) checkConfigFileAvialable(string directoryPath)
         {
-            if (string.IsNullOrEmpty(sPath) && File.Exists(sPath)) return (true, sPath);
+            string filePath= string.Empty;
+
+            // Check file Path exist when not create filepath
+            if (!string.IsNullOrEmpty(directoryPath)) filePath = Environment.ExpandEnvironmentVariables(directoryPath);
+            else filePath = Environment.ExpandEnvironmentVariables(sDefautlPath);
+
+
+            // Check Directory exist
+            if (!Directory.Exists(filePath)) Directory.CreateDirectory(filePath);
+         
+            
+            filePath = Path.Combine(filePath, "appsettings.json");
+
+            // Check if app settings availvaible. If so, return the available file.
+            if (File.Exists(filePath)) return (true, filePath);
+                
+            // if no file is available a new app settings file will be created.
             else
             {
-                // Check if app settings availvaible. If so, return the available file.
-                if (File.Exists(Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json"))) return (true, Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json"));
-                
-                // if no file is available a new app settings file will be created.
-                else
-                {
-                    generateAppSettingsFile();
-                    if (File.Exists(Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json"))) return (true, Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json"));
-                    else return (false, string.Empty);
-                }
+                generateAppSettingsFile(filePath);
+                if (File.Exists(filePath)) return (true, filePath);
+                else return (false, string.Empty);
             }
         }
-
 
         /// <summary>
         /// Creates a new 'appsettings.json' template file with default values in the current application directory.
@@ -185,7 +201,7 @@ namespace BodyTracker.Services
         /// default MySQL port (3306). The resulting JSON is indented for better human readability.
         /// Note: Ensure the application has write permissions for the target directory.
         /// </remarks>
-        public void generateAppSettingsFile()
+        public void generateAppSettingsFile(string filePath)
         {
 
             var config = new SQLConfigurationModel();
@@ -199,7 +215,7 @@ namespace BodyTracker.Services
             string jsonString = JsonSerializer.Serialize(config, options);
 
             // create json file
-            File.WriteAllText(Directory.GetCurrentDirectory()+ "appsettings.json", jsonString);
+            File.WriteAllText(filePath, jsonString);
         }
 
     }

@@ -227,7 +227,8 @@ namespace BodyTracker.Services
                     MeasurementDate = rdr.GetDateTime(2),
                     ChestCircumference = rdr.IsDBNull(3)?(float?)null:rdr.GetFloat(3),
                     WaistCircumference = rdr.IsDBNull(4)?(float?)null:rdr.GetFloat(4),
-                    HipsCircumference = rdr.IsDBNull(5)?(float?)null:rdr.GetFloat(5)
+                    HipsCircumference = rdr.IsDBNull(5)?(float?)null:rdr.GetFloat(5),
+                    FatTongs = rdr.IsDBNull(6)?(float?)null:rdr.GetFloat(6)
                 };
             }
             return null;

@@ -4,7 +4,7 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <!--<NoWin32Manifest>true</NoWin32Manifest>-->
     <!--<ApplicationIcon>Icon\ProgramIcon.ico</ApplicationIcon>-->
     
   </PropertyGroup>
@@ -19,9 +19,6 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="appsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="License\AdditionalLicense.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

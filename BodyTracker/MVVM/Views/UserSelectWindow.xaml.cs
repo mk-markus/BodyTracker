@@ -37,8 +37,9 @@ namespace BodyTracker.Views
         public UserSelectWindow()
         {
             InitializeComponent();
-            configurationService = new ConfigrationService(Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json"));
-            
+            //configurationService = new ConfigrationService(Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json"));
+            configurationService = new ConfigrationService();
+
             var cfg = configurationService.LoadCinfigurationFile();
             
             if (!string.IsNullOrEmpty(cfg.User)) DbUserBox.Text = cfg.User;
