@@ -1,5 +1,8 @@
 ﻿using BodyTracker.MVVM.ViewModels;
 using BodyTracker.Services;
+using BodyTracker.ViewModels;
+using System;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace BodyTracker.MVVM.Views
@@ -61,5 +64,43 @@ namespace BodyTracker.MVVM.Views
          
             Loaded += async (s, e) => await chartsPageViewModel.RefreshChartAsync();
         }
+
+
+
+
+        private void SetActualYearClick(object sender, RoutedEventArgs e)
+        {
+            DateTime today = DateTime.Today;
+            chartsPageViewModel.StartDate = new DateTime(today.Year, 1, 1);
+            chartsPageViewModel.EndDate = new DateTime(today.Year, 12, 31);
+        }
+
+        private void SetActualMonthClick(object sender, RoutedEventArgs e)
+        {
+            DateTime today = DateTime.Today;
+
+            // First Day of Month
+            chartsPageViewModel.StartDate = new DateTime(today.Year, today.Month, 1);
+
+            // Last day of the current month:
+            // We take the first day of the next month and subtract one day.
+            chartsPageViewModel.EndDate = new DateTime(today.Year, today.Month, 1).AddMonths(1).AddDays(-1);
+        }
+
+        private void SetActualWeekClick(object sender, RoutedEventArgs e)
+        {
+            DateTime today = DateTime.Today;
+
+            // Calculating Monday of this week (assuming the week starts on Monday)
+            // DayOfWeek.Sunday is 0, Monday is 1... Saturday is 6.
+            int diff = (7 + (today.DayOfWeek - DayOfWeek.Monday)) % 7;
+            DateTime startOfWeek = today.AddDays(-1 * diff);
+
+            chartsPageViewModel.StartDate = startOfWeek;
+            chartsPageViewModel.EndDate = startOfWeek.AddDays(6); // Sunday
+        }
+
+
+
     }
 }

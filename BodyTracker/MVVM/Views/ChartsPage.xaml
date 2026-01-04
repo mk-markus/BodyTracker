@@ -19,17 +19,27 @@
 
             <GroupBox Header="Chart Setting"
                       Style="{StaticResource StandardGroupBox}">
-                <StackPanel Orientation="Horizontal">
-            
-                    <StackPanel Orientation="Horizontal">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Column="0"
+                                Grid.Row="0"
+                                Orientation="Horizontal">
                         <TextBlock Text="Start Date: "
                                    Style="{StaticResource StandardTextBlock}"/>
                         <DatePicker SelectedDate="{Binding StartDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     FontSize="14"
                                     FontWeight="Normal"
                                     Margin="3"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
+                    
                         <TextBlock Text="End Date: "
                                    Style="{StaticResource StandardTextBlock}"/>
                         <DatePicker SelectedDate="{Binding EndDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -37,7 +47,30 @@
                                     FontWeight="Normal"
                                     Margin="3"/>
                     </StackPanel>
-                </StackPanel>
+
+                    <StackPanel Grid.Row="1"
+                                Grid.Column="0"
+                                Orientation="Horizontal">
+                        <Button x:Name="AcutalYear"
+                                Content="Acutal Year"
+                                Style="{StaticResource StandardButton}"
+                                Click="SetActualYearClick"/>
+                        
+                        <Button x:Name="ActualWeek"
+                                Content="Acutal Week"
+                                Style="{StaticResource StandardButton}"
+                                Click="SetActualWeekClick"/>
+                        
+                        <Button x:Name="ActualMonth"
+                                Content="Acutal Month"
+                                Style="{StaticResource StandardButton}"
+                                Click="SetActualMonthClick"/>
+                    </StackPanel>
+
+
+
+
+                </Grid>
                
 
 

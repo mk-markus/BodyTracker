@@ -5,10 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BodyTracker"
         mc:Ignorable="d"
-        Title="MainWindow" 
+        Title="Body Tracking Tool"
+        FontSize="15"
+        FontWeight="Bold"
         Height="700" 
         Width="1210"
         Icon="/Icon/ProgramIcon.ico">
+    
     <Grid>
         <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden"/>
     </Grid>

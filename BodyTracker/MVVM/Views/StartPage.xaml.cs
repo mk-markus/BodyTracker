@@ -51,6 +51,8 @@ namespace BodyTracker.MVVM.Views
             newEntryPage.SwitchToMeasurements += () => MainTabControll.SelectedIndex = 0;
 
             ChartFrame.Content = new ChartsPage(mainWindow, this.databaseService);
+
+            InfoFrame.Content = new InfoPage();
             
             MeasurementFrame.Content = new MeasurementPage(mainWindow, this.databaseService);
             

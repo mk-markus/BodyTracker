@@ -290,9 +290,9 @@ namespace BodyTracker.Services
         /// either a metric or a dimension record might be missing for a specific date by using 
         /// nullable types for all measurement values.
         /// </remarks>
-        public async Task<List<FullBodyMeasurementDatasViewModel>> GetBodyMeasurementAsync(int personId)
+        public async Task<List<FullBodyMeasurementDatas>> GetBodyMeasurementAsync(int personId)
         {
-            var list = new List<FullBodyMeasurementDatasViewModel>();
+            var list = new List<FullBodyMeasurementDatas>();
             
             var SqlServerConnection = await EtablishSqlServerConnection();
             await using var SqlCommand = new MySqlCommand(DatabaseCommands.CmdGetMeasurement(), SqlServerConnection);
@@ -303,7 +303,7 @@ namespace BodyTracker.Services
             
             while (await SqlDataReader.ReadAsync())
             {
-                list.Add(new FullBodyMeasurementDatasViewModel
+                list.Add(new FullBodyMeasurementDatas
                 {
                     MetricID = SqlDataReader.IsDBNull(0)?(int?)null:SqlDataReader.GetInt32(0),
                     DemensionID = SqlDataReader.IsDBNull(1)?(int?)null:SqlDataReader.GetInt32(1),

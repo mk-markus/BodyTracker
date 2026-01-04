@@ -4,6 +4,7 @@ using BodyTracker.State;
 using BodyTracker.ViewModels;
 using System;
 using System.Diagnostics;
+using System.Security.Policy;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -131,6 +132,42 @@ namespace BodyTracker.MVVM.Views
             }
         }
 
+
+        private void SetActualYearClick(object sender, RoutedEventArgs e)
+        {
+            DateTime today = DateTime.Today;
+            measurementViewModel.MeanStartDate = new DateTime(today.Year, 1, 1);
+            measurementViewModel.MeanEndDate = new DateTime(today.Year, 12, 31);
+        }
+
+        private void SetActualMonthClick(object sender, RoutedEventArgs e)
+        {
+            DateTime today = DateTime.Today;
+        
+            // First Day of Month
+            measurementViewModel.MeanStartDate = new DateTime(today.Year, today.Month, 1);
+
+            // Last day of the current month:
+            // We take the first day of the next month and subtract one day.
+            measurementViewModel.MeanEndDate = new DateTime(today.Year, today.Month, 1).AddMonths(1).AddDays(-1);
+        }
+
+        private void SetActualWeekClick(object sender, RoutedEventArgs e)
+        {
+            DateTime today = DateTime.Today;
+
+            // Calculating Monday of this week (assuming the week starts on Monday)
+            // DayOfWeek.Sunday is 0, Monday is 1... Saturday is 6.
+            int diff = (7 + (today.DayOfWeek - DayOfWeek.Monday)) % 7;
+            DateTime startOfWeek = today.AddDays(-1 * diff);
+
+            measurementViewModel.MeanStartDate = startOfWeek;
+            measurementViewModel.MeanEndDate = startOfWeek.AddDays(6); // Sunday
+        }
+
+
+
+
         /// <summary>
         /// Handles the <see cref="DataGrid.RowEditEnding"/> event to persist modified measurement data to the database.
         /// This method ensures that only committed changes are processed and utilizes the Dispatcher 
@@ -142,7 +179,7 @@ namespace BodyTracker.MVVM.Views
         {
             if (e.EditAction != DataGridEditAction.Commit) return;
 
-            if (e.Row.Item is not FullBodyMeasurementDatasViewModel editedRow) return;
+            if (e.Row.Item is not FullBodyMeasurementDatas editedRow) return;
 
             Dispatcher.BeginInvoke(new Action(async () =>
             {        

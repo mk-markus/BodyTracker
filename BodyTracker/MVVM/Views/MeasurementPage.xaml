@@ -24,7 +24,7 @@
                 <GroupBox Style="{StaticResource StandardGroupBox}">
                     <GroupBox.Header>
                         <TextBlock>
-                            <Run Text="Messwerte von " 
+                            <Run Text="Measurements from " 
                                  FontWeight="Normal"/>
                             <Run Text="{Binding UserName}" 
                                  FontWeight="Bold"/>
@@ -73,8 +73,108 @@
                     </DataGrid>
                    
                 </GroupBox>
-               
 
+
+            <GroupBox Style="{StaticResource StandardGroupBox}">
+                <GroupBox.Header>
+                    <TextBlock>
+                        <Run Text="Mean values from " 
+                             FontWeight="Normal"/>
+                        <Run Text="{Binding UserName}" 
+                             FontWeight="Bold"/>
+                    </TextBlock>
+                </GroupBox.Header>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0"
+                            Grid.Column="0"
+                            Orientation="Horizontal">
+                        <TextBlock Text="Start Date: "
+                               Style="{StaticResource StandardTextBlock}"/>
+                        <DatePicker SelectedDate="{Binding MeanStartDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                FontSize="14"
+                                FontWeight="Normal"
+                                Margin="3"/>
+
+                        <TextBlock Text="End Date: "
+                               Style="{StaticResource StandardTextBlock}"/>
+                        <DatePicker SelectedDate="{Binding MeanEndDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                FontSize="14"
+                                FontWeight="Normal"
+                                Margin="3"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1"
+                            Grid.Column="0"
+                            Orientation="Horizontal">
+                        <Button x:Name="AcutalYear"
+                            Content="Acutal Year"
+                            Style="{StaticResource StandardButton}"
+                            Click="SetActualYearClick"/>
+                        <Button x:Name="ActualWeek"
+                            Content="Acutal Week"
+                            Style="{StaticResource StandardButton}"
+                            Click="SetActualWeekClick"/>
+
+                        <Button x:Name="ActualMonth"
+                            Content="Acutal Month"
+                            Style="{StaticResource StandardButton}"
+                            Click="SetActualMonthClick"/>
+                    </StackPanel>
+
+
+
+                    <DataGrid x:Name="MeanValue"
+                              ItemsSource="{Binding MeanMeasurement, UpdateSourceTrigger=PropertyChanged}"
+                              CellStyle="{StaticResource DataGrid_CellStyle}"
+                              ColumnHeaderStyle="{StaticResource DataGrid_ColumnHeaderStyle}"
+                              SelectedItem="{Binding SelectedMeasurement}"
+                              AutoGenerateColumns="False"
+                              CanUserAddRows="False"
+                              Margin="8"
+                              FontWeight="Normal"
+                              VerticalScrollBarVisibility="Auto"
+                              HeadersVisibility="Column"
+                              ScrollViewer.CanContentScroll="True"
+                              EnableColumnVirtualization="True"
+                              EnableRowVirtualization="True"
+                              Height="300"
+                              Grid.Column="0"
+                              Grid.Row="2">
+                        <DataGrid.Columns >
+                            <DataGridTextColumn Header="Gewicht (kg)" 
+                                                Binding="{Binding BodyWeight, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"/>
+                            <DataGridTextColumn Header="BMI"
+                                                Binding="{Binding BMI, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"/>
+                            <DataGridTextColumn Header="Körperfett (%)"
+                                                Binding="{Binding BodyFatPercentage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N1}" />
+                            <DataGridTextColumn Header="Muskelmasse (%)"
+                                                Binding="{Binding BodyMusclePercentage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N1}"/>
+                            <DataGridTextColumn Header="Viszeralfett" 
+                                                Binding="{Binding BodyVisceralFat, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header="Brustumfang (cm)"
+                                                Binding="{Binding ChestCircumference, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"/>
+                            <DataGridTextColumn Header="Bauchumfang (cm)" 
+                                                Binding="{Binding WaistCircumference, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"/>
+                            <DataGridTextColumn Header="Hüftumfang (cm)" 
+                                                Binding="{Binding HipsCircumference, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"/>
+                            <DataGridTextColumn Header="Fettzange (mm)" 
+                                                Binding="{Binding FatTong, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                </Grid>
+            </GroupBox>
         </StackPanel>
 
             
