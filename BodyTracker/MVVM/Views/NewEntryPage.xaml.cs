@@ -77,8 +77,28 @@ namespace BodyTracker.MVVM.Views
         /// </remarks>
         private async void OnSaved(object sender, RoutedEventArgs e)
         {
-           await dataEntryViewModel.SaveAsync();
-            SwitchToMeasurements?.Invoke();
+            if (dataEntryViewModel != null)
+            {
+                string[] values = { dataEntryViewModel.Bmi.ToString(), dataEntryViewModel.BodyWeight.ToString(),
+                                    dataEntryViewModel.BodyFatPercentage.ToString(), dataEntryViewModel.BodyMusclePercentage.ToString(),
+                                    dataEntryViewModel.BodyVisceralFat.ToString(), dataEntryViewModel.ChestCircumference.ToString(),
+                                    dataEntryViewModel.WaistCircumference.ToString(), dataEntryViewModel.HipsCircumference.ToString(),
+                                    dataEntryViewModel.FatTongs.ToString()};
+
+                if(dataEntryViewModel.CheckBodyValuesValid(values))
+                {
+                    await dataEntryViewModel.SaveAsync();
+                    SwitchToMeasurements?.Invoke();
+                }
+               else
+                {
+                    MessageBox.Show("The values are not valid. Check if some value boxes has an red frame and correct the value", "Waring",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+
+
+
+            }
         }
 
         /// <summary>

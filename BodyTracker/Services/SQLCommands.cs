@@ -16,15 +16,23 @@
     Geburtsdatum DATE
 );
 CREATE TABLE IF NOT EXISTS tbl_KoerperMetriken (
-    MetrikID INT AUTO_INCREMENT PRIMARY KEY,
-    PersonID_FK INT NOT NULL,
-    Messdatum DATETIME DEFAULT CURRENT_TIMESTAMP,
-    Gewicht_kg DECIMAL(7,2),
-    BMI DECIMAL(7,2),
-    Koerperfett_Prozent DECIMAL(7,2),
-    Muskelmasse_Prozent DECIMAL(7,2),
-    Viszeralfett TINYINT,
-    CONSTRAINT FK_PersonMetrik FOREIGN KEY (PersonID_FK) REFERENCES tbl_Personen (ID) ON DELETE CASCADE
+	MetrikID INT(11) NOT NULL AUTO_INCREMENT,
+	PersonID_FK INT(11) NOT NULL,
+	Messdatum DATETIME NULL DEFAULT current_timestamp(),
+	Gewicht_kg DECIMAL(7,2) NULL DEFAULT NULL,
+	BMI DECIMAL(7,2) NULL DEFAULT NULL,
+	Koerperfett_Prozent DECIMAL(7,2) NULL DEFAULT NULL,
+	Körperfett_oben_Prozent DECIMAL(7,2) NULL DEFAULT NULL,
+	Körperfett_unten_Prozent DECIMAL(7,2) NULL DEFAULT NULL,
+	Muskelmasse_Prozent DECIMAL(7,2) NULL DEFAULT NULL,
+	Muskelmasse_oben_Prozent DECIMAL(7,2) NULL DEFAULT NULL,
+	Muskelmasse_unten_Prozent DECIMAL(7,2) NULL DEFAULT NULL,
+	Körperknochen_Masse DECIMAL(7,2) NULL DEFAULT NULL,
+	Körperwasser_Prozent DECIMAL(7,2) NULL DEFAULT NULL,
+	Viszeralfett INT(11) NULL DEFAULT NULL,
+	PRIMARY KEY (MetrikID) USING BTREE,
+	UNIQUE INDEX UQ_Metrik_Person_Datum (PersonID_FK, Messdatum) USING BTREE,
+	CONSTRAINT FK_PersonMetrik FOREIGN KEY (PersonID_FK) REFERENCES tbl_Personen (ID) ON UPDATE RESTRICT ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS tbl_Abmessungen (
     AbmessungID INT AUTO_INCREMENT PRIMARY KEY,
@@ -58,7 +66,8 @@ CREATE TABLE IF NOT EXISTS tbl_Abmessungen (
 
         public string CmdGetLastPersonMetric()
         {
-            return @"SELECT MetrikID, PersonID_FK, Messdatum, Gewicht_kg, BMI, Koerperfett_Prozent, Muskelmasse_Prozent, Viszeralfett
+            return @"SELECT MetrikID, PersonID_FK, Messdatum, Gewicht_kg, BMI, Koerperfett_Prozent, Koerperfett_oben_Prozent, Koerperfett_unten_Prozent,
+                            Muskelmasse_Prozent, Muskelmasse_oben_Prozent, Muskelmasse_unten_Prozent, Koerperknochen_Masse, Koerperwasser_Prozent, Viszeralfett
                         FROM tbl_KoerperMetriken
                         WHERE PersonID_FK=@pid AND DATE(Messdatum) < @today
                         ORDER BY Messdatum DESC LIMIT 1";
@@ -66,9 +75,10 @@ CREATE TABLE IF NOT EXISTS tbl_Abmessungen (
 
         public string CmdGetMeasurement()
         {
-            return @"SELECT m.MetrikID, a.AbmessungID, m.Messdatum,
-               m.Gewicht_kg, m.BMI, m.Koerperfett_Prozent, m.Muskelmasse_Prozent, m.Viszeralfett,
-               a.Brustumfang_cm, a.Bauchumfang_cm, a.Hueftumfang_cm, a.Fettzange_mm
+            return @"SELECT m.MetrikID, a.AbmessungID, m.Messdatum, m.Gewicht_kg, m.BMI, 
+                m.Koerperfett_Prozent, m.Koerperfett_oben_Prozent, m.Koerperfett_unten_Prozent, 
+                m.Muskelmasse_Prozent, m.Muskelmasse_oben_Prozent, m.Muskelmasse_unten_Prozent, m.Koerperknochen_Masse, m.Koerperwasser_Prozent, m.Viszeralfett,
+                a.Brustumfang_cm, a.Bauchumfang_cm, a.Hueftumfang_cm, a.Fettzange_mm
             FROM tbl_KoerperMetriken m
             LEFT JOIN tbl_Abmessungen a ON DATE(m.Messdatum) = DATE(a.Messdatum) AND a.PersonID_FK = m.PersonID_FK
             WHERE m.PersonID_FK = @pid
@@ -90,8 +100,9 @@ CREATE TABLE IF NOT EXISTS tbl_Abmessungen (
         public string CmdInsertPersonMetric()
         {
             return @"INSERT INTO tbl_KoerperMetriken
-                        (PersonID_FK, Messdatum, Gewicht_kg, BMI, Koerperfett_Prozent, Muskelmasse_Prozent, Viszeralfett)
-                        VALUES (@pid, @dt, @gw, @bmi, @kf, @mm, @vf)";
+                        (PersonID_FK, Messdatum, Gewicht_kg, BMI, Koerperfett_Prozent, Koerperfett_oben_Prozent, Koerperfett_unten_Prozent, 
+                        Muskelmasse_Prozent, Muskelmasse_oben_Prozent, Muskelmasse_unten_Prozent, Koerperknochen_Masse, Koerperwasser_Prozent, Viszeralfett)
+                        VALUES (@pid, @dt, @gw, @bmi, @kf, @kfo, @kfu, @mm, @mmo, @mmu, @kk, @kw, @vf)";
         }
 
         public string CmdCountPersonsInTable()
@@ -102,7 +113,10 @@ CREATE TABLE IF NOT EXISTS tbl_Abmessungen (
         
         public string CmdUpdatePersonMetric()
         {
-            return @"UPDATE tbl_KoerperMetriken SET Gewicht_kg=@gw, BMI=@bmi, Koerperfett_Prozent=@kf, Muskelmasse_Prozent=@mm, Viszeralfett=@vf WHERE MetrikID=@mid;";
+            return @"UPDATE tbl_KoerperMetriken SET Gewicht_kg=@gw, BMI=@bmi, 
+                    Koerperfett_Prozent=@kf, Koerperfett_oben_Prozent=@kfo, Koerperfett_unten_Prozent=@kfu, 
+                    Muskelmasse_Prozent=@mm, Muskelmasse_oben_Prozent=@mmo, Muskelmasse_unten_Prozent=@mmu, 
+                    Koerperwasser_Prozent=@kw, Koerperknochen_Masse=@kk, Viszeralfett=@vf WHERE MetrikID=@mid;";
         }
         
         public string CmdUpdatePersonDimension()

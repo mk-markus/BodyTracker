@@ -133,9 +133,9 @@ namespace BodyTracker.MVVM.ViewModels
                     {
                         Name = "Gewicht (kg)",
                         LineSmoothness = 0,
-                        Stroke = new SolidColorPaint(SKColors.Blue){StrokeThickness = 4},
+                        Stroke = new SolidColorPaint(SKColors.BlueViolet){StrokeThickness = 4},
                         GeometrySize=3,
-                        GeometryStroke = new SolidColorPaint(SKColors.Blue) { StrokeThickness = 4 },
+                        GeometryStroke = new SolidColorPaint(SKColors.BlueViolet) { StrokeThickness = 2 },
                         Values = ordered.Select(d => new DateTimePoint(d.MeasurementDate, (double)(d.BodyWeight ?? 0))).ToArray(),
                         Fill = null,
                         ScalesYAt = 0
@@ -146,7 +146,7 @@ namespace BodyTracker.MVVM.ViewModels
                         LineSmoothness = 0,
                         Stroke = new SolidColorPaint(SKColors.Red){StrokeThickness = 4},
                         GeometrySize=3,
-                        GeometryStroke = new SolidColorPaint(SKColors.Red) { StrokeThickness = 4 },
+                        GeometryStroke = new SolidColorPaint(SKColors.Red) { StrokeThickness = 2 },
                         Values = ordered.Select(d => new DateTimePoint(d.MeasurementDate, (double)(d.BodyFatPercentage ?? 0))).ToArray(),
                         Fill = null,
                         ScalesYAt = 1
@@ -157,8 +157,20 @@ namespace BodyTracker.MVVM.ViewModels
                         LineSmoothness = 0,
                         Stroke = new SolidColorPaint(SKColors.Green){StrokeThickness = 4},
                         GeometrySize=3,
-                        GeometryStroke = new SolidColorPaint(SKColors.Green) { StrokeThickness = 4 },
+                        GeometryStroke = new SolidColorPaint(SKColors.Green) { StrokeThickness = 2 },
                         Values = ordered.Select(d => new DateTimePoint(d.MeasurementDate, (double)(d.BodyMusclePercentage ?? 0))).ToArray(),
+                        Fill = null,
+                        ScalesYAt = 1
+                    },
+
+                    new LineSeries<DateTimePoint>
+                    {
+                        Name = "Körperwasser (%)",
+                        LineSmoothness = 0,
+                        Stroke = new SolidColorPaint(SKColors.DarkBlue){StrokeThickness = 4},
+                        GeometrySize=3,
+                        GeometryStroke = new SolidColorPaint(SKColors.DarkBlue) { StrokeThickness = 2 },
+                        Values = ordered.Select(d => new DateTimePoint(d.MeasurementDate, (double)(d.BodyWaterPercentage ?? 0))).ToArray(),
                         Fill = null,
                         ScalesYAt = 1
                     }

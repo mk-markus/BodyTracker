@@ -1,6 +1,7 @@
 using BodyTracker.MVVM.Models;
 using System;
 using System.IO;
+using System.Net;
 using System.Text.Json;
 
 namespace BodyTracker.Services
@@ -64,6 +65,7 @@ namespace BodyTracker.Services
          
             if(!bPathOK) throw new ArgumentException("The app setting file does not exist at: " + sAppSettingsPath);
             
+           
         }
 
         /// <summary>
@@ -216,6 +218,31 @@ namespace BodyTracker.Services
 
             // create json file
             File.WriteAllText(filePath, jsonString);
+        }
+
+
+        /// <summary>
+        /// Validates a string as a network address and identifies the IP version.
+        /// </summary>
+        /// <param name="IP">The string representation of the IP address to validate.</param>
+        /// <returns>
+        /// A tuple containing:
+        /// <list type="bullet">
+        /// <item><description><c>bool</c>: True if the address is a valid IPv4 or IPv6 address.</description></item>
+        /// <item><description><c>int</c>: Version indicator (0 = invalid, 4 = IPv4, 6 = IPv6).</description></item>
+        /// <item><description><c>IPAddress?</c>: The parsed <see cref="IPAddress"/> object, or null if invalid.</description></item>
+        /// </list>
+        /// </returns>
+        public (bool, int, IPAddress?) checkIPAdressOK(string IP)
+        {
+            if (string.IsNullOrEmpty(IP)) return (false, 0, null);
+            if(IPAddress.TryParse(IP, out IPAddress address))
+            {
+                if (address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork) return (true, 4, address);
+                if (address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6) return (true, 6, address);
+                else return (false, 0, null);
+            }
+            else return (false, 0, null);
         }
 
     }

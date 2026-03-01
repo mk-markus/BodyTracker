@@ -18,6 +18,8 @@ namespace BodyTracker
 
         public MainWindow(DatabaseService db)
         {
+            this.WindowState = WindowState.Maximized;
+
             InitializeComponent();
 
             _db = db;

@@ -21,5 +21,26 @@
 
 
 
+    <Style x:Key="NumericValidationStyle" TargetType="TextBox" BasedOn="{StaticResource StandardTextBox}">
+        <Style.Triggers>
+            <Trigger Property="Validation.HasError" Value="True">
+                <Setter Property="BorderBrush" Value="Red"/>
+                <Setter Property="BorderThickness" Value="2"/>
+                <Setter Property="ToolTip" 
+                    Value="{Binding RelativeSource={RelativeSource Self}, 
+                    Path=(Validation.Errors)[0].ErrorContent}"/>
+            </Trigger>
+
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="Validation.HasError" Value="True"/>
+                    <Condition Property="IsMouseOver" Value="True"/>
+                </MultiTrigger.Conditions>
+                <Setter Property="BorderBrush" Value="Red"/>
+            </MultiTrigger>
+        </Style.Triggers>
+    </Style>
+
+
 
 </ResourceDictionary>

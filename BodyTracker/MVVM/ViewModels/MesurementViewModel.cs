@@ -37,7 +37,12 @@ namespace BodyTracker.ViewModels
         /// </summary>
         [ObservableProperty] private ObservableCollection<FullBodyMeasurementDatas> measurement = new();
 
-
+        /// <summary>
+        /// Gets or sets the collection of mean full body measurement data.
+        /// </summary>
+        /// <remarks>The collection is observable, allowing UI elements or other components to react to
+        /// changes such as additions or removals of measurement data. This property is typically used for data binding
+        /// scenarios.</remarks>
         [ObservableProperty] private ObservableCollection<FullBodyMeasurementDatas> meanMeasurement = new();
 
         /// <summary>
@@ -52,9 +57,14 @@ namespace BodyTracker.ViewModels
         /// </summary>
         [ObservableProperty] private string userName = string.Empty;
 
-
+        /// <summary>
+        /// Gets or sets the mean start date used for calculations or scheduling.
+        /// </summary>
         [ObservableProperty] private DateTime meanStartDate = new DateTime(2025,1,1);
 
+        /// <summary>
+        /// Gets or sets the mean end date for the operation.
+        /// </summary>
         [ObservableProperty] private DateTime meanEndDate = DateTime.Now;
 
 
@@ -209,11 +219,19 @@ namespace BodyTracker.ViewModels
         {
             await databaseServerice.UpsertMeasurementAsync(
                 personId,
-                row.MetricID, row.DemensionID,
+                row.MetricID, 
+                row.DemensionID,
                 row.MeasurementDate,
-                row.BodyWeight, row.BMI,
+                row.BodyWeight, 
+                row.BMI,
                 row.BodyFatPercentage,
+                row.BodyFatPercentageTop,
+                row.BodyFatPercentageBottom,
                 row.BodyMusclePercentage,
+                row.BodyMusclePercentageTop,
+                row.BodyMusclePercentageBottom,
+                row.BodyWaterPercentage,
+                row.BodyBoneMass,
                 row.BodyVisceralFat,
                 row.ChestCircumference,
                 row.WaistCircumference,
@@ -265,7 +283,13 @@ namespace BodyTracker.ViewModels
             float bodyBMI = 0;
             int   bodyVisceralFat = 0;
             float bodyFatPercentage = 0;
+            float bodyFatPercentageTop = 0;
+            float bodyFatPercentageBottom = 0;
             float bodyMusclePercentage = 0;
+            float bodyMusclePercentageTop = 0;
+            float bodyMusclePercentageBottom = 0;
+            float bodyWaterPercentage = 0;
+            float bodyBoneMass = 0;
             float bodyChestCircumference = 0;
             float bodyWaistCircumference = 0;
             float bodyHipsCircumference = 0;
@@ -287,7 +311,7 @@ namespace BodyTracker.ViewModels
                 result.BMI = ordered.Sum(x => x.BMI ?? 0) / count;
                 result.BodyFatPercentage = ordered.Sum(x => x.BodyFatPercentage ?? 0) / count;
                 result.BodyMusclePercentage = ordered.Sum(x => x.BodyMusclePercentage ?? 0) / count;
-                result.BodyVisceralFat = ordered.Sum(x => x.BodyVisceralFat ?? 0) / count;
+                result.BodyWaterPercentage = ordered.Sum(x => x.BodyWaterPercentage ?? 0) / count;
                 result.ChestCircumference = ordered.Sum(x => x.ChestCircumference ?? 0) / count;
                 result.WaistCircumference = ordered.Sum(x => x.WaistCircumference ?? 0) / count;
                 result.HipsCircumference = ordered.Sum(x => x.HipsCircumference ?? 0) / count;

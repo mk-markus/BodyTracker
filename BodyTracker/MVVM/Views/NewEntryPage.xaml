@@ -30,7 +30,9 @@
                     <TextBox Text="{Binding BodyWeight}"
                              PreviewTextInput="Decimal_PreviewTextInput" 
                              GotKeyboardFocus="SelectAllOnFocus"
-                             Style="{StaticResource StandardTextBox}"/>
+                             Style="{StaticResource NumericValidationStyle}"/>
+
+
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal">
@@ -39,7 +41,7 @@
                     <TextBox Text="{Binding Bmi}"
                              PreviewTextInput="Decimal_PreviewTextInput" 
                              GotKeyboardFocus="SelectAllOnFocus"
-                             Style="{StaticResource StandardTextBox}"/>
+                             Style="{StaticResource NumericValidationStyle}"/>
                 </StackPanel>
 
 
@@ -49,7 +51,16 @@
                     <TextBox Text="{Binding BodyFatPercentage}"
                              PreviewTextInput="Decimal_PreviewTextInput" 
                              GotKeyboardFocus="SelectAllOnFocus"
-                             Style="{StaticResource StandardTextBox}"/>
+                             Style="{StaticResource NumericValidationStyle}"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Körperwasser (%):"
+                               Style="{StaticResource StandardTextBlock}"/>
+                    <TextBox Text="{Binding BodyWaterPercentage}"
+                             PreviewTextInput="Decimal_PreviewTextInput" 
+                             GotKeyboardFocus="SelectAllOnFocus"
+                             Style="{StaticResource NumericValidationStyle}"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal">
@@ -58,16 +69,61 @@
                     <TextBox Text="{Binding BodyMusclePercentage}"
                              PreviewTextInput="Decimal_PreviewTextInput" 
                              GotKeyboardFocus="SelectAllOnFocus"
-                             Style="{StaticResource StandardTextBox}"/>
+                             Style="{StaticResource NumericValidationStyle}"/>
                 </StackPanel>
 
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Knochenmasse (kg):"
+                               Style="{StaticResource StandardTextBlock}"/>
+                    <TextBox Text="{Binding BodyBoneMass}"
+                             PreviewTextInput="Decimal_PreviewTextInput" 
+                             GotKeyboardFocus="SelectAllOnFocus"
+                             Style="{StaticResource NumericValidationStyle}"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Körperfett oben (%):"
+                               Style="{StaticResource StandardTextBlock}"/>
+                    <TextBox Text="{Binding BodyFatPercentageTop}"
+                             PreviewTextInput="Decimal_PreviewTextInput" 
+                             GotKeyboardFocus="SelectAllOnFocus"
+                             Style="{StaticResource NumericValidationStyle}"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Körperfett unten(%):"
+                               Style="{StaticResource StandardTextBlock}"/>
+                    <TextBox Text="{Binding BodyFatPercentageBottom}"
+                             PreviewTextInput="Decimal_PreviewTextInput" 
+                             GotKeyboardFocus="SelectAllOnFocus"
+                             Style="{StaticResource NumericValidationStyle}"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Muskelmasse oben (%):"
+                Style="{StaticResource StandardTextBlock}"/>
+                    <TextBox Text="{Binding BodyMusclePercentageTop}"
+                             PreviewTextInput="Decimal_PreviewTextInput" 
+                             GotKeyboardFocus="SelectAllOnFocus"
+                             Style="{StaticResource NumericValidationStyle}"/>
+                </StackPanel>
+                
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Muskelmasse unten (%):"
+                               Style="{StaticResource StandardTextBlock}"/>
+                    <TextBox Text="{Binding BodyMusclePercentageBottom}"
+                             PreviewTextInput="Decimal_PreviewTextInput" 
+                             GotKeyboardFocus="SelectAllOnFocus"
+                             Style="{StaticResource NumericValidationStyle}"/>
+                </StackPanel>
+                
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Viszeralesfett:"
                                Style="{StaticResource StandardTextBlock}"/>
                     <TextBox Text="{Binding BodyVisceralFat}"
                              PreviewTextInput="Decimal_PreviewTextInput" 
                              GotKeyboardFocus="SelectAllOnFocus"
-                             Style="{StaticResource StandardTextBox}"/>
+                             Style="{StaticResource NumericValidationStyle}"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal">
@@ -76,7 +132,7 @@
                     <TextBox Text="{Binding ChestCircumference}"
                              PreviewTextInput="Decimal_PreviewTextInput" 
                              GotKeyboardFocus="SelectAllOnFocus"
-                             Style="{StaticResource StandardTextBox}"/>
+                             Style="{StaticResource NumericValidationStyle}"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal">
@@ -85,7 +141,7 @@
                     <TextBox Text="{Binding WaistCircumference}"
                              PreviewTextInput="Decimal_PreviewTextInput" 
                              GotKeyboardFocus="SelectAllOnFocus"
-                             Style="{StaticResource StandardTextBox}"/>
+                             Style="{StaticResource NumericValidationStyle}"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal">
@@ -94,7 +150,7 @@
                     <TextBox Text="{Binding HipsCircumference}"
                              PreviewTextInput="Decimal_PreviewTextInput" 
                              GotKeyboardFocus="SelectAllOnFocus"
-                             Style="{StaticResource StandardTextBox}"/>
+                             Style="{StaticResource NumericValidationStyle}"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal">
@@ -103,7 +159,7 @@
                     <TextBox Text="{Binding FatTongs}"
                              PreviewTextInput="Decimal_PreviewTextInput"
                              GotKeyboardFocus="SelectAllOnFocus"
-                             Style="{StaticResource StandardTextBox}"/>
+                             Style="{StaticResource NumericValidationStyle}"/>
                 </StackPanel>
 
                 <Button Content="Speichern"  

@@ -38,9 +38,39 @@ namespace BodyTracker.MVVM.Models
         public float? BodyFatPercentage { get; set; }
 
         /// <summary>
+        /// Gets or sets the upper bound of the body fat percentage range.
+        /// </summary>
+        public float? BodyFatPercentageTop { get; set; }
+
+        /// <summary>
+        /// Gets or sets the lower bound for the acceptable body fat percentage range.
+        /// </summary>
+        public float? BodyFatPercentageBottom { get; set; }
+
+        /// <summary>
+        /// Gets or sets the percentage of body water relative to total body weight.
+        /// </summary>
+        public float? BodyWaterPercentage { get; set; }
+
+        /// <summary>
         /// Contains the perons body muscle Percentage
         /// </summary>
         public float? BodyMusclePercentage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the highest recorded body muscle percentage value.
+        /// </summary>
+        public float? BodyMusclePercentageTop { get; set; }
+
+        /// <summary>
+        /// Gets or sets the lower bound of the body muscle percentage range.
+        /// </summary>
+        public float? BodyMusclePercentageBottom { get; set; }
+
+        /// <summary>
+        /// Gets or sets the mass of the body bone, in kilograms.
+        /// </summary>
+        public float? BodyBoneMass { get; set; }
 
         /// <summary>
         /// Contains the perons body visceral fat

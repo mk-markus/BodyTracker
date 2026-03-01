@@ -36,16 +36,48 @@
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="SQL Server IP:"
                            Style="{StaticResource StandardTextBlock}"/>
-                            <TextBox x:Name="DbServer"
-                                     Style="{StaticResource StandardTextBox}"/>
-                        </StackPanel>
+                        <TextBox x:Name="DbServer"
+                                 TextChanged="DbServer_TextChanged">
+                            <TextBox.Style>
+                                <Style TargetType="TextBox" BasedOn="{StaticResource StandardTextBox}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsIpValid, RelativeSource={RelativeSource AncestorType=Window}}" Value="False">
+                                            <Setter Property="BorderBrush" Value="Red"/>
+                                            <Setter Property="BorderThickness" Value="2"/>
+
+                                            <Setter Property="ToolTip" Value="The IP Address has not the correct format (z.B. 192.168.1.10)."/>
+
+                                            <Setter Property="Cursor" Value="Help"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
+
+
+                    </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="SQL Server Port:"
                            Style="{StaticResource StandardTextBlock}"/>
-                            <TextBox x:Name="DbPort"
-                                         Style="{StaticResource StandardTextBox}"/>
-                        </StackPanel>
+                        <TextBox x:Name="DbPort"
+                                 TextChanged="DbPort_TextChanged">
+                            <TextBox.Style>
+                                <Style TargetType="TextBox" BasedOn="{StaticResource StandardTextBox}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsPortValid, RelativeSource={RelativeSource AncestorType=Window}}" Value="false">
+                                            <Setter Property="BorderBrush" Value="Red"/>
+                                            <Setter Property="BorderThickness" Value="2"/>
+
+                                            <Setter Property="ToolTip" Value="Port must be a number! like 3306"/>
+
+                                            <Setter Property="Cursor" Value="Help"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
+                    </StackPanel>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,8,0,0">
 
                             <Button x:Name="btnSaveConnection"

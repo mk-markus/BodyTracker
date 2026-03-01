@@ -1,16 +1,31 @@
 using BodyTracker.Services;
 using BodyTracker.State;
 using BodyTracker.ViewModels;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System;
+using System.ComponentModel;
 using System.IO;
+using System.Net;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace BodyTracker.Views
 {
-    public partial class UserSelectWindow : Window
+    public partial class UserSelectWindow : Window, INotifyPropertyChanged
     {
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+
+        protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+
         /// <summary>
         /// Service responsible for managing application configuration settings, 
         /// including loading and saving database connection strings from the configuration file.
@@ -30,6 +45,30 @@ namespace BodyTracker.Views
         /// </summary>
         private UserSelectViewModel? userSelectViewModel;
 
+
+        private bool _isIpValid = true;
+        public bool IsIpValid
+        {
+            get => _isIpValid;
+            set
+            {
+                _isIpValid = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _isPortValid = true;
+        public bool IsPortValid
+        {
+            get => _isPortValid;
+            set
+            {
+                _isPortValid = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         /// <summary>
         /// Initializes a new instance of the <see cref="UserSelectWindow"/> class.
         /// Loads the server configuration and sets up the data context if credentials are available.
@@ -37,6 +76,7 @@ namespace BodyTracker.Views
         public UserSelectWindow()
         {
             InitializeComponent();
+           
             //configurationService = new ConfigrationService(Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json"));
             configurationService = new ConfigrationService();
 
@@ -44,7 +84,7 @@ namespace BodyTracker.Views
             
             if (!string.IsNullOrEmpty(cfg.User)) DbUserBox.Text = cfg.User;
             if (!string.IsNullOrEmpty(cfg.DatabaseName)) DbDatenbank.Text = cfg.DatabaseName;
-            if (!string.IsNullOrEmpty(cfg.ServerIP)) DbServer.Text = cfg.ServerIP;
+            if (!string.IsNullOrEmpty(cfg.ServerIP)) DbServer.Text = cfg.ServerIP ;
             if (!string.IsNullOrEmpty(cfg.User)) pbPasswordBox.Password = "****";
             if (cfg.PortNumber != 0) DbPort.Text = cfg.PortNumber.ToString();
 
@@ -73,8 +113,10 @@ namespace BodyTracker.Views
         {
             try
             {
-               
-                if(databaseService != null && userSelectViewModel != null)
+                var expression = BindingOperations.GetBindingExpression(DbServer, TextBox.TextProperty);
+                expression?.ValidateWithoutUpdate();
+
+                if (databaseService != null && userSelectViewModel != null)
                 {
                     int count = await databaseService.CountPersonAsync();
 
@@ -206,5 +248,26 @@ namespace BodyTracker.Views
             
             this.Close();
         }
+
+
+
+        // Dieses Event feuert bei jedem Tastendruck in der TextBox
+        private void DbServer_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+            var service = new ConfigrationService();
+            var result = service.checkIPAdressOK(DbServer.Text);
+            this.IsIpValid = result.Item1;
+        }
+
+        // Dieses Event feuert bei jedem Tastendruck in der TextBox
+        private void DbPort_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+            if (!int.TryParse(DbPort.Text, out var port)) IsPortValid = false;
+            else IsPortValid = true;
+        }
+
+
     }
 }

@@ -187,8 +187,14 @@ namespace BodyTracker.Services
                     BodyWeight = SqlDataReader.IsDBNull(3)?(float?)null:SqlDataReader.GetFloat(3),
                     BMI = SqlDataReader.IsDBNull(4)?(float?)null:SqlDataReader.GetFloat(4),
                     BodyFatPercentage = SqlDataReader.IsDBNull(5)?(float?)null:SqlDataReader.GetFloat(5),
-                    BodyMusclePercentage = SqlDataReader.IsDBNull(6)?(float?)null:SqlDataReader.GetFloat(6),
-                    BodyVisceralFat = SqlDataReader.IsDBNull(7)?(int?)null:SqlDataReader.GetInt32(7)
+                    BodyFatPercentageTop = SqlDataReader.IsDBNull(6)?(float?)null:SqlDataReader.GetFloat(6),
+                    BodyFatPercentageBottom = SqlDataReader.IsDBNull(7)?(float?)null:SqlDataReader.GetFloat(7),
+                    BodyMusclePercentage = SqlDataReader.IsDBNull(8)?(float?)null:SqlDataReader.GetFloat(8),
+                    BodyMusclePercentageTop = SqlDataReader.IsDBNull(9)?(float?)null:SqlDataReader.GetFloat(9),
+                    BodyMusclePercentageBottom = SqlDataReader.IsDBNull(10)?(float?)null:SqlDataReader.GetFloat(10),
+                    BodyWaterPercentage = SqlDataReader.IsDBNull(11)?(float?)null:SqlDataReader.GetFloat(11),
+                    BodyBoneMass = SqlDataReader.IsDBNull(12)?(float?)null:SqlDataReader.GetFloat(12),
+                    BodyVisceralFat = SqlDataReader.IsDBNull(13)?(int?)null:SqlDataReader.GetInt32(13)
                 };
             }
             return null;
@@ -250,7 +256,13 @@ namespace BodyTracker.Services
             SqlCommand.Parameters.AddWithValue("@gw", (object?)bodyMetricModel.BodyWeight ?? DBNull.Value);
             SqlCommand.Parameters.AddWithValue("@bmi", (object?)bodyMetricModel.BMI ?? DBNull.Value);
             SqlCommand.Parameters.AddWithValue("@kf", (object?)bodyMetricModel.BodyFatPercentage ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@kfo", (object?)bodyMetricModel.BodyFatPercentageTop ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@kfu", (object?)bodyMetricModel.BodyFatPercentageBottom ?? DBNull.Value);
             SqlCommand.Parameters.AddWithValue("@mm", (object?)bodyMetricModel.BodyMusclePercentage ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@mmo", (object?)bodyMetricModel.BodyMusclePercentageTop ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@mmu", (object?)bodyMetricModel.BodyMusclePercentageBottom ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@kw", (object?)bodyMetricModel.BodyWaterPercentage ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@kk", (object?)bodyMetricModel.BodyBoneMass ?? DBNull.Value);
             SqlCommand.Parameters.AddWithValue("@vf", (object?)bodyMetricModel.BodyVisceralFat ?? DBNull.Value);
             
             await SqlCommand.ExecuteNonQueryAsync();
@@ -312,12 +324,18 @@ namespace BodyTracker.Services
                     BodyWeight = SqlDataReader.IsDBNull(3)?(float?)null:SqlDataReader.GetFloat(3),
                     BMI = SqlDataReader.IsDBNull(4)?(float?)null:SqlDataReader.GetFloat(4),
                     BodyFatPercentage = SqlDataReader.IsDBNull(5)?(float?)null:SqlDataReader.GetFloat(5),
-                    BodyMusclePercentage = SqlDataReader.IsDBNull(6)?(float?)null:SqlDataReader.GetFloat(6),
-                    BodyVisceralFat = SqlDataReader.IsDBNull(7)?(int?)null:SqlDataReader.GetInt32(7),
-                    ChestCircumference = SqlDataReader.IsDBNull(8)?(float?)null:SqlDataReader.GetFloat(8),
-                    WaistCircumference = SqlDataReader.IsDBNull(9)?(float?)null:SqlDataReader.GetFloat(9),
-                    HipsCircumference = SqlDataReader.IsDBNull(10)?(float?)null:SqlDataReader.GetFloat(10),
-                    FatTong = SqlDataReader.IsDBNull(11)?(float?)null:SqlDataReader.GetFloat(11)
+                    BodyFatPercentageTop = SqlDataReader.IsDBNull(6)?(float?)null:SqlDataReader.GetFloat(6),
+                    BodyFatPercentageBottom = SqlDataReader.IsDBNull(7)?(float?)null:SqlDataReader.GetFloat(7),
+                    BodyMusclePercentage = SqlDataReader.IsDBNull(8)?(float?)null:SqlDataReader.GetFloat(8),
+                    BodyMusclePercentageTop = SqlDataReader.IsDBNull(9)?(float?)null:SqlDataReader.GetFloat(9),
+                    BodyMusclePercentageBottom = SqlDataReader.IsDBNull(10)?(float?)null:SqlDataReader.GetFloat(10),
+                    BodyWaterPercentage = SqlDataReader.IsDBNull(12)?(float?)null:SqlDataReader.GetFloat(12),
+                    BodyBoneMass = SqlDataReader.IsDBNull(11)?(float?)null:SqlDataReader.GetFloat(11),
+                    BodyVisceralFat = SqlDataReader.IsDBNull(13)?(int?)null:SqlDataReader.GetInt32(13),
+                    ChestCircumference = SqlDataReader.IsDBNull(14)?(float?)null:SqlDataReader.GetFloat(14),
+                    WaistCircumference = SqlDataReader.IsDBNull(15)?(float?)null:SqlDataReader.GetFloat(15),
+                    HipsCircumference = SqlDataReader.IsDBNull(16)?(float?)null:SqlDataReader.GetFloat(16),
+                    FatTong = SqlDataReader.IsDBNull(17)?(float?)null:SqlDataReader.GetFloat(17)
                 });
             }
 
@@ -373,7 +391,7 @@ namespace BodyTracker.Services
             int personId,
             int? metricId, int? dimensionId,
             DateTime measurementDate,
-            float? bodyWeight, float? bmi, float? fat, float? muscle, int? visceralFat,
+            float? bodyWeight, float? bmi, float? fat, float? fato, float? fatu, float? muscle, float? muscleo, float? muscleu, float? bodyw, float? bodyb, int? visceralFat,
             float? chest, float? waist, float? hips, float? fattongs)
         {
             await using var conn = await EtablishSqlServerConnection();
@@ -387,19 +405,30 @@ namespace BodyTracker.Services
                     cmdUpdateMetric.Parameters.AddWithValue("@gw", (object?)bodyWeight ?? DBNull.Value);
                     cmdUpdateMetric.Parameters.AddWithValue("@bmi", (object?)bmi ?? DBNull.Value);
                     cmdUpdateMetric.Parameters.AddWithValue("@kf", (object?)fat ?? DBNull.Value);
+                    cmdUpdateMetric.Parameters.AddWithValue("@kfo", (object?)fato ?? DBNull.Value);
+                    cmdUpdateMetric.Parameters.AddWithValue("@kfu", (object?)fatu ?? DBNull.Value);
                     cmdUpdateMetric.Parameters.AddWithValue("@mm", (object?)muscle ?? DBNull.Value);
+                    cmdUpdateMetric.Parameters.AddWithValue("@mmo", (object?)muscleo ?? DBNull.Value);
+                    cmdUpdateMetric.Parameters.AddWithValue("@mmu", (object?)muscleu ?? DBNull.Value);
+                    cmdUpdateMetric.Parameters.AddWithValue("@kw", (object?)bodyw ?? DBNull.Value);
+                    cmdUpdateMetric.Parameters.AddWithValue("@kk", (object?)bodyb ?? DBNull.Value);
                     cmdUpdateMetric.Parameters.AddWithValue("@vf", (object?)visceralFat ?? DBNull.Value);
                     await cmdUpdateMetric.ExecuteNonQueryAsync();
                 }
                 else
                 {
                     await using var cmdInsertMetric = new MySqlCommand(DatabaseCommands.CmdInsertPersonMetric(), conn, (MySqlTransaction)tx);
-                    cmdInsertMetric.Parameters.AddWithValue("@pid", personId);
-                    cmdInsertMetric.Parameters.AddWithValue("@dt", measurementDate);
+                    cmdInsertMetric.Parameters.AddWithValue("@mid", metricId.Value);
                     cmdInsertMetric.Parameters.AddWithValue("@gw", (object?)bodyWeight ?? DBNull.Value);
                     cmdInsertMetric.Parameters.AddWithValue("@bmi", (object?)bmi ?? DBNull.Value);
                     cmdInsertMetric.Parameters.AddWithValue("@kf", (object?)fat ?? DBNull.Value);
+                    cmdInsertMetric.Parameters.AddWithValue("@kfo", (object?)fato ?? DBNull.Value);
+                    cmdInsertMetric.Parameters.AddWithValue("@kfu", (object?)fatu ?? DBNull.Value);
                     cmdInsertMetric.Parameters.AddWithValue("@mm", (object?)muscle ?? DBNull.Value);
+                    cmdInsertMetric.Parameters.AddWithValue("@mmo", (object?)muscleo ?? DBNull.Value);
+                    cmdInsertMetric.Parameters.AddWithValue("@mmu", (object?)muscleu ?? DBNull.Value);
+                    cmdInsertMetric.Parameters.AddWithValue("@kw", (object?)bodyw ?? DBNull.Value);
+                    cmdInsertMetric.Parameters.AddWithValue("@kk", (object?)bodyb ?? DBNull.Value);
                     cmdInsertMetric.Parameters.AddWithValue("@vf", (object?)visceralFat ?? DBNull.Value);
                     await cmdInsertMetric.ExecuteNonQueryAsync();
                 }

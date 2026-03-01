@@ -39,9 +39,39 @@ namespace BodyTracker.ViewModels
         [ObservableProperty] private float? bodyFatPercentage;
 
         /// <summary>
+        /// Gets or sets the measured body fat percentage for the upper body region.
+        /// </summary>
+        [ObservableProperty] private float? bodyFatPercentageTop;
+
+        /// <summary>
+        /// Gets or sets the minimum body fat percentage value for the range filter.
+        /// </summary>
+        [ObservableProperty] private float? bodyFatPercentageBottom;
+
+        /// <summary>
         /// Gets or sets the skeletal muscle percentage.
         /// </summary>
         [ObservableProperty] private float? bodyMusclePercentage;
+
+        /// <summary>
+        /// Gets or sets the percentage of muscle mass in the upper body, if available.
+        /// </summary>
+        [ObservableProperty] private float? bodyMusclePercentageTop;
+
+        /// <summary>
+        /// Gets or sets the lower bound for the body muscle percentage range.
+        /// </summary>
+        [ObservableProperty] private float? bodyMusclePercentageBottom;
+
+        /// <summary>
+        /// Gets or sets the percentage of body water, if available.
+        /// </summary>
+        [ObservableProperty] private float? bodyWaterPercentage;
+
+        /// <summary>
+        /// Gets or sets the mass of the body bone, in kilograms.
+        /// </summary>
+        [ObservableProperty] private float? bodyBoneMass;
 
         /// <summary>
         /// Gets or sets the visceral fat rating (typically an integer index).
@@ -110,7 +140,13 @@ namespace BodyTracker.ViewModels
             BodyWeight = lastM?.BodyWeight ?? null;
             Bmi = lastM?.BMI ?? null;
             BodyFatPercentage = lastM?.BodyFatPercentage ?? null;
+            BodyFatPercentageTop = lastM?.BodyFatPercentageTop ?? null;
+            BodyFatPercentageBottom = lastM?.BodyFatPercentageBottom ?? null;
             BodyMusclePercentage = lastM?.BodyMusclePercentage ?? null;
+            BodyMusclePercentageTop = lastM?.BodyMusclePercentageTop ?? null;
+            BodyMusclePercentageBottom = lastM?.BodyMusclePercentageBottom ?? null;
+            BodyWaterPercentage = lastM?.BodyWaterPercentage ?? null;
+            BodyBoneMass = lastM?.BodyBoneMass ?? null;
             BodyVisceralFat = lastM?.BodyVisceralFat ?? null;
 
             var lastA = await databaseService.GetLastBodyDimensionsAsync(pid, DateTime.Today);
@@ -143,7 +179,13 @@ namespace BodyTracker.ViewModels
                 BodyWeight = BodyWeight,
                 BMI = Bmi,
                 BodyFatPercentage = BodyFatPercentage,
+                BodyFatPercentageTop = BodyFatPercentageTop,
+                BodyFatPercentageBottom = BodyFatPercentageBottom,
                 BodyMusclePercentage = BodyMusclePercentage,
+                BodyMusclePercentageTop = BodyMusclePercentageTop,
+                BodyMusclePercentageBottom = BodyMusclePercentageBottom,
+                BodyWaterPercentage = BodyWaterPercentage,
+                BodyBoneMass = BodyBoneMass,
                 BodyVisceralFat = BodyVisceralFat
             });
 
@@ -156,6 +198,18 @@ namespace BodyTracker.ViewModels
                 HipsCircumference = HipsCircumference,
                 FatTongs = FatTongs,
             });
+        }
+
+
+
+
+        public bool CheckBodyValuesValid(string[] values)
+        {
+            foreach (var val in values)
+            {
+                if (!double.TryParse(val, out _)) return false;
+            }
+            return true;
         }
     }
 }

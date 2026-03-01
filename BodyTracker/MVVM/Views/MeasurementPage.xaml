@@ -51,24 +51,51 @@
                         <DataGrid.Columns >
                             <DataGridTextColumn Header="Datum" 
                                                 Binding="{Binding MeasurementDate,StringFormat=d}"/>
+                            
                             <DataGridTextColumn Header="Gewicht (kg)" 
                                                 Binding="{Binding BodyWeight, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"/>
+                            
                             <DataGridTextColumn Header="BMI" 
                                                 Binding="{Binding BMI, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"/>
+                            
                             <DataGridTextColumn Header="Körperfett (%)" 
                                                 Binding="{Binding BodyFatPercentage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N1}" />
+                            
+                            <DataGridTextColumn Header="Körperfett oben (%)" 
+                                                Binding="{Binding BodyFatPercentageTop, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N1}" />
+                            
+                            <DataGridTextColumn Header="Körperfett unten (%)" 
+                                                Binding="{Binding BodyFatPercentageBottom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N1}" />
+                            
                             <DataGridTextColumn Header="Muskelmasse (%)" 
                                                 Binding="{Binding BodyMusclePercentage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N1}"/>
+                            
+                            <DataGridTextColumn Header="Muskelmasse oben(%)" 
+                                                Binding="{Binding BodyMusclePercentageTop, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N1}"/>
+
+                            <DataGridTextColumn Header="Muskelmasse unten(%)" 
+                                                Binding="{Binding BodyMusclePercentageBottom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N1}"/>
+
+                            <DataGridTextColumn Header="Körperwasser (%)" 
+                                                Binding="{Binding BodyWaterPercentage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N1}"/>
+
+                            <DataGridTextColumn Header="Körperknochen (kg)" 
+                                                Binding="{Binding BodyBoneMass, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N1}"/>
+
                             <DataGridTextColumn Header="Viszeralfett" 
                                                 Binding="{Binding BodyVisceralFat, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            
                             <DataGridTextColumn Header="Brustumfang (cm)" 
                                                 Binding="{Binding ChestCircumference, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"/>
+                            
                             <DataGridTextColumn Header="Bauchumfang (cm)" 
                                                 Binding="{Binding WaistCircumference, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"/>
+                            
                             <DataGridTextColumn Header="Hüftumfang (cm)" 
                                                 Binding="{Binding HipsCircumference, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"/>
+                            
                             <DataGridTextColumn Header="Fettzange (mm)" 
-                                                    Binding="{Binding FatTong, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"/>
+                                                Binding="{Binding FatTong, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"/>
                     </DataGrid.Columns>
                     </DataGrid>
                    
@@ -160,8 +187,8 @@
                                                 Binding="{Binding BodyFatPercentage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N1}" />
                             <DataGridTextColumn Header="Muskelmasse (%)"
                                                 Binding="{Binding BodyMusclePercentage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N1}"/>
-                            <DataGridTextColumn Header="Viszeralfett" 
-                                                Binding="{Binding BodyVisceralFat, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header="Körperwasser (%)" 
+                                                Binding="{Binding BodyWaterPercentage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             <DataGridTextColumn Header="Brustumfang (cm)"
                                                 Binding="{Binding ChestCircumference, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"/>
                             <DataGridTextColumn Header="Bauchumfang (cm)" 
