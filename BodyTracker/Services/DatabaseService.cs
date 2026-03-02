@@ -192,8 +192,8 @@ namespace BodyTracker.Services
                     BodyMusclePercentage = SqlDataReader.IsDBNull(8)?(float?)null:SqlDataReader.GetFloat(8),
                     BodyMusclePercentageTop = SqlDataReader.IsDBNull(9)?(float?)null:SqlDataReader.GetFloat(9),
                     BodyMusclePercentageBottom = SqlDataReader.IsDBNull(10)?(float?)null:SqlDataReader.GetFloat(10),
-                    BodyWaterPercentage = SqlDataReader.IsDBNull(11)?(float?)null:SqlDataReader.GetFloat(11),
-                    BodyBoneMass = SqlDataReader.IsDBNull(12)?(float?)null:SqlDataReader.GetFloat(12),
+                    BodyWaterPercentage = SqlDataReader.IsDBNull(12)?(float?)null:SqlDataReader.GetFloat(12),
+                    BodyBoneMass = SqlDataReader.IsDBNull(11)?(float?)null:SqlDataReader.GetFloat(11),
                     BodyVisceralFat = SqlDataReader.IsDBNull(13)?(int?)null:SqlDataReader.GetInt32(13)
                 };
             }
