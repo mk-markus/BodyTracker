@@ -3,10 +3,12 @@ using BodyTracker.Services;
 using BodyTracker.State;
 using BodyTracker.ViewModels;
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Security.Policy;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Threading;
 
 namespace BodyTracker.MVVM.Views
@@ -80,6 +82,9 @@ namespace BodyTracker.MVVM.Views
         /// </summary>
         private async void MeasurementPage_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
+
+            ICollectionView view = CollectionViewSource.GetDefaultView(MeasurementsGrid.ItemsSource);
+
             // e.NewValue ist true, wenn die Seite sichtbar wird
             if ((bool)e.NewValue)
             {
@@ -87,10 +92,18 @@ namespace BodyTracker.MVVM.Views
                 {
                    await measurementViewModel.InitializeAsync();
 
-                    if (MeasurementsGrid != null)
+                    // Sorting the List so that the new one is always on the top
+                    if (view != null)
                     {
-                        MeasurementsGrid.Items.Refresh();
+                        view.SortDescriptions.Clear();
+                        view.SortDescriptions.Add(new SortDescription("MeasurementDate", ListSortDirection.Descending));
+                        view.Refresh();
                     }
+
+                    //if (MeasurementsGrid != null)
+                    //{
+                    //    MeasurementsGrid.Items.Refresh();
+                    //}
                 }
                 catch (Exception ex)
                 {
@@ -186,6 +199,14 @@ namespace BodyTracker.MVVM.Views
                     int personId = AppState.SelectedPersonId;
                     await measurementViewModel.UpsertMeasurementAsync(personId, editedRow);
             }), DispatcherPriority.Background);
+        }
+
+        private void SortingView()
+        {
+            var view = CollectionViewSource.GetDefaultView(measurementViewModel.Measurement);
+            view.SortDescriptions.Clear();
+            view.SortDescriptions.Add(new SortDescription(nameof(FullBodyMeasurementDatas.MeasurementDate), ListSortDirection.Descending));
+            
         }
     }
 }

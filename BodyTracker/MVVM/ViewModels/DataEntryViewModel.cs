@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace BodyTracker.ViewModels
 {
@@ -168,11 +169,11 @@ namespace BodyTracker.ViewModels
         /// Note: This operation currently lacks a database transaction; an error in the second 
         /// insert will not roll back the first one.
         /// </remarks>
-        public async Task SaveAsync()
+        public async Task<bool> SaveAsync()
         {
             var pid = AppState.SelectedPersonId;
 
-            await databaseService.InsertBodyMetricAsync(new BodyMetricModel
+            var bodyMetric = new BodyMetricModel
             {
                 PersonID = pid,
                 MeasurementDate = MeasurementDate,
@@ -187,17 +188,36 @@ namespace BodyTracker.ViewModels
                 BodyWaterPercentage = BodyWaterPercentage,
                 BodyBoneMass = BodyBoneMass,
                 BodyVisceralFat = BodyVisceralFat
-            });
+            };
 
-            await databaseService.InsertBodyDimensionAsync(new BodyDimensionsModel
+            var bodyDimension = new BodyDimensionsModel
             {
                 PersonID = pid,
                 MeasurementDate = MeasurementDate,
                 ChestCircumference = ChestCircumference,
                 WaistCircumference = WaistCircumference,
                 HipsCircumference = HipsCircumference,
-                FatTongs = FatTongs,
-            });
+                FatTongs = FatTongs
+            };
+
+            bool measurementAlreadyExists = await databaseService.IsMeasurementExistingAsync(bodyMetric.MeasurementDate, bodyMetric.PersonID);
+
+            if (measurementAlreadyExists)
+            {
+                MessageBox.Show("For the " + bodyMetric.MeasurementDate.ToString() + " already exists a measurement", "Information",
+                                MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            else
+            {
+                await databaseService.InsertBodyMetricAsync(bodyMetric);
+
+                await databaseService.InsertBodyDimensionAsync(bodyDimension);
+
+            }
+
+            return measurementAlreadyExists;
+          
         }
 
 

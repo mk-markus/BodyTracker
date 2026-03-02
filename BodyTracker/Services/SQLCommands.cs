@@ -124,5 +124,10 @@ CREATE TABLE IF NOT EXISTS tbl_Abmessungen (
             return @"UPDATE tbl_Abmessungen SET Brustumfang_cm=@br, Bauchumfang_cm=@ba, Hueftumfang_cm=@hu, Fettzange_mm=@fz WHERE AbmessungID=@aid;";
         }
 
+        public string CmdCheckIfPersonHasMeasurementsExists()
+        {
+            return @"SELECT COUNT(1) FROM tbl_KoerperMetriken WHERE PersonID_FK = @pid AND Messdatum >= @start AND Messdatum < @end";
+        }
+
     }
 }

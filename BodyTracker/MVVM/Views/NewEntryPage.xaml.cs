@@ -87,8 +87,8 @@ namespace BodyTracker.MVVM.Views
 
                 if(dataEntryViewModel.CheckBodyValuesValid(values))
                 {
-                    await dataEntryViewModel.SaveAsync();
-                    SwitchToMeasurements?.Invoke();
+                    var result = await dataEntryViewModel.SaveAsync();
+                    if(!result) SwitchToMeasurements?.Invoke();
                 }
                else
                 {

@@ -47,7 +47,8 @@
                               EnableColumnVirtualization="True"
                               EnableRowVirtualization="True"
                               Height="300"
-                              RowEditEnding="MeasurementsGrid_RowEditEnding">
+                              RowEditEnding="MeasurementsGrid_RowEditEnding"
+                              >
                         <DataGrid.Columns >
                             <DataGridTextColumn Header="Datum" 
                                                 Binding="{Binding MeasurementDate,StringFormat=d}"/>

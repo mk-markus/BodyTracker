@@ -248,6 +248,7 @@ namespace BodyTracker.Services
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task InsertBodyMetricAsync(BodyMetricModel bodyMetricModel)
         {
+
             var SqlServerConnection = await EtablishSqlServerConnection();
             await using var SqlCommand = new MySqlCommand(DatabaseCommands.CmdInsertPersonMetric(), SqlServerConnection);
 
@@ -264,9 +265,11 @@ namespace BodyTracker.Services
             SqlCommand.Parameters.AddWithValue("@kw", (object?)bodyMetricModel.BodyWaterPercentage ?? DBNull.Value);
             SqlCommand.Parameters.AddWithValue("@kk", (object?)bodyMetricModel.BodyBoneMass ?? DBNull.Value);
             SqlCommand.Parameters.AddWithValue("@vf", (object?)bodyMetricModel.BodyVisceralFat ?? DBNull.Value);
-            
+
             await SqlCommand.ExecuteNonQueryAsync();
         }
+
+
 
         /// <summary>
         /// Asynchronously inserts a new body dimension record (circumferences) into the database.
@@ -462,6 +465,34 @@ namespace BodyTracker.Services
                 await tx.RollbackAsync();
                 throw;
             }
+        }
+
+        public async Task<bool> IsMeasurementExistingAsync(DateTime dateToCheck, int PersonId)
+        {
+            var SqlServerConnection = await EtablishSqlServerConnection();
+
+            // Wir nutzen DATE(@TargetDate), um nur den Kalendertag zu vergleichen
+            // Die SQL-Abfrage sollte lauten: 
+            // "SELECT 1 FROM measurements WHERE DATE(MeasurementDate) = DATE(@TargetDate) LIMIT 1"
+            await using var SqlCommand = new MySqlCommand(DatabaseCommands.CmdCheckIfPersonHasMeasurementsExists(), SqlServerConnection);
+
+            // Wir definieren den exakten Tag ohne Uhrzeit
+            DateTime startDate = dateToCheck;
+            DateTime endDate = startDate.AddDays(1);
+
+            SqlCommand.Parameters.AddWithValue("@pid", PersonId);
+            SqlCommand.Parameters.AddWithValue("@start", startDate);
+            SqlCommand.Parameters.AddWithValue("@end", endDate);
+
+            var result = await SqlCommand.ExecuteScalarAsync();
+
+            // Konvertierung des Ergebnisses. Da COUNT genutzt wird, ist result nie null.
+            if (result != null && Convert.ToInt64(result) > 0)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }
