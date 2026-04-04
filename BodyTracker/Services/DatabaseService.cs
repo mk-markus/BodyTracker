@@ -78,7 +78,8 @@ namespace BodyTracker.Services
                     PersonID = SqlDataReader.GetInt32(0),
                     PersonFirstName = SqlDataReader.IsDBNull(1) ? string.Empty : SqlDataReader.GetString(1),
                     PersonLastName = SqlDataReader.IsDBNull(2) ? string.Empty : SqlDataReader.GetString(2),
-                    PersonBirthDate = SqlDataReader.IsDBNull(3) ? null : SqlDataReader.GetDateTime(3)
+                    PersonBirthDate = SqlDataReader.IsDBNull(3) ? null : SqlDataReader.GetDateTime(3),
+                    PersonHeight = SqlDataReader.GetFloat(4)
                 });
             }
             return list;
@@ -145,13 +146,14 @@ namespace BodyTracker.Services
         /// <param name="BirthDate">The date of birth of the person. If null, a DBNull value will be stored in the database.</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains the auto-incremented ID (primary key) of the newly inserted record.</returns>
         /// <returns></returns>
-        public async Task<int> CreatePersonAsync(string FirstName, string LastName, DateTime? BirthDate)
+        public async Task<int> CreatePersonAsync(string FirstName, string LastName, DateTime? BirthDate, double Height)
         {
             var SqlServerConnection = await EtablishSqlServerConnection();
             await using var SqlCommand = new MySqlCommand(DatabaseCommands.CmdCreatePerson(), SqlServerConnection);
             SqlCommand.Parameters.AddWithValue("@v", FirstName);
             SqlCommand.Parameters.AddWithValue("@n", LastName);
             SqlCommand.Parameters.AddWithValue("@g", BirthDate.HasValue ? BirthDate.Value : (object)DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@k", Height);
             var idObj = await SqlCommand.ExecuteScalarAsync();
             return Convert.ToInt32(idObj);
         }

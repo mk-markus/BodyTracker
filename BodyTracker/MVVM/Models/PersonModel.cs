@@ -29,6 +29,11 @@ namespace BodyTracker.MVVM.Models
         public DateTime? PersonBirthDate { get; set; }
 
         /// <summary>
+        /// Gets or sets the height of the person, in meters.
+        /// </summary>
+        public float PersonHeight { get; set; }
+
+        /// <summary>
         /// Creates a string with the first and last name.
         /// </summary>
         /// <returns>First Name + Lastname</returns>

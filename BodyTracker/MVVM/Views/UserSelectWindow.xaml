@@ -120,7 +120,9 @@
                                                 Binding="{Binding PersonLastName}"/>
                                     <DataGridTextColumn Header="Birthdate" 
                                                 Binding="{Binding PersonBirthDate, StringFormat=d}"/>
-                                </DataGrid.Columns>
+                                    <DataGridTextColumn Header="Height" 
+                                                Binding="{Binding PersonHeight, StringFormat=d}"/>
+                            </DataGrid.Columns>
                             </DataGrid>
                         </Grid>
 
@@ -159,6 +161,15 @@
                                     FontSize="14"
                                     SelectedDate="{Binding BirthDate}"
                                     Margin="3"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Grid.Row="2" 
+                                   Text="Person Height [m]:" 
+                                   Style="{StaticResource StandardTextBlock}"/>
+                        <TextBox Text="{Binding PersonHeight}"
+                                 PreviewTextInput="Decimal_PreviewTextInput" 
+                                 
+                                 Style="{StaticResource NumericValidationStyle}"/>
                     </StackPanel>
                     <Button x:Name="SaveNewUser"
                      Content="Save new Person"

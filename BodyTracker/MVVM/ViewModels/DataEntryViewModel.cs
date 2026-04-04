@@ -9,6 +9,17 @@ using System.Windows;
 
 namespace BodyTracker.ViewModels
 {
+    /// <summary>
+    /// Represents the view model for entering and managing body measurement data, including physiological metrics and
+    /// physical dimensions. Provides properties for user input, commands for saving data, and methods for initializing
+    /// and persisting measurements asynchronously.
+    /// </summary>
+    /// <remarks>This view model is designed for use in data entry scenarios where users record body metrics
+    /// such as weight, BMI, body fat percentage, and circumferences. It integrates with a database service for data
+    /// persistence and exposes an asynchronous command for saving entered data. The view model supports initialization
+    /// by loading the most recent historical data for the selected person, enabling pre-population of fields. All
+    /// properties are observable, allowing UI elements to update automatically in response to changes. Thread safety is
+    /// not guaranteed; interactions should occur on the UI thread.</remarks>
     public partial class DataEntryViewModel : ObservableObject
     {
         /// <summary>
@@ -138,8 +149,9 @@ namespace BodyTracker.ViewModels
         {
             var pid = AppState.SelectedPersonId;
             var lastM = await databaseService.GetLastBodyMetricAsync(pid, DateTime.Today);
+            var height = AppState.SelectedPersonHeight;
             BodyWeight = lastM?.BodyWeight ?? null;
-            Bmi = lastM?.BMI ?? null;
+            Bmi = CalculateBmi(BodyWeight ?? 0, (float)height);
             BodyFatPercentage = lastM?.BodyFatPercentage ?? null;
             BodyFatPercentageTop = lastM?.BodyFatPercentageTop ?? null;
             BodyFatPercentageBottom = lastM?.BodyFatPercentageBottom ?? null;
@@ -220,9 +232,25 @@ namespace BodyTracker.ViewModels
           
         }
 
+        /// <summary>
+        /// Calculates the Body Mass Index (BMI) based on the specified weight and height.
+        /// </summary>
+        /// <param name="weight">The weight of the individual, in kilograms.</param>
+        /// <param name="height">The height of the individual, in meters. Must be greater than zero.</param>
+        /// <returns>The calculated BMI value as a floating-point number.</returns>
+        public float CalculateBmi(float weight, float height)
+        {
+            if (height <= 0) MessageBox.Show("Height must be greater than zero.", nameof(height),MessageBoxButton.OK, MessageBoxImage.Error);
+            return weight / (height * height);
+        }
 
 
-
+        /// <summary>
+        /// Determines whether all elements in the specified array can be parsed as valid double-precision
+        /// floating-point numbers.
+        /// </summary>
+        /// <param name="values">An array of strings to validate as double-precision floating-point values.</param>
+        /// <returns>true if every element in the array can be parsed as a double; otherwise, false.</returns>
         public bool CheckBodyValuesValid(string[] values)
         {
             foreach (var val in values)

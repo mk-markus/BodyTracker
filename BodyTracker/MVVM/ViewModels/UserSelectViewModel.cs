@@ -6,9 +6,6 @@ using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
 
 namespace BodyTracker.ViewModels
 {
@@ -64,6 +61,11 @@ namespace BodyTracker.ViewModels
         /// the date has not yet been selected in the UI.
         /// </summary>
         [ObservableProperty] private DateTime? birthDate = null;
+
+        /// <summary>
+        /// Gets or sets the height of the person, in meters.
+        /// </summary>
+        [ObservableProperty] private float height = 0;
 
         /// <summary>
         /// Gets the command responsible for asynchronously loading the list of persons from the database.
@@ -151,9 +153,10 @@ namespace BodyTracker.ViewModels
         /// </remarks>
         private async Task CreatePersonAsync()
         {
-            var id = await databaseService.CreatePersonAsync(FirstName.Trim(), LastName.Trim(), BirthDate);
+            var id = await databaseService.CreatePersonAsync(FirstName.Trim(), LastName.Trim(), BirthDate, Height);
             await LoadPersonAsync();
-            Selected = new PersonModel { PersonID = id, PersonFirstName = FirstName.Trim(), PersonLastName = LastName.Trim(), PersonBirthDate = BirthDate };
+            Selected = new PersonModel {    PersonID = id, PersonFirstName = FirstName.Trim(), PersonLastName = LastName.Trim(), 
+                                            PersonBirthDate = BirthDate, PersonHeight = Height };
         }
 
         /// <summary>
@@ -169,8 +172,12 @@ namespace BodyTracker.ViewModels
             if (Selected != null)
             {
                 AppState.SelectedPersonId = Selected.PersonID;
+                AppState.SelectedPersonHeight = Selected.PersonHeight;
                 AppState.SelectedPersonName = Selected.ToString();
             }
         }
+
+
+      
     }
 }

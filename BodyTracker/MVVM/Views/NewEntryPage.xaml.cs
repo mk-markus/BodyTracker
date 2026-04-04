@@ -1,4 +1,5 @@
 ﻿using BodyTracker.Services;
+using BodyTracker.State;
 using BodyTracker.ViewModels;
 using System;
 using System.Windows;
@@ -142,6 +143,15 @@ namespace BodyTracker.MVVM.Views
                     tb.SelectionStart = selStart + 1;
                 }
             }
+        }
+
+        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (float.TryParse(tbWeight.Text, out float w))
+            {
+                tbBMI.Text = dataEntryViewModel.CalculateBmi(w, AppState.SelectedPersonHeight).ToString("0.00");
+            }
+            
         }
     }
 }

@@ -27,18 +27,19 @@
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Gewicht (kg):"
                                Style="{StaticResource StandardTextBlock}"/>
-                    <TextBox Text="{Binding BodyWeight}"
+                    <TextBox x:Name="tbWeight"
+                             Text="{Binding BodyWeight}"
                              PreviewTextInput="Decimal_PreviewTextInput" 
                              GotKeyboardFocus="SelectAllOnFocus"
-                             Style="{StaticResource NumericValidationStyle}"/>
-
+                             Style="{StaticResource NumericValidationStyle}" LostFocus="TextBox_LostFocus"/>
 
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="BMI:"
                                Style="{StaticResource StandardTextBlock}"/>
-                    <TextBox Text="{Binding Bmi}"
+                    <TextBox x:Name="tbBMI"
+                             Text="{Binding Bmi}"
                              PreviewTextInput="Decimal_PreviewTextInput" 
                              GotKeyboardFocus="SelectAllOnFocus"
                              Style="{StaticResource NumericValidationStyle}"/>

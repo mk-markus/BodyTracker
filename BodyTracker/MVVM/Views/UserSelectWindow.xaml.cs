@@ -11,15 +11,37 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 
 namespace BodyTracker.Views
 {
+    /// <summary>
+    /// Represents a window that allows users to select or configure database connection settings and user profiles.
+    /// Provides functionality for validating input, persisting credentials, and initializing the application's data
+    /// context based on user selection.
+    /// </summary>
+    /// <remarks>This window is typically used at application startup to establish a connection to the
+    /// database and select a user profile before proceeding to the main application interface. It supports data binding
+    /// and input validation for connection parameters, and integrates with configuration and database services to
+    /// manage persistence and retrieval of user and connection data. The class implements INotifyPropertyChanged to
+    /// support property change notifications for data binding scenarios.</remarks>
     public partial class UserSelectWindow : Window, INotifyPropertyChanged
     {
-
+        /// <summary>
+        /// Occurs when a property value changes.
+        /// </summary>
+        /// <remarks>This event is typically raised by classes that implement the INotifyPropertyChanged
+        /// interface to notify clients, such as data-binding frameworks, that a property value has changed.</remarks>
         public event PropertyChangedEventHandler? PropertyChanged;
 
-
+        /// <summary>
+        /// Raises the PropertyChanged event to notify listeners that a property value has changed.
+        /// </summary>
+        /// <remarks>Call this method in the setter of a property to notify subscribers that the
+        /// property's value has changed. This is commonly used to implement the INotifyPropertyChanged interface in
+        /// data-binding scenarios.</remarks>
+        /// <param name="propertyName">The name of the property that changed. This value is optional and is automatically provided when called from
+        /// a property setter.</param>
         protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -249,9 +271,14 @@ namespace BodyTracker.Views
             this.Close();
         }
 
-
-
-        // Dieses Event feuert bei jedem Tastendruck in der TextBox
+        /// <summary>
+        /// Handles the TextChanged event for the database server input field, validating the entered IP address.
+        /// </summary>
+        /// <remarks>Updates the IsIpValid property based on whether the current text represents a valid
+        /// IP address. This method is intended to be used as an event handler for text input validation
+        /// scenarios.</remarks>
+        /// <param name="sender">The source of the event, typically the database server text input control.</param>
+        /// <param name="e">The event data associated with the text change.</param>
         private void DbServer_TextChanged(object sender, TextChangedEventArgs e)
         {
 
@@ -260,12 +287,46 @@ namespace BodyTracker.Views
             this.IsIpValid = result.Item1;
         }
 
-        // Dieses Event feuert bei jedem Tastendruck in der TextBox
+        /// <summary>
+        /// Handles the TextChanged event for the database port input field, updating the port validity state based on
+        /// the entered value.
+        /// </summary>
+        /// <remarks>This method updates the IsPortValid property to indicate whether the current text
+        /// represents a valid integer port number. This can be used to enable or disable related UI elements or to
+        /// provide user feedback.</remarks>
+        /// <param name="sender">The source of the event, typically the database port text input control.</param>
+        /// <param name="e">The event data associated with the text change.</param>
         private void DbPort_TextChanged(object sender, TextChangedEventArgs e)
         {
 
             if (!int.TryParse(DbPort.Text, out var port)) IsPortValid = false;
             else IsPortValid = true;
+        }
+
+        /// <summary>
+        /// Intercepts text input to ensure consistent decimal formatting. 
+        /// Automatically replaces a period (".") with a comma (",") in real-time.
+        /// </summary>
+        /// <param name="sender">The source of the event, typically a <see cref="TextBox"/> configured for numeric input.</param>
+        /// <param name="e">The <see cref="TextCompositionEventArgs"/> containing the input text to be processed.</param>
+        /// <remarks>
+        /// This method enhances user experience by allowing the use of the numeric keypad's period key 
+        /// while maintaining compatibility with culture-specific decimal parsing (e.g., German "de-DE").
+        /// It manually manipulates the <see cref="TextBox.Text"/> and manages the <see cref="TextBox.SelectionStart"/> 
+        /// to ensure the cursor position remains intuitive after the replacement.
+        /// </remarks
+        private void Decimal_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if (e.Text == ".")
+            {
+                if (sender is TextBox tb)
+                {
+                    e.Handled = true;
+                    var selStart = tb.SelectionStart;
+                    tb.Text = tb.Text.Insert(selStart, ",");
+                    tb.SelectionStart = selStart + 1;
+                }
+            }
         }
 
 

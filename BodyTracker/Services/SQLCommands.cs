@@ -4,7 +4,7 @@
     {
         public string CmdCreatePerson()
         {
-            return "INSERT INTO tbl_Personen (Vorname, Nachname, Geburtsdatum) VALUES (@v, @n, @g); SELECT LAST_INSERT_ID();";
+            return "INSERT INTO tbl_Personen (Vorname, Nachname, Geburtsdatum, Koerpergroesse) VALUES (@v, @n, @g, @k); SELECT LAST_INSERT_ID();";
         }
 
         public string CmdCreateTableIfNotExist()
@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS tbl_Abmessungen (
 
         public string CmdGetPerson()
         {
-            return "SELECT ID, Vorname, Nachname, Geburtsdatum FROM tbl_Personen ORDER BY Nachname, Vorname";
+            return "SELECT ID, Vorname, Nachname, Geburtsdatum, Koerpergroesse FROM tbl_Personen ORDER BY Nachname, Vorname";
         }
 
         public string CmdInsertPersonDimension()

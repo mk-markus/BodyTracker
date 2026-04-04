@@ -13,6 +13,12 @@ namespace BodyTracker.State
         /// </value>
         public static int SelectedPersonId { get; set; }
 
+        /// <summary>
+        /// Gets or sets the height of the selected person, in meters.
+        /// </summary>
+        public static float SelectedPersonHeight { get; set; }
+
+
         // <summary>
         /// Gets or sets the display name of the currently selected person.
         /// This property provides a user-friendly identifier for the UI header or title bars.
