@@ -201,6 +201,7 @@ namespace BodyTracker.MVVM.Views
             }), DispatcherPriority.Background);
         }
 
+     
         private void SortingView()
         {
             var view = CollectionViewSource.GetDefaultView(measurementViewModel.Measurement);

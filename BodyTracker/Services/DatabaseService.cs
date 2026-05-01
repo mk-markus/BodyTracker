@@ -469,6 +469,7 @@ namespace BodyTracker.Services
             }
         }
 
+ 
         public async Task<bool> IsMeasurementExistingAsync(DateTime dateToCheck, int PersonId)
         {
             var SqlServerConnection = await EtablishSqlServerConnection();

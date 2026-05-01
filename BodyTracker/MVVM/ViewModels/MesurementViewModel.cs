@@ -276,57 +276,49 @@ namespace BodyTracker.ViewModels
 
         private ObservableCollection<FullBodyMeasurementDatas> GetAverageValues(DateTime start, DateTime end)
         {
+            // Basic validation: Ensure date range is valid and data source exists
+            if (start > end || Measurement == null)
+                return new ObservableCollection<FullBodyMeasurementDatas>();
+
+            // Filter data by the specified date range
+            var ordered = Measurement
+                .Where(d => d.MeasurementDate >= start && d.MeasurementDate <= end)
+                .ToList();
+
+            if (ordered.Count == 0)
+                return new ObservableCollection<FullBodyMeasurementDatas>();
 
             var result = new FullBodyMeasurementDatas();
 
-            float bodyWeigth = 0;
-            float bodyBMI = 0;
-            int   bodyVisceralFat = 0;
-            float bodyFatPercentage = 0;
-            float bodyFatPercentageTop = 0;
-            float bodyFatPercentageBottom = 0;
-            float bodyMusclePercentage = 0;
-            float bodyMusclePercentageTop = 0;
-            float bodyMusclePercentageBottom = 0;
-            float bodyWaterPercentage = 0;
-            float bodyBoneMass = 0;
-            float bodyChestCircumference = 0;
-            float bodyWaistCircumference = 0;
-            float bodyHipsCircumference = 0;
-            float bodyFatTongs = 0;
-
-
-
-            var data = Measurement;
-            var ordered = data.Where(d => d.MeasurementDate >= start && d.MeasurementDate <= end).ToList();
-           
-
-            if(start > end) return new ObservableCollection<FullBodyMeasurementDatas>();
-            if (ordered.Count == 0 || ordered == null) return new ObservableCollection<FullBodyMeasurementDatas>();
-            else
+            /* 
+               LOCAL HELPER FUNCTION: GetFilteredAverage
+               Logic: Filters out values that are null or <= 0.
+               The average is only calculated based on existing, positive data points.
+            */
+            float GetFilteredAverage(IEnumerable<float?> source)
             {
-               
-                int count = ordered.Count;
-                result.BodyWeight = ordered.Sum(x => x.BodyWeight ?? 0) / count;
-                result.BMI = ordered.Sum(x => x.BMI ?? 0) / count;
-                result.BodyFatPercentage = ordered.Sum(x => x.BodyFatPercentage ?? 0) / count;
-                result.BodyMusclePercentage = ordered.Sum(x => x.BodyMusclePercentage ?? 0) / count;
-                result.BodyWaterPercentage = ordered.Sum(x => x.BodyWaterPercentage ?? 0) / count;
-                result.ChestCircumference = ordered.Sum(x => x.ChestCircumference ?? 0) / count;
-                result.WaistCircumference = ordered.Sum(x => x.WaistCircumference ?? 0) / count;
-                result.HipsCircumference = ordered.Sum(x => x.HipsCircumference ?? 0) / count;
-                result.FatTong = ordered.Sum(x => x.FatTong ?? 0) / count;
+                // Only include values that have a value and are greater than 0
+                var validValues = source.Where(v => v.HasValue && v.Value > 0).ToList();
 
-
-                return new ObservableCollection<FullBodyMeasurementDatas> { result };
-
-
-
+                // Return average if data exists, otherwise return 0 to avoid DivisionByZero
+                return validValues.Any() ? validValues.Average(v => v.Value) : 0f;
             }
+
+            // Applying the filtered average logic to each measurement field
+            result.BodyWeight = GetFilteredAverage(ordered.Select(x => x.BodyWeight));
+            result.BMI = GetFilteredAverage(ordered.Select(x => x.BMI));
+            result.BodyFatPercentage = GetFilteredAverage(ordered.Select(x => x.BodyFatPercentage));
+            result.BodyMusclePercentage = GetFilteredAverage(ordered.Select(x => x.BodyMusclePercentage));
+            result.BodyWaterPercentage = GetFilteredAverage(ordered.Select(x => x.BodyWaterPercentage));
+            result.ChestCircumference = GetFilteredAverage(ordered.Select(x => x.ChestCircumference));
+            result.WaistCircumference = GetFilteredAverage(ordered.Select(x => x.WaistCircumference));
+            result.HipsCircumference = GetFilteredAverage(ordered.Select(x => x.HipsCircumference));
+            result.FatTong = GetFilteredAverage(ordered.Select(x => x.FatTong));
+
+            return new ObservableCollection<FullBodyMeasurementDatas> { result };
+
+
+
         }
-
-
-
-
     }
 }

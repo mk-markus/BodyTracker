@@ -120,8 +120,7 @@
                                                 Binding="{Binding PersonLastName}"/>
                                     <DataGridTextColumn Header="Birthdate" 
                                                 Binding="{Binding PersonBirthDate, StringFormat=d}"/>
-                                    <DataGridTextColumn Header="Height" 
-                                                Binding="{Binding PersonHeight, StringFormat=d}"/>
+                                    
                             </DataGrid.Columns>
                             </DataGrid>
                         </Grid>
