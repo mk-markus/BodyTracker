@@ -67,9 +67,6 @@ namespace BodyTracker.ViewModels
         /// </summary>
         [ObservableProperty] private DateTime meanEndDate = DateTime.Now;
 
-
-
-
         /// <summary>
         /// Gets the command responsible for refreshing the measurement history from the database.
         /// Triggers an asynchronous reload of the <see cref="Measurement"/> collection.
@@ -146,9 +143,6 @@ namespace BodyTracker.ViewModels
                 Measurement.Add(m);
             }
 
-
-            
-
             OnPropertyChanged(nameof(Measurement));
         }
 
@@ -201,6 +195,7 @@ namespace BodyTracker.ViewModels
             if (SelectedMeasurement.DemensionID.HasValue) await databaseServerice.DeleteBodyDimensionAsync(SelectedMeasurement.DemensionID.Value);
             await ReloadAsync();
         }
+        
         /// <summary>
         /// Asynchronously updates an existing measurement record or inserts a new one into the database.
         /// This method acts as a wrapper for the data access layer, ensuring that all metric and 
@@ -215,9 +210,9 @@ namespace BodyTracker.ViewModels
         /// to ensure the local collection remains consistent with the database state, 
         /// including any server-generated identifiers.
         /// </remarks>
-        public async Task UpsertMeasurementAsync(int personId, FullBodyMeasurementDatas row)
+        public async Task UpdateMeasurementAsync(int personId, FullBodyMeasurementDatas row)
         {
-            await databaseServerice.UpsertMeasurementAsync(
+            await databaseServerice.UpdateMeasurementAsync(
                 personId,
                 row.MetricID, 
                 row.DemensionID,
@@ -316,9 +311,6 @@ namespace BodyTracker.ViewModels
             result.FatTong = GetFilteredAverage(ordered.Select(x => x.FatTong));
 
             return new ObservableCollection<FullBodyMeasurementDatas> { result };
-
-
-
         }
     }
 }

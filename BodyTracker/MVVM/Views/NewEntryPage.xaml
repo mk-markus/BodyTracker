@@ -39,7 +39,7 @@
                     <TextBlock Text="BMI:"
                                Style="{StaticResource StandardTextBlock}"/>
                     <TextBox x:Name="tbBMI"
-                             Text="{Binding Bmi}"
+                             Text="{Binding Bmi, StringFormat='0.00'}"
                              PreviewTextInput="Decimal_PreviewTextInput" 
                              GotKeyboardFocus="SelectAllOnFocus"
                              Style="{StaticResource NumericValidationStyle}"/>

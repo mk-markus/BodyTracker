@@ -64,8 +64,7 @@ namespace BodyTracker.Services
             (bPathOK, this.sAppSettingsPath) = checkConfigFileAvialable(sDefautlPath);
          
             if(!bPathOK) throw new ArgumentException("The app setting file does not exist at: " + sAppSettingsPath);
-            
-           
+         
         }
 
         /// <summary>
@@ -79,7 +78,7 @@ namespace BodyTracker.Services
         /// This method reads the entire content of the file specified in <see cref="sAppSettingsPath"/>.
         /// Ensure that the path is validated before calling this method to avoid file system exceptions.
         /// </remarks>
-        public SQLConfigurationModel LoadCinfigurationFile()
+        public SQLConfigurationModel LoadConfigurationFile()
         {
             return JsonSerializer.Deserialize<SQLConfigurationModel>(File.ReadAllText(sAppSettingsPath)) ?? new SQLConfigurationModel();
         }
@@ -115,17 +114,17 @@ namespace BodyTracker.Services
         /// </remarks>
         public void SaveCredentials(string user, string plainPassword, string ServerIP, int PortNumber, string datbase)
         {
-            var cfg = LoadCinfigurationFile();
-            if (string.IsNullOrEmpty(cfg.Key) || string.IsNullOrEmpty(cfg.IV))
-            {
-                var (key, iv) = CryptoHelper.GenerateKeyIv();
-                cfg.Key = key; cfg.IV = iv;
-            }
-            cfg.User = user;
-            cfg.PasswordEnc = CryptoHelper.Encrypt(plainPassword, cfg.Key, cfg.IV);
-            cfg.ServerIP = ServerIP; 
-            cfg.PortNumber = PortNumber;
-            cfg.DatabaseName = datbase;
+            var cfg = LoadConfigurationFile();
+            //if (string.IsNullOrEmpty(cfg.Key) || string.IsNullOrEmpty(cfg.IV))
+            //{
+            //    var (key, iv) = CryptoHelper.GenerateKeyIv();
+            //    cfg.Key = key; cfg.IV = iv;
+            //}
+            cfg.User = CryptoHelper.Protect(user);
+            cfg.PasswordEnc = CryptoHelper.Protect(plainPassword);
+            cfg.ServerIP = CryptoHelper.Protect(ServerIP); 
+            cfg.PortNumber = CryptoHelper.Protect(PortNumber.ToString());
+            cfg.DatabaseName = CryptoHelper.Protect(datbase);
             Save(cfg);
         }
 
@@ -144,9 +143,13 @@ namespace BodyTracker.Services
         /// </remarks>
         public string BuildConnectionString()
         {
-            var cfg = LoadCinfigurationFile();
-            var pwd = string.IsNullOrEmpty(cfg.PasswordEnc) ? "" : CryptoHelper.Decrypt(cfg.PasswordEnc, cfg.Key, cfg.IV);
-            return $"Server={cfg.ServerIP};Port={cfg.PortNumber};Database={cfg.DatabaseName};Uid={cfg.User};Pwd={pwd};SslMode=Preferred";
+            var cfg = LoadConfigurationFile();
+            var pwd = string.IsNullOrEmpty(cfg.PasswordEnc) ? "" : CryptoHelper.Unprotect(cfg.PasswordEnc);
+            return  $"Server={CryptoHelper.Unprotect(cfg.ServerIP)};" +
+                    $"Port={CryptoHelper.Unprotect(cfg.PortNumber)};" +
+                    $"Database={CryptoHelper.Unprotect(cfg.DatabaseName)};" +
+                    $"Uid={CryptoHelper.Unprotect(cfg.User)};" +
+                    $"Pwd={pwd};SslMode=Preferred";
         }
 
         /// <summary>

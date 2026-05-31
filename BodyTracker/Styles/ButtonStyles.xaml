@@ -4,16 +4,20 @@
 
     <Style x:Key="StandardButton" TargetType="Button">
 
-        <Setter Property="Margin" Value="10"/>
-        <Setter Property="MinWidth" Value="20"/>
-        <Setter Property="Width" Value="200"/>
-        <Setter Property="MinHeight" Value="10"/>
-        <Setter Property="Height" Value="Auto"/>
+        <Setter Property="Margin" Value="5"/>
+        <!--<Setter Property="MinWidth" Value="20"/>-->
+        <Setter Property="MaxWidth" Value="200"/>
+        <!--<Setter Property="Width" Value="Auto"/>-->
+        <!--<Setter Property="MinHeight" Value="10"/>-->
+        <Setter Property="MaxHeight" Value="100"/>
+        <!--<Setter Property="Height" Value="Auto"/>-->
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="FontFamily" Value="Arial"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="BorderBrush" Value="Black"/>
+        <Setter Property="Padding" Value="3"/>
+
 
         <Setter Property="Template">
             <Setter.Value>
@@ -22,7 +26,9 @@
                  Background="{TemplateBinding Background}" 
                  CornerRadius="3" 
                  SnapsToDevicePixels="True">
-                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <ContentPresenter HorizontalAlignment="Center" 
+                                          VerticalAlignment="Center"
+                                          Margin="{TemplateBinding Padding}"/>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
@@ -44,15 +50,19 @@
     </Style>
 
     <Style x:Key="SaveButton" TargetType="Button">
-        <Setter Property="Margin" Value="10"/>
-        <Setter Property="MinWidth" Value="20"/>
-        <Setter Property="Width" Value="200"/>
-        <Setter Property="MinHeight" Value="10"/>
-        <Setter Property="Height" Value="Auto"/>
+        <Setter Property="Margin" Value="5"/>
+        <!--<Setter Property="MinWidth" Value="20"/>-->
+        <Setter Property="MaxWidth" Value="200"/>
+        <!--<Setter Property="Width" Value="Auto"/>-->
+        <!--<Setter Property="MinHeight" Value="10"/>-->
+        <Setter Property="MaxHeight" Value="100"/>
+        <!--<Setter Property="Height" Value="Auto"/>-->
         <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontFamily" Value="Arial"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="BorderBrush" Value="Black"/>
+        <Setter Property="Padding" Value="3"/>
 
 
         <Setter Property="Template">
@@ -62,7 +72,9 @@
                         Background="{TemplateBinding Background}" 
                         CornerRadius="3" 
                         SnapsToDevicePixels="True">
-                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <ContentPresenter HorizontalAlignment="Center" 
+                                          VerticalAlignment="Center"
+                                          Margin="{TemplateBinding Padding}"/>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsEnabled" Value="False">

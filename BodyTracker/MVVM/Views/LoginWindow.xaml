@@ -1,0 +1,103 @@
+﻿<Window x:Class="BodyTracker.MVVM.Views.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BodyTracker.MVVM.Views"
+        mc:Ignorable="d"
+        Title="LoginWindow" 
+        Height="350"
+        Width="600"
+        Icon="/Icon/ProgramIcon.ico">
+    
+    <Grid>
+        <GroupBox Header="Server Connection Information"
+      Style="{StaticResource StandardGroupBox}">
+            <StackPanel Orientation="Vertical">
+
+                <StackPanel Orientation="Horizontal">
+                    
+                    <TextBlock Text="User:"
+                               Style="{StaticResource StandardTextBlock}"/>
+                    
+                    <TextBox x:Name="DbUserBox"
+                             Text="{Binding SqlUsername, Mode=TwoWay, 
+                                    UpdateSourceTrigger=PropertyChanged}"
+                             Style="{StaticResource StandardTextBox}"/>
+                
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    
+                    <TextBlock Text="Password:"
+                               Style="{StaticResource StandardTextBlock}"/>
+                    
+                    <PasswordBox x:Name="pbPasswordBox"
+                                 PasswordChanged="PasswordBox_PasswordChanged"
+                                 Style="{StaticResource StandardPasswordBox}"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    
+                    <TextBlock Text="Database:"
+                               Style="{StaticResource StandardTextBlock}"/>
+                    
+                    <TextBox x:Name="DbDatenbank"
+                             Text="{Binding SqlDatabaseName, Mode=TwoWay, 
+                                    UpdateSourceTrigger=PropertyChanged}"
+                             Style="{StaticResource StandardTextBox}"/>
+                
+                </StackPanel>
+                
+                <StackPanel Orientation="Horizontal">
+
+                    <TextBlock Text="SQL Server IP:"
+                               Style="{StaticResource StandardTextBlock}"/>
+                    
+                    <TextBox Text="{Binding SqlIpAddress, Mode=TwoWay, 
+                                    UpdateSourceTrigger=PropertyChanged}"
+                             Style="{StaticResource StandardTextBox}"/>
+
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    
+                    <TextBlock Text="SQL Server Port:"
+                               Style="{StaticResource StandardTextBlock}"/>
+                    
+                    <TextBox Text="{Binding SqlPort, Mode=TwoWay, 
+                                    UpdateSourceTrigger=PropertyChanged}"
+                             Style="{StaticResource StandardTextBox}"/>
+
+                </StackPanel>
+
+                <TextBlock Text="{Binding ValidationMessage}" 
+                           Foreground="Red" 
+                           Margin="8" 
+                           TextWrapping="Wrap"/>
+
+         
+                <StackPanel Orientation="Horizontal" 
+                            HorizontalAlignment="Center" 
+                            Margin="0,8,0,0">
+
+                    <Button x:Name="btnLogin"
+                            Content="Login"
+                            IsEnabled="{Binding IsFormValid}"
+                            Style="{StaticResource SaveButton}" 
+                            Click="btnLogin_Click"/>
+
+                    <Button x:Name="btnCancel"
+                        Content="Cancel"
+                        Click="btnCancel_Click"
+                        Style="{StaticResource StandardButton}">
+                    </Button>
+                    
+                </StackPanel>
+            
+            </StackPanel>
+        
+        </GroupBox>
+    
+    </Grid>
+</Window>

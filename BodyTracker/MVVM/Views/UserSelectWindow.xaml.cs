@@ -1,17 +1,15 @@
+using BodyTracker.MVVM.Models;
+using BodyTracker.MVVM.Views;
 using BodyTracker.Services;
 using BodyTracker.State;
 using BodyTracker.ViewModels;
-using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.ComponentModel;
-using System.IO;
-using System.Net;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Input;
 
 namespace BodyTracker.Views
 {
@@ -47,7 +45,6 @@ namespace BodyTracker.Views
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-
         /// <summary>
         /// Service responsible for managing application configuration settings, 
         /// including loading and saving database connection strings from the configuration file.
@@ -67,28 +64,10 @@ namespace BodyTracker.Views
         /// </summary>
         private UserSelectViewModel? userSelectViewModel;
 
-
-        private bool _isIpValid = true;
-        public bool IsIpValid
-        {
-            get => _isIpValid;
-            set
-            {
-                _isIpValid = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private bool _isPortValid = true;
-        public bool IsPortValid
-        {
-            get => _isPortValid;
-            set
-            {
-                _isPortValid = value;
-                OnPropertyChanged();
-            }
-        }
+        /// <summary>
+        /// Represents the persisted SQL configuration settings loaded from the configuration file.
+        /// </summary>
+        private SQLConfigurationModel sqlConfigurationModel;
 
 
         /// <summary>
@@ -98,32 +77,34 @@ namespace BodyTracker.Views
         public UserSelectWindow()
         {
             InitializeComponent();
-           
-            //configurationService = new ConfigrationService(Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json"));
             configurationService = new ConfigrationService();
+            sqlConfigurationModel = configurationService.LoadConfigurationFile();
 
-            var cfg = configurationService.LoadCinfigurationFile();
-            
-            if (!string.IsNullOrEmpty(cfg.User)) DbUserBox.Text = cfg.User;
-            if (!string.IsNullOrEmpty(cfg.DatabaseName)) DbDatenbank.Text = cfg.DatabaseName;
-            if (!string.IsNullOrEmpty(cfg.ServerIP)) DbServer.Text = cfg.ServerIP ;
-            if (!string.IsNullOrEmpty(cfg.User)) pbPasswordBox.Password = "****";
-            if (cfg.PortNumber != 0) DbPort.Text = cfg.PortNumber.ToString();
 
-            if (!string.IsNullOrEmpty(cfg.User) && !string.IsNullOrEmpty(cfg.PasswordEnc) && !string.IsNullOrEmpty(cfg.DatabaseName))
+            if (!string.IsNullOrEmpty(sqlConfigurationModel.User) &&
+                 !string.IsNullOrEmpty(sqlConfigurationModel.PasswordEnc) &&
+                 !string.IsNullOrEmpty(sqlConfigurationModel.DatabaseName))
             {
-                var cs = configurationService.BuildConnectionString();
-                
-                databaseService = new DatabaseService(cs);
-                
-                userSelectViewModel = new UserSelectViewModel(databaseService);
-
-                // Update the UI's DataContext to the new ViewModel
-                DataContext = userSelectViewModel;
-
+                InitializeComponentsUserSelectedWindow();
                 Loaded += UserSelectWindow_Loaded;
+                this.IsVisibleChanged += UserSelectPage_IsVisibleChanged;
             }
         }
+
+        /// <summary>
+        /// Creates a fresh DatabaseService and ViewModel based on the persisted configuration
+        /// and binds the ViewModel to the window.
+        /// </summary>
+        private void InitializeComponentsUserSelectedWindow()
+        {
+            var connectionString = configurationService.BuildConnectionString();
+
+            databaseService = new DatabaseService(connectionString);
+            userSelectViewModel = new UserSelectViewModel(databaseService);
+            userSelectViewModel.UpdateConnectionInfo(sqlConfigurationModel);
+            DataContext = userSelectViewModel;
+        }
+
 
         /// <summary>
         /// Handles the Window's Loaded event to perform asynchronous initialization.
@@ -135,9 +116,6 @@ namespace BodyTracker.Views
         {
             try
             {
-                var expression = BindingOperations.GetBindingExpression(DbServer, TextBox.TextProperty);
-                expression?.ValidateWithoutUpdate();
-
                 if (databaseService != null && userSelectViewModel != null)
                 {
                     int count = await databaseService.CountPersonAsync();
@@ -163,72 +141,104 @@ namespace BodyTracker.Views
         }
 
         /// <summary>
-        /// Persists the entered database credentials, reconstructs the connection string, 
-        /// and re-initializes the application's data context.
+        /// Handles the RowEditEnding event for the PersonsGrid DataGrid.
+        /// Commits changes to the database when a row edit is completed.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">Event data regarding the click operation.</param>
-        private async void OnSaveCredentials(object sender, RoutedEventArgs e)
+        /// <param name="e">Event data providing details about the row being edited.</param>
+        private void PersonsGrid_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
         {
-            configurationService.SaveCredentials(DbUserBox.Text.Trim(), pbPasswordBox.Password, DbServer.Text, Convert.ToInt16(DbPort.Text.Trim()), DbDatenbank.Text);
-            var connectionString = configurationService.BuildConnectionString();
-            
-            databaseService = new DatabaseService(connectionString);
-            
-            userSelectViewModel = new UserSelectViewModel(databaseService);
-            
-            userSelectViewModel = await EtablisSQLConnection(userSelectViewModel);
+            if (e.EditAction != DataGridEditAction.Commit) return;
 
-            // Update the UI's DataContext to the new ViewModel
-            this.DataContext = userSelectViewModel;
+            if (e.Row.Item is not PersonModel editedRow) return;
 
-            MessageBox.Show("Connection saved!", 
-                            "Information", 
-                            MessageBoxButton.OK, 
-                            MessageBoxImage.Information);
-          
+            Dispatcher.BeginInvoke(new Action(async () =>
+            {
+                int personId = editedRow.PersonID;
+
+                if (DataContext is UserSelectViewModel vm && e.Row.Item != null)
+                {
+                    // Typ der Person ggf. anpassen, siehe Kommentar in ViewModel
+                    await userSelectViewModel.UpdatePersonAsync(personId, editedRow);
+                }
+            }), System.Windows.Threading.DispatcherPriority.Background);
         }
 
         /// <summary>
-        /// Attempts to establish a connection to the SQL server by initializing the provided ViewModel.
-        /// If the connection or initialization fails, an error message is displayed to the user.
+        /// Handles the click event for creating a new login.
+        /// Opens the LoginWindow and initializes the user selection window upon successful login.
         /// </summary>
-        /// <param name="userSelectViewModel">The ViewModel instance to be initialized with database data.</param>
-        /// <returns>Returns the initialized <see cref="UserSelectViewModel"/> instance.</returns>
-        public async Task<UserSelectViewModel> EtablisSQLConnection(UserSelectViewModel userSelectViewModel)
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">Event data providing details about the click.</param>
+        private async void btnNewLogin_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                await userSelectViewModel.InitializeAsync();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"The following error occurred: {ex.Message}", 
-                                "Failure",
-                                MessageBoxButton.OK,
-                                MessageBoxImage.Error);
-            }
+            LoginWindow loginWindow = new LoginWindow();
+            var result = loginWindow.ShowDialog();
 
-            return userSelectViewModel;
-        }
-
-        /// <summary>
-        /// Monitors changes in the <see cref="PasswordBox"/> and updates the availability of the save command.
-        /// Validates that the input is neither empty nor the default placeholder string.
-        /// </summary>
-        /// <param name="sender">The source of the event, typically the PasswordBox.</param>
-        /// <param name="e">Event data regarding the password change.</param>
-        private void PasswordChanged(object sender, RoutedEventArgs e)
-        {
-            string password = pbPasswordBox.Password;
-
-            if (!string.IsNullOrEmpty(password) && password != "****")
+            if (result == true)
             {
-                btnSaveConnection.IsEnabled = true;
+                sqlConfigurationModel = configurationService.LoadConfigurationFile();
+
+                InitializeComponentsUserSelectedWindow();
+
+                if (userSelectViewModel == null)
+                    return;
+
+                bool success = await userSelectViewModel.InitializeAsync();
+
+                if (success && userSelectViewModel.Persons.Count == 0)
+                {
+                    MessageBox.Show(
+                        "No users were found. Please create a new profile.",
+                        "Information",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                }
             }
             else
             {
-                btnSaveConnection.IsEnabled = false;
+                MessageBox.Show(
+                    "The login was aborted and no new connection was established.",
+                    "Information",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+            }
+        }
+
+        /// <summary>
+        /// Handles the click event for creating a new person.
+        /// Opens the NewPersonWindow and initializes the user selection window upon successful creation.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">Event data providing details about the click.</param>
+        private async void btnNewPerson_Click(object sender, RoutedEventArgs e)
+        {
+            NewPersonWindow newPersonWindow = new NewPersonWindow(databaseService);
+            var result = newPersonWindow.ShowDialog();
+
+            if (result == true)
+            {
+                if (userSelectViewModel == null)
+                    return;
+
+                bool success = await userSelectViewModel.InitializeAsync();
+
+                if (success && userSelectViewModel.Persons.Count == 0)
+                {
+                    MessageBox.Show(
+                        "No users were found. Please create a new profile.",
+                        "Information",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                }
+            }
+            else
+            {
+                MessageBox.Show(
+                    "The login was aborted and no new connection was established.",
+                    "Information",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
             }
         }
 
@@ -238,7 +248,7 @@ namespace BodyTracker.Views
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">Event data providing details about the click.</param>
-        private void LoadUserdata_Click(object sender, RoutedEventArgs e)
+        private void btnLoadUserdata_Click(object sender, RoutedEventArgs e)
         {
             if (userSelectViewModel == null)
             {
@@ -248,9 +258,9 @@ namespace BodyTracker.Views
                                 MessageBoxImage.Information);
                 return;
             }
-            
+
             userSelectViewModel.ConfirmCommand.Execute(null);
-            
+
             if (AppState.SelectedPersonId <= 0)
             {
                 MessageBox.Show("No user has been selected. Please select a user!",
@@ -259,76 +269,45 @@ namespace BodyTracker.Views
                                 MessageBoxImage.Information);
                 return;
             }
-            
+
 
             var main = new MainWindow(databaseService!);
-            
 
             Application.Current.MainWindow = main;
 
             main.Show();
-            
+
             this.Close();
         }
 
-        /// <summary>
-        /// Handles the TextChanged event for the database server input field, validating the entered IP address.
-        /// </summary>
-        /// <remarks>Updates the IsIpValid property based on whether the current text represents a valid
-        /// IP address. This method is intended to be used as an event handler for text input validation
-        /// scenarios.</remarks>
-        /// <param name="sender">The source of the event, typically the database server text input control.</param>
-        /// <param name="e">The event data associated with the text change.</param>
-        private void DbServer_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-            var service = new ConfigrationService();
-            var result = service.checkIPAdressOK(DbServer.Text);
-            this.IsIpValid = result.Item1;
-        }
 
         /// <summary>
-        /// Handles the TextChanged event for the database port input field, updating the port validity state based on
-        /// the entered value.
+        /// Automatically refreshes the measurements whenever the page becomes visible.
+        /// This ensures data consistency when switching between different tabs/pages.
         /// </summary>
-        /// <remarks>This method updates the IsPortValid property to indicate whether the current text
-        /// represents a valid integer port number. This can be used to enable or disable related UI elements or to
-        /// provide user feedback.</remarks>
-        /// <param name="sender">The source of the event, typically the database port text input control.</param>
-        /// <param name="e">The event data associated with the text change.</param>
-        private void DbPort_TextChanged(object sender, TextChangedEventArgs e)
-        {
+        private async void UserSelectPage_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        { 
+            if (!(bool)e.NewValue) return; // e.NewValue is true when the page becomes visible
 
-            if (!int.TryParse(DbPort.Text, out var port)) IsPortValid = false;
-            else IsPortValid = true;
-        }
-
-        /// <summary>
-        /// Intercepts text input to ensure consistent decimal formatting. 
-        /// Automatically replaces a period (".") with a comma (",") in real-time.
-        /// </summary>
-        /// <param name="sender">The source of the event, typically a <see cref="TextBox"/> configured for numeric input.</param>
-        /// <param name="e">The <see cref="TextCompositionEventArgs"/> containing the input text to be processed.</param>
-        /// <remarks>
-        /// This method enhances user experience by allowing the use of the numeric keypad's period key 
-        /// while maintaining compatibility with culture-specific decimal parsing (e.g., German "de-DE").
-        /// It manually manipulates the <see cref="TextBox.Text"/> and manages the <see cref="TextBox.SelectionStart"/> 
-        /// to ensure the cursor position remains intuitive after the replacement.
-        /// </remarks
-        private void Decimal_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            if (e.Text == ".")
+            try
             {
-                if (sender is TextBox tb)
+                await userSelectViewModel.InitializeAsync();
+
+               
+                if (userSelectViewModel?.Persons != null)
                 {
-                    e.Handled = true;
-                    var selStart = tb.SelectionStart;
-                    tb.Text = tb.Text.Insert(selStart, ",");
-                    tb.SelectionStart = selStart + 1;
+                    ICollectionView view = CollectionViewSource.GetDefaultView(userSelectViewModel.Persons);
+                    view.SortDescriptions.Clear();
+                    view.SortDescriptions.Add(new SortDescription(nameof(PersonModel.PersonID), ListSortDirection.Ascending));
+                    view.Refresh();
                 }
             }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Refrehing Errror: {ex.Message}");
+            }
+            
         }
-
 
     }
 }

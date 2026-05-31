@@ -71,7 +71,6 @@ namespace BodyTracker.MVVM.Views
             measurementViewModel = new MeasurementViewModel(databaseService);
             DataContext = measurementViewModel;
 
-            // Wir abonnieren das Event, das feuert, wenn der Nutzer zu dieser Seite wechselt
             this.IsVisibleChanged += MeasurementPage_IsVisibleChanged;
 
         }
@@ -99,11 +98,6 @@ namespace BodyTracker.MVVM.Views
                         view.SortDescriptions.Add(new SortDescription("MeasurementDate", ListSortDirection.Descending));
                         view.Refresh();
                     }
-
-                    //if (MeasurementsGrid != null)
-                    //{
-                    //    MeasurementsGrid.Items.Refresh();
-                    //}
                 }
                 catch (Exception ex)
                 {
@@ -146,14 +140,14 @@ namespace BodyTracker.MVVM.Views
         }
 
 
-        private void SetActualYearClick(object sender, RoutedEventArgs e)
+        private void btnSetActualYear_Click(object sender, RoutedEventArgs e)
         {
             DateTime today = DateTime.Today;
             measurementViewModel.MeanStartDate = new DateTime(today.Year, 1, 1);
             measurementViewModel.MeanEndDate = new DateTime(today.Year, 12, 31);
         }
 
-        private void SetActualMonthClick(object sender, RoutedEventArgs e)
+        private void btnSetActualMonth_Click(object sender, RoutedEventArgs e)
         {
             DateTime today = DateTime.Today;
         
@@ -165,7 +159,7 @@ namespace BodyTracker.MVVM.Views
             measurementViewModel.MeanEndDate = new DateTime(today.Year, today.Month, 1).AddMonths(1).AddDays(-1);
         }
 
-        private void SetActualWeekClick(object sender, RoutedEventArgs e)
+        private void btnSetActualWeek_Click(object sender, RoutedEventArgs e)
         {
             DateTime today = DateTime.Today;
 
@@ -177,9 +171,6 @@ namespace BodyTracker.MVVM.Views
             measurementViewModel.MeanStartDate = startOfWeek;
             measurementViewModel.MeanEndDate = startOfWeek.AddDays(6); // Sunday
         }
-
-
-
 
         /// <summary>
         /// Handles the <see cref="DataGrid.RowEditEnding"/> event to persist modified measurement data to the database.
@@ -197,7 +188,7 @@ namespace BodyTracker.MVVM.Views
             Dispatcher.BeginInvoke(new Action(async () =>
             {        
                     int personId = AppState.SelectedPersonId;
-                    await measurementViewModel.UpsertMeasurementAsync(personId, editedRow);
+                    await measurementViewModel.UpdateMeasurementAsync(personId, editedRow);
             }), DispatcherPriority.Background);
         }
 

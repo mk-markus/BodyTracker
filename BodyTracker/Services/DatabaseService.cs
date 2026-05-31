@@ -1,22 +1,25 @@
 using BodyTracker.MVVM.Models;
+using CommunityToolkit.Mvvm.ComponentModel;
 using MySqlConnector;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace BodyTracker.Services
+
+namespace BodyTracker.Services 
 {
     /// <summary>
     /// Orchestrates all database interactions for the application. 
     /// It manages the connection lifecycle and utilizes a command provider to execute 
     /// operations against the MySQL database.
     /// </summary>
-    public class DatabaseService
+    public partial class DatabaseService : ObservableObject
     {
         /// <summary>
         /// Provides the connection string used to establish communication with the MySQL database server.
-       /// </summary>
+        /// </summary>
         public string sConnectionString { get; private set; }
 
         /// <summary>
@@ -32,10 +35,15 @@ namespace BodyTracker.Services
         /// <param name="sConnectionString">
         /// The full connection string, including server address, database name, and authentication credentials.
         /// </param>
-        public DatabaseService(string sConnectionString) 
-        { 
-            this.sConnectionString = sConnectionString; 
+        public DatabaseService(string sConnectionString)
+        {
+            this.sConnectionString = sConnectionString;
         }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the server connection is established successfully.
+        /// </summary>
+        [ObservableProperty] public bool serverConnectionOK;
 
         /// <summary>
         /// Asynchronously establishes a connection to the SQL server and initializes the database schema.
@@ -47,7 +55,7 @@ namespace BodyTracker.Services
         public async Task InitializeAsync()
         {
             var SqlServerConnection = await EtablishSqlServerConnection();
-            
+
             await using var SqlCommand = new MySqlCommand(DatabaseCommands.CmdCreateTableIfNotExist(), SqlServerConnection);
             await SqlCommand.ExecuteNonQueryAsync();
         }
@@ -126,13 +134,19 @@ namespace BodyTracker.Services
         public async Task<MySqlConnection> EtablishSqlServerConnection()
         {
             var SqlServerConnection = new MySqlConnection(sConnectionString);
-            
+
             try
             {
                 await SqlServerConnection.OpenAsync();
+                if (SqlServerConnection.State == ConnectionState.Open) ServerConnectionOK = true;
+                else ServerConnectionOK = false;
 
             }
-            catch (Exception ex) { MessageBox.Show(ex.Message, "Error"); }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
 
             return SqlServerConnection;
         }
@@ -186,17 +200,17 @@ namespace BodyTracker.Services
                     MetricID = SqlDataReader.GetInt32(0),
                     PersonID = SqlDataReader.GetInt32(1),
                     MeasurementDate = SqlDataReader.GetDateTime(2),
-                    BodyWeight = SqlDataReader.IsDBNull(3)?(float?)null:SqlDataReader.GetFloat(3),
-                    BMI = SqlDataReader.IsDBNull(4)?(float?)null:SqlDataReader.GetFloat(4),
-                    BodyFatPercentage = SqlDataReader.IsDBNull(5)?(float?)null:SqlDataReader.GetFloat(5),
-                    BodyFatPercentageTop = SqlDataReader.IsDBNull(6)?(float?)null:SqlDataReader.GetFloat(6),
-                    BodyFatPercentageBottom = SqlDataReader.IsDBNull(7)?(float?)null:SqlDataReader.GetFloat(7),
-                    BodyMusclePercentage = SqlDataReader.IsDBNull(8)?(float?)null:SqlDataReader.GetFloat(8),
-                    BodyMusclePercentageTop = SqlDataReader.IsDBNull(9)?(float?)null:SqlDataReader.GetFloat(9),
-                    BodyMusclePercentageBottom = SqlDataReader.IsDBNull(10)?(float?)null:SqlDataReader.GetFloat(10),
-                    BodyWaterPercentage = SqlDataReader.IsDBNull(12)?(float?)null:SqlDataReader.GetFloat(12),
-                    BodyBoneMass = SqlDataReader.IsDBNull(11)?(float?)null:SqlDataReader.GetFloat(11),
-                    BodyVisceralFat = SqlDataReader.IsDBNull(13)?(int?)null:SqlDataReader.GetInt32(13)
+                    BodyWeight = SqlDataReader.IsDBNull(3) ? (float?)null : SqlDataReader.GetFloat(3),
+                    BMI = SqlDataReader.IsDBNull(4) ? (float?)null : SqlDataReader.GetFloat(4),
+                    BodyFatPercentage = SqlDataReader.IsDBNull(5) ? (float?)null : SqlDataReader.GetFloat(5),
+                    BodyFatPercentageTop = SqlDataReader.IsDBNull(6) ? (float?)null : SqlDataReader.GetFloat(6),
+                    BodyFatPercentageBottom = SqlDataReader.IsDBNull(7) ? (float?)null : SqlDataReader.GetFloat(7),
+                    BodyMusclePercentage = SqlDataReader.IsDBNull(8) ? (float?)null : SqlDataReader.GetFloat(8),
+                    BodyMusclePercentageTop = SqlDataReader.IsDBNull(9) ? (float?)null : SqlDataReader.GetFloat(9),
+                    BodyMusclePercentageBottom = SqlDataReader.IsDBNull(10) ? (float?)null : SqlDataReader.GetFloat(10),
+                    BodyWaterPercentage = SqlDataReader.IsDBNull(12) ? (float?)null : SqlDataReader.GetFloat(12),
+                    BodyBoneMass = SqlDataReader.IsDBNull(11) ? (float?)null : SqlDataReader.GetFloat(11),
+                    BodyVisceralFat = SqlDataReader.IsDBNull(13) ? (int?)null : SqlDataReader.GetInt32(13)
                 };
             }
             return null;
@@ -225,7 +239,7 @@ namespace BodyTracker.Services
             SqlCommand.Parameters.AddWithValue("@pid", personId);
             SqlCommand.Parameters.AddWithValue("@today", today.Date);
             await using var rdr = await SqlCommand.ExecuteReaderAsync();
-            
+
             if (await rdr.ReadAsync())
             {
                 return new BodyDimensionsModel
@@ -233,10 +247,10 @@ namespace BodyTracker.Services
                     DimensionID = rdr.GetInt32(0),
                     PersonID = rdr.GetInt32(1),
                     MeasurementDate = rdr.GetDateTime(2),
-                    ChestCircumference = rdr.IsDBNull(3)?(float?)null:rdr.GetFloat(3),
-                    WaistCircumference = rdr.IsDBNull(4)?(float?)null:rdr.GetFloat(4),
-                    HipsCircumference = rdr.IsDBNull(5)?(float?)null:rdr.GetFloat(5),
-                    FatTongs = rdr.IsDBNull(6)?(float?)null:rdr.GetFloat(6)
+                    ChestCircumference = rdr.IsDBNull(3) ? (float?)null : rdr.GetFloat(3),
+                    WaistCircumference = rdr.IsDBNull(4) ? (float?)null : rdr.GetFloat(4),
+                    HipsCircumference = rdr.IsDBNull(5) ? (float?)null : rdr.GetFloat(5),
+                    FatTongs = rdr.IsDBNull(6) ? (float?)null : rdr.GetFloat(6)
                 };
             }
             return null;
@@ -251,11 +265,13 @@ namespace BodyTracker.Services
         public async Task InsertBodyMetricAsync(BodyMetricModel bodyMetricModel)
         {
 
+            DateTime finalDate = bodyMetricModel.MeasurementDate.Date.Add(DateTime.Now.TimeOfDay);
+
             var SqlServerConnection = await EtablishSqlServerConnection();
             await using var SqlCommand = new MySqlCommand(DatabaseCommands.CmdInsertPersonMetric(), SqlServerConnection);
 
             SqlCommand.Parameters.AddWithValue("@pid", bodyMetricModel.PersonID);
-            SqlCommand.Parameters.AddWithValue("@dt", bodyMetricModel.MeasurementDate);
+            SqlCommand.Parameters.Add("@dt", (DbType)SqlDbType.DateTime2).Value = finalDate;
             SqlCommand.Parameters.AddWithValue("@gw", (object?)bodyMetricModel.BodyWeight ?? DBNull.Value);
             SqlCommand.Parameters.AddWithValue("@bmi", (object?)bodyMetricModel.BMI ?? DBNull.Value);
             SqlCommand.Parameters.AddWithValue("@kf", (object?)bodyMetricModel.BodyFatPercentage ?? DBNull.Value);
@@ -270,7 +286,6 @@ namespace BodyTracker.Services
 
             await SqlCommand.ExecuteNonQueryAsync();
         }
-
 
 
         /// <summary>
@@ -293,7 +308,6 @@ namespace BodyTracker.Services
             await SqlCommand.ExecuteNonQueryAsync();
         }
 
-
         /// <summary>
         /// Asynchronously retrieves a comprehensive list of all measurements for a specific person, 
         /// combining physiological metrics and physical dimensions into a single view model.
@@ -311,36 +325,36 @@ namespace BodyTracker.Services
         public async Task<List<FullBodyMeasurementDatas>> GetBodyMeasurementAsync(int personId)
         {
             var list = new List<FullBodyMeasurementDatas>();
-            
+
             var SqlServerConnection = await EtablishSqlServerConnection();
             await using var SqlCommand = new MySqlCommand(DatabaseCommands.CmdGetMeasurement(), SqlServerConnection);
-            
+
             SqlCommand.Parameters.AddWithValue("@pid", personId);
-            
+
             await using var SqlDataReader = await SqlCommand.ExecuteReaderAsync();
-            
+
             while (await SqlDataReader.ReadAsync())
             {
                 list.Add(new FullBodyMeasurementDatas
                 {
-                    MetricID = SqlDataReader.IsDBNull(0)?(int?)null:SqlDataReader.GetInt32(0),
-                    DemensionID = SqlDataReader.IsDBNull(1)?(int?)null:SqlDataReader.GetInt32(1),
+                    MetricID = SqlDataReader.IsDBNull(0) ? (int?)null : SqlDataReader.GetInt32(0),
+                    DemensionID = SqlDataReader.IsDBNull(1) ? (int?)null : SqlDataReader.GetInt32(1),
                     MeasurementDate = SqlDataReader.GetDateTime(2),
-                    BodyWeight = SqlDataReader.IsDBNull(3)?(float?)null:SqlDataReader.GetFloat(3),
-                    BMI = SqlDataReader.IsDBNull(4)?(float?)null:SqlDataReader.GetFloat(4),
-                    BodyFatPercentage = SqlDataReader.IsDBNull(5)?(float?)null:SqlDataReader.GetFloat(5),
-                    BodyFatPercentageTop = SqlDataReader.IsDBNull(6)?(float?)null:SqlDataReader.GetFloat(6),
-                    BodyFatPercentageBottom = SqlDataReader.IsDBNull(7)?(float?)null:SqlDataReader.GetFloat(7),
-                    BodyMusclePercentage = SqlDataReader.IsDBNull(8)?(float?)null:SqlDataReader.GetFloat(8),
-                    BodyMusclePercentageTop = SqlDataReader.IsDBNull(9)?(float?)null:SqlDataReader.GetFloat(9),
-                    BodyMusclePercentageBottom = SqlDataReader.IsDBNull(10)?(float?)null:SqlDataReader.GetFloat(10),
-                    BodyWaterPercentage = SqlDataReader.IsDBNull(12)?(float?)null:SqlDataReader.GetFloat(12),
-                    BodyBoneMass = SqlDataReader.IsDBNull(11)?(float?)null:SqlDataReader.GetFloat(11),
-                    BodyVisceralFat = SqlDataReader.IsDBNull(13)?(int?)null:SqlDataReader.GetInt32(13),
-                    ChestCircumference = SqlDataReader.IsDBNull(14)?(float?)null:SqlDataReader.GetFloat(14),
-                    WaistCircumference = SqlDataReader.IsDBNull(15)?(float?)null:SqlDataReader.GetFloat(15),
-                    HipsCircumference = SqlDataReader.IsDBNull(16)?(float?)null:SqlDataReader.GetFloat(16),
-                    FatTong = SqlDataReader.IsDBNull(17)?(float?)null:SqlDataReader.GetFloat(17)
+                    BodyWeight = SqlDataReader.IsDBNull(3) ? (float?)null : SqlDataReader.GetFloat(3),
+                    BMI = SqlDataReader.IsDBNull(4) ? (float?)null : SqlDataReader.GetFloat(4),
+                    BodyFatPercentage = SqlDataReader.IsDBNull(5) ? (float?)null : SqlDataReader.GetFloat(5),
+                    BodyFatPercentageTop = SqlDataReader.IsDBNull(6) ? (float?)null : SqlDataReader.GetFloat(6),
+                    BodyFatPercentageBottom = SqlDataReader.IsDBNull(7) ? (float?)null : SqlDataReader.GetFloat(7),
+                    BodyMusclePercentage = SqlDataReader.IsDBNull(8) ? (float?)null : SqlDataReader.GetFloat(8),
+                    BodyMusclePercentageTop = SqlDataReader.IsDBNull(9) ? (float?)null : SqlDataReader.GetFloat(9),
+                    BodyMusclePercentageBottom = SqlDataReader.IsDBNull(10) ? (float?)null : SqlDataReader.GetFloat(10),
+                    BodyWaterPercentage = SqlDataReader.IsDBNull(12) ? (float?)null : SqlDataReader.GetFloat(12),
+                    BodyBoneMass = SqlDataReader.IsDBNull(11) ? (float?)null : SqlDataReader.GetFloat(11),
+                    BodyVisceralFat = SqlDataReader.IsDBNull(13) ? (int?)null : SqlDataReader.GetInt32(13),
+                    ChestCircumference = SqlDataReader.IsDBNull(14) ? (float?)null : SqlDataReader.GetFloat(14),
+                    WaistCircumference = SqlDataReader.IsDBNull(15) ? (float?)null : SqlDataReader.GetFloat(15),
+                    HipsCircumference = SqlDataReader.IsDBNull(16) ? (float?)null : SqlDataReader.GetFloat(16),
+                    FatTong = SqlDataReader.IsDBNull(17) ? (float?)null : SqlDataReader.GetFloat(17)
                 });
             }
 
@@ -392,7 +406,7 @@ namespace BodyTracker.Services
         /// <param name="fattongs">Skinfold measurement (caliper) value.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous database operation.</returns>
         /// <exception cref="MySqlException">Thrown if the transaction fails or the connection is interrupted.</exception>
-        public async Task UpsertMeasurementAsync(
+        public async Task UpdateMeasurementAsync(
             int personId,
             int? metricId, int? dimensionId,
             DateTime measurementDate,
@@ -469,7 +483,45 @@ namespace BodyTracker.Services
             }
         }
 
- 
+        /// <summary>
+        /// Updates the details of an existing person in the database.
+        /// </summary>
+        /// <param name="PersonId">The identifier of the person to update.</param>
+        /// <param name="firstName">The new first name of the person.</param>
+        /// <param name="lastName">The new last name of the person.</param>
+        /// <param name="birthDate">The new birth date of the person.</param>
+        /// <param name="height">The new height of the person.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task UpdatePersonAsync(int PersonId, string firstName, string lastName, DateTime? birthDate, float height)
+        {
+            await using var conn = await EtablishSqlServerConnection();
+            await using var tx = await conn.BeginTransactionAsync();
+
+            try
+            {
+                await using var cmdUpdatePerson = new MySqlCommand(DatabaseCommands.CmdUpdatePerson(), conn, (MySqlTransaction)tx);
+                cmdUpdatePerson.Parameters.AddWithValue("@pid", PersonId);
+                cmdUpdatePerson.Parameters.AddWithValue("@v", firstName);
+                cmdUpdatePerson.Parameters.AddWithValue("@n", lastName);
+                cmdUpdatePerson.Parameters.AddWithValue("@g", birthDate.HasValue ? birthDate.Value : (object)DBNull.Value);
+                cmdUpdatePerson.Parameters.AddWithValue("@k", height);
+                await cmdUpdatePerson.ExecuteNonQueryAsync();
+                await tx.CommitAsync();
+            }
+            catch
+            {
+                await tx.RollbackAsync();
+                throw;
+            }
+        }
+
+
+        /// <summary>
+        /// Determines whether a measurement exists for a specified person on a given date.
+        /// </summary>
+        /// <param name="dateToCheck">The date to check for an existing measurement.</param>
+        /// <param name="PersonId">The identifier of the person whose measurements are being checked.</param>
+        /// <returns>true if a measurement exists for the specified date and person; otherwise, false.</returns>
         public async Task<bool> IsMeasurementExistingAsync(DateTime dateToCheck, int PersonId)
         {
             var SqlServerConnection = await EtablishSqlServerConnection();
@@ -497,5 +549,7 @@ namespace BodyTracker.Services
 
             return false;
         }
+
+
     }
 }

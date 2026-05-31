@@ -8,12 +8,12 @@ namespace BodyTracker.MVVM.Models
         /// <summary>
         /// Contains the IP Adress ot he SQL Server
         /// </summary>
-        public string ServerIP { get; set; } = "";
+        public string ServerIP { get; set; } = string.Empty;
 
         /// <summary>
         /// Contains the Port Number of the SQL Server --> Default Value 3306
         /// </summary>
-        public int PortNumber { get; set; } = 3306;
+        public string PortNumber { get; set; } = string.Empty;
 
         /// <summary>
         /// Contains the Database Name
@@ -30,14 +30,14 @@ namespace BodyTracker.MVVM.Models
         /// </summary>
         public string PasswordEnc { get; set; } = string.Empty;
         
-        /// <summary>
-        /// Contains the Encraption Key for the password
-        /// </summary>
-        public string Key { get; set; } = string.Empty;
+        ///// <summary>
+        ///// Contains the Encraption Key for the password
+        ///// </summary>
+        //public string Key { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Contains the Initialising vector
-        /// /// </summary>
-        public string IV { get; set; } = string.Empty;
+        ///// <summary>
+        ///// Contains the Initialising vector
+        ///// /// </summary>
+        //public string IV { get; set; } = string.Empty;
     }
 }

@@ -4,7 +4,7 @@
     <Style x:Key="StandardTextBlock" TargetType="TextBlock">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="Black"/>
-        <Setter Property="Padding" Value="8,5"/>
+        <Setter Property="Padding" Value="2"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="FontFamily" Value="Arial"/>
         <Setter Property="TextAlignment" Value="Right"/>
@@ -17,17 +17,29 @@
     <Style x:Key="DescribingTextBlock" TargetType="TextBlock">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="Black"/>
-        <Setter Property="Padding" Value="8,5"/>
+        <Setter Property="Padding" Value="2"/>
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="FontFamily" Value="Arial"/>
         <Setter Property="TextAlignment" Value="Left"/>
         <Setter Property="FontWeight" Value="Normal"/>
         <Setter Property="MinWidth" Value="150"/>
-        <Setter Property="Margin" Value="3"/>
+        <Setter Property="Margin" Value="1"/>
 
     </Style>
 
+    <Style x:Key="StandardTextBlockInfo" TargetType="TextBlock">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="Padding" Value="2"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontFamily" Value="Arial"/>
+        <Setter Property="TextAlignment" Value="Right"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="MinWidth" Value="50"/>
+        <Setter Property="Width" Value="Auto"/>
+        <Setter Property="Margin" Value="1"/>
 
+    </Style>
 
 
 

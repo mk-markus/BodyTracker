@@ -3,8 +3,8 @@ using BodyTracker.Services;
 using BodyTracker.State;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System;
 using System.Collections.ObjectModel;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BodyTracker.ViewModels
@@ -44,28 +44,19 @@ namespace BodyTracker.ViewModels
         [ObservableProperty] private PersonModel? selected;
 
         /// <summary>
-        /// Gets or sets the first name of the person being edited or created.
-        /// Defaults to an empty string to prevent null reference issues during data binding.
+        /// Current Logged in user shown in the UI, retrieved from the SQL configuration.
         /// </summary>
-        [ObservableProperty] private string firstName = string.Empty;
+        [ObservableProperty] private string actualUser = string.Empty;
 
         /// <summary>
-        /// Gets or sets the last name of the person being edited or created.
-        /// Defaults to an empty string.
+        /// Current Database name shown in the UI, retrieved from the SQL configuration.
         /// </summary>
-        [ObservableProperty] private string lastName = string.Empty;
+        [ObservableProperty] private string acutalDatabase = string.Empty;
 
         /// <summary>
-        /// Gets or sets the date of birth for the person.
-        /// Defined as nullable (<see cref="DateTime"/>?) to allow for cases where 
-        /// the date has not yet been selected in the UI.
+        /// Current connection state shown in the UI.
         /// </summary>
-        [ObservableProperty] private DateTime? birthDate = null;
-
-        /// <summary>
-        /// Gets or sets the height of the person, in meters.
-        /// </summary>
-        [ObservableProperty] private float height = 0;
+        [ObservableProperty] private string actualConnectionState = "Not Connected";
 
         /// <summary>
         /// Gets the command responsible for asynchronously loading the list of persons from the database.
@@ -107,17 +98,45 @@ namespace BodyTracker.ViewModels
         {
             databaseService = db;
             LoadCommand = new AsyncRelayCommand(LoadPersonAsync);
-            NewUserCommand = new AsyncRelayCommand(CreatePersonAsync);
             ConfirmCommand = new RelayCommand(ConfirmSelectedPerson);
         }
 
         /// <summary>
         /// initialize the connection to the sql server and loads the person from the table.
         /// </summary>
-        public async Task InitializeAsync()
+        public async Task<bool> InitializeAsync()
         {
-            await databaseService.InitializeAsync();
-            await LoadPersonAsync();
+            try
+            {
+                Selected = null;
+                ActualConnectionState = "Connecting";
+
+                try
+                {
+                    await databaseService.InitializeAsync();
+
+                    ActualConnectionState = databaseService.ServerConnectionOK ? "Connected" : "Not Connected";
+
+                    if (!databaseService.ServerConnectionOK)
+                    {
+                        Persons = new System.Collections.ObjectModel.ObservableCollection<PersonModel>();
+                        return false;
+                    }
+
+                    await LoadPersonAsync();
+                    return true;
+                }
+                catch
+                {
+                    Persons = new System.Collections.ObjectModel.ObservableCollection<PersonModel>();
+                    Selected = null;
+                    ActualConnectionState = "Not Connected";
+                    return false;
+                }
+            }
+            finally
+            {
+            }
         }
 
         /// <summary>
@@ -134,29 +153,9 @@ namespace BodyTracker.ViewModels
         /// </remarks>
         private async Task LoadPersonAsync()
         {
-            Persons.Clear();
             var list = await databaseService.GetPersonsAsync();
-            foreach (var p in list) Persons.Add(p);
-        }
 
-        /// <summary>
-        /// Asynchronously persists a new person record to the database and updates the local state.
-        /// </summary>
-        /// <returns>A task representing the asynchronous creation and selection process.</returns>
-        /// <remarks>
-        /// This method performs the following sequence:
-        /// <list type="number">
-        /// <item><description>Calls the <see cref="DatabaseService"/> to insert the trimmed name and birth date.</description></item>
-        /// <item><description>Refreshes the <see cref="Personen"/> collection from the database to ensure synchronization.</description></item>
-        /// <item><description>Sets the newly created person as the <see cref="Ausgewaehlt"/> item to provide immediate UI feedback.</description></item>
-        /// </list>
-        /// </remarks>
-        private async Task CreatePersonAsync()
-        {
-            var id = await databaseService.CreatePersonAsync(FirstName.Trim(), LastName.Trim(), BirthDate, Height);
-            await LoadPersonAsync();
-            Selected = new PersonModel {    PersonID = id, PersonFirstName = FirstName.Trim(), PersonLastName = LastName.Trim(), 
-                                            PersonBirthDate = BirthDate, PersonHeight = Height };
+            Persons = new System.Collections.ObjectModel.ObservableCollection<PersonModel>(list);
         }
 
         /// <summary>
@@ -177,7 +176,43 @@ namespace BodyTracker.ViewModels
             }
         }
 
+        /// <summary>
+        /// Updates the UI-visible connection information from the persisted SQL configuration.
+        /// This method is intentionally part of the ViewModel so the View only binds to properties.
+        /// </summary>
+        public void UpdateConnectionInfo(SQLConfigurationModel sqlConfigurationModel)
+        {
+            ActualUser = !string.IsNullOrWhiteSpace(sqlConfigurationModel.User) ? CryptoHelper.Unprotect(sqlConfigurationModel.User) : "-";
 
-      
+            AcutalDatabase = !string.IsNullOrWhiteSpace(sqlConfigurationModel.DatabaseName) ? CryptoHelper.Unprotect(sqlConfigurationModel.DatabaseName) : "-";
+
+        }
+
+        /// <summary>
+        /// Asynchronously updates an existing measurement record or inserts a new one into the database.
+        /// This method acts as a wrapper for the data access layer, ensuring that all metric and 
+        /// dimensional data is persisted before triggering a full UI refresh.
+        /// </summary>
+        /// <param name="personId">The unique identifier of the person to whom the measurements belong.</param>
+        /// <param name="row">The view model containing the measurement data to be synchronized.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <remarks>
+        /// The "Upsert" logic (Update or Insert) is determined by the presence of existing IDs 
+        /// within the <paramref name="row"/>. Post-execution, <see cref="ReloadAsync"/> is invoked 
+        /// to ensure the local collection remains consistent with the database state, 
+        /// including any server-generated identifiers.
+        /// </remarks>
+        public async Task UpdatePersonAsync(int personId, PersonModel row)
+        {
+            await databaseService.UpdatePersonAsync(
+                personId,
+                row.PersonFirstName,
+                row.PersonLastName,
+                row.PersonBirthDate,
+                row.PersonHeight
+            );
+
+            await LoadPersonAsync();
+        }
     }
 }

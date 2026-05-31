@@ -129,5 +129,11 @@ CREATE TABLE IF NOT EXISTS tbl_Abmessungen (
             return @"SELECT COUNT(1) FROM tbl_KoerperMetriken WHERE PersonID_FK = @pid AND Messdatum >= @start AND Messdatum < @end";
         }
 
+
+        public string CmdUpdatePerson()
+        {
+            return "UPDATE tbl_Personen SET Vorname=@v, Nachname=@n, Geburtsdatum=@g, Koerpergroesse=@k WHERE ID=@pid";
+        }
+
     }
 }

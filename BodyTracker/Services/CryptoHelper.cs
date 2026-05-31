@@ -13,6 +13,11 @@ namespace BodyTracker.Services
     {
 
         /// <summary>
+        /// Specifies the scope of data protection. Using CurrentUser ensures that only the currently logged-in Windows user can decrypt the data.
+        /// </summary>
+        private static readonly DataProtectionScope Scope = DataProtectionScope.CurrentUser;
+
+        /// <summary>
         /// Encrypts a plain-text string using AES symmetric encryption.
         /// </summary>
         /// <param name="plainText">The sensitive string to be encrypted (e.g., a password).</param>
@@ -69,6 +74,40 @@ namespace BodyTracker.Services
             using var aes = Aes.Create();
             aes.GenerateKey(); aes.GenerateIV();
             return (Convert.ToBase64String(aes.Key), Convert.ToBase64String(aes.IV));
+        }
+
+        /// <summary>
+        /// Encrypts a plain-text string using DPAPI.
+        /// </summary>
+        /// <param name="plainText">The sensitive string to be protected.</param>
+        /// <returns>A Base64-encoded string representing the protected cipher text.</returns>
+        public static string Protect(string plainText)
+        {
+            if (string.IsNullOrEmpty(plainText)) return plainText;
+
+            byte[] plainBytes = Encoding.UTF8.GetBytes(plainText);
+
+            // DPAPI Verschlüsselung (optional könnte hier 'entropy' hinzugefügt werden)
+            byte[] protectedBytes = ProtectedData.Protect(plainBytes, null, Scope);
+
+            return Convert.ToBase64String(protectedBytes);
+        }
+
+        /// <summary>
+        /// Decrypts a DPAPI-protected Base64 string back into its original plain-text.
+        /// </summary>
+        /// <param name="protectedText">The Base64-encoded protected string.</param>
+        /// <returns>The original plain-text string.</returns>
+        public static string Unprotect(string protectedText)
+        {
+            if (string.IsNullOrEmpty(protectedText)) return protectedText;
+
+            byte[] protectedBytes = Convert.FromBase64String(protectedText);
+
+            // DPAPI Entschlüsselung
+            byte[] plainBytes = ProtectedData.Unprotect(protectedBytes, null, Scope);
+
+            return Encoding.UTF8.GetString(plainBytes);
         }
     }
 }
