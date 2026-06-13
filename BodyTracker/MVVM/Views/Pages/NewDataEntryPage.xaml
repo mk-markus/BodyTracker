@@ -1,0 +1,337 @@
+﻿<Page x:Class="BodyTracker.MVVM.Views.NewDataEntryPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:BodyTracker.MVVM.Views"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="NewEntryPage"
+      Background="White"
+      MinHeight="200"
+      MinWidth="500">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+
+        <StackPanel Orientation="Vertical">
+
+            <GroupBox Header="General"
+                      Style="{StaticResource StandardGroupBox}">
+                <Grid>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+
+                    <TextBlock Text="Date:"
+                               Style="{StaticResource StandardTextBlock}"
+                               VerticalAlignment="Center"
+                               Grid.Column="0"
+                               Grid.Row="0"/>
+
+                    <DatePicker FontSize="14"
+                                FontWeight="Normal"
+                                Margin="3"
+                                SelectedDate="{Binding MeasurementDate, Mode=TwoWay, 
+                                               UpdateSourceTrigger=PropertyChanged}"
+                                Grid.Column="1"
+                                Grid.Row="0"
+                                Width="105"/>
+
+
+                    <TextBlock Text="Bodyweight (kg):"
+                               Style="{StaticResource StandardTextBlock}"
+                               Grid.Column="0"
+                               Grid.Row="1"/>
+
+                    <TextBox x:Name="tbWeight"
+                             Text="{Binding BodyWeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             PreviewTextInput="Decimal_PreviewTextInput"
+                             GotKeyboardFocus="SelectAllOnFocus"
+                             Style="{StaticResource NumericValidationStyle}"
+                             Grid.Column="1"
+                             Grid.Row="1"/>
+
+                    <TextBlock Text="BMI:"
+                               Style="{StaticResource StandardTextBlock}"
+                               VerticalAlignment="Center"
+                               Grid.Column="2"
+                               Grid.Row="1"/>
+
+                    <TextBox x:Name="tbBMI"
+                             Text="{Binding Bmi, Mode=TwoWay, 
+                                    UpdateSourceTrigger=PropertyChanged, 
+                                    StringFormat='0.00'}"
+                             PreviewTextInput="Decimal_PreviewTextInput" 
+                             GotKeyboardFocus="SelectAllOnFocus"
+                             Style="{StaticResource NumericValidationStyle}"
+                             IsReadOnly="True"
+                             Grid.Column="3"
+                             Grid.Row="1"/>
+
+                    <TextBlock Text="Body Fat (%):"
+                               Style="{StaticResource StandardTextBlock}"
+                               VerticalAlignment="Center"
+                               Grid.Column="0"
+                               Grid.Row="2"/>
+
+                    <TextBox x:Name="tbFat"
+                             Text="{Binding BodyFatPercentage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             PreviewTextInput="Decimal_PreviewTextInput"
+                             GotKeyboardFocus="SelectAllOnFocus"
+                             Style="{StaticResource NumericValidationStyle}"
+                             Grid.Column="1"
+         Grid.Row="2"/>
+
+
+                    <TextBlock Text="Body Water (%):"
+                               Style="{StaticResource StandardTextBlock}"
+                               VerticalAlignment="Center"
+                               Grid.Column="2"
+                               Grid.Row="2"/>
+
+                    <TextBox Text="{Binding BodyWaterPercentage, Mode=TwoWay, 
+                                    UpdateSourceTrigger=PropertyChanged}"
+                             PreviewTextInput="Decimal_PreviewTextInput" 
+                             GotKeyboardFocus="SelectAllOnFocus"
+                             Style="{StaticResource NumericValidationStyle}"
+                             Grid.Column="3"
+                             Grid.Row="2"/>
+
+                    <TextBlock Text="Muscle Mass (%):"
+                               Style="{StaticResource StandardTextBlock}"
+                               VerticalAlignment="Center"
+                               Grid.Column="0"
+                               Grid.Row="3"/>
+
+                    <TextBox Text="{Binding BodyMusclePercentage, Mode=TwoWay, 
+                                    UpdateSourceTrigger=PropertyChanged}"
+                             PreviewTextInput="Decimal_PreviewTextInput" 
+                             GotKeyboardFocus="SelectAllOnFocus"
+                             Style="{StaticResource NumericValidationStyle}"
+                             Grid.Column="1"
+                             Grid.Row="3"/>
+
+
+                    <TextBlock Text="Bone Mass (kg):"
+                               Style="{StaticResource StandardTextBlock}"
+                               VerticalAlignment="Center"
+                               Grid.Column="2"
+                               Grid.Row="3"/>
+
+                    <TextBox Text="{Binding BodyBoneMass, Mode=TwoWay, 
+                                    UpdateSourceTrigger=PropertyChanged}"
+                             PreviewTextInput="Decimal_PreviewTextInput" 
+                             GotKeyboardFocus="SelectAllOnFocus"                             
+                             Style="{StaticResource NumericValidationStyle}"
+                             Grid.Column="3"
+                             Grid.Row="3"/>
+
+                </Grid>
+
+            </GroupBox>
+
+            <GroupBox Header="Percentage distributions in detail"
+                      Style="{StaticResource StandardGroupBox}">
+
+
+                <Grid>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Body Fat Top (%):"
+                               Style="{StaticResource StandardTextBlock}"
+                               VerticalAlignment="Center"
+                               Grid.Column="0"
+                               Grid.Row="0"/>
+
+                    <TextBox Text="{Binding BodyFatPercentageTop, Mode=TwoWay, 
+                                    UpdateSourceTrigger=PropertyChanged}"
+                             PreviewTextInput="Decimal_PreviewTextInput" 
+                             GotKeyboardFocus="SelectAllOnFocus"
+                             Style="{StaticResource NumericValidationStyle}"
+                             Grid.Column="1"
+                             Grid.Row="0"/>
+
+                    <TextBlock Text="Body Fat Bottom (%):"
+                               Style="{StaticResource StandardTextBlock}"
+                               VerticalAlignment="Center"
+                               Grid.Column="2"
+                               Grid.Row="0"/>
+
+                    <TextBox Text="{Binding BodyFatPercentageBottom, Mode=TwoWay, 
+                                    UpdateSourceTrigger=PropertyChanged}"
+                             PreviewTextInput="Decimal_PreviewTextInput" 
+                             GotKeyboardFocus="SelectAllOnFocus"
+                             Style="{StaticResource NumericValidationStyle}"
+                             Grid.Column="3"
+                             Grid.Row="0"/>
+
+                    <TextBlock Text="Muscle Mass Top (%):"
+                               Style="{StaticResource StandardTextBlock}"
+                               VerticalAlignment="Center"
+                               Grid.Column="0"
+                               Grid.Row="1"/>
+
+                    <TextBox Text="{Binding BodyMusclePercentageTop, Mode=TwoWay, 
+                                    UpdateSourceTrigger=PropertyChanged}"
+                             PreviewTextInput="Decimal_PreviewTextInput" 
+                             GotKeyboardFocus="SelectAllOnFocus"
+                             Style="{StaticResource NumericValidationStyle}"
+                             Grid.Column="1"
+                             Grid.Row="1"/>
+
+                    <TextBlock Text="Muscle Mass Bottom (%):"
+                               Style="{StaticResource StandardTextBlock}"
+                               VerticalAlignment="Center"
+                               Grid.Column="2"
+                               Grid.Row="1"/>
+
+                    <TextBox Text="{Binding BodyMusclePercentageBottom, Mode=TwoWay, 
+                                    UpdateSourceTrigger=PropertyChanged}"
+                             PreviewTextInput="Decimal_PreviewTextInput" 
+                             GotKeyboardFocus="SelectAllOnFocus"
+                             Style="{StaticResource NumericValidationStyle}"
+                             Grid.Column="3"
+                             Grid.Row="1"/>
+
+                    <TextBlock Text="Visceral Fat:"
+                               Style="{StaticResource StandardTextBlock}"
+                               VerticalAlignment="Center"
+                               Grid.Column="0"
+                               Grid.Row="2"/>
+
+                    <TextBox Text="{Binding BodyVisceralFat, Mode=TwoWay, 
+                                    UpdateSourceTrigger=PropertyChanged}"
+                             PreviewTextInput="Decimal_PreviewTextInput" 
+                             GotKeyboardFocus="SelectAllOnFocus"
+                             Style="{StaticResource NumericValidationStyle}"
+                             Grid.Column="1"
+                             Grid.Row="2"/>
+
+                </Grid>
+
+            </GroupBox>
+
+            <GroupBox Header="Body dimensions"
+                      Style="{StaticResource StandardGroupBox}">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+
+
+                    <TextBlock Text="Chest Circumference (cm):"
+                               Style="{StaticResource StandardTextBlock}"
+                               VerticalAlignment="Center"
+                               Grid.Column="0"
+                               Grid.Row="0"/>
+
+                    <TextBox Text="{Binding ChestCircumference,Mode=TwoWay, 
+                                    UpdateSourceTrigger=PropertyChanged}"
+                             PreviewTextInput="Decimal_PreviewTextInput" 
+                             GotKeyboardFocus="SelectAllOnFocus"
+                             Style="{StaticResource NumericValidationStyle}"
+                             Grid.Column="1"
+                             Grid.Row="0"/>
+
+                    <TextBlock Text="Waist Circumference (cm):"
+                               Style="{StaticResource StandardTextBlock}"
+                               VerticalAlignment="Center"
+                               Grid.Column="2"
+                               Grid.Row="0"/>
+
+                    <TextBox Text="{Binding WaistCircumference, Mode=TwoWay, 
+                                    UpdateSourceTrigger=PropertyChanged}"
+                             PreviewTextInput="Decimal_PreviewTextInput" 
+                             GotKeyboardFocus="SelectAllOnFocus"
+                             Style="{StaticResource NumericValidationStyle}"
+                             Grid.Column="3"
+                             Grid.Row="0"/>
+
+                    <TextBlock Text="Hips Circumference (cm):"
+                               Style="{StaticResource StandardTextBlock}"
+                               VerticalAlignment="Center"
+                               Grid.Column="0"
+                               Grid.Row="1"/>
+
+                    <TextBox Text="{Binding HipsCircumference, Mode=TwoWay, 
+                                    UpdateSourceTrigger=PropertyChanged}"
+                             PreviewTextInput="Decimal_PreviewTextInput" 
+                             GotKeyboardFocus="SelectAllOnFocus"
+                             Style="{StaticResource NumericValidationStyle}"
+                             Grid.Column="1"
+                             Grid.Row="1"/>
+
+                    <TextBlock Text="Fat Tongs (mm):"
+                               Style="{StaticResource StandardTextBlock}"
+                               VerticalAlignment="Center"
+                               Grid.Column="2"
+                               Grid.Row="1"/>
+                    
+                    <TextBox Text="{Binding FatTongs, Mode=TwoWay, 
+                                    UpdateSourceTrigger=PropertyChanged}"
+                             PreviewTextInput="Decimal_PreviewTextInput"
+                             GotKeyboardFocus="SelectAllOnFocus"
+                             Style="{StaticResource NumericValidationStyle}"
+                             Grid.Column="3"
+                             Grid.Row="1"/>
+                </Grid>
+
+            </GroupBox>
+
+            <Button Content="Save"
+                    Style="{StaticResource SaveButton}"
+                    Click="OnSaved"
+                    
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Grid.Row="9"
+                    IsEnabled="{Binding IsNewEntryPageFormValid}"/>
+
+            <TextBlock Text="{Binding ValidationMessage}" 
+            Foreground="Red" 
+            Margin="8" 
+            TextWrapping="Wrap"
+            FontSize="20"/>
+
+
+        </StackPanel>
+
+    </ScrollViewer>
+</Page>

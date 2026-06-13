@@ -92,6 +92,8 @@ namespace BodyTracker.MVVM.ViewModels
         /// <param name="value">The new IP address value.</param>
         partial void OnSqlIpAddressChanged(string value)
         {
+            if (!IsIpValid) ValidationMessage = "Invalid IP address.";
+            else ValidationMessage = string.Empty;
             UpdateValidation();
         }
 
@@ -101,6 +103,8 @@ namespace BodyTracker.MVVM.ViewModels
         /// <param name="value"></param>
         partial void OnSqlPortChanged(string value)
         {
+            if (!IsPortValid) ValidationMessage = "Invalid port number (1–65535).";
+            else ValidationMessage = string.Empty;
             UpdateValidation();
         }
 
@@ -110,6 +114,8 @@ namespace BodyTracker.MVVM.ViewModels
         /// <param name="value">The new username value.</param>
         partial void OnSqlUsernameChanged(string value)
         {
+            if (string.IsNullOrWhiteSpace(value)) ValidationMessage = "Username cannot be empty.";
+            else ValidationMessage = string.Empty;
             UpdateValidation();
         }
 
@@ -119,6 +125,8 @@ namespace BodyTracker.MVVM.ViewModels
         /// <param name="value">The new password value.</param>
         partial void OnSqlPasswordChanged(string value)
         {
+            if (string.IsNullOrWhiteSpace(value)) ValidationMessage = "Password cannot be empty.";
+            else ValidationMessage = string.Empty;
             UpdateValidation();
         }
 
@@ -128,6 +136,8 @@ namespace BodyTracker.MVVM.ViewModels
         /// <param name="value">The new database name value.</param>
         partial void OnSqlDatabaseNameChanged(string value)
         {
+            if (string.IsNullOrWhiteSpace(value)) ValidationMessage = "Database name cannot be empty.";
+            else ValidationMessage = string.Empty;
             UpdateValidation();
         }
 
@@ -150,10 +160,10 @@ namespace BodyTracker.MVVM.ViewModels
             var cfg = configurationService.LoadConfigurationFile();
 
             if (!string.IsNullOrEmpty(cfg.User)) SqlUsername = CryptoHelper.Unprotect(cfg.User);
-            if (!string.IsNullOrEmpty(cfg.DatabaseName)) SqlDatabaseName= CryptoHelper.Unprotect(cfg.DatabaseName);
+            if (!string.IsNullOrEmpty(cfg.DatabaseName)) SqlDatabaseName = CryptoHelper.Unprotect(cfg.DatabaseName);
             if (!string.IsNullOrEmpty(cfg.ServerIP)) SqlIpAddress = CryptoHelper.Unprotect(cfg.ServerIP);
-             if (!string.IsNullOrEmpty(cfg.PortNumber)) SqlPort = CryptoHelper.Unprotect(cfg.PortNumber);
-
+            if (!string.IsNullOrEmpty(cfg.PortNumber)) SqlPort = CryptoHelper.Unprotect(cfg.PortNumber);
+            UpdateValidation();
         }
 
         /// <summary>
@@ -161,26 +171,21 @@ namespace BodyTracker.MVVM.ViewModels
         /// </summary>
         private void UpdateValidation()
         {
-            if (string.IsNullOrWhiteSpace(SqlIpAddress) || string.IsNullOrWhiteSpace(SqlPort) ||
-                string.IsNullOrWhiteSpace(SqlUsername) || string.IsNullOrWhiteSpace(SqlPassword) ||
-                string.IsNullOrWhiteSpace(SqlDatabaseName)
-                )
+            // Behalte bereits gesetzte feldspezifische Meldungen, ansonsten generische Meldung setzen
+            if (!IsFormValid)
             {
-                ValidationMessage = "All fields must be filled in.";
-            }
-            else if (!IsIpValid)
-            {
-                ValidationMessage = "Invalid IP address.";
-            }
-            else if (!IsPortValid)
-            {
-                ValidationMessage = "Invalid port number (1–65535).";
+                if (string.IsNullOrEmpty(ValidationMessage))
+                    ValidationMessage = "All fields must be filled in or corrected.";
             }
             else
             {
                 ValidationMessage = string.Empty;
             }
 
+            // Benachrichtige alle abgeleiteten Properties, damit die UI (IsEnabled) aktualisiert wird
+            OnPropertyChanged(nameof(IsIpValid));
+            OnPropertyChanged(nameof(IsPortValid));
+            OnPropertyChanged(nameof(AreFieldsFilled));
             OnPropertyChanged(nameof(IsFormValid));
         }
 
@@ -190,7 +195,6 @@ namespace BodyTracker.MVVM.ViewModels
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task LoginAsync()
         {
-            
             if (!IsFormValid)
             {
                 ValidationMessage = "The form contains errors.";
@@ -200,7 +204,6 @@ namespace BodyTracker.MVVM.ViewModels
             ValidationMessage = string.Empty;
 
             configurationService.SaveCredentials(SqlUsername, SqlPassword, SqlIpAddress, Convert.ToInt16(SqlPort), SqlDatabaseName);
-
         }
     }
 }

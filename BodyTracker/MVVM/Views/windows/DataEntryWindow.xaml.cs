@@ -8,11 +8,11 @@ namespace BodyTracker.Views
 {
     public partial class DataEntryWindow : Window
     {
-        private readonly DataEntryViewModel _vm;
+        private readonly NewDataEntryViewModel _vm;
         public DataEntryWindow(DatabaseService db)
         {
             InitializeComponent();
-            _vm = new DataEntryViewModel(db);
+            _vm = new NewDataEntryViewModel(db);
             DataContext = _vm;
             Loaded += async (s,e) => await _vm.InitializeAsync();
         }
