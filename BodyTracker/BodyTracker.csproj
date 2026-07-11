@@ -8,6 +8,15 @@
     <!--<ApplicationIcon>Icon\ProgramIcon.ico</ApplicationIcon>-->
     
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>False</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <Optimize>False</Optimize>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Images\Body-Fat-Percentage-Calculator-Caliper-Male-Female.jpg" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="Icon\ProgramIcon.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -17,6 +26,11 @@
     <PackageReference Include="MySqlConnector" Version="2.5.0" />
     <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF" Version="2.0.0-rc4" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Images\Body-Fat-Percentage-Calculator-Caliper-Male-Female.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Update="License\AdditionalLicense.txt">

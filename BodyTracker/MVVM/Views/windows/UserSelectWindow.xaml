@@ -67,7 +67,7 @@
                     </Grid>
                 </GroupBox>
                 <GroupBox Header="Menue"
-                            Style="{StaticResource StandardGroupBox}"
+                          Style="{StaticResource StandardGroupBox}"
                           Grid.Column="1">
                     <StackPanel Orientation="Vertical"
                                 VerticalAlignment="Center"
@@ -103,7 +103,7 @@
                             </Grid.RowDefinitions>
 
                             <DataGrid x:Name="PersonGrid" 
-                                Grid.Row="0" 
+                                      Grid.Row="0" 
                                       ItemsSource="{Binding Persons, UpdateSourceTrigger=PropertyChanged}"
                                       SelectedItem="{Binding Selected, 
                                                      Mode=TwoWay}"
@@ -118,7 +118,8 @@
                                       EnableColumnVirtualization="True"
                                       EnableRowVirtualization="True"
                                       Height="110"
-                                      RowEditEnding="PersonsGrid_RowEditEnding">
+                                      RowEditEnding="PersonsGrid_RowEditEnding"
+                                      MouseDoubleClick="PersonGrid_MouseDoubleClick">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="ID"
                                                         Binding="{Binding PersonID}"

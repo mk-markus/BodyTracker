@@ -309,5 +309,10 @@ namespace BodyTracker.Views
             
         }
 
+        private void PersonGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            Debug.WriteLine("Double click on PersonGrid detected.");
+            btnLoadUserdata_Click(sender, e);
+        }
     }
 }

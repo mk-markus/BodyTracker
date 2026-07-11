@@ -38,9 +38,39 @@ namespace BodyTracker.MVVM.Models
         public float? HipsCircumference { get; set; }
 
         /// <summary>
-        /// Contains the value of the Fat Tongs in cm or inch, depends on the structure of the database table or the programm structure.
+        /// Gets or sets the breast skinfold measurement in millimeters or inches, depending on the application or database configuration.
         /// </summary>
-        public float? FatTongs { get; set; }
+        public float? FatTongBreastCrease { get; set; }
+
+        /// <summary>
+        /// Gets or sets the armpit skinfold measurement in millimeters or inches, depending on the application or database configuration.
+        /// </summary>
+        public float? FatTongArmpitCrease { get; set; }
+
+        /// <summary>
+        /// Gets or sets the abdominal skinfold measurement in millimeters or inches, depending on the application or database configuration.
+        /// </summary>
+        public float? FatTongAbdominalCrease { get; set; }
+
+        /// <summary>
+        /// Gets or sets the hip skinfold measurement in millimeters or inches, depending on the application or database configuration.
+        /// </summary>
+        public float? FatTongHipCrease { get; set; }
+
+        /// <summary>
+        /// Gets or sets the thigh skinfold measurement in millimeters or inches, depending on the application or database configuration.
+        /// </summary>
+        public float? FatTongThighCrease { get; set; }
+
+        /// <summary>
+        /// Gets or sets the back (subscapular) skinfold measurement in millimeters or inches, depending on the application or database configuration.
+        /// </summary>
+        public float? FatTongBackCrease { get; set; }
+
+        /// <summary>
+        /// Gets or sets the triceps skinfold measurement in millimeters or inches, depending on the application or database configuration.
+        /// </summary>
+        public float? FatTongTricepsCrease { get; set; }
 
     }
 }

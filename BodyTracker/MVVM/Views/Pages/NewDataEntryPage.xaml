@@ -8,7 +8,7 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="NewEntryPage"
       Background="White"
-      MinHeight="200"
+      MinHeight="500"
       MinWidth="500">
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -75,6 +75,7 @@
                                     StringFormat='0.00'}"
                              PreviewTextInput="Decimal_PreviewTextInput" 
                              GotKeyboardFocus="SelectAllOnFocus"
+                             IsTabStop="False"
                              Style="{StaticResource NumericValidationStyle}"
                              IsReadOnly="True"
                              Grid.Column="3"
@@ -92,7 +93,7 @@
                              GotKeyboardFocus="SelectAllOnFocus"
                              Style="{StaticResource NumericValidationStyle}"
                              Grid.Column="1"
-         Grid.Row="2"/>
+                             Grid.Row="2"/>
 
 
                     <TextBlock Text="Body Water (%):"
@@ -298,7 +299,7 @@
                              Grid.Column="1"
                              Grid.Row="1"/>
 
-                    <TextBlock Text="Fat Tongs (mm):"
+                    <!--<TextBlock Text="Fat Tongs (mm):"
                                Style="{StaticResource StandardTextBlock}"
                                VerticalAlignment="Center"
                                Grid.Column="2"
@@ -310,8 +311,166 @@
                              GotKeyboardFocus="SelectAllOnFocus"
                              Style="{StaticResource NumericValidationStyle}"
                              Grid.Column="3"
-                             Grid.Row="1"/>
+                             Grid.Row="1"/>-->
                 </Grid>
+
+            </GroupBox>
+
+            <GroupBox Header="Fat Tong Measurements"
+                      Style="{StaticResource StandardGroupBox}">
+                <StackPanel Orientation="Vertical">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Text="Breast Crease (mm):"
+                                   Style="{StaticResource StandardTextBlock}"
+                                   VerticalAlignment="Center"
+                                   Grid.Column="0"
+                                   Grid.Row="0"/>
+
+                        <TextBox Text="{Binding FatTongBreastCrease,Mode=TwoWay, 
+                                        UpdateSourceTrigger=PropertyChanged}"
+                                 GotKeyboardFocus="SelectAllOnFocus"
+                                 Style="{StaticResource NumericValidationStyle}"
+                                 Grid.Column="1"
+                                 Grid.Row="0"/>
+
+                        <TextBlock Text="Midaxillary Crease (mm):"
+                                   Style="{StaticResource StandardTextBlock}"
+                                   VerticalAlignment="Center"
+                                   Grid.Column="2"
+                                   Grid.Row="0"/>
+
+                        <TextBox Text="{Binding FatTongArmpitCrease, Mode=TwoWay, 
+                                        UpdateSourceTrigger=PropertyChanged}"
+                                 PreviewTextInput="Decimal_PreviewTextInput" 
+                                 GotKeyboardFocus="SelectAllOnFocus"
+                                 Style="{StaticResource NumericValidationStyle}"
+                                 Grid.Column="3"
+                                 Grid.Row="0"/>
+
+                        <TextBlock Text="Abdominal Crease (mm)"
+                                   Style="{StaticResource StandardTextBlock}"
+                                   VerticalAlignment="Center"
+                                   Grid.Column="0"
+                                   Grid.Row="1"/>
+
+                        <TextBox Text="{Binding FatTongAbdominalCrease, Mode=TwoWay, 
+                                        UpdateSourceTrigger=PropertyChanged}"
+                                 PreviewTextInput="Decimal_PreviewTextInput" 
+                                 GotKeyboardFocus="SelectAllOnFocus"
+                                 Style="{StaticResource NumericValidationStyle}"
+                                 Grid.Column="1"
+                                 Grid.Row="1"/>
+
+                        <TextBlock Text="Hip Crease (mm)"
+                                   Style="{StaticResource StandardTextBlock}"
+                                   VerticalAlignment="Center"
+                                   Grid.Column="2"
+                                   Grid.Row="1"/>
+
+                        <TextBox Text="{Binding FatTongHipCrease, Mode=TwoWay, 
+                                        UpdateSourceTrigger=PropertyChanged}"
+                                 PreviewTextInput="Decimal_PreviewTextInput"
+                                 GotKeyboardFocus="SelectAllOnFocus"
+                                 Style="{StaticResource NumericValidationStyle}"
+                                 Grid.Column="3"
+                                 Grid.Row="1"/>
+
+                        <TextBlock Text="Thigh crease (mm)"
+                                   Style="{StaticResource StandardTextBlock}"
+                                   VerticalAlignment="Center"
+                                   Grid.Column="0"
+                                   Grid.Row="2"/>
+
+                        <TextBox Text="{Binding FatTongThighCrease, Mode=TwoWay, 
+                                        UpdateSourceTrigger=PropertyChanged}"
+                                 PreviewTextInput="Decimal_PreviewTextInput"
+                                 GotKeyboardFocus="SelectAllOnFocus"
+                                 Style="{StaticResource NumericValidationStyle}"
+                                 Grid.Column="1"
+                                 Grid.Row="2"/>
+
+                        <TextBlock Text="Back Crease (mm)"
+                                   Style="{StaticResource StandardTextBlock}"
+                                   VerticalAlignment="Center"
+                                   Grid.Column="2"
+                                   Grid.Row="2"/>
+
+                        <TextBox Text="{Binding FatTongBackCrease, Mode=TwoWay, 
+                                        UpdateSourceTrigger=PropertyChanged}"
+                                 PreviewTextInput="Decimal_PreviewTextInput"
+                                 GotKeyboardFocus="SelectAllOnFocus"
+                                 Style="{StaticResource NumericValidationStyle}"
+                                 Grid.Column="3"
+                                 Grid.Row="2"/>
+                        
+                        <TextBlock Text="Triceps Crease (mm)"
+                                   Style="{StaticResource StandardTextBlock}"
+                                   VerticalAlignment="Center"
+                                   Grid.Column="0"            
+                                   Grid.Row="3"/>
+
+                        <TextBox Text="{Binding FatTongTricepsCrease, Mode=TwoWay,
+                                        UpdateSourceTrigger=PropertyChanged}"
+                                 PreviewTextInput="Decimal_PreviewTextInput"
+                                 GotKeyboardFocus="SelectAllOnFocus"
+                                 Style="{StaticResource NumericValidationStyle}"
+                                 Grid.Column="1"
+                                 Grid.Row="3"/>
+
+                        <!--<TextBlock Grid.Column="4"
+                 Grid.Row="0"
+                 Grid.RowSpan="5"
+                 TextWrapping="Wrap"
+                 TextAlignment="Left"
+                 Foreground="Black"
+                 FontSize="12"
+                 FontWeight="Normal">
+      &#x2022; Breast crease: This measurement point is located in a diagonal skin crease, midway between the armpit and nipple.<LineBreak/>
+      &#x2022; Armpit crease: This measurement point is located in a vertical skin crease at the base of the armpit, at nipple level.<LineBreak/>
+      &#x2022; Abdominal crease: This measurement point is located in a vertical skin crease, approximately two to three centimeters to the right of the navel.<LineBreak/>
+      &#x2022; Hip crease: This measurement point is located in a diagonal skin crease directly at or slightly above the hip bone.<LineBreak/>
+      &#x2022; Thigh crease: This measurement point is located in a vertical skin crease on the front of the thigh, midway between the groin and the knee.<LineBreak/>
+      &#x2022; Back crease: This measurement point is located in a diagonal skin crease in the center of the shoulder blade.<LineBreak/>     
+      &#x2022; Triceps crease: This measurement point is located in a vertical skin crease on the back of the upper arm, approximately one centimeter above the midpoint between the shoulder and elbow."
+      </TextBlock>-->
+
+                    </Grid>
+
+                    <Expander Header="Show Measurements Points"
+                              FontWeight="Bold"
+                              FontSize="20"
+                              FontFamily="Agency FB"
+                              Margin="10">
+                        <Image Source="/Images/Body-Fat-Percentage-Calculator-Caliper-Male-Female.jpg"
+                                     Grid.Column="4"
+                                     Grid.Row="0"
+                                     Grid.RowSpan="6"
+                                     Margin="2"
+                                     Width="Auto"
+                                     Height="Auto"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Left"
+                           MaxHeight="350"/>
+                    </Expander>
+
+                </StackPanel>
 
             </GroupBox>
 

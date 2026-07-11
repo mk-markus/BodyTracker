@@ -150,12 +150,60 @@ namespace BodyTracker.ViewModels
 
 
         /// <summary>
-        /// Gets or sets the fat tong measurement.
+        /// Gets or sets the breast skinfold measurement value.
         /// </summary>
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(IsFatTongsValid))]
-        [NotifyPropertyChangedFor(nameof(IsNewEntryPageFormValid))] 
-        private string fatTongs;
+        [NotifyPropertyChangedFor(nameof(IsFatTongBreastCreaseValid))]
+        [NotifyPropertyChangedFor(nameof(IsNewEntryPageFormValid))]
+        private string fatTongBreastCrease;
+
+        /// <summary>
+        /// Gets or sets the armpit skinfold measurement value.
+        /// </summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsFatTongArmpitCreaseValid))]
+        [NotifyPropertyChangedFor(nameof(IsNewEntryPageFormValid))]
+        private string fatTongArmpitCrease;
+
+        /// <summary>
+        /// Gets or sets the abdominal skinfold measurement value.
+        /// </summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsFatTongAbdominalCreaseValid))]
+        [NotifyPropertyChangedFor(nameof(IsNewEntryPageFormValid))]
+        private string fatTongAbdominalCrease;
+
+        /// <summary>
+        /// Gets or sets the hip skinfold measurement value.
+        /// </summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsFatTongHipCreaseValid))]
+        [NotifyPropertyChangedFor(nameof(IsNewEntryPageFormValid))]
+        private string fatTongHipCrease;
+
+        /// <summary>
+        /// Gets or sets the thigh skinfold measurement value.
+        /// </summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsFatTongThighCreaseValid))]
+        [NotifyPropertyChangedFor(nameof(IsNewEntryPageFormValid))]
+        private string fatTongThighCrease;
+
+        /// <summary>
+        /// Gets or sets the back skinfold measurement value.
+        /// </summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsFatTongBackCreaseValid))]
+        [NotifyPropertyChangedFor(nameof(IsNewEntryPageFormValid))]
+        private string fatTongBackCrease;
+
+        /// <summary>
+        /// Gets or sets the triceps skinfold measurement value.
+        /// </summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsFatTongTricepsCreaseValid))]
+        [NotifyPropertyChangedFor(nameof(IsNewEntryPageFormValid))]
+        private string fatTongTricepsCrease;
 
         /// <summary>
         /// Gets or sets the validation message displayed to the user.
@@ -332,10 +380,76 @@ namespace BodyTracker.ViewModels
         /// updates the skinfold validation message, and notifies the system of changes to the form validity state.
         /// </summary>
         /// <param name="value">The new string representation of the fat tongs measurement.</param>
-        partial void OnFatTongsChanged(string value)
+        partial void OnFatTongBreastCreaseChanged(string value)
         {
             if (TryParseFloat(value, out var v)) ValidationMessage = string.Empty;
-            else ValidationMessage = "Skinfold (fat tongs): Please enter a valid number.";
+            else ValidationMessage = "Skinfold (fat tongs - breast crease): Please enter a valid number.";
+            OnPropertyChanged(nameof(IsNewEntryPageFormValid));
+        }
+
+        /// <summary>
+        /// Handles the validation logic when the armpit skinfold measurement changes.
+        /// </summary>
+        /// <param name="value">The new input value as a string.</param>
+        partial void OnFatTongArmpitCreaseChanged(string value)
+        {
+            if (TryParseFloat(value, out var v)) ValidationMessage = string.Empty;
+            else ValidationMessage = "Skinfold (fat tongs - armpit crease): Please enter a valid number.";
+            OnPropertyChanged(nameof(IsNewEntryPageFormValid));
+        }
+
+        /// <summary>
+        /// Handles the validation logic when the abdominal skinfold measurement changes.
+        /// </summary>
+        /// <param name="value">The new input value as a string.</param>
+        partial void OnFatTongAbdominalCreaseChanged(string value)
+        {
+            if (TryParseFloat(value, out var v)) ValidationMessage = string.Empty;
+            else ValidationMessage = "Skinfold (fat tongs - abdominal crease): Please enter a valid number.";
+            OnPropertyChanged(nameof(IsNewEntryPageFormValid));
+        }
+
+        /// <summary>
+        /// Handles the validation logic when the hip skinfold measurement changes.
+        /// </summary>
+        /// <param name="value">The new input value as a string.</param>
+        partial void OnFatTongHipCreaseChanged(string value)
+        {
+            if (TryParseFloat(value, out var v)) ValidationMessage = string.Empty;
+            else ValidationMessage = "Skinfold (fat tongs - hip crease): Please enter a valid number.";
+            OnPropertyChanged(nameof(IsNewEntryPageFormValid));
+        }
+
+        /// <summary>
+        /// Handles the validation logic when the thigh skinfold measurement changes.
+        /// </summary>
+        /// <param name="value">The new input value as a string.</param>
+        partial void OnFatTongThighCreaseChanged(string value)
+        {
+            if (TryParseFloat(value, out var v)) ValidationMessage = string.Empty;
+            else ValidationMessage = "Skinfold (fat tongs - thigh crease): Please enter a valid number.";
+            OnPropertyChanged(nameof(IsNewEntryPageFormValid));
+        }
+
+        /// <summary>
+        /// Handles the validation logic when the back skinfold measurement changes.
+        /// </summary>
+        /// <param name="value">The new input value as a string.</param>
+        partial void OnFatTongBackCreaseChanged(string value)
+        {
+            if (TryParseFloat(value, out var v)) ValidationMessage = string.Empty;
+            else ValidationMessage = "Skinfold (fat tongs - back crease): Please enter a valid number.";
+            OnPropertyChanged(nameof(IsNewEntryPageFormValid));
+        }
+
+        /// <summary>
+        /// Handles the validation logic when the triceps skinfold measurement changes.
+        /// </summary>
+        /// <param name="value">The new input value as a string.</param>
+        partial void OnFatTongTricepsCreaseChanged(string value)
+        {
+            if (TryParseFloat(value, out var v)) ValidationMessage = string.Empty;
+            else ValidationMessage = "Skinfold (fat tongs - tricep crease): Please enter a valid number.";
             OnPropertyChanged(nameof(IsNewEntryPageFormValid));
         }
 
@@ -422,12 +536,40 @@ namespace BodyTracker.ViewModels
         /// Parses the string representation to a floating-point number and validates its range.
         /// </summary>
         bool IsHipsCircumferenceValid => TryParseFloat(HipsCircumference, out var v) && IsNumberValid(v);
+        /// <summary>
+        /// Gets a value indicating whether the breast skinfold measurement is valid and can be parsed as a float.
+        /// </summary>
+        bool IsFatTongBreastCreaseValid => TryParseFloat(FatTongBreastCrease, out var v) && IsNumberValid(v);
 
         /// <summary>
-        /// Gets a value indicating whether the fat tongs (skinfold caliper) input is valid.
-        /// Parses the string representation to a floating-point number and validates its range.
+        /// Gets a value indicating whether the armpit skinfold measurement is valid and can be parsed as a float.
         /// </summary>
-        bool IsFatTongsValid => TryParseFloat(FatTongs, out var v) && IsNumberValid(v);
+        bool IsFatTongArmpitCreaseValid => TryParseFloat(FatTongArmpitCrease, out var v) && IsNumberValid(v);
+
+        /// <summary>
+        /// Gets a value indicating whether the abdominal skinfold measurement is valid and can be parsed as a float.
+        /// </summary>
+        bool IsFatTongAbdominalCreaseValid => TryParseFloat(FatTongAbdominalCrease, out var v) && IsNumberValid(v);
+
+        /// <summary>
+        /// Gets a value indicating whether the hip skinfold measurement is valid and can be parsed as a float.
+        /// </summary>
+        bool IsFatTongHipCreaseValid => TryParseFloat(FatTongHipCrease, out var v) && IsNumberValid(v);
+
+        /// <summary>
+        /// Gets a value indicating whether the thigh skinfold measurement is valid and can be parsed as a float.
+        /// </summary>
+        bool IsFatTongThighCreaseValid => TryParseFloat(FatTongThighCrease, out var v) && IsNumberValid(v);
+
+        /// <summary>
+        /// Gets a value indicating whether the back skinfold measurement is valid and can be parsed as a float.
+        /// </summary>
+        bool IsFatTongBackCreaseValid => TryParseFloat(FatTongBackCrease, out var v) && IsNumberValid(v);
+
+        /// <summary>
+        /// Gets a value indicating whether the triceps skinfold measurement is valid and can be parsed as a float.
+        /// </summary>
+        bool IsFatTongTricepsCreaseValid => TryParseFloat(FatTongTricepsCrease, out var v) && IsNumberValid(v);
 
         /// <summary>
         /// Gets a value indicating whether the entire form is valid.
@@ -438,7 +580,10 @@ namespace BodyTracker.ViewModels
                                                IsBodyMusclePercentageBottomValid && IsBodyWaterPercentageValid &&
                                                IsBodyBoneMassValid && IsBodyVisceralFatValid &&
                                                IsChestCircumferenceValid && IsWaistCircumferenceValid &&
-                                               IsHipsCircumferenceValid && IsFatTongsValid;
+                                               IsHipsCircumferenceValid && IsFatTongBreastCreaseValid &&
+                                               IsFatTongArmpitCreaseValid && IsFatTongAbdominalCreaseValid &&
+                                               IsFatTongHipCreaseValid && IsFatTongThighCreaseValid &&
+                                               IsFatTongBackCreaseValid && IsFatTongTricepsCreaseValid;
 
         /// <summary>
         /// Validates whether the specified floating-point value falls within the acceptable range.
@@ -506,7 +651,13 @@ namespace BodyTracker.ViewModels
             ChestCircumference = lastA?.ChestCircumference.ToString() ?? string.Empty;
             WaistCircumference = lastA?.WaistCircumference.ToString() ?? string.Empty;
             HipsCircumference = lastA?.HipsCircumference.ToString() ?? string.Empty;
-            FatTongs = lastA?.FatTongs.ToString() ?? string.Empty;
+            FatTongBreastCrease = lastA?.FatTongBreastCrease.ToString() ?? string.Empty;
+            FatTongArmpitCrease = lastA?.FatTongArmpitCrease.ToString() ?? string.Empty;
+            FatTongAbdominalCrease = lastA?.FatTongAbdominalCrease.ToString() ?? string.Empty;
+            FatTongHipCrease = lastA?.FatTongHipCrease.ToString() ?? string.Empty;
+            FatTongThighCrease = lastA?.FatTongThighCrease.ToString() ?? string.Empty;
+            FatTongBackCrease = lastA?.FatTongBackCrease.ToString() ?? string.Empty;
+            FatTongTricepsCrease = lastA?.FatTongTricepsCrease.ToString() ?? string.Empty;
         }
 
         /// <summary>
@@ -539,7 +690,13 @@ namespace BodyTracker.ViewModels
                TryParseFloat(ChestCircumference, out var chestCircumference) &&
                TryParseFloat(WaistCircumference, out var waistCircumference) &&
                TryParseFloat(HipsCircumference, out var hipsCircumference) &&
-               TryParseFloat(FatTongs, out var fatTongs))
+               TryParseFloat(FatTongBreastCrease, out var fatTongBreastCrease) &&
+               TryParseFloat(FatTongTricepsCrease, out var fatTongTricepsCrease) &&
+               TryParseFloat(FatTongArmpitCrease, out var fatTongArmpitCrease) &&
+               TryParseFloat(FatTongAbdominalCrease, out var fatTongAbdominalCrease) &&
+               TryParseFloat(FatTongHipCrease, out var fatTongHipCrease) &&
+               TryParseFloat(FatTongThighCrease, out var fatTongThighCrease) &&
+               TryParseFloat(FatTongBackCrease, out var fatTongBackCrease))
             {
                 var bodyMetric = new BodyMetricModel
                 {
@@ -565,7 +722,13 @@ namespace BodyTracker.ViewModels
                     ChestCircumference = chestCircumference,
                     WaistCircumference = waistCircumference,
                     HipsCircumference = hipsCircumference,
-                    FatTongs = fatTongs
+                    FatTongBreastCrease = fatTongBreastCrease,
+                    FatTongTricepsCrease = fatTongTricepsCrease,
+                    FatTongArmpitCrease = fatTongArmpitCrease,
+                    FatTongAbdominalCrease = fatTongAbdominalCrease,
+                    FatTongHipCrease = fatTongHipCrease,
+                    FatTongThighCrease = fatTongThighCrease,
+                    FatTongBackCrease = fatTongBackCrease
                 };
                 bool measurementAlreadyExists = await databaseService.IsMeasurementExistingAsync(bodyMetric.MeasurementDate, bodyMetric.PersonID);
 

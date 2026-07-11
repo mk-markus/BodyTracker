@@ -6,10 +6,9 @@ using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Documents;
+using System.Windows;
 
 namespace BodyTracker.ViewModels
 {
@@ -60,7 +59,7 @@ namespace BodyTracker.ViewModels
         /// <summary>
         /// Gets or sets the mean start date used for calculations or scheduling.
         /// </summary>
-        [ObservableProperty] private DateTime meanStartDate = new DateTime(2025,1,1);
+        [ObservableProperty] private DateTime meanStartDate = new DateTime(2025, 1, 1);
 
         /// <summary>
         /// Gets or sets the mean end date for the operation.
@@ -195,7 +194,7 @@ namespace BodyTracker.ViewModels
             if (SelectedMeasurement.DemensionID.HasValue) await databaseServerice.DeleteBodyDimensionAsync(SelectedMeasurement.DemensionID.Value);
             await ReloadAsync();
         }
-        
+
         /// <summary>
         /// Asynchronously updates an existing measurement record or inserts a new one into the database.
         /// This method acts as a wrapper for the data access layer, ensuring that all metric and 
@@ -214,11 +213,11 @@ namespace BodyTracker.ViewModels
         {
             await databaseServerice.UpdateMeasurementAsync(
                 personId,
-                row.MetricID, 
+                row.MetricID,
                 row.DemensionID,
                 row.MeasurementDate,
-                row.BodyWeight, 
-                row.BMI,
+                row.BodyWeight,
+                row.BMI=CalculateBmi((float)row.BodyWeight, (float)AppState.SelectedPersonHeight),
                 row.BodyFatPercentage,
                 row.BodyFatPercentageTop,
                 row.BodyFatPercentageBottom,
@@ -231,7 +230,13 @@ namespace BodyTracker.ViewModels
                 row.ChestCircumference,
                 row.WaistCircumference,
                 row.HipsCircumference,
-                row.FatTong
+                row.FatTongBreastCrease,
+                row.FatTongArmpitCrease,
+                row.FatTongAbdominalCrease,
+                row.FatTongHipCrease,
+                row.FatTongThighCrease,
+                row.FatTongBackCrease,
+                row.FatTongTricepsCrease
             );
 
             await ReloadAsync();
@@ -283,6 +288,13 @@ namespace BodyTracker.ViewModels
             if (ordered.Count == 0)
                 return new ObservableCollection<FullBodyMeasurementDatas>();
 
+            // Wir berechnen den KFA für jeden Tag einzeln und bilden dann den Durchschnitt
+            var kfaValues = ordered
+                .Select(d => CalculateKFA7PointCaliperForEntry(d, true, 36))
+                .Where(kfa => kfa > 0)
+                .ToList();
+
+
             var result = new FullBodyMeasurementDatas();
 
             /* 
@@ -308,9 +320,66 @@ namespace BodyTracker.ViewModels
             result.ChestCircumference = GetFilteredAverage(ordered.Select(x => x.ChestCircumference));
             result.WaistCircumference = GetFilteredAverage(ordered.Select(x => x.WaistCircumference));
             result.HipsCircumference = GetFilteredAverage(ordered.Select(x => x.HipsCircumference));
-            result.FatTong = GetFilteredAverage(ordered.Select(x => x.FatTong));
+            result.FatTongBreastCrease = GetFilteredAverage(ordered.Select(x => x.FatTongBreastCrease));
+            result.FatTongArmpitCrease = GetFilteredAverage(ordered.Select(x => x.FatTongArmpitCrease));
+            result.FatTongAbdominalCrease = GetFilteredAverage(ordered.Select(x => x.FatTongAbdominalCrease));
+            result.FatTongHipCrease = GetFilteredAverage(ordered.Select(x => x.FatTongHipCrease));
+            result.FatTongThighCrease = GetFilteredAverage(ordered.Select(x => x.FatTongThighCrease));
+            result.FatTongBackCrease = GetFilteredAverage(ordered.Select(x => x.FatTongBackCrease));
+            result.CaliperBodyFatPercentage = kfaValues.Any() ? kfaValues.Average() : 0f;
 
             return new ObservableCollection<FullBodyMeasurementDatas> { result };
+        }
+
+        /// <summary>
+        /// Calculates the body fat percentage (BFP) using the Jackson & Pollock 7-site caliper method.
+        /// The function determines body density based on gender and age, then converts it 
+        /// into a percentage value using the Siri equation.
+        /// </summary>
+        /// <param name="d">The object containing the 7 skinfold measurement values.</param>
+        /// <param name="male">Specifies whether the calculation is for a male (true) or female (false).</param>
+        /// <param name="age">The age of the individual in years.</param>
+        /// <returns>The calculated body fat percentage; returns 0 if any measurement values are missing or invalid.</returns>
+        private float CalculateKFA7PointCaliperForEntry(FullBodyMeasurementDatas d, bool male, int age)
+        {
+            // Collect the 7 values for this specific day
+            float[] values = {
+                         d.FatTongBreastCrease ?? 0, d.FatTongArmpitCrease ?? 0,
+                         d.FatTongAbdominalCrease ?? 0, d.FatTongHipCrease ?? 0,
+                         d.FatTongThighCrease ?? 0, d.FatTongBackCrease ?? 0,
+                         d.FatTongTricepsCrease ?? 0};
+
+            // If any value is missing (0), the measurement for this day is considered invalid
+            if (values.Any(v => v <= 0)) return 0f;
+
+            float S = values.Sum();
+            float d_density;
+
+            // Jackson & Pollock formulas
+            if (male)
+            {
+                d_density = 1.112f - (0.00043499f * S) + (0.00000055f * (S * S)) - (0.00028826f * age);
+            }
+            else
+            {
+                // Correct coefficients for women
+                d_density = 1.097f - (0.00046971f * S) + (0.00000056f * (S * S)) - (0.00012828f * age);
+            }
+
+            // Siri equation to convert density into body fat percentage
+            return (495f / d_density) - 450f;
+        }
+
+        /// <summary>
+        /// Calculates the Body Mass Index (BMI) based on the specified weight and height.
+        /// </summary>
+        /// <param name="weight">The weight of the individual, in kilograms.</param>
+        /// <param name="height">The height of the individual, in meters. Must be greater than zero.</param>
+        /// <returns>The calculated BMI value as a floating-point number.</returns>
+        public float CalculateBmi(float weight, float height)
+        {
+            if (height <= 0) MessageBox.Show("Height must be greater than zero.", nameof(height), MessageBoxButton.OK, MessageBoxImage.Error);
+            return weight / (height * height);
         }
     }
 }

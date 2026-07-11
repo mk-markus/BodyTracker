@@ -250,7 +250,13 @@ namespace BodyTracker.Services
                     ChestCircumference = rdr.IsDBNull(3) ? (float?)null : rdr.GetFloat(3),
                     WaistCircumference = rdr.IsDBNull(4) ? (float?)null : rdr.GetFloat(4),
                     HipsCircumference = rdr.IsDBNull(5) ? (float?)null : rdr.GetFloat(5),
-                    FatTongs = rdr.IsDBNull(6) ? (float?)null : rdr.GetFloat(6)
+                    FatTongBreastCrease = rdr.IsDBNull(6) ? (float?)null : rdr.GetFloat(6),
+                    FatTongArmpitCrease = rdr.IsDBNull(7) ? (float?)null : rdr.GetFloat(7),
+                    FatTongAbdominalCrease = rdr.IsDBNull(8) ? (float?)null : rdr.GetFloat(8),
+                    FatTongHipCrease = rdr.IsDBNull(9) ? (float?)null : rdr.GetFloat(9),
+                    FatTongThighCrease = rdr.IsDBNull(10) ? (float?)null : rdr.GetFloat(10),
+                    FatTongBackCrease = rdr.IsDBNull(11) ? (float?)null : rdr.GetFloat(11),
+                    FatTongTricepsCrease = rdr.IsDBNull(12) ? (float?)null : rdr.GetFloat(12)
                 };
             }
             return null;
@@ -287,7 +293,6 @@ namespace BodyTracker.Services
             await SqlCommand.ExecuteNonQueryAsync();
         }
 
-
         /// <summary>
         /// Asynchronously inserts a new body dimension record (circumferences) into the database.
         /// </summary>
@@ -303,7 +308,13 @@ namespace BodyTracker.Services
             SqlCommand.Parameters.AddWithValue("@br", (object?)bodyDemensionModel.ChestCircumference ?? DBNull.Value);
             SqlCommand.Parameters.AddWithValue("@ba", (object?)bodyDemensionModel.WaistCircumference ?? DBNull.Value);
             SqlCommand.Parameters.AddWithValue("@hu", (object?)bodyDemensionModel.HipsCircumference ?? DBNull.Value);
-            SqlCommand.Parameters.AddWithValue("@fz", (object?)bodyDemensionModel.FatTongs ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@fzbreast", (object?)bodyDemensionModel.FatTongBreastCrease ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@fzarmpit", (object?)bodyDemensionModel.FatTongArmpitCrease ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@fzabdomen", (object?)bodyDemensionModel.FatTongAbdominalCrease ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@fzhip", (object?)bodyDemensionModel.FatTongHipCrease ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@fzthigh", (object?)bodyDemensionModel.FatTongThighCrease ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@fzback", (object?)bodyDemensionModel.FatTongBackCrease ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@fztricep", (object?)bodyDemensionModel.FatTongTricepsCrease ?? DBNull.Value);
 
             await SqlCommand.ExecuteNonQueryAsync();
         }
@@ -354,7 +365,13 @@ namespace BodyTracker.Services
                     ChestCircumference = SqlDataReader.IsDBNull(14) ? (float?)null : SqlDataReader.GetFloat(14),
                     WaistCircumference = SqlDataReader.IsDBNull(15) ? (float?)null : SqlDataReader.GetFloat(15),
                     HipsCircumference = SqlDataReader.IsDBNull(16) ? (float?)null : SqlDataReader.GetFloat(16),
-                    FatTong = SqlDataReader.IsDBNull(17) ? (float?)null : SqlDataReader.GetFloat(17)
+                    FatTongBreastCrease = SqlDataReader.IsDBNull(17) ? (float?)null : SqlDataReader.GetFloat(17),
+                    FatTongArmpitCrease = SqlDataReader.IsDBNull(18) ? (float?)null : SqlDataReader.GetFloat(18),
+                    FatTongAbdominalCrease = SqlDataReader.IsDBNull(19) ? (float?)null : SqlDataReader.GetFloat(19),
+                    FatTongHipCrease = SqlDataReader.IsDBNull(20) ? (float?)null : SqlDataReader.GetFloat(20),
+                    FatTongThighCrease = SqlDataReader.IsDBNull(21) ? (float?)null : SqlDataReader.GetFloat(21),
+                    FatTongBackCrease = SqlDataReader.IsDBNull(22) ? (float?)null : SqlDataReader.GetFloat(22),
+                    FatTongTricepsCrease = SqlDataReader.IsDBNull(23) ? (float?)null : SqlDataReader.GetFloat(23)
                 });
             }
 
@@ -411,7 +428,8 @@ namespace BodyTracker.Services
             int? metricId, int? dimensionId,
             DateTime measurementDate,
             float? bodyWeight, float? bmi, float? fat, float? fato, float? fatu, float? muscle, float? muscleo, float? muscleu, float? bodyw, float? bodyb, int? visceralFat,
-            float? chest, float? waist, float? hips, float? fattongs)
+            float? chest, float? waist, float? hips, float? fatTongBreastCrease, float? fatTongArmpitCrease, float? fatTongAbdominalCrease, 
+            float? fatTongHipCrease, float? fatTongThighCrease, float? fatTongBackCrease, float? fatTongTricepsCrease)
         {
             await using var conn = await EtablishSqlServerConnection();
             await using var tx = await conn.BeginTransactionAsync();
@@ -459,7 +477,13 @@ namespace BodyTracker.Services
                     cmdUpdateDim.Parameters.AddWithValue("@br", (object?)chest ?? DBNull.Value);
                     cmdUpdateDim.Parameters.AddWithValue("@ba", (object?)waist ?? DBNull.Value);
                     cmdUpdateDim.Parameters.AddWithValue("@hu", (object?)hips ?? DBNull.Value);
-                    cmdUpdateDim.Parameters.AddWithValue("@fz", (object?)fattongs ?? DBNull.Value);
+                    cmdUpdateDim.Parameters.AddWithValue("@fzbreast", (object?)fatTongBreastCrease ?? DBNull.Value);
+                    cmdUpdateDim.Parameters.AddWithValue("@fzarmpit", (object?)fatTongArmpitCrease ?? DBNull.Value);
+                    cmdUpdateDim.Parameters.AddWithValue("@fzabdomen", (object?)fatTongAbdominalCrease ?? DBNull.Value);
+                    cmdUpdateDim.Parameters.AddWithValue("@fzhip", (object?)fatTongHipCrease ?? DBNull.Value);
+                    cmdUpdateDim.Parameters.AddWithValue("@fzthigh", (object?)fatTongThighCrease ?? DBNull.Value);
+                    cmdUpdateDim.Parameters.AddWithValue("@fzback", (object?)fatTongBackCrease ?? DBNull.Value);
+                    cmdUpdateDim.Parameters.AddWithValue("@fztricep", (object?)fatTongTricepsCrease ?? DBNull.Value);
                     await cmdUpdateDim.ExecuteNonQueryAsync();
                 }
                 else
@@ -470,7 +494,13 @@ namespace BodyTracker.Services
                     cmdInsertDim.Parameters.AddWithValue("@br", (object?)chest ?? DBNull.Value);
                     cmdInsertDim.Parameters.AddWithValue("@ba", (object?)waist ?? DBNull.Value);
                     cmdInsertDim.Parameters.AddWithValue("@hu", (object?)hips ?? DBNull.Value);
-                    cmdInsertDim.Parameters.AddWithValue("@fz", (object?)fattongs ?? DBNull.Value);
+                    cmdInsertDim.Parameters.AddWithValue("@fzbrust", (object?)fatTongBreastCrease ?? DBNull.Value);
+                    cmdInsertDim.Parameters.AddWithValue("@fzarmpit", (object?)fatTongArmpitCrease ?? DBNull.Value);
+                    cmdInsertDim.Parameters.AddWithValue("@fzabdomen", (object?)fatTongAbdominalCrease ?? DBNull.Value);
+                    cmdInsertDim.Parameters.AddWithValue("@fzhip", (object?)fatTongHipCrease ?? DBNull.Value);
+                    cmdInsertDim.Parameters.AddWithValue("@fzthigh", (object?)fatTongThighCrease ?? DBNull.Value);
+                    cmdInsertDim.Parameters.AddWithValue("@fzback", (object?)fatTongBackCrease ?? DBNull.Value);
+                    cmdInsertDim.Parameters.AddWithValue("@fztriceps", (object?)fatTongTricepsCrease ?? DBNull.Value);
                     await cmdInsertDim.ExecuteNonQueryAsync();
                 }
 

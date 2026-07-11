@@ -41,7 +41,13 @@ CREATE TABLE IF NOT EXISTS tbl_Abmessungen (
     Brustumfang_cm DECIMAL(7,2),
     Bauchumfang_cm DECIMAL(7,2),
     Hueftumfang_cm DECIMAL(7,2),
-    Fettzange_mm DECIMAL(7,2),
+    Brustfalte_mm DECIMAL(7,2),
+    Achselfalte_mm DECIMAL(7,2),
+    Bauchfalte_mm DECIMAL(7,2),
+    Hüftfalte_mm DECIMAL(7,2),
+    Oberschenkelfalte_mm DECIMAL(7,2),
+    Rückenfalte_mm DECIMAL(7,2),
+    Trizepsfalte_mm DECIMAL(7,2),
     CONSTRAINT FK_PersonAbmessung FOREIGN KEY (PersonID_FK) REFERENCES tbl_Personen (ID) ON DELETE CASCADE
 );";
         }
@@ -58,9 +64,10 @@ CREATE TABLE IF NOT EXISTS tbl_Abmessungen (
 
         public string CmdGetLastPersonDimension()
         {
-            return @"SELECT AbmessungID, PersonID_FK, Messdatum, Brustumfang_cm, Bauchumfang_cm, Hueftumfang_cm, Fettzange_mm
+            return @"SELECT AbmessungID, PersonID_FK, Messdatum, Brustumfang_cm, Bauchumfang_cm, Hueftumfang_cm, Brustfalte_mm, Achselfalte_mm, Bauchfalte_mm, 
+                    Hüftfalte_mm, Oberschenkelfalte_mm, Rückenfalte_mm, Trizepsfalte_mm
                         FROM tbl_Abmessungen
-                        WHERE PersonID_FK=@pid AND DATE(Messdatum) < @today
+                        WHERE PersonID_FK=@pid AND DATE(Messdatum) <= @today
                         ORDER BY Messdatum DESC LIMIT 1";
         }
 
@@ -69,7 +76,7 @@ CREATE TABLE IF NOT EXISTS tbl_Abmessungen (
             return @"SELECT MetrikID, PersonID_FK, Messdatum, Gewicht_kg, BMI, Koerperfett_Prozent, Koerperfett_oben_Prozent, Koerperfett_unten_Prozent,
                             Muskelmasse_Prozent, Muskelmasse_oben_Prozent, Muskelmasse_unten_Prozent, Koerperknochen_Masse, Koerperwasser_Prozent, Viszeralfett
                         FROM tbl_KoerperMetriken
-                        WHERE PersonID_FK=@pid AND DATE(Messdatum) < @today
+                        WHERE PersonID_FK=@pid AND DATE(Messdatum) <= @today
                         ORDER BY Messdatum DESC LIMIT 1";
         }
 
@@ -78,7 +85,7 @@ CREATE TABLE IF NOT EXISTS tbl_Abmessungen (
             return @"SELECT m.MetrikID, a.AbmessungID, m.Messdatum, m.Gewicht_kg, m.BMI, 
                 m.Koerperfett_Prozent, m.Koerperfett_oben_Prozent, m.Koerperfett_unten_Prozent, 
                 m.Muskelmasse_Prozent, m.Muskelmasse_oben_Prozent, m.Muskelmasse_unten_Prozent, m.Koerperknochen_Masse, m.Koerperwasser_Prozent, m.Viszeralfett,
-                a.Brustumfang_cm, a.Bauchumfang_cm, a.Hueftumfang_cm, a.Fettzange_mm
+                a.Brustumfang_cm, a.Bauchumfang_cm, a.Hueftumfang_cm, a.Brustfalte_mm, a.Achselfalte_mm, a.Bauchfalte_mm, a.Hüftfalte_mm, a.Oberschenkelfalte_mm, a.Rückenfalte_mm, a.Trizepsfalte_mm
             FROM tbl_KoerperMetriken m
             LEFT JOIN tbl_Abmessungen a ON DATE(m.Messdatum) = DATE(a.Messdatum) AND a.PersonID_FK = m.PersonID_FK
             WHERE m.PersonID_FK = @pid
@@ -93,8 +100,9 @@ CREATE TABLE IF NOT EXISTS tbl_Abmessungen (
         public string CmdInsertPersonDimension()
         {
             return @"INSERT INTO tbl_Abmessungen
-                        (PersonID_FK, Messdatum, Brustumfang_cm, Bauchumfang_cm, Hueftumfang_cm, Fettzange_mm)
-                        VALUES (@pid, @dt, @br, @ba, @hu, @fz)";
+                        (PersonID_FK, Messdatum, Brustumfang_cm, Bauchumfang_cm, Hueftumfang_cm, Brustfalte_mm, Achselfalte_mm, Bauchfalte_mm, Hüftfalte_mm, Oberschenkelfalte_mm, 
+                         Rückenfalte_mm, Trizepsfalte_mm)
+                        VALUES (@pid, @dt, @br, @ba, @hu, @fzbreast, @fzarmpit, @fzabdomen, @fzhip, @fzthigh, @fzback, @fztricep)";
         }
 
         public string CmdInsertPersonMetric()
@@ -121,7 +129,8 @@ CREATE TABLE IF NOT EXISTS tbl_Abmessungen (
         
         public string CmdUpdatePersonDimension()
         {
-            return @"UPDATE tbl_Abmessungen SET Brustumfang_cm=@br, Bauchumfang_cm=@ba, Hueftumfang_cm=@hu, Fettzange_mm=@fz WHERE AbmessungID=@aid;";
+            return @"UPDATE tbl_Abmessungen SET Brustumfang_cm=@br, Bauchumfang_cm=@ba, Hueftumfang_cm=@hu, Brustfalte_mm=@fzbreast, Achselfalte_mm=@fzarmpit,
+                    Bauchfalte_mm=@fzabdomen, Hüftfalte_mm=@fzhip, Oberschenkelfalte_mm=@fzthigh, Rückenfalte_mm=@fzback, Trizepsfalte_mm=@fztricep WHERE AbmessungID=@aid;";
         }
 
         public string CmdCheckIfPersonHasMeasurementsExists()

@@ -102,8 +102,32 @@
                                             Binding="{Binding HipsCircumference, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"
                                             CellStyle="{StaticResource DataGrid_CellStyle}"/>
 
-                        <DataGridTextColumn Header="Fat Tongs (mm)" 
-                                            Binding="{Binding FatTong, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"
+                        <DataGridTextColumn Header="Fat Tong Breast Crease (mm)" 
+                                            Binding="{Binding FatTongBreastCrease, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"
+                                            CellStyle="{StaticResource DataGrid_CellStyle}"/>
+
+                        <DataGridTextColumn Header="Fat Tong Midaxillary Crease (mm):" 
+                                            Binding="{Binding FatTongArmpitCrease, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"
+                                            CellStyle="{StaticResource DataGrid_CellStyle}"/>
+
+                        <DataGridTextColumn Header="Fat Tong Abdominal Crease (mm)" 
+                                            Binding="{Binding FatTongAbdominalCrease, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"
+                                            CellStyle="{StaticResource DataGrid_CellStyle}"/>
+
+                        <DataGridTextColumn Header="Fat Tong Hip Crease (mm)" 
+                                            Binding="{Binding FatTongHipCrease, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"
+                                            CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                        
+                        <DataGridTextColumn Header="Fat Tong Thigh Crease (mm)" 
+                                            Binding="{Binding FatTongThighCrease, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"
+                                            CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                        
+                        <DataGridTextColumn Header="Fat Tong back Crease (mm)" 
+                                            Binding="{Binding FatTongBackCrease, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"
+                                            CellStyle="{StaticResource DataGrid_CellStyle}"/>
+
+                        <DataGridTextColumn Header="Fat Tong Triceps Crease (mm)" 
+                                            Binding="{Binding FatTongTricepsCrease, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"
                                             CellStyle="{StaticResource DataGrid_CellStyle}"/>
                     </DataGrid.Columns>
                 </DataGrid>
@@ -187,7 +211,8 @@
                             <DataGridTextColumn Header="Bodyweight (kg)" 
                                                 Binding="{Binding BodyWeight, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"/>
                             <DataGridTextColumn Header="BMI"
-                                                Binding="{Binding BMI, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"/>
+                                                Binding="{Binding BMI, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"
+                                                IsReadOnly="true"/>
                             <DataGridTextColumn Header="Body Fat (%)"
                                                 Binding="{Binding BodyFatPercentage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}" />
                             <DataGridTextColumn Header="Muscle Mass (%)"
@@ -200,8 +225,8 @@
                                                 Binding="{Binding WaistCircumference, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"/>
                             <DataGridTextColumn Header="Hips Circumference (cm)" 
                                                 Binding="{Binding HipsCircumference, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"/>
-                            <DataGridTextColumn Header="Fat Tongs (mm)" 
-                                                Binding="{Binding FatTong, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"/>
+                            <DataGridTextColumn Header="Caliper Body Fat (%)" 
+                                                Binding="{Binding CaliperBodyFatPercentage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"/>
                         </DataGrid.Columns>
                     </DataGrid>
 
