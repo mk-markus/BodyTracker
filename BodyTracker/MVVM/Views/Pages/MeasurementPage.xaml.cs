@@ -2,6 +2,7 @@
 using BodyTracker.Services;
 using BodyTracker.State;
 using BodyTracker.ViewModels;
+using CommunityToolkit.Mvvm.Input; // falls nötig für IAsyncRelayCommand
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -120,22 +121,26 @@ namespace BodyTracker.MVVM.Views
         /// </remarks>
         private async void OnDeleteClick(object sender, RoutedEventArgs e)
         {
-            if (measurementViewModel.SelectedMeasurement == null)
+            if (DataContext is not MeasurementViewModel vm) return;
+
+            // versuche SelectedItem, fallback auf SelectedCells
+            var item = MeasurementsGrid.SelectedItem as FullBodyMeasurementDatas;
+            if (item == null && MeasurementsGrid.SelectedCells.Count > 0)
             {
-                MessageBox.Show("Please select one line first.", 
-                                "Information", 
-                                MessageBoxButton.OK, 
-                                MessageBoxImage.Information);
-                return;
+                item = MeasurementsGrid.SelectedCells[0].Item as FullBodyMeasurementDatas;
             }
-            var m = measurementViewModel.SelectedMeasurement;
-            var res = MessageBox.Show($"Delete entry from {m.MeasurementDate:d}?",
-                                      "Confrim deletion", 
-                                      MessageBoxButton.YesNo, 
-                                      MessageBoxImage.Warning);
-            if (res == MessageBoxResult.Yes)
+            if (item == null) return;
+
+            // setze ViewModel.SelectedMeasurement (optional) und führe Command aus
+            vm.SelectedMeasurement = item;
+
+            if (vm.DeleteCommand is IAsyncRelayCommand asyncCmd)
             {
-                await measurementViewModel.DeleteCommand.ExecuteAsync(null);
+                await asyncCmd.ExecuteAsync(null);
+            }
+            else if (vm.DeleteCommand.CanExecute(null))
+            {
+                vm.DeleteCommand.Execute(null);
             }
         }
 

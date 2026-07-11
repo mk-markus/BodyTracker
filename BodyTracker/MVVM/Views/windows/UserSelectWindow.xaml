@@ -107,7 +107,8 @@
                                       ItemsSource="{Binding Persons, UpdateSourceTrigger=PropertyChanged}"
                                       SelectedItem="{Binding Selected, 
                                                      Mode=TwoWay}"
-                                      ColumnHeaderStyle="{StaticResource DataGrid_ColumnHeaderStyle}"
+                                      Style="{StaticResource DataGrid_Default}"
+                                      
                                       AutoGenerateColumns="False"
                                       CanUserAddRows="False" 
                                       Margin="8"
@@ -123,23 +124,20 @@
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="ID"
                                                         Binding="{Binding PersonID}"
-                                                        Width="Auto"
-                                                        CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                                        Width="Auto"/>
+                                    
                                     <DataGridTextColumn Header="First Name"
-                                                        Binding="{Binding PersonFirstName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                        CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                                        Binding="{Binding PersonFirstName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                     
                                     <DataGridTextColumn Header="Last Name" 
-                                                Binding="{Binding PersonLastName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                        CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                                        Binding="{Binding PersonLastName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                     <DataGridTextColumn Header="Birthdate" 
                                                         Binding="{Binding PersonBirthDate, Mode=TwoWay, 
                                                         StringFormat=d, UpdateSourceTrigger=PropertyChanged}"
-                                                        CellStyle="{StaticResource DataGrid_CellStyleDate}"/>
+                                                       />
                                 <DataGridTextColumn Header="Height" 
                                                     Binding="{Binding PersonHeight, Mode=TwoWay, 
-                                                              UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"
-                                                    CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                                              UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"/>
 
                             </DataGrid.Columns>
                             </DataGrid>
