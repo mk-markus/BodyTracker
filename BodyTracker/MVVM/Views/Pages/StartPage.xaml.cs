@@ -1,4 +1,6 @@
-﻿using BodyTracker.Services;
+﻿using BodyTracker.MVVM.ViewModels;
+using BodyTracker.MVVM.Views.Pages;
+using BodyTracker.Services;
 using System;
 using System.Diagnostics;
 using System.Windows.Controls;
@@ -32,6 +34,12 @@ namespace BodyTracker.MVVM.Views
         /// </summary>
         private NewDataEntryPage newEntryPage;
 
+        private FoodIntakePage newFoodIntakePage;
+
+        private StepDailyTrendPage newStepDailyTrendPage;
+
+        private ChartsStepDailyTrendPage newChartStepDailyTrendPage;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="StartPage"/> class.
         /// Sets up the primary dashboard by hosting the chart and measurement sub-pages.
@@ -47,16 +55,27 @@ namespace BodyTracker.MVVM.Views
             this.databaseService = databaseService;
 
             newEntryPage = new NewDataEntryPage(mainWindow, this.databaseService);
-            
+
+            newFoodIntakePage = new FoodIntakePage(mainWindow, this.databaseService);
+
+            newStepDailyTrendPage = new StepDailyTrendPage(mainWindow, this.databaseService);
+
+            newChartStepDailyTrendPage = new ChartsStepDailyTrendPage(mainWindow, this.databaseService);
+
             newEntryPage.SwitchToMeasurements += () => MainTabControll.SelectedIndex = 0;
 
-            ChartFrame.Content = new ChartsPage(mainWindow, this.databaseService);
+            ChartMeasurementFrame.Content = new ChartsMeasurementsPage(mainWindow, this.databaseService);
 
             InfoFrame.Content = new InfoPage();
             
             MeasurementFrame.Content = new MeasurementPage(mainWindow, this.databaseService);
             
             NewEntryFrame.Content = newEntryPage;
+
+            FoodIntakeFrame.Content = newFoodIntakePage;
+
+            StepDailyTrendFrame.Content = newStepDailyTrendPage;
+            ChartStepDailyTrendFrame.Content = newChartStepDailyTrendPage;
         }
 
         // <summary>
@@ -64,7 +83,7 @@ namespace BodyTracker.MVVM.Views
         /// of the main navigation control. 
         /// </summary>
         /// <remarks>
-        /// This method serves as a notification mechanism to ensure the <see cref="ChartsPage"/> 
+        /// This method serves as a notification mechanism to ensure the <see cref="ChartsMeasurementsPage"/> 
         /// updates its graphical representation. The explicit re-assignment of the 
         /// <see cref="TabControl.SelectedIndex"/> can be used to trigger layout re-calculations 
         /// or focus events within the WPF framework.

@@ -4,11 +4,12 @@ using MySqlConnector;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
 
-namespace BodyTracker.Services 
+namespace BodyTracker.Services
 {
     /// <summary>
     /// Orchestrates all database interactions for the application. 
@@ -17,6 +18,7 @@ namespace BodyTracker.Services
     /// </summary>
     public partial class DatabaseService : ObservableObject
     {
+        #region Members
         /// <summary>
         /// Provides the connection string used to establish communication with the MySQL database server.
         /// </summary>
@@ -27,6 +29,15 @@ namespace BodyTracker.Services
         /// This property grants access to standardized SQL statements for CRUD operations (Create, Read, Update, Delete).
         /// </summary>
         public SqlCommandProvider DatabaseCommands { get; private set; } = new SqlCommandProvider();
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the server connection is established successfully.
+        /// </summary>
+        [ObservableProperty] public bool serverConnectionOK;
+
+        #endregion
+
+        #region Constructor
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DatabaseService"/> class.
@@ -40,10 +51,9 @@ namespace BodyTracker.Services
             this.sConnectionString = sConnectionString;
         }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether the server connection is established successfully.
-        /// </summary>
-        [ObservableProperty] public bool serverConnectionOK;
+        #endregion
+
+        #region Default Database Functions
 
         /// <summary>
         /// Asynchronously establishes a connection to the SQL server and initializes the database schema.
@@ -58,65 +68,6 @@ namespace BodyTracker.Services
 
             await using var SqlCommand = new MySqlCommand(DatabaseCommands.CmdCreateTableIfNotExist(), SqlServerConnection);
             await SqlCommand.ExecuteNonQueryAsync();
-        }
-
-        /// <summary>
-        /// Asynchronously retrieves all person records from the database.
-        /// Iterates through the result set and maps each row to a <see cref="PersonModel"/>, 
-        /// handling potential database null values for optional fields.
-        /// </summary>
-        /// <returns>
-        /// A task that represents the asynchronous operation. 
-        /// The task result contains a <see cref="List{PersonModel}"/> containing all persons found in the database.
-        /// </returns>
-        /// <remarks>
-        /// This method ensures that null values in the 'FirstName', 'LastName', or 'BirthDate' columns 
-        /// are safely converted to their respective C# defaults (empty string or null).
-        /// </remarks>
-        public async Task<List<PersonModel>> GetPersonsAsync()
-        {
-            var list = new List<PersonModel>();
-            await using var SqlServerConnection = await EtablishSqlServerConnection();
-            await using var SqlCommand = new MySqlCommand(DatabaseCommands.CmdGetPerson(), SqlServerConnection);
-            await using var SqlDataReader = await SqlCommand.ExecuteReaderAsync();
-            while (await SqlDataReader.ReadAsync())
-            {
-                list.Add(new PersonModel
-                {
-                    PersonID = SqlDataReader.GetInt32(0),
-                    PersonFirstName = SqlDataReader.IsDBNull(1) ? string.Empty : SqlDataReader.GetString(1),
-                    PersonLastName = SqlDataReader.IsDBNull(2) ? string.Empty : SqlDataReader.GetString(2),
-                    PersonBirthDate = SqlDataReader.IsDBNull(3) ? null : SqlDataReader.GetDateTime(3),
-                    PersonHeight = SqlDataReader.GetFloat(4)
-                });
-            }
-            return list;
-        }
-
-        /// <summary>
-        /// Asynchronously retrieves the total number of records stored in the 'tbl_Personen' table.
-        /// </summary>
-        /// <remarks>
-        /// This method utilizes <see cref="MySqlCommand.ExecuteScalarAsync"/> to efficiently fetch the count result. 
-        /// It includes validation logic to ensure that 0 is returned if the database result is null or non-positive, 
-        /// preventing potential conversion errors.
-        /// </remarks>
-        /// <returns>
-        /// A task representing the asynchronous operation. 
-        /// The task result contains the number of persons as an <see cref="int"/>. 
-        /// Returns 0 if no records are found or if the result is null.
-        /// </returns>
-        public async Task<int> CountPersonAsync()
-        {
-            await using var SqlServerConnection = await EtablishSqlServerConnection();
-            await using var SqlCommand = new MySqlCommand(DatabaseCommands.CmdCountPersonsInTable(), SqlServerConnection);
-            var result = await SqlCommand.ExecuteScalarAsync();
-
-            // Validation: If the result is null (DBNull), count is set to 0 to avoid exceptions
-            int count = result != null ? Convert.ToInt32(result) : 0;
-
-            // Return logic: Ensures the method never returns negative values, maintaining UI consistency
-            return count > 0 ? count : 0;
         }
 
         // <summary>
@@ -170,6 +121,294 @@ namespace BodyTracker.Services
             SqlCommand.Parameters.AddWithValue("@k", Height);
             var idObj = await SqlCommand.ExecuteScalarAsync();
             return Convert.ToInt32(idObj);
+        }
+
+        /// <summary>
+        /// Determines whether a measurement exists for a specified person on a given date.
+        /// </summary>
+        /// <param name="dateToCheck">The date to check for an existing measurement.</param>
+        /// <param name="PersonId">The identifier of the person whose measurements are being checked.</param>
+        /// <returns>true if a measurement exists for the specified date and person; otherwise, false.</returns>
+        public async Task<bool> IsMeasurementExistingAsync(DateTime dateToCheck, int PersonId)
+        {
+            var SqlServerConnection = await EtablishSqlServerConnection();
+
+            // Wir nutzen DATE(@TargetDate), um nur den Kalendertag zu vergleichen
+            // Die SQL-Abfrage sollte lauten: 
+            // "SELECT 1 FROM measurements WHERE DATE(MeasurementDate) = DATE(@TargetDate) LIMIT 1"
+            await using var SqlCommand = new MySqlCommand(DatabaseCommands.CmdCheckIfPersonHasMeasurementsExists(), SqlServerConnection);
+
+            // Wir definieren den exakten Tag ohne Uhrzeit
+            DateTime startDate = dateToCheck;
+            DateTime endDate = startDate.AddDays(1);
+
+            SqlCommand.Parameters.AddWithValue("@pid", PersonId);
+            SqlCommand.Parameters.AddWithValue("@start", startDate);
+            SqlCommand.Parameters.AddWithValue("@end", endDate);
+
+            var result = await SqlCommand.ExecuteScalarAsync();
+
+            // Konvertierung des Ergebnisses. Da COUNT genutzt wird, ist result nie null.
+            if (result != null && Convert.ToInt64(result) > 0)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        #endregion
+
+        #region Functions Insert Datas to Database
+
+        /// <summary>
+        /// Asynchronously inserts a new body metric record into the database.
+        /// This includes physiological data such as weight, BMI, and body fat percentages.
+        /// </summary>
+        /// <param name="m">The <see cref="BodyMetricModel"/> containing the data to be stored.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task InsertBodyMetricAsync(BodyMetricModel bodyMetricModel)
+        {
+
+            DateTime finalDate = bodyMetricModel.MeasurementDate.Date.Add(DateTime.Now.TimeOfDay);
+
+            var SqlServerConnection = await EtablishSqlServerConnection();
+            await using var SqlCommand = new MySqlCommand(DatabaseCommands.CmdInsertPersonMetric(), SqlServerConnection);
+
+            SqlCommand.Parameters.AddWithValue("@pid", bodyMetricModel.PersonID);
+            SqlCommand.Parameters.Add("@dt", (DbType)SqlDbType.DateTime2).Value = finalDate;
+            SqlCommand.Parameters.AddWithValue("@gw", (object?)bodyMetricModel.BodyWeight ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@bmi", (object?)bodyMetricModel.BMI ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@kf", (object?)bodyMetricModel.BodyFatPercentage ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@kfo", (object?)bodyMetricModel.BodyFatPercentageTop ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@kfu", (object?)bodyMetricModel.BodyFatPercentageBottom ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@mm", (object?)bodyMetricModel.BodyMusclePercentage ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@mmo", (object?)bodyMetricModel.BodyMusclePercentageTop ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@mmu", (object?)bodyMetricModel.BodyMusclePercentageBottom ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@kw", (object?)bodyMetricModel.BodyWaterPercentage ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@kk", (object?)bodyMetricModel.BodyBoneMass ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@vf", (object?)bodyMetricModel.BodyVisceralFat ?? DBNull.Value);
+
+            await SqlCommand.ExecuteNonQueryAsync();
+        }
+
+        /// <summary>
+        /// Asynchronously inserts a new body dimension record (circumferences) into the database.
+        /// </summary>
+        /// <param name="a">The <see cref="BodyDimensionsModel"/> containing the measurements.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task InsertBodyDimensionAsync(BodyDimensionsModel bodyDemensionModel)
+        {
+            var SqlServerConnection = await EtablishSqlServerConnection();
+            await using var SqlCommand = new MySqlCommand(DatabaseCommands.CmdInsertPersonDimension(), SqlServerConnection);
+
+            SqlCommand.Parameters.AddWithValue("@pid", bodyDemensionModel.PersonID);
+            SqlCommand.Parameters.AddWithValue("@dt", bodyDemensionModel.MeasurementDate);
+            SqlCommand.Parameters.AddWithValue("@br", (object?)bodyDemensionModel.ChestCircumference ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@ba", (object?)bodyDemensionModel.WaistCircumference ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@hu", (object?)bodyDemensionModel.HipsCircumference ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@fzbreast", (object?)bodyDemensionModel.FatTongBreastCrease ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@fzarmpit", (object?)bodyDemensionModel.FatTongArmpitCrease ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@fzabdomen", (object?)bodyDemensionModel.FatTongAbdominalCrease ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@fzhip", (object?)bodyDemensionModel.FatTongHipCrease ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@fzthigh", (object?)bodyDemensionModel.FatTongThighCrease ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@fzback", (object?)bodyDemensionModel.FatTongBackCrease ?? DBNull.Value);
+            SqlCommand.Parameters.AddWithValue("@fztricep", (object?)bodyDemensionModel.FatTongTricepsCrease ?? DBNull.Value);
+
+            await SqlCommand.ExecuteNonQueryAsync();
+        }
+
+        /// <summary>
+        /// Inserts a collection of Samsung Health food intake records for a specific person into the database.
+        /// Utilizes a database transaction to ensure data integrity; performs a rollback in case of failure.
+        /// </summary>
+        /// <param name="PersonId">The unique identifier of the person to whom the data belongs.</param>
+        /// <param name="foodIntakeList">A collection of <see cref="FoodIntakeModel"/> objects containing the nutritional data to be stored.</param>
+        /// <param name="progress">An optional progress indicator that reports the percentage of the insertion process.</param>
+        /// <returns>Returns 'true' if the operation completes successfully.</returns>
+        /// <exception cref="Exception">Throws an exception if the database operation fails, triggering an automatic rollback.</exception>
+        public async Task<bool> InsertSamsungHealthFoodIntake(int PersonId, ICollection<FoodIntakeModel> foodIntakeList, IProgress<double>? progress = null)
+        {
+            var sqlServerConnection = await EtablishSqlServerConnection();
+
+            await using var tx = await sqlServerConnection.BeginTransactionAsync();
+
+            try
+            {
+                int total = foodIntakeList.Count;
+                int current = 0;
+
+                foreach (var foodIntake in foodIntakeList)
+                {
+                    current++;
+
+                    await using var sqlCommand = new MySqlCommand(DatabaseCommands.CmdInsertSamsungHealthFoodIntake(),
+                                                                sqlServerConnection,
+                                                                (MySqlTransaction)tx);
+
+                    sqlCommand.Parameters.AddWithValue("@PersonID_FK", PersonId);
+                    sqlCommand.Parameters.AddWithValue("@CreateShVer", foodIntake.CreateShVer);
+                    sqlCommand.Parameters.AddWithValue("@StartTime", foodIntake.StartTime);
+                    sqlCommand.Parameters.AddWithValue("@Amount", foodIntake.Amount);
+                    sqlCommand.Parameters.AddWithValue("@Custom", (object?)foodIntake.Custom ?? DBNull.Value);
+                    sqlCommand.Parameters.AddWithValue("@ModifyShVer", foodIntake.ModifyShVer);
+                    sqlCommand.Parameters.AddWithValue("@UpdateTime", foodIntake.UpdateTime);
+                    sqlCommand.Parameters.AddWithValue("@CreateTime", foodIntake.CreateTime);
+                    sqlCommand.Parameters.AddWithValue("@MealType", foodIntake.MealType);
+                    sqlCommand.Parameters.AddWithValue("@ClientDataId", (object?)foodIntake.ClientDataId ?? DBNull.Value);
+                    sqlCommand.Parameters.AddWithValue("@Name", foodIntake.Name);
+                    sqlCommand.Parameters.AddWithValue("@Unit", foodIntake.Unit);
+                    sqlCommand.Parameters.AddWithValue("@ClientDataVer", (object?)foodIntake.ClientDataVer ?? DBNull.Value);
+                    sqlCommand.Parameters.AddWithValue("@Calorie", foodIntake.Calorie);
+                    sqlCommand.Parameters.AddWithValue("@TimeOffset", foodIntake.TimeOffset);
+                    sqlCommand.Parameters.AddWithValue("@DeviceUuid", foodIntake.DeviceUuid);
+                    sqlCommand.Parameters.AddWithValue("@Comment", (object?)foodIntake.Comment ?? DBNull.Value);
+                    sqlCommand.Parameters.AddWithValue("@PkgName", foodIntake.PkgName);
+                    sqlCommand.Parameters.AddWithValue("@DataUuid", foodIntake.DataUuid.ToString());
+                    sqlCommand.Parameters.AddWithValue("@FoodInfoId", (object?)foodIntake.FoodInfoId ?? DBNull.Value);
+
+                    await sqlCommand.ExecuteNonQueryAsync();
+
+                    progress?.Report((double)current / total * 100);
+                }
+
+                await tx.CommitAsync();
+
+                progress?.Report(100);
+
+                return true;
+            }
+            catch
+            {
+                await tx.RollbackAsync();
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Inserts a collection of daily step trend records for a specific person into the database.
+        /// Utilizes a database transaction to ensure data integrity; performs a rollback in case of failure.
+        /// </summary>
+        /// <param name="PersonId">The unique identifier of the person to whom the data belongs.</param>
+        /// <param name="stepDailyTrendList">A collection of <see cref="StepDailyTrendModel"/> objects containing the step trend data to be stored.</param>
+        /// <param name="progress">An optional progress indicator that reports the percentage of the insertion process.</param>
+        /// <returns>Returns 'true' if the operation completes successfully.</returns>
+        /// <exception cref="Exception">Throws an exception if the database operation fails, triggering an automatic rollback.</exception>
+        public async Task<bool> InsertSamsungHealthStepDailyTrend(int PersonId, IEnumerable<StepDailyTrendModel> stepDailyTrendList, IProgress<double>? progress = null)
+        {
+            var sqlServerConnection = await EtablishSqlServerConnection();
+
+            await using var tx = await sqlServerConnection.BeginTransactionAsync();
+
+            try
+            {
+                var trends = stepDailyTrendList.ToList();
+
+                int total = trends.Count;
+                int current = 0;
+
+                foreach (var trend in trends)
+                {
+                    await using var sqlCommand = new MySqlCommand(DatabaseCommands.CmdInsertSamsungHealthStepDailyTrend(),
+                                                                sqlServerConnection,
+                                                                (MySqlTransaction)tx);
+
+                    sqlCommand.Parameters.AddWithValue("@PersonID_FK", PersonId);
+                    sqlCommand.Parameters.AddWithValue("@BinningData", trend.BinningData);
+                    sqlCommand.Parameters.AddWithValue("@UpdateTime", trend.UpdateTime);
+                    sqlCommand.Parameters.AddWithValue("@CreateTime", trend.CreateTime);
+                    sqlCommand.Parameters.AddWithValue("@SourcePkgName", trend.SourcePkgName);
+                    sqlCommand.Parameters.AddWithValue("@SourceType", trend.SourceType);
+                    sqlCommand.Parameters.AddWithValue("@Count", trend.Count);
+                    sqlCommand.Parameters.AddWithValue("@Speed", trend.Speed);
+                    sqlCommand.Parameters.AddWithValue("@Distance", trend.Distance);
+                    sqlCommand.Parameters.AddWithValue("@Calorie", trend.Calorie);
+                    sqlCommand.Parameters.AddWithValue("@DeviceUuid", trend.DeviceUuid);
+                    sqlCommand.Parameters.AddWithValue("@PkgName", trend.PkgName);
+                    sqlCommand.Parameters.AddWithValue("@DataUuid", trend.DataUuid.ToString());
+                    sqlCommand.Parameters.AddWithValue("@DayTime", trend.DayTime);
+
+                    await sqlCommand.ExecuteNonQueryAsync();
+
+                    current++;
+
+                    progress?.Report((double)current / total * 100);
+                }
+
+                await tx.CommitAsync();
+
+                progress?.Report(100);
+
+                return true;
+            }
+            catch
+            {
+                await tx.RollbackAsync();
+                throw;
+            }
+        }
+
+        #endregion
+
+        #region Functions Get Datas from Databse
+
+        /// <summary>
+        /// Asynchronously retrieves all person records from the database.
+        /// Iterates through the result set and maps each row to a <see cref="PersonModel"/>, 
+        /// handling potential database null values for optional fields.
+        /// </summary>
+        /// <returns>
+        /// A task that represents the asynchronous operation. 
+        /// The task result contains a <see cref="List{PersonModel}"/> containing all persons found in the database.
+        /// </returns>
+        /// <remarks>
+        /// This method ensures that null values in the 'FirstName', 'LastName', or 'BirthDate' columns 
+        /// are safely converted to their respective C# defaults (empty string or null).
+        /// </remarks>
+        public async Task<List<PersonModel>> GetPersonsAsync()
+        {
+            var list = new List<PersonModel>();
+            await using var SqlServerConnection = await EtablishSqlServerConnection();
+            await using var SqlCommand = new MySqlCommand(DatabaseCommands.CmdGetPerson(), SqlServerConnection);
+            await using var SqlDataReader = await SqlCommand.ExecuteReaderAsync();
+            while (await SqlDataReader.ReadAsync())
+            {
+                list.Add(new PersonModel
+                {
+                    PersonID = SqlDataReader.GetInt32(0),
+                    PersonFirstName = SqlDataReader.IsDBNull(1) ? string.Empty : SqlDataReader.GetString(1),
+                    PersonLastName = SqlDataReader.IsDBNull(2) ? string.Empty : SqlDataReader.GetString(2),
+                    PersonBirthDate = SqlDataReader.IsDBNull(3) ? null : SqlDataReader.GetDateTime(3),
+                    PersonHeight = SqlDataReader.GetFloat(4)
+                });
+            }
+            return list;
+        }
+
+        /// <summary>
+        /// Asynchronously retrieves the total number of records stored in the 'tbl_Personen' table.
+        /// </summary>
+        /// <remarks>
+        /// This method utilizes <see cref="MySqlCommand.ExecuteScalarAsync"/> to efficiently fetch the count result. 
+        /// It includes validation logic to ensure that 0 is returned if the database result is null or non-positive, 
+        /// preventing potential conversion errors.
+        /// </remarks>
+        /// <returns>
+        /// A task representing the asynchronous operation. 
+        /// The task result contains the number of persons as an <see cref="int"/>. 
+        /// Returns 0 if no records are found or if the result is null.
+        /// </returns>
+        public async Task<int> GetPersonCountAsync()
+        {
+            await using var SqlServerConnection = await EtablishSqlServerConnection();
+            await using var SqlCommand = new MySqlCommand(DatabaseCommands.CmdCountPersonsInTable(), SqlServerConnection);
+            var result = await SqlCommand.ExecuteScalarAsync();
+
+            // Validation: If the result is null (DBNull), count is set to 0 to avoid exceptions
+            int count = result != null ? Convert.ToInt32(result) : 0;
+
+            // Return logic: Ensures the method never returns negative values, maintaining UI consistency
+            return count > 0 ? count : 0;
         }
 
         /// <summary>
@@ -263,63 +502,6 @@ namespace BodyTracker.Services
         }
 
         /// <summary>
-        /// Asynchronously inserts a new body metric record into the database.
-        /// This includes physiological data such as weight, BMI, and body fat percentages.
-        /// </summary>
-        /// <param name="m">The <see cref="BodyMetricModel"/> containing the data to be stored.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task InsertBodyMetricAsync(BodyMetricModel bodyMetricModel)
-        {
-
-            DateTime finalDate = bodyMetricModel.MeasurementDate.Date.Add(DateTime.Now.TimeOfDay);
-
-            var SqlServerConnection = await EtablishSqlServerConnection();
-            await using var SqlCommand = new MySqlCommand(DatabaseCommands.CmdInsertPersonMetric(), SqlServerConnection);
-
-            SqlCommand.Parameters.AddWithValue("@pid", bodyMetricModel.PersonID);
-            SqlCommand.Parameters.Add("@dt", (DbType)SqlDbType.DateTime2).Value = finalDate;
-            SqlCommand.Parameters.AddWithValue("@gw", (object?)bodyMetricModel.BodyWeight ?? DBNull.Value);
-            SqlCommand.Parameters.AddWithValue("@bmi", (object?)bodyMetricModel.BMI ?? DBNull.Value);
-            SqlCommand.Parameters.AddWithValue("@kf", (object?)bodyMetricModel.BodyFatPercentage ?? DBNull.Value);
-            SqlCommand.Parameters.AddWithValue("@kfo", (object?)bodyMetricModel.BodyFatPercentageTop ?? DBNull.Value);
-            SqlCommand.Parameters.AddWithValue("@kfu", (object?)bodyMetricModel.BodyFatPercentageBottom ?? DBNull.Value);
-            SqlCommand.Parameters.AddWithValue("@mm", (object?)bodyMetricModel.BodyMusclePercentage ?? DBNull.Value);
-            SqlCommand.Parameters.AddWithValue("@mmo", (object?)bodyMetricModel.BodyMusclePercentageTop ?? DBNull.Value);
-            SqlCommand.Parameters.AddWithValue("@mmu", (object?)bodyMetricModel.BodyMusclePercentageBottom ?? DBNull.Value);
-            SqlCommand.Parameters.AddWithValue("@kw", (object?)bodyMetricModel.BodyWaterPercentage ?? DBNull.Value);
-            SqlCommand.Parameters.AddWithValue("@kk", (object?)bodyMetricModel.BodyBoneMass ?? DBNull.Value);
-            SqlCommand.Parameters.AddWithValue("@vf", (object?)bodyMetricModel.BodyVisceralFat ?? DBNull.Value);
-
-            await SqlCommand.ExecuteNonQueryAsync();
-        }
-
-        /// <summary>
-        /// Asynchronously inserts a new body dimension record (circumferences) into the database.
-        /// </summary>
-        /// <param name="a">The <see cref="BodyDimensionsModel"/> containing the measurements.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task InsertBodyDimensionAsync(BodyDimensionsModel bodyDemensionModel)
-        {
-            var SqlServerConnection = await EtablishSqlServerConnection();
-            await using var SqlCommand = new MySqlCommand(DatabaseCommands.CmdInsertPersonDimension(), SqlServerConnection);
-
-            SqlCommand.Parameters.AddWithValue("@pid", bodyDemensionModel.PersonID);
-            SqlCommand.Parameters.AddWithValue("@dt", bodyDemensionModel.MeasurementDate);
-            SqlCommand.Parameters.AddWithValue("@br", (object?)bodyDemensionModel.ChestCircumference ?? DBNull.Value);
-            SqlCommand.Parameters.AddWithValue("@ba", (object?)bodyDemensionModel.WaistCircumference ?? DBNull.Value);
-            SqlCommand.Parameters.AddWithValue("@hu", (object?)bodyDemensionModel.HipsCircumference ?? DBNull.Value);
-            SqlCommand.Parameters.AddWithValue("@fzbreast", (object?)bodyDemensionModel.FatTongBreastCrease ?? DBNull.Value);
-            SqlCommand.Parameters.AddWithValue("@fzarmpit", (object?)bodyDemensionModel.FatTongArmpitCrease ?? DBNull.Value);
-            SqlCommand.Parameters.AddWithValue("@fzabdomen", (object?)bodyDemensionModel.FatTongAbdominalCrease ?? DBNull.Value);
-            SqlCommand.Parameters.AddWithValue("@fzhip", (object?)bodyDemensionModel.FatTongHipCrease ?? DBNull.Value);
-            SqlCommand.Parameters.AddWithValue("@fzthigh", (object?)bodyDemensionModel.FatTongThighCrease ?? DBNull.Value);
-            SqlCommand.Parameters.AddWithValue("@fzback", (object?)bodyDemensionModel.FatTongBackCrease ?? DBNull.Value);
-            SqlCommand.Parameters.AddWithValue("@fztricep", (object?)bodyDemensionModel.FatTongTricepsCrease ?? DBNull.Value);
-
-            await SqlCommand.ExecuteNonQueryAsync();
-        }
-
-        /// <summary>
         /// Asynchronously retrieves a comprehensive list of all measurements for a specific person, 
         /// combining physiological metrics and physical dimensions into a single view model.
         /// </summary>
@@ -405,6 +587,39 @@ namespace BodyTracker.Services
             await SqlCommand.ExecuteNonQueryAsync();
         }
 
+        public async Task<List<StepDailyTrendChartModel>> GetStepDailyTrendAsync(int personId)
+        {
+            var result = new List<StepDailyTrendChartModel>();
+
+            await using var conn = await EtablishSqlServerConnection();
+
+            await using var cmd = new MySqlCommand(
+                DatabaseCommands.CmdGetSamsungHealthStepDailyTrend(),
+                conn);
+
+            cmd.Parameters.AddWithValue("@PersonID", personId);
+
+            await using var reader = await cmd.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
+            {
+                result.Add(new StepDailyTrendChartModel
+                {
+                    CreateTime = reader.GetDateTime("create_time"),
+                    SourceType = reader.GetInt32("source_type"),
+                    Count = reader.GetInt32("count"),
+                    Distance = reader.GetDouble("distance"),
+                    Calorie = reader.GetDouble("calorie")
+                });
+            }
+
+            return result;
+        }
+
+        #endregion
+
+        #region Functions Update Datas to Datebase
+
         /// <summary>
         /// Performs an atomic upsert operation for both metric and dimension datasets within a single database transaction.
         /// </summary>
@@ -428,7 +643,7 @@ namespace BodyTracker.Services
             int? metricId, int? dimensionId,
             DateTime measurementDate,
             float? bodyWeight, float? bmi, float? fat, float? fato, float? fatu, float? muscle, float? muscleo, float? muscleu, float? bodyw, float? bodyb, int? visceralFat,
-            float? chest, float? waist, float? hips, float? fatTongBreastCrease, float? fatTongArmpitCrease, float? fatTongAbdominalCrease, 
+            float? chest, float? waist, float? hips, float? fatTongBreastCrease, float? fatTongArmpitCrease, float? fatTongAbdominalCrease,
             float? fatTongHipCrease, float? fatTongThighCrease, float? fatTongBackCrease, float? fatTongTricepsCrease)
         {
             await using var conn = await EtablishSqlServerConnection();
@@ -545,41 +760,7 @@ namespace BodyTracker.Services
             }
         }
 
-
-        /// <summary>
-        /// Determines whether a measurement exists for a specified person on a given date.
-        /// </summary>
-        /// <param name="dateToCheck">The date to check for an existing measurement.</param>
-        /// <param name="PersonId">The identifier of the person whose measurements are being checked.</param>
-        /// <returns>true if a measurement exists for the specified date and person; otherwise, false.</returns>
-        public async Task<bool> IsMeasurementExistingAsync(DateTime dateToCheck, int PersonId)
-        {
-            var SqlServerConnection = await EtablishSqlServerConnection();
-
-            // Wir nutzen DATE(@TargetDate), um nur den Kalendertag zu vergleichen
-            // Die SQL-Abfrage sollte lauten: 
-            // "SELECT 1 FROM measurements WHERE DATE(MeasurementDate) = DATE(@TargetDate) LIMIT 1"
-            await using var SqlCommand = new MySqlCommand(DatabaseCommands.CmdCheckIfPersonHasMeasurementsExists(), SqlServerConnection);
-
-            // Wir definieren den exakten Tag ohne Uhrzeit
-            DateTime startDate = dateToCheck;
-            DateTime endDate = startDate.AddDays(1);
-
-            SqlCommand.Parameters.AddWithValue("@pid", PersonId);
-            SqlCommand.Parameters.AddWithValue("@start", startDate);
-            SqlCommand.Parameters.AddWithValue("@end", endDate);
-
-            var result = await SqlCommand.ExecuteScalarAsync();
-
-            // Konvertierung des Ergebnisses. Da COUNT genutzt wird, ist result nie null.
-            if (result != null && Convert.ToInt64(result) > 0)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
+        #endregion
 
     }
 }

@@ -107,11 +107,135 @@ CREATE TABLE IF NOT EXISTS tbl_Abmessungen (
 
         public string CmdInsertPersonMetric()
         {
-            return @"INSERT INTO tbl_KoerperMetriken
-                        (PersonID_FK, Messdatum, Gewicht_kg, BMI, Koerperfett_Prozent, Koerperfett_oben_Prozent, Koerperfett_unten_Prozent, 
-                        Muskelmasse_Prozent, Muskelmasse_oben_Prozent, Muskelmasse_unten_Prozent, Koerperknochen_Masse, Koerperwasser_Prozent, Viszeralfett)
-                        VALUES (@pid, @dt, @gw, @bmi, @kf, @kfo, @kfu, @mm, @mmo, @mmu, @kk, @kw, @vf)";
+            return @"INSERT INTO tbl_KoerperMetriken(
+                        PersonID_FK,
+                        Messdatum,
+                        Gewicht_kg,
+                        BMI,
+                        Koerperfett_Prozent,
+                        Koerperfett_oben_Prozent,
+                        Koerperfett_unten_Prozent,
+                        Muskelmasse_Prozent,
+                        Muskelmasse_oben_Prozent, 
+                        Muskelmasse_unten_Prozent, 
+                        Koerperknochen_Masse, 
+                        Koerperwasser_Prozent, 
+                        Viszeralfett)
+                     VALUES (
+                        @pid, 
+                        @dt, 
+                        @gw, 
+                        @bmi, 
+                        @kf, 
+                        @kfo, 
+                        @kfu, 
+                        @mm, 
+                        @mmo, 
+                        @mmu,
+                        @kk,
+                        @kw, 
+                        @vf)";
         }
+
+
+        public string CmdInsertSamsungHealthFoodIntake()
+        {
+            return @"INSERT INTO tbl_FoodIntake (
+            PersonID_FK,
+            create_sh_ver,
+            start_time,
+            amount,
+            custom,
+            modify_sh_ver,
+            update_time,
+            create_time,
+            meal_type,
+            client_data_id,
+            name,
+            unit,
+            client_data_ver,
+            calorie,
+            time_offset,
+            device_uuid,
+            comment,
+            pkg_name,
+            data_uuid,
+            food_info_id)
+        SELECT
+            @PersonID_FK,
+            @CreateShVer,
+            @StartTime,
+            @Amount,
+            @Custom,
+            @ModifyShVer,
+            @UpdateTime,
+            @CreateTime,
+            @MealType,
+            @ClientDataId,
+            @Name,
+            @Unit,
+            @ClientDataVer,
+            @Calorie,
+            @TimeOffset,
+            @DeviceUuid,
+            @Comment,
+            @PkgName,
+            @DataUuid,
+            @FoodInfoId
+        FROM DUAL
+        WHERE NOT EXISTS
+        (
+            SELECT 1
+            FROM tbl_FoodIntake
+            WHERE data_uuid = @DataUuid
+        );";}
+
+
+        public string CmdInsertSamsungHealthStepDailyTrend()
+        {
+            return @"
+        INSERT INTO tbl_StepDailyTrend
+        (
+            PersonID_FK,
+            binning_data,
+            update_time,
+            create_time,
+            source_pkg_name,
+            source_type,
+            count,
+            speed,
+            distance,
+            calorie,
+            device_uuid,
+            pkg_name,
+            data_uuid,
+            day_time
+        )
+        SELECT
+            @PersonID_FK,
+            @BinningData,
+            @UpdateTime,
+            @CreateTime,
+            @SourcePkgName,
+            @SourceType,
+            @Count,
+            @Speed,
+            @Distance,
+            @Calorie,
+            @DeviceUuid,
+            @PkgName,
+            @DataUuid,
+            @DayTime
+        FROM DUAL
+        WHERE NOT EXISTS
+        (
+            SELECT 1
+            FROM tbl_StepDailyTrend
+            WHERE data_uuid = @DataUuid
+        );";
+        }
+
+
 
         public string CmdCountPersonsInTable()
         {
@@ -143,6 +267,22 @@ CREATE TABLE IF NOT EXISTS tbl_Abmessungen (
         {
             return "UPDATE tbl_Personen SET Vorname=@v, Nachname=@n, Geburtsdatum=@g, Koerpergroesse=@k WHERE ID=@pid";
         }
+
+
+        public string CmdGetSamsungHealthStepDailyTrend()
+        {
+            return @"SELECT
+                        create_time,
+                        source_type,
+                        count,
+                        distance,
+                        calorie
+                    FROM tbl_StepDailyTrend
+                    WHERE PersonID_FK = @PersonID
+                      AND source_type = -2
+                    ORDER BY create_time";
+        }
+
 
     }
 }

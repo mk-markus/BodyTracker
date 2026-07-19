@@ -118,7 +118,7 @@ namespace BodyTracker.Views
             {
                 if (databaseService != null && userSelectViewModel != null)
                 {
-                    int count = await databaseService.CountPersonAsync();
+                    int count = await databaseService.GetPersonCountAsync();
 
                     if (count > 0 && userSelectViewModel != null)
                     {

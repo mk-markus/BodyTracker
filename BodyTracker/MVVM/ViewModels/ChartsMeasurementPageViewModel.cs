@@ -4,25 +4,21 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LiveChartsCore;
 using LiveChartsCore.Defaults;
-using LiveChartsCore.Kernel;
 using LiveChartsCore.Kernel.Sketches;
 using LiveChartsCore.Measure;
 using LiveChartsCore.SkiaSharpView;
-using LiveChartsCore.SkiaSharpView.Drawing;
 using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.SkiaSharpView.Painting.Effects;
-using LiveChartsCore.SkiaSharpView.SKCharts;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Ink;
 
 namespace BodyTracker.MVVM.ViewModels
 {
 
-    public partial class ChartsPageViewModel : ObservableObject
+    public partial class ChartsMeasurementPageViewModel : ObservableObject
     {
         /// <summary>
         /// A private, read-only reference to the <see cref="DatabaseService"/>.
@@ -128,6 +124,15 @@ namespace BodyTracker.MVVM.ViewModels
         /// </summary>
         public IAsyncRelayCommand RefreshChart { get; }
 
+
+        public IRelayCommand SetActualYearCommand { get; }
+
+        public IRelayCommand SetActualMonthCommand { get; }
+
+        public IRelayCommand SetActualWeekCommand { get; }
+
+        public IRelayCommand ShowAllDataCommand { get; }
+
         /// <summary>
         /// Constants for the stroke thickness of the line series in the chart. 
         /// Setting this to a higher value will make the lines more prominent, while a lower value will create a thinner appearance.
@@ -149,7 +154,7 @@ namespace BodyTracker.MVVM.ViewModels
         private bool isRefreshing = false;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ChartsPageViewModel"/> class.
+        /// Initializes a new instance of the <see cref="ChartsMeasurementPageViewModel"/> class.
         /// Sets up the database dependency and configures the default Cartesian axes 
         /// for time-series data visualization.
         /// </summary>
@@ -159,11 +164,15 @@ namespace BodyTracker.MVVM.ViewModels
         /// It is configured with a one-day interval and a German date format (dd.MM.yyyy) 
         /// to ensure that body measurements are plotted accurately over time.
         /// </remarks>
-        public ChartsPageViewModel(DatabaseService db)
+        public ChartsMeasurementPageViewModel(DatabaseService db)
         {
             _db = db;
             XAxes = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yyyy")) { Name = "Date" } };
             RefreshChart = new AsyncRelayCommand(RefreshChartAsync);
+            SetActualYearCommand = new RelayCommand(SetActualYear);
+            SetActualMonthCommand = new RelayCommand(SetActualMonth);
+            SetActualWeekCommand = new RelayCommand(SetActualWeek);
+            ShowAllDataCommand = new RelayCommand(ShowAllData);
 
         }
 
@@ -667,9 +676,59 @@ namespace BodyTracker.MVVM.ViewModels
             double t = 1 - Math.Pow(x, 3);
             return Math.Pow(t, 3);
         }
+
+        /// <summary>
+        /// Sets the date range to cover from the first day of the current year up to today.
+        /// </summary>
+        private void SetActualYear()
+        {
+            StartDate = new DateTime(
+                DateTime.Today.Year,
+                1,
+                1);
+
+            EndDate = DateTime.Today;
+        }
+
+        /// <summary>
+        /// Sets the date range to cover from the first day of the current month up to today.
+        /// </summary>
+        private void SetActualMonth()
+        {
+            StartDate = new DateTime(
+                DateTime.Today.Year,
+                DateTime.Today.Month,
+                1);
+
+            EndDate = DateTime.Today;
+        }
+
+        /// <summary>
+        /// Sets the date range to cover from the start of the current week (Monday) up to today.
+        /// </summary>
+        private void SetActualWeek()
+        {
+            var today = DateTime.Today;
+
+            int diff = today.DayOfWeek switch
+            {
+                DayOfWeek.Sunday => 6,
+                _ => (int)today.DayOfWeek - 1
+            };
+
+            StartDate = today.AddDays(-diff);
+            EndDate = today;
+        }
+
+        /// <summary>
+        /// Resets the date range to encompass all available measurement data.
+        /// </summary>
+        private void ShowAllData()
+        {
+            StartDate = minMeasurementsDate;
+            EndDate = maxMeasurementsDate;
+        }
     }
-
-
 
 }
 

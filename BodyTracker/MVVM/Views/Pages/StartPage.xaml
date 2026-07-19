@@ -19,11 +19,29 @@
                 <Frame x:Name="NewEntryFrame" NavigationUIVisibility="Hidden"/>
             </TabItem>
             <TabItem Header="Charts">
-                <Frame x:Name="ChartFrame" NavigationUIVisibility="Hidden"/>
+                <TabControl>
+                    <TabItem Header="Body Measurements">
+                        <Frame x:Name="ChartMeasurementFrame" NavigationUIVisibility="Hidden"/>
+                    </TabItem>
+                    <TabItem Header="Step Daily Trend">
+                        <Frame x:Name="ChartStepDailyTrendFrame" NavigationUIVisibility="Hidden"/>
+                    </TabItem>
+                </TabControl>
+            </TabItem>
+            <TabItem Header="Import Samsung Health Data">
+                <TabControl>
+                    <TabItem Header="Food Intake">
+                        <Frame x:Name="FoodIntakeFrame" NavigationUIVisibility="Hidden"/>
+                    </TabItem>
+                    <TabItem Header="Step Daily Trend">
+                        <Frame x:Name="StepDailyTrendFrame" NavigationUIVisibility="Hidden"/>
+                    </TabItem>
+                </TabControl>
             </TabItem>
             <TabItem Header="Info">
                 <Frame x:Name="InfoFrame" NavigationUIVisibility="Hidden"/>
             </TabItem>
+            
         </TabControl>
         
     </Grid>
