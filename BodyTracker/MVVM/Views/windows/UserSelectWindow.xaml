@@ -5,21 +5,24 @@
         Height="400" 
         Width="600"
         Background="White"
-         Icon="/Icon/ProgramIcon.ico">
+        Icon="/Icon/ProgramIcon.ico">
+
+    <!-- Main ScrollViewer to handle content overflow -->
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel>
-            
-                <Grid>
 
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+            <!-- Top Section: Connection Status and Menu Controls -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-                    <GroupBox Header="Connection Status"
-                              Style="{StaticResource StandardGroupBox}"
-                              Grid.Column="0">
-                        
+                <!-- Connection Status Group Box -->
+                <GroupBox Header="Connection Status"
+                          Style="{DynamicResource StandardGroupBox}"
+                          Grid.Column="0">
+
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -27,47 +30,50 @@
                         </Grid.ColumnDefinitions>
 
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
 
-                        <TextBlock Text="Connected:"
-                                    Grid.Column="0"
-                                    Grid.Row="0"
-                                    Style="{StaticResource StandardTextBlockInfo}"/>
+                            <!-- Connection State Labels and Bindings -->
+                            <TextBlock Text="Connected:"
+                                   Grid.Column="0"
+                                   Grid.Row="0"
+                                   Style="{DynamicResource StandardTextBlockInfo}"/>
 
-                        <TextBlock x:Name="DbConnection"
+                            <TextBlock x:Name="DbConnection"
                                    Grid.Column="1"
                                    Grid.Row="0"
-                                   Style="{StaticResource DescribingTextBlock}"
+                                   Style="{DynamicResource TextBlockDescribing}"
                                    Text="{Binding ActualConnectionState}"/>
 
-                        <TextBlock Text="Actual User:"
-                                    Grid.Column="0"
-                                    Grid.Row="1"
-                                    Style="{StaticResource StandardTextBlockInfo}"/>
+                            <TextBlock Text="Actual User:"
+                                   Grid.Column="0"
+                                   Grid.Row="1"
+                                   Style="{DynamicResource StandardTextBlockInfo}"/>
 
-                        <TextBlock x:Name="DbActualUser"
-                                    Grid.Column="1"
-                                    Grid.Row="1"
+                            <TextBlock x:Name="DbActualUser"
+                                   Grid.Column="1"
+                                   Grid.Row="1"
                                    Text="{Binding ActualUser}"
-                                    Style="{StaticResource DescribingTextBlock}"/>
+                                   Style="{DynamicResource TextBlockDescribing}"/>
 
-                        <TextBlock Text="Database:"
-                                    Grid.Column="0"
-                                    Grid.Row="2"
-                                    Style="{StaticResource StandardTextBlockInfo}"/>
+                            <TextBlock Text="Database:"
+                                   Grid.Column="0"
+                                   Grid.Row="2"
+                                   Style="{DynamicResource StandardTextBlockInfo}"/>
 
-                        <TextBlock x:Name="DbActualDatabase"
-                                    Grid.Column="1"
-                                    Grid.Row="2"
-                                    Text="{Binding AcutalDatabase}"
-                                    Style="{StaticResource DescribingTextBlock}"/>
+                            <TextBlock x:Name="DbActualDatabase"
+                                   Grid.Column="1"
+                                   Grid.Row="2"
+                                   Text="{Binding AcutalDatabase}"
+                                   Style="{DynamicResource TextBlockDescribing}"/>
                     </Grid>
                 </GroupBox>
+
+                <!-- Navigation and Action Menu Group Box -->
                 <GroupBox Header="Menue"
-                          Style="{StaticResource StandardGroupBox}"
+                          Style="{DynamicResource StandardGroupBox}"
                           Grid.Column="1">
                     <StackPanel Orientation="Vertical"
                                 VerticalAlignment="Center"
@@ -75,81 +81,82 @@
                                 Grid.Column="1"
                                 Margin="20,0,0,0">
 
+                        <!-- Login and User Creation Action Buttons -->
                         <Button x:Name="btnNewLogin"
                                 Content="New Login" 
-                                Style="{StaticResource StandardButton}" 
+                                Style="{DynamicResource StandardButton}" 
                                 Click="btnNewLogin_Click">
                         </Button>
 
                         <Button x:Name="btnNewPerson"
                                 Content="New Person" 
-                                Style="{StaticResource StandardButton}" 
+                                Style="{DynamicResource StandardButton}" 
                                 Click="btnNewPerson_Click"/>
 
                     </StackPanel>
                 </GroupBox>
             </Grid>
 
-
+            <!-- Bottom Section: Person Selection and Data Grid -->
             <GroupBox Header="Select Person"
-                      Style="{StaticResource StandardGroupBox}"
-                      >
+                      Style="{DynamicResource StandardGroupBox}">
                 <StackPanel Orientation="Vertical">
                     <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
 
-                            <DataGrid x:Name="PersonGrid" 
-                                      Grid.Row="0" 
-                                      ItemsSource="{Binding Persons, UpdateSourceTrigger=PropertyChanged}"
-                                      SelectedItem="{Binding Selected, 
-                                                     Mode=TwoWay}"
-                                      Style="{StaticResource DataGrid_Default}"
-                                      
-                                      AutoGenerateColumns="False"
-                                      CanUserAddRows="False" 
-                                      Margin="8"
-                                      FontWeight="Normal"
-                                      VerticalScrollBarVisibility="Auto"
-                                      HeadersVisibility="Column"
-                                      ScrollViewer.CanContentScroll="True"
-                                      EnableColumnVirtualization="True"
-                                      EnableRowVirtualization="True"
-                                      Height="110"
-                                      RowEditEnding="PersonsGrid_RowEditEnding"
-                                      MouseDoubleClick="PersonGrid_MouseDoubleClick">
-                                <DataGrid.Columns>
-                                    <DataGridTextColumn Header="ID"
-                                                        Binding="{Binding PersonID}"
-                                                        Width="Auto"/>
-                                    
-                                    <DataGridTextColumn Header="First Name"
-                                                        Binding="{Binding PersonFirstName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    
-                                    <DataGridTextColumn Header="Last Name" 
-                                                        Binding="{Binding PersonLastName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    <DataGridTextColumn Header="Birthdate" 
-                                                        Binding="{Binding PersonBirthDate, Mode=TwoWay, 
-                                                        StringFormat=d, UpdateSourceTrigger=PropertyChanged}"
-                                                       />
+                        <!-- DataGrid for displaying and editing available persons -->
+                        <DataGrid x:Name="PersonGrid" 
+                                  Grid.Row="0" 
+                                  ItemsSource="{Binding Persons, UpdateSourceTrigger=PropertyChanged}"
+                                  SelectedItem="{Binding Selected, 
+                                                         Mode=TwoWay}"
+                                  Style="{DynamicResource DataGrid_Default}"
+                                  AutoGenerateColumns="False"
+                                  CanUserAddRows="False" 
+                                  Margin="8"
+                                  FontWeight="Normal"
+                                  VerticalScrollBarVisibility="Auto"
+                                  HeadersVisibility="Column"
+                                  ScrollViewer.CanContentScroll="True"
+                                  EnableColumnVirtualization="True"
+                                  EnableRowVirtualization="True"
+                                  Height="110"
+                                  RowEditEnding="PersonsGrid_RowEditEnding"
+                                  MouseDoubleClick="PersonGrid_MouseDoubleClick">
+
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID"
+                                                    Binding="{Binding PersonID}"
+                                                    Width="Auto"/>
+
+                                <DataGridTextColumn Header="First Name"
+                                                    Binding="{Binding PersonFirstName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                                <DataGridTextColumn Header="Last Name" 
+                                                    Binding="{Binding PersonLastName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                                <DataGridTextColumn Header="Birthdate" 
+                                                    Binding="{Binding PersonBirthDate, Mode=TwoWay, 
+                                                            StringFormat=d, UpdateSourceTrigger=PropertyChanged}"/>
+
                                 <DataGridTextColumn Header="Height" 
                                                     Binding="{Binding PersonHeight, Mode=TwoWay, 
-                                                              UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"/>
-
+                                                            UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"/>
                             </DataGrid.Columns>
-                            </DataGrid>
-                        </Grid>
+                        </DataGrid>
+                    </Grid>
 
-                        <Button x:Name="LoadUserdata"
-                                Content="Load Body Data from Person"
-                                Style="{StaticResource StandardButton}" 
-                                Click="btnLoadUserdata_Click"/>
-                    </StackPanel>
+                    <!-- Load Data Action Button -->
+                    <Button x:Name="LoadUserdata"
+                            Content="Load Body Data from Person"
+                            Style="{DynamicResource StandardButton}" 
+                            Click="btnLoadUserdata_Click"/>
+                </StackPanel>
             </GroupBox>
-
 
         </StackPanel>
     </ScrollViewer>

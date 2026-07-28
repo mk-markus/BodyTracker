@@ -9,160 +9,187 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="ChartsStepDailyTrendPage">
 
-    <Grid>
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" 
+              Padding="0"
+              Margin="0,12,0,0">
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-        <!-- Date Filter -->
-        <GroupBox Header="Select Chart Timespan"
-                  Style="{StaticResource StandardGroupBox}"
-                  Grid.Column="0"
-                  Grid.Row="0">
-            
-            <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
 
-                <StackPanel Orientation="Horizontal">
-
-                    <TextBlock Text="Start Date:"
-                               Style="{StaticResource StandardTextBlock}" />
-
-                    <DatePicker SelectedDate="{Binding StartDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                FontSize="14"
-                                FontWeight="Normal"
-                                Margin="3" />
-
-                    <TextBlock Text="End Date:"
-                               Style="{StaticResource StandardTextBlock}" />
-
-                    <DatePicker SelectedDate="{Binding EndDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                FontSize="14"
-                                FontWeight="Normal"
-                                Margin="3" />
-
-                </StackPanel>
-
-                <StackPanel Grid.Row="1"
-                            Orientation="Horizontal"
-                            VerticalAlignment="Center"
-                            HorizontalAlignment="Center">
-                    
-                    <Button Content="Actual Year"
-                            Style="{StaticResource StandardButton}"
-                            Command="{Binding SetActualYearCommand}" />
-
-                    <Button Content="Actual Week"
-                            Style="{StaticResource StandardButton}"
-                            Command="{Binding SetActualWeekCommand}" />
-
-                    <Button Content="Actual Month"
-                            Style="{StaticResource StandardButton}"
-                            Command="{Binding SetActualMonthCommand}" />
-
-                    <Button Content="Show All Data"
-                            Style="{StaticResource StandardButton}"
-                            Command="{Binding ShowAllDataCommand}" />
-
-                </StackPanel>
-
-            </Grid>
-
-        </GroupBox>
-
-        <!-- Metrics -->
-        <GroupBox Header="Show Daily Step Values"
-                  Style="{StaticResource StandardGroupBox}"
-                  Grid.Column="1"
-                  Grid.Row="0"
-                  Width="350"
-                  VerticalAlignment="Center"
-                  HorizontalAlignment="Left">
-
-            <Grid>
-
+            <!-- SECTION 1: CONTROLS & FILTERS HEADER -->
+            <Grid Grid.Column="0"
+           Grid.Row="0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
 
-                <CheckBox Content="Steps"
-                          IsChecked="{Binding ShowSteps}"
-                          Command="{Binding RefreshChart}"
-                          Style="{StaticResource StandardCheckBox}"
-                          Grid.Row="0"
-                          Grid.Column="0"/>
+                <!-- 1.1 Timespan Selection Card -->
+                <Border Style="{DynamicResource DashboardCardStyle}"
+                        Grid.Column="0"
+                        Margin="0,0,10,0">
 
-                <CheckBox Content="Steps Trend"
-                          IsChecked="{Binding ShowStepsTrend}"
-                          Command="{Binding RefreshChart}"
-                          Style="{StaticResource StandardCheckBox}"
-                          Grid.Row="0"
-                          Grid.Column="1"/>
+                    <StackPanel>
 
-                <CheckBox Content="Distance"
-                          IsChecked="{Binding ShowDistance}"
-                          Command="{Binding RefreshChart}"
-                          Style="{StaticResource StandardCheckBox}"
-                          Grid.Row="1"
-                          Grid.Column="0"/>
+                        <TextBlock Text="Select Chart Timespan" 
+                                   Style="{DynamicResource TextBlockDashBoardTitle}" 
+                                   Margin="0,0,0,10"/>
 
-                <CheckBox Content="Distance Trend"
-                          IsChecked="{Binding ShowDistanceTrend}"
-                          Command="{Binding RefreshChart}"
-                          Style="{StaticResource StandardCheckBox}"
-                          Grid.Row="1"
-                          Grid.Column="1"/>
+                        <!-- Datepickers -->
+                        <WrapPanel Margin="0,0,0,12">
 
-                <CheckBox Content="Calories"
-                          IsChecked="{Binding ShowCalories}"
-                          Command="{Binding RefreshChart}"
-                          Style="{StaticResource StandardCheckBox}"
-                          Grid.Row="2"
-                          Grid.Column="0"/>
+                            <TextBlock Text="Start Date:"
+                                       Style="{DynamicResource TextBlockDescribing}"/>
 
-                <CheckBox Content="Calories Trend"
-                          IsChecked="{Binding ShowCaloriesTrend}"
-                          Command="{Binding RefreshChart}"
-                          Style="{StaticResource StandardCheckBox}"
-                          Grid.Row="2"
-                          Grid.Column="1"/>
+                            <DatePicker SelectedDate="{Binding StartDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        FontSize="14"
+                                        FontWeight="Normal"
+                                        Margin="3"/>
 
+                            <TextBlock Text="End Date:"
+                                       Style="{DynamicResource TextBlockDescribing}"/>
+                            
+                            <DatePicker SelectedDate="{Binding EndDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        FontSize="14"
+                                        FontWeight="Normal"
+                                        Margin="0,0,16,0"/>
+
+                        </WrapPanel>
+
+                        <!-- Quick Range Buttons -->
+                        <UniformGrid Columns="4">
+
+                            <Button Content="Actual Year"
+                                    Style="{StaticResource SubActionButtonStyle}"
+                                    Command="{Binding SetActualYearCommand}"
+                                    Margin="0,0,4,0"/>
+
+                            <Button Content="Actual Week"
+                                    Style="{StaticResource SubActionButtonStyle}"
+                                    Command="{Binding SetActualWeekCommand}"
+                                    Margin="0,0,4,0"/>
+
+                            <Button Content="Actual Month"
+                                    Style="{StaticResource SubActionButtonStyle}"
+                                    Command="{Binding SetActualMonthCommand}"
+                                    Margin="0,0,4,0"/>
+
+                            <Button Content="Show All Data"
+                                    Style="{DynamicResource PrimaryActionButtonStyle}"
+                                    Command="{Binding ShowAllDataCommand}"
+                                    Margin="0,0,4,0"/>
+
+                        </UniformGrid>
+                    </StackPanel>
+                </Border>
+
+                <!-- 1.2 Metric Visibility Toggles Card -->
+                <Border Style="{StaticResource DashboardCardStyle}"
+                        Grid.Column="1"
+                        Padding="10">
+                    
+                    <StackPanel>
+
+                        <TextBlock Text="Show Measurement Values" 
+                                   Style="{DynamicResource TextBlockDashBoardTitle}"
+                                   Margin="0,0,0,10"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+
+                                <CheckBox Content="Steps"
+                                        IsChecked="{Binding ShowSteps}"
+                                        Command="{Binding RefreshChart}"
+                                        Style="{StaticResource StandardCheckBox}"/>
+
+
+
+                                <CheckBox Content="Distance"
+                                          IsChecked="{Binding ShowDistance}"
+                                          Command="{Binding RefreshChart}"
+                                          Style="{StaticResource StandardCheckBox}"/>
+
+                                <CheckBox Content="Calories"
+                                          IsChecked="{Binding ShowCalories}"
+                                          Command="{Binding RefreshChart}"
+                                          Style="{StaticResource StandardCheckBox}"/>
+
+                            </StackPanel>
+
+
+                            <StackPanel Grid.Column="1"
+                                        Margin="10,0,0,0">
+
+                                <CheckBox Content="Steps Trend"
+                                          IsChecked="{Binding ShowStepsTrend}"
+                                          Command="{Binding RefreshChart}"
+                                          Style="{StaticResource StandardCheckBox}"/>
+
+                                <CheckBox Content="Distance Trend"
+                                          IsChecked="{Binding ShowDistanceTrend}"
+                                          Command="{Binding RefreshChart}"
+                                          Style="{StaticResource StandardCheckBox}"/>
+
+                                <CheckBox Content="Calories Trend"
+                                          IsChecked="{Binding ShowCaloriesTrend}"
+                                          Command="{Binding RefreshChart}"
+                                          Style="{StaticResource StandardCheckBox}"/>
+
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
             </Grid>
 
-        </GroupBox>
+            <!-- SECTION 2: MODERNIZED CARTESIAN CHART CONTAINER -->
+            <Border Style="{StaticResource DashboardCardStyle}"
+                    Grid.Column="0"
+                    Grid.Row="1"
+                    Margin="0,12,0,0">
 
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
-        <GroupBox Header="Daily Step Trend"
-                  Grid.Column="0"
-                  Grid.Row="1"
-                  Grid.ColumnSpan="2"
-                  Style="{StaticResource StandardGroupBox}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
 
-            <lvc:CartesianChart x:Name="StepTrendChart"
-                                Series="{Binding Series}"
-                                XAxes="{Binding XAxes}"
-                                YAxes="{Binding YAxes}"
-                                LegendPosition="Bottom" />
+                    </Grid.RowDefinitions>
 
-        </GroupBox>
+                    <TextBlock Text="Daily Steps Chart" 
+                               Style="{DynamicResource TextBlockDashBoardTitle}"
+                               Grid.Column="0"
+                               Grid.Row="0"
+                               Margin="0,0,0,12"/>
 
-    </Grid>
+                    <lvc:CartesianChart x:Name="StepTrendChart"
+                                        Series="{Binding Series}"
+                                        XAxes="{Binding XAxes}"
+                                        YAxes="{Binding YAxes}"
+                                        LegendPosition="Bottom"
+                                        Grid.Column="0"
+                                        Grid.Row="1"/>
+                </Grid>
+            </Border>
+        </Grid>
+    </ScrollViewer>
+
 </Page>
+

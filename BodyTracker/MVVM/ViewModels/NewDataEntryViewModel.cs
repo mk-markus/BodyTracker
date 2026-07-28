@@ -3,6 +3,7 @@ using BodyTracker.Services;
 using BodyTracker.State;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using System;
 using System.Globalization;
 using System.Threading.Tasks;
@@ -596,7 +597,7 @@ namespace BodyTracker.ViewModels
         /// <summary>
         /// Gets the command that triggers the asynchronous saving of entered data.
         /// </summary>
-        public IAsyncRelayCommand SaveNewDataCommand { get; }
+        public IAsyncRelayCommand CommandSaveNewDatas { get; }
 
 
         /// <summary>
@@ -608,14 +609,14 @@ namespace BodyTracker.ViewModels
         /// </param>
         /// <remarks>
         /// The constructor performs dependency injection for the database service and 
-        /// initializes the <see cref="SaveNewDataCommand"/> as an <see cref="AsyncRelayCommand"/> 
+        /// initializes the <see cref="CommandSaveNewDatas"/> as an <see cref="AsyncRelayCommand"/> 
         /// to enable asynchronous data persistence from the UI.
         /// </remarks>
         public NewDataEntryViewModel(DatabaseService db) 
         { 
             databaseService = db;
            
-            SaveNewDataCommand = new AsyncRelayCommand(SaveAsync); 
+            CommandSaveNewDatas = new AsyncRelayCommand(SaveAsync); 
         }
 
         /// <summary>
@@ -743,6 +744,8 @@ namespace BodyTracker.ViewModels
                     await databaseService.InsertBodyMetricAsync(bodyMetric);
 
                     await databaseService.InsertBodyDimensionAsync(bodyDimension);
+
+                    WeakReferenceMessenger.Default.Send(new NavigationMessage(NavigationMessage.ShowDashboardPage));
 
                 }
 

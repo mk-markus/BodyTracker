@@ -1,4 +1,4 @@
-﻿using BodyTracker.MVVM.Views;
+﻿using BodyTracker.MVVM.Views.Pages;
 using BodyTracker.Services;
 using System.Windows;
 
@@ -24,8 +24,9 @@ namespace BodyTracker
 
             _db = db;
             
+            //var entry = new StartPage(this, databaseServerice);
             var entry = new StartPage(this, _db);
-            
+
             MainFrame.Navigate(entry);
         }
     }

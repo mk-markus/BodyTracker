@@ -5,9 +5,9 @@ using System.Windows.Controls;
 namespace BodyTracker.MVVM.Views.Pages
 {
     /// <summary>
-    /// Interaktionslogik für FoodIntakePage.xaml
+    /// Interaktionslogik für StepDailyTrendImportPage.xaml
     /// </summary>
-    public partial class FoodIntakePage : Page
+    public partial class StepDailyTrendImportPage : Page
     {
         /// <summary>
         /// A private, read-only reference to the application's <see cref="MainWindow"/>.
@@ -24,31 +24,27 @@ namespace BodyTracker.MVVM.Views.Pages
         /// </summary>
         private readonly DatabaseService databaseService;
 
-        /// <summary>
-        /// The extractor service used to parse Samsung Health data from CSV files.
-        /// </summary>
-        private SamsungHealthDataCsvExtractor samsungHealthDataCsvExtractor = new SamsungHealthDataCsvExtractor();
 
         /// <summary>
-        /// The view model instance managing the data and logic for the food intake view.
+        /// The view model instance managing the data and logic for the daily step trend view.
         /// </summary>
-        private readonly FoodIntakeViewModel foodIntakeViewModel;
+        private readonly StepDailyTrendViewModel stepDailyTrendViewModel;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FoodIntakePage"/> class.
+        /// Initializes a new instance of the <see cref="StepDailyTrendImportPage"/> class.
         /// </summary>
         /// <param name="shell">The main window shell reference.</param>
         /// <param name="db">The <see cref="DatabaseService"/> instance used for data operations.</param>
-        public FoodIntakePage(MainWindow shell, DatabaseService db)
+        public StepDailyTrendImportPage(MainWindow shell, DatabaseService db)
         {
             InitializeComponent();
             _shell = shell;
 
             databaseService = db;
 
-            foodIntakeViewModel = new FoodIntakeViewModel(databaseService);
+            stepDailyTrendViewModel = new StepDailyTrendViewModel(databaseService);
 
-            DataContext = foodIntakeViewModel;
+            DataContext = stepDailyTrendViewModel;
         }
     }
 }

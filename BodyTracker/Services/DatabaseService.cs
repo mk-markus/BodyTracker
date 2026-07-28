@@ -348,6 +348,72 @@ namespace BodyTracker.Services
             }
         }
 
+        /// <summary>
+        /// Inserts Heavy App workout data into the database.
+        /// Existing records are skipped based on DataUuid.
+        /// </summary>
+        /// <param name="personId">ID of the selected person.</param>
+        /// <param name="heavyAppData">Heavy App workout data.</param>
+        /// <param name="progress">Optional progress reporting.</param>
+        /// <returns>True if successful.</returns>
+        public async Task<bool> InsertHeavyAppData(int personId,
+                                                   IEnumerable<HeavyAppCSVModel> heavyAppData,
+                                                   IProgress<double>? progress = null)
+        {
+            var sqlServerConnection = await EtablishSqlServerConnection();
+
+            await using var tx = await sqlServerConnection.BeginTransactionAsync();
+
+            try
+            {
+                var workouts = heavyAppData.ToList();
+
+                int total = workouts.Count;
+                int current = 0;
+
+                foreach (var workout in workouts)
+                {
+                    await using var sqlCommand = new MySqlCommand(DatabaseCommands.CmdInsertHeavyApp(),
+                                                                  sqlServerConnection,
+                                                                  (MySqlTransaction)tx);
+
+                    sqlCommand.Parameters.AddWithValue("@PersonID_FK", personId);
+                    sqlCommand.Parameters.AddWithValue("@DataUuid", workout.DataUuid.ToString());
+                    sqlCommand.Parameters.AddWithValue("@Title", workout.Title);
+                    sqlCommand.Parameters.AddWithValue("@StartTime", workout.StartTime);
+                    sqlCommand.Parameters.AddWithValue("@EndTime", workout.EndTime);
+                    sqlCommand.Parameters.AddWithValue("@Description", (object?)workout.Description ?? DBNull.Value);
+                    sqlCommand.Parameters.AddWithValue("@ExerciseTitle", workout.ExerciseTitle);
+                    sqlCommand.Parameters.AddWithValue("@SupersetId", (object?)workout.SupersetId ?? DBNull.Value);
+                    sqlCommand.Parameters.AddWithValue("@ExerciseNotes", (object?)workout.ExerciseNotes ?? DBNull.Value);
+                    sqlCommand.Parameters.AddWithValue("@SetIndex", workout.SetIndex);
+                    sqlCommand.Parameters.AddWithValue("@SetType", (object?)workout.SetType ?? DBNull.Value);
+                    sqlCommand.Parameters.AddWithValue("@WeightKg", (object?)workout.WeightKg ?? DBNull.Value);
+                    sqlCommand.Parameters.AddWithValue("@Reps", (object?)workout.Reps ?? DBNull.Value);
+                    sqlCommand.Parameters.AddWithValue("@DistanceKm", (object?)workout.DistanceKm ?? DBNull.Value);
+                    sqlCommand.Parameters.AddWithValue("@DurationSeconds", (object?)workout.DurationSeconds ?? DBNull.Value);
+                    sqlCommand.Parameters.AddWithValue("@Rpe", (object?)workout.Rpe ?? DBNull.Value);
+
+                    await sqlCommand.ExecuteNonQueryAsync();
+
+                    current++;
+
+                    progress?.Report((double)current / total * 100.0);
+                }
+
+                await tx.CommitAsync();
+
+                progress?.Report(100);
+
+                return true;
+            }
+            catch
+            {
+                await tx.RollbackAsync();
+                throw;
+            }
+        }
+
         #endregion
 
         #region Functions Get Datas from Databse
@@ -515,9 +581,9 @@ namespace BodyTracker.Services
         /// either a metric or a dimension record might be missing for a specific date by using 
         /// nullable types for all measurement values.
         /// </remarks>
-        public async Task<List<FullBodyMeasurementDatas>> GetBodyMeasurementAsync(int personId)
+        public async Task<List<FullBodyMeasurementDatasModel>> GetBodyMeasurementAsync(int personId)
         {
-            var list = new List<FullBodyMeasurementDatas>();
+            var list = new List<FullBodyMeasurementDatasModel>();
 
             var SqlServerConnection = await EtablishSqlServerConnection();
             await using var SqlCommand = new MySqlCommand(DatabaseCommands.CmdGetMeasurement(), SqlServerConnection);
@@ -528,7 +594,7 @@ namespace BodyTracker.Services
 
             while (await SqlDataReader.ReadAsync())
             {
-                list.Add(new FullBodyMeasurementDatas
+                list.Add(new FullBodyMeasurementDatasModel
                 {
                     MetricID = SqlDataReader.IsDBNull(0) ? (int?)null : SqlDataReader.GetInt32(0),
                     DemensionID = SqlDataReader.IsDBNull(1) ? (int?)null : SqlDataReader.GetInt32(1),
@@ -559,6 +625,54 @@ namespace BodyTracker.Services
 
             return list;
         }
+
+
+        /// <summary>
+        /// Retrieves all gym workout entries for a specific person.
+        /// </summary>
+        /// <param name="personId">
+        /// The ID of the person whose workout entries should be loaded.
+        /// </param>
+        /// <returns>
+        /// A collection of <see cref="GymWorkoutEntryModel"/> objects.
+        /// </returns>
+        public async Task<IEnumerable<GymWorkoutEntryModel>> GetHeavyAppWorkoutEntriesAsync(int personId)
+        {
+            var list = new List<GymWorkoutEntryModel>();
+
+            var SqlServerConnection = await EtablishSqlServerConnection();
+            await using var SqlCommand = new MySqlCommand(DatabaseCommands.CmdGetHeavyAppWorkoutEntries(), SqlServerConnection);
+
+
+            //await using var sqlServerConnection = await EtablishSqlServerConnection();
+
+            //await using var SqlCommand = new MySqlCommand(DatabaseCommands.CmdGetMeasurement(), SqlServerConnection);
+
+            SqlCommand.Parameters.AddWithValue("@PersonID", personId);
+
+            await using var sqlDataReader = await SqlCommand.ExecuteReaderAsync();
+
+            while (await sqlDataReader.ReadAsync())
+            {
+                list.Add(new GymWorkoutEntryModel
+                {
+                    ExcerciseDate = sqlDataReader.GetDateTime(0),
+
+                    ExerciseName = sqlDataReader.IsDBNull(1) ? string.Empty : sqlDataReader.GetString(1),
+
+                    Weight = sqlDataReader.IsDBNull(2) ? 0 : sqlDataReader.GetDouble(2),
+
+                    Reps = sqlDataReader.IsDBNull(3) ? 0 : sqlDataReader.GetDouble(3),
+
+                    SetIndex = sqlDataReader.IsDBNull(4) ? 0 : sqlDataReader.GetInt32(4)
+                });
+            }
+
+            return list;
+        }
+
+
+
 
         /// <summary>
         /// Asynchronously deletes a specific metric record from the database using its unique identifier.

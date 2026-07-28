@@ -124,10 +124,10 @@ namespace BodyTracker.MVVM.Views
             if (DataContext is not MeasurementViewModel vm) return;
 
             // versuche SelectedItem, fallback auf SelectedCells
-            var item = MeasurementsGrid.SelectedItem as FullBodyMeasurementDatas;
+            var item = MeasurementsGrid.SelectedItem as FullBodyMeasurementDatasModel;
             if (item == null && MeasurementsGrid.SelectedCells.Count > 0)
             {
-                item = MeasurementsGrid.SelectedCells[0].Item as FullBodyMeasurementDatas;
+                item = MeasurementsGrid.SelectedCells[0].Item as FullBodyMeasurementDatasModel;
             }
             if (item == null) return;
 
@@ -188,7 +188,7 @@ namespace BodyTracker.MVVM.Views
         {
             if (e.EditAction != DataGridEditAction.Commit) return;
 
-            if (e.Row.Item is not FullBodyMeasurementDatas editedRow) return;
+            if (e.Row.Item is not FullBodyMeasurementDatasModel editedRow) return;
 
             Dispatcher.BeginInvoke(new Action(async () =>
             {        
@@ -202,7 +202,7 @@ namespace BodyTracker.MVVM.Views
         {
             var view = CollectionViewSource.GetDefaultView(measurementViewModel.Measurement);
             view.SortDescriptions.Clear();
-            view.SortDescriptions.Add(new SortDescription(nameof(FullBodyMeasurementDatas.MeasurementDate), ListSortDirection.Descending));
+            view.SortDescriptions.Add(new SortDescription(nameof(FullBodyMeasurementDatasModel.MeasurementDate), ListSortDirection.Descending));
             
         }
     }

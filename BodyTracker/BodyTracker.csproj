@@ -15,11 +15,15 @@
     <Optimize>False</Optimize>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="Images\Body-Fat-Percentage-Calculator-Caliper-Male-Female.jpg" />
+    <None Remove="Ressources\Images\Body-Fat-Percentage-Calculator-Caliper-Male-Female.jpg" />
+    <None Remove="Ressources\JsonFiles\Database_Exercises.json" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Icon\ProgramIcon.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Ressources\JsonFiles\Database_Exercises.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
@@ -29,7 +33,7 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Images\Body-Fat-Percentage-Calculator-Caliper-Male-Female.jpg">
+    <Content Include="Ressources\Images\Body-Fat-Percentage-Calculator-Caliper-Male-Female.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -43,7 +47,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="MVVM\Views\Pages\StepDailyTrendPage.xaml.cs">
+    <Compile Update="MVVM\Views\Pages\MultiImportPage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="MVVM\Views\Pages\StepDailyTrendIMportPage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Properties\Resources.Designer.cs">

@@ -1,0 +1,108 @@
+﻿<Page x:Class="BodyTracker.MVVM.Views.Pages.FoodIntakeImportPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:vm="clr-namespace:BodyTracker.MVVM.ViewModels"
+      Title="Food Intake">
+
+
+    <Border Style="{DynamicResource DashboardCardStyle}"
+            Margin="0,10,0,0">
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" 
+                        Orientation="Horizontal" 
+                        HorizontalAlignment="Center" 
+                        Margin="10">
+
+                <Button Content="Open Food Intake File" 
+                        Command="{Binding OpenSamsungFoodIntakeCommand}" 
+                        Style="{DynamicResource ModernStandardButton}"/>
+
+                <Button Content="Upload Food Intake Datas" 
+                        Command="{Binding DownloadSamsungFoodIntakeToDatabaseCommand}" 
+                        Style="{DynamicResource ModernStandardButton}"/>
+
+                <ProgressBar Height="25" 
+                             MinWidth="100"
+                             Minimum="0"
+                             Maximum="100"
+                             Value="{Binding ProgressValue}"
+                             Visibility="{Binding IsLoading, Converter={StaticResource bool2VisibilityConverter}}" 
+                             Style="{DynamicResource ProgressbarCurrentBarValue}"
+                             Margin="0"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Center"/>
+
+                <TextBlock Text="{Binding ProgressText}"
+                           HorizontalAlignment="Center"
+                           Style="{DynamicResource TextBlockDescribing}"
+                           Width="300"
+                           TextAlignment="Center"/>
+
+            </StackPanel>
+
+            <DataGrid Grid.Row="2"
+                      ItemsSource="{Binding FoodIntakes}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      Margin="10"
+                      EnableRowVirtualization="True"
+                      EnableColumnVirtualization="True"
+                      VirtualizingPanel.IsVirtualizing="True"
+                      VirtualizingPanel.VirtualizationMode="Recycling"
+                      ScrollViewer.CanContentScroll="True"
+                      Style="{StaticResource DataGrid_Default}">
+
+                <DataGrid.Columns>
+
+                    <DataGridTextColumn Header="Name"
+                            Binding="{Binding Name}"
+                            Width="250" />
+
+                    <DataGridTextColumn Header="Kalorien"
+                            Binding="{Binding Calorie, StringFormat=F0}"
+                            Width="100" />
+
+                    <DataGridTextColumn Header="Menge"
+                            Binding="{Binding Amount}"
+                            Width="100" />
+
+                    <DataGridTextColumn Header="Mahlzeit"
+                            Binding="{Binding MealType}"
+                            Width="100" />
+
+                    <DataGridTextColumn Header="Startzeit"
+                            Binding="{Binding StartTime, StringFormat=dd.MM.yyyy HH:mm}"
+                            Width="150" />
+
+                    <DataGridTextColumn Header="Erstellt"
+                            Binding="{Binding CreateTime, StringFormat=dd.MM.yyyy HH:mm}"
+                            Width="150" />
+
+                    <DataGridTextColumn Header="Aktualisiert"
+                            Binding="{Binding UpdateTime, StringFormat=dd.MM.yyyy HH:mm}"
+                            Width="150" />
+
+                    <DataGridTextColumn Header="Einheit"
+                            Binding="{Binding Unit}"
+                            Width="80" />
+
+                    <DataGridTextColumn Header="Food ID"
+                            Binding="{Binding FoodInfoId}"
+                            Width="120" />
+
+                    <DataGridTextColumn Header="Kommentar"
+                            Binding="{Binding Comment}"
+                            Width="250" />
+
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </Border>
+</Page>

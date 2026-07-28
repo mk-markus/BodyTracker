@@ -34,7 +34,7 @@ namespace BodyTracker.ViewModels
         /// Uses <see cref="ObservableCollection{T}"/> to automatically notify the UI 
         /// of additions, removals, or list clears.
         /// </summary>
-        [ObservableProperty] private ObservableCollection<FullBodyMeasurementDatas> measurement = new();
+        [ObservableProperty] private ObservableCollection<FullBodyMeasurementDatasModel> measurement = new();
 
         /// <summary>
         /// Gets or sets the collection of mean full body measurement data.
@@ -42,13 +42,13 @@ namespace BodyTracker.ViewModels
         /// <remarks>The collection is observable, allowing UI elements or other components to react to
         /// changes such as additions or removals of measurement data. This property is typically used for data binding
         /// scenarios.</remarks>
-        [ObservableProperty] private ObservableCollection<FullBodyMeasurementDatas> meanMeasurement = new();
+        [ObservableProperty] private ObservableCollection<FullBodyMeasurementDatasModel> meanMeasurement = new();
 
         /// <summary>
         /// Gets or sets the currently selected measurement record from the list.
         /// Nullable, as no record may be selected.
         /// </summary>
-        [ObservableProperty] private FullBodyMeasurementDatas? selectedMeasurement;
+        [ObservableProperty] private FullBodyMeasurementDatasModel? selectedMeasurement;
 
         /// <summary>
         /// Gets or sets the name of the person currently being viewed.
@@ -172,7 +172,7 @@ namespace BodyTracker.ViewModels
         /// to re-evaluate its execution logic (<see cref="CanDelete"/>). 
         /// It utilizes a safe cast to <see cref="AsyncRelayCommand"/> to trigger the notification.
         /// </remarks>
-        partial void OnSelectedMeasurementChanged(FullBodyMeasurementDatas? value)
+        partial void OnSelectedMeasurementChanged(FullBodyMeasurementDatasModel? value)
         {
             (DeleteCommand as AsyncRelayCommand)?.NotifyCanExecuteChanged();
         }
@@ -209,7 +209,7 @@ namespace BodyTracker.ViewModels
         /// to ensure the local collection remains consistent with the database state, 
         /// including any server-generated identifiers.
         /// </remarks>
-        public async Task UpdateMeasurementAsync(int personId, FullBodyMeasurementDatas row)
+        public async Task UpdateMeasurementAsync(int personId, FullBodyMeasurementDatasModel row)
         {
             await databaseServerice.UpdateMeasurementAsync(
                 personId,
@@ -274,11 +274,11 @@ namespace BodyTracker.ViewModels
             GetAverageValues(MeanStartDate, MeanEndDate);
         }
 
-        private ObservableCollection<FullBodyMeasurementDatas> GetAverageValues(DateTime start, DateTime end)
+        private ObservableCollection<FullBodyMeasurementDatasModel> GetAverageValues(DateTime start, DateTime end)
         {
             // Basic validation: Ensure date range is valid and data source exists
             if (start > end || Measurement == null)
-                return new ObservableCollection<FullBodyMeasurementDatas>();
+                return new ObservableCollection<FullBodyMeasurementDatasModel>();
 
             // Filter data by the specified date range
             var ordered = Measurement
@@ -286,7 +286,7 @@ namespace BodyTracker.ViewModels
                 .ToList();
 
             if (ordered.Count == 0)
-                return new ObservableCollection<FullBodyMeasurementDatas>();
+                return new ObservableCollection<FullBodyMeasurementDatasModel>();
 
             // Wir berechnen den KFA für jeden Tag einzeln und bilden dann den Durchschnitt
             var kfaValues = ordered
@@ -295,7 +295,7 @@ namespace BodyTracker.ViewModels
                 .ToList();
 
 
-            var result = new FullBodyMeasurementDatas();
+            var result = new FullBodyMeasurementDatasModel();
 
             /* 
                LOCAL HELPER FUNCTION: GetFilteredAverage
@@ -328,7 +328,7 @@ namespace BodyTracker.ViewModels
             result.FatTongBackCrease = GetFilteredAverage(ordered.Select(x => x.FatTongBackCrease));
             result.CaliperBodyFatPercentage = kfaValues.Any() ? kfaValues.Average() : 0f;
 
-            return new ObservableCollection<FullBodyMeasurementDatas> { result };
+            return new ObservableCollection<FullBodyMeasurementDatasModel> { result };
         }
 
         /// <summary>
@@ -340,7 +340,7 @@ namespace BodyTracker.ViewModels
         /// <param name="male">Specifies whether the calculation is for a male (true) or female (false).</param>
         /// <param name="age">The age of the individual in years.</param>
         /// <returns>The calculated body fat percentage; returns 0 if any measurement values are missing or invalid.</returns>
-        private float CalculateKFA7PointCaliperForEntry(FullBodyMeasurementDatas d, bool male, int age)
+        private float CalculateKFA7PointCaliperForEntry(FullBodyMeasurementDatasModel d, bool male, int age)
         {
             // Collect the 7 values for this specific day
             float[] values = {

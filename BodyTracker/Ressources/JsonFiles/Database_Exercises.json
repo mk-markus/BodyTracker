@@ -1,0 +1,984 @@
+[
+  {
+    "name": "Laufband",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Quadriceps",
+      "Hamstrings",
+      "Calves"
+    ],
+    "secondaryMuscles": [
+      "Glutes",
+      "Abdominals"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "laufband"
+  },
+  {
+    "name": "Gym80 Brustmaschine 4328",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Chest"
+    ],
+    "secondaryMuscles": [
+      "Triceps",
+      "Shoulders"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "gym80_brustmaschine_4328"
+  },
+  {
+    "name": "Schräge Brustpresse (Maschine)",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Chest"
+    ],
+    "secondaryMuscles": [
+      "Triceps",
+      "Shoulders"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "schraege_brustpresse_maschine"
+  },
+  {
+    "name": "Fliegende (Maschine)",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Chest"
+    ],
+    "secondaryMuscles": [
+      "Shoulders"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "fliegende_maschine"
+  },
+  {
+    "name": "Preacher Curl (Maschine)",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Biceps"
+    ],
+    "secondaryMuscles": [
+      "Forearms"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "preacher_curl_maschine"
+  },
+  {
+    "name": "Bizepscurl (Kurzhantel)",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Biceps"
+    ],
+    "secondaryMuscles": [
+      "Forearms"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "bizepscurl_kurzhantel"
+  },
+  {
+    "name": "Trizepsdrücken",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Triceps"
+    ],
+    "secondaryMuscles": [
+      "Shoulders"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "trizepsdruecken"
+  },
+  {
+    "name": "Schulterheben (Kurzhantel)",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Neck"
+    ],
+    "secondaryMuscles": [
+      "Middle back"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "schulterheben_kurzhantel"
+  },
+  {
+    "name": "Gym80 Bauchmuskelmaschine 3037",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Abdominals"
+    ],
+    "secondaryMuscles": [],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "gym80_bauchmuskelmaschine_3037"
+  },
+  {
+    "name": "Side Bend (Kurzhantel)",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Abdominals"
+    ],
+    "secondaryMuscles": [
+      "Lower back"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "side_bend_kurzhantel"
+  },
+  {
+    "name": "Sägezahnmuskel",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Chest"
+    ],
+    "secondaryMuscles": [
+      "Shoulders"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "saegezahnmuskel"
+  },
+  {
+    "name": "Latzug (Kabel)",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Lats"
+    ],
+    "secondaryMuscles": [
+      "Biceps",
+      "Middle back"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "latzug_kabel"
+  },
+  {
+    "name": "Iso-Laterales Rudern von oben",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Lats"
+    ],
+    "secondaryMuscles": [
+      "Biceps",
+      "Middle back"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "iso-laterales_rudern_von_oben"
+  },
+  {
+    "name": "Sitzendes Rudern - Weiter Griff",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Middle back"
+    ],
+    "secondaryMuscles": [
+      "Lats",
+      "Biceps",
+      "Shoulders"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "sitzendes_rudern_-_weiter_griff"
+  },
+  {
+    "name": "Reverse Fliegende (Maschine)",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Shoulders"
+    ],
+    "secondaryMuscles": [
+      "Middle back"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "reverse_fliegende_maschine"
+  },
+  {
+    "name": "Seitheben (Maschine)",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Shoulders"
+    ],
+    "secondaryMuscles": [],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "seitheben_maschine"
+  },
+  {
+    "name": "Russian Twist (Gewichtet)",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Abdominals"
+    ],
+    "secondaryMuscles": [
+      "Shoulders"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "russian_twist_gewichtet"
+  },
+  {
+    "name": "Hyperextension (Gewichtet)",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Lower back"
+    ],
+    "secondaryMuscles": [
+      "Glutes",
+      "Hamstrings"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "hyperextension_gewichtet"
+  },
+  {
+    "name": "Rückenstrecken (Maschine)",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Lower back"
+    ],
+    "secondaryMuscles": [
+      "Glutes",
+      "Hamstrings"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "rueckenstrecken_maschine"
+  },
+  {
+    "name": "Gym80 Brustmaschine 3014",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Chest"
+    ],
+    "secondaryMuscles": [
+      "Triceps",
+      "Shoulders"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "gym80_brustmaschine_3014"
+  },
+  {
+    "name": "Negativ Crunch (Gewichtet)",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Abdominals"
+    ],
+    "secondaryMuscles": [],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "negativ_crunch_gewichtet"
+  },
+  {
+    "name": "Einbeiniges Beinstrecken",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Quadriceps"
+    ],
+    "secondaryMuscles": [],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "einbeiniges_beinstrecken"
+  },
+  {
+    "name": "Beinbeugen sitzend",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Hamstrings"
+    ],
+    "secondaryMuscles": [
+      "Calves"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "beinbeugen_sitzend"
+  },
+  {
+    "name": "Hüftabduktion",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Abductors"
+    ],
+    "secondaryMuscles": [
+      "Glutes"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "hueftabduktion"
+  },
+  {
+    "name": "Hüftadduktion",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Adductors"
+    ],
+    "secondaryMuscles": [],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "hueftadduktion"
+  },
+  {
+    "name": "Wadenheben stehend (Maschine)",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Calves"
+    ],
+    "secondaryMuscles": [],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "wadenheben_stehend_maschine"
+  },
+  {
+    "name": "Hip Thrust (Maschine)",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Glutes"
+    ],
+    "secondaryMuscles": [
+      "Hamstrings"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "hip_thrust_maschine"
+  },
+  {
+    "name": "Schulterpresse sitzend (Maschine)",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Shoulders"
+    ],
+    "secondaryMuscles": [
+      "Triceps",
+      "Chest"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "schulterpresse_sitzend_maschine"
+  },
+  {
+    "name": "Iso-Laterales Rudern",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Middle back"
+    ],
+    "secondaryMuscles": [
+      "Lats",
+      "Biceps",
+      "Shoulders"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "iso-laterales_rudern"
+  },
+  {
+    "name": "Brustpresse (Maschine)",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Chest"
+    ],
+    "secondaryMuscles": [
+      "Triceps",
+      "Shoulders"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "brustpresse_maschine"
+  },
+  {
+    "name": "Radfahren",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Quadriceps"
+    ],
+    "secondaryMuscles": [
+      "Hamstrings",
+      "Calves",
+      "Glutes"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "radfahren"
+  },
+  {
+    "name": "Beinstrecken",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Quadriceps"
+    ],
+    "secondaryMuscles": [],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "beinstrecken"
+  },
+  {
+    "name": "Bauch Crunch 4D",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Abdominals"
+    ],
+    "secondaryMuscles": [],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "bauch_crunch_4d"
+  },
+  {
+    "name": "Brustmaschine",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Chest"
+    ],
+    "secondaryMuscles": [
+      "Triceps",
+      "Shoulders"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "brustmaschine"
+  },
+  {
+    "name": "Latzug - Enger Griff (Kabel)",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Lats"
+    ],
+    "secondaryMuscles": [
+      "Biceps",
+      "Middle back"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "latzug_-_enger_griff_kabel"
+  },
+  {
+    "name": "Latzug (Maschine)",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Lats"
+    ],
+    "secondaryMuscles": [
+      "Biceps",
+      "Middle back"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "latzug_maschine"
+  },
+  {
+    "name": "Reverse Butterfly",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Shoulders"
+    ],
+    "secondaryMuscles": [
+      "Middle back"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "reverse_butterfly"
+  },
+  {
+    "name": "Trizepsdrücken (Maschine)",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Triceps"
+    ],
+    "secondaryMuscles": [],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "trizepsdruecken_maschine"
+  },
+  {
+    "name": "Squat (Maschine)",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Quadriceps"
+    ],
+    "secondaryMuscles": [
+      "Glutes",
+      "Hamstrings",
+      "Calves"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "squat_maschine"
+  },
+  {
+    "name": "Bankdrücken (Smith Machine)",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Chest"
+    ],
+    "secondaryMuscles": [
+      "Triceps",
+      "Shoulders"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "bankdruecken_smith_machine"
+  },
+  {
+    "name": "Beinpresse sitzend",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Quadriceps"
+    ],
+    "secondaryMuscles": [
+      "Glutes",
+      "Hamstrings"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "beinpresse_sitzend"
+  },
+  {
+    "name": "Rotatorenmanschetten Übung",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Shoulders"
+    ],
+    "secondaryMuscles": [],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "rotatorenmanschetten_uebung"
+  },
+  {
+    "name": "Wadenheben sitzend",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Calves"
+    ],
+    "secondaryMuscles": [],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "wadenheben_sitzend"
+  },
+  {
+    "name": "Crunch (Maschine)",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Abdominals"
+    ],
+    "secondaryMuscles": [],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "crunch_maschine"
+  },
+  {
+    "name": "Liegendes Beinbeugen (Maschine)",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Hamstrings"
+    ],
+    "secondaryMuscles": [
+      "Calves"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "liegendes_beinbeugen_maschine"
+  },
+  {
+    "name": "Sitzendes Rudern am Kabelzug - V-Griff (Kabel)",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Middle back"
+    ],
+    "secondaryMuscles": [
+      "Lats",
+      "Biceps",
+      "Shoulders"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "sitzendes_rudern_am_kabelzug_-_v-griff_kabel"
+  },
+  {
+    "name": "Negativer Crunch",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Abdominals"
+    ],
+    "secondaryMuscles": [],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "negativer_crunch"
+  },
+  {
+    "name": "Brust Dips (Unterstützt)",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Chest"
+    ],
+    "secondaryMuscles": [
+      "Triceps",
+      "Shoulders"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "brust_dips_unterstuetzt"
+  },
+  {
+    "name": "Rudern sitzend (Maschine)",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Middle back"
+    ],
+    "secondaryMuscles": [
+      "Lats",
+      "Biceps",
+      "Shoulders"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "rudern_sitzend_maschine"
+  },
+  {
+    "name": "Klimmzüge (Unterstützt)",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Lats"
+    ],
+    "secondaryMuscles": [
+      "Biceps",
+      "Middle back"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "klimmzuege_unterstuetzt"
+  },
+  {
+    "name": "Brust Dips",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Chest"
+    ],
+    "secondaryMuscles": [
+      "Triceps",
+      "Shoulders"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "brust_dips"
+  },
+  {
+    "name": "Hip Thrust (Langhantel)",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Glutes"
+    ],
+    "secondaryMuscles": [
+      "Hamstrings"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "hip_thrust_langhantel"
+  },
+  {
+    "name": "Crosstrainer",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Quadriceps",
+      "Hamstrings",
+      "Calves"
+    ],
+    "secondaryMuscles": [
+      "Glutes"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "crosstrainer"
+  },
+  {
+    "name": "Trizeps Dips (Unterstützt)",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Triceps"
+    ],
+    "secondaryMuscles": [
+      "Chest",
+      "Shoulders"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "trizeps_dips_unterstuetzt"
+  },
+  {
+    "name": "Bauch 5B schwing seitlich",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Abdominals"
+    ],
+    "secondaryMuscles": [
+      "Lower back"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "bauch_5b_schwing_seitlich"
+  },
+  {
+    "name": "Laufen",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Quadriceps",
+      "Hamstrings",
+      "Calves"
+    ],
+    "secondaryMuscles": [
+      "Glutes",
+      "Abdominals"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "laufen"
+  },
+  {
+    "name": "Hyperextension",
+    "force": null,
+    "level": "beginner",
+    "mechanic": null,
+    "equipment": null,
+    "primaryMuscles": [
+      "Lower back"
+    ],
+    "secondaryMuscles": [
+      "Glutes",
+      "Hamstrings"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "hyperextension"
+  }
+]

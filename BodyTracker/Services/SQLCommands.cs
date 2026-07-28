@@ -1,4 +1,6 @@
-﻿namespace BodyTracker.Services
+﻿using System;
+
+namespace BodyTracker.Services
 {
     public class SqlCommandProvider : ISqlCommandProvider
     {
@@ -140,101 +142,185 @@ CREATE TABLE IF NOT EXISTS tbl_Abmessungen (
 
         public string CmdInsertSamsungHealthFoodIntake()
         {
-            return @"INSERT INTO tbl_FoodIntake (
-            PersonID_FK,
-            create_sh_ver,
-            start_time,
-            amount,
-            custom,
-            modify_sh_ver,
-            update_time,
-            create_time,
-            meal_type,
-            client_data_id,
-            name,
-            unit,
-            client_data_ver,
-            calorie,
-            time_offset,
-            device_uuid,
-            comment,
-            pkg_name,
-            data_uuid,
-            food_info_id)
-        SELECT
-            @PersonID_FK,
-            @CreateShVer,
-            @StartTime,
-            @Amount,
-            @Custom,
-            @ModifyShVer,
-            @UpdateTime,
-            @CreateTime,
-            @MealType,
-            @ClientDataId,
-            @Name,
-            @Unit,
-            @ClientDataVer,
-            @Calorie,
-            @TimeOffset,
-            @DeviceUuid,
-            @Comment,
-            @PkgName,
-            @DataUuid,
-            @FoodInfoId
-        FROM DUAL
-        WHERE NOT EXISTS
-        (
-            SELECT 1
-            FROM tbl_FoodIntake
-            WHERE data_uuid = @DataUuid
-        );";}
+            return @"
+INSERT INTO tbl_FoodIntake
+(
+    PersonID_FK,
+    create_sh_ver,
+    start_time,
+    amount,
+    custom,
+    modify_sh_ver,
+    update_time,
+    create_time,
+    meal_type,
+    client_data_id,
+    name,
+    unit,
+    client_data_ver,
+    calorie,
+    time_offset,
+    device_uuid,
+    comment,
+    pkg_name,
+    data_uuid,
+    food_info_id
+)
+VALUES
+(
+    @PersonID_FK,
+    @CreateShVer,
+    @StartTime,
+    @Amount,
+    @Custom,
+    @ModifyShVer,
+    @UpdateTime,
+    @CreateTime,
+    @MealType,
+    @ClientDataId,
+    @Name,
+    @Unit,
+    @ClientDataVer,
+    @Calorie,
+    @TimeOffset,
+    @DeviceUuid,
+    @Comment,
+    @PkgName,
+    @DataUuid,
+    @FoodInfoId
+)
+ON DUPLICATE KEY UPDATE
+    PersonID_FK     = IF(@UpdateTime > update_time, VALUES(PersonID_FK), PersonID_FK),
+    create_sh_ver  = IF(@UpdateTime > update_time, VALUES(create_sh_ver), create_sh_ver),
+    start_time     = IF(@UpdateTime > update_time, VALUES(start_time), start_time),
+    amount         = IF(@UpdateTime > update_time, VALUES(amount), amount),
+    custom         = IF(@UpdateTime > update_time, VALUES(custom), custom),
+    modify_sh_ver  = IF(@UpdateTime > update_time, VALUES(modify_sh_ver), modify_sh_ver),
+    meal_type      = IF(@UpdateTime > update_time, VALUES(meal_type), meal_type),
+    client_data_id = IF(@UpdateTime > update_time, VALUES(client_data_id), client_data_id),
+    name           = IF(@UpdateTime > update_time, VALUES(name), name),
+    unit           = IF(@UpdateTime > update_time, VALUES(unit), unit),
+    client_data_ver= IF(@UpdateTime > update_time, VALUES(client_data_ver), client_data_ver),
+    calorie        = IF(@UpdateTime > update_time, VALUES(calorie), calorie),
+    time_offset    = IF(@UpdateTime > update_time, VALUES(time_offset), time_offset),
+    device_uuid    = IF(@UpdateTime > update_time, VALUES(device_uuid), device_uuid),
+    comment        = IF(@UpdateTime > update_time, VALUES(comment), comment),
+    pkg_name       = IF(@UpdateTime > update_time, VALUES(pkg_name), pkg_name),
+    food_info_id   = IF(@UpdateTime > update_time, VALUES(food_info_id), food_info_id),
+    update_time    = IF(@UpdateTime > update_time, VALUES(update_time), update_time),
+    create_time    = IF(@UpdateTime > update_time, VALUES(create_time), create_time);";
+        }
 
 
         public string CmdInsertSamsungHealthStepDailyTrend()
         {
             return @"
-        INSERT INTO tbl_StepDailyTrend
-        (
-            PersonID_FK,
-            binning_data,
-            update_time,
-            create_time,
-            source_pkg_name,
-            source_type,
-            count,
-            speed,
-            distance,
-            calorie,
-            device_uuid,
-            pkg_name,
-            data_uuid,
-            day_time
-        )
-        SELECT
-            @PersonID_FK,
-            @BinningData,
-            @UpdateTime,
-            @CreateTime,
-            @SourcePkgName,
-            @SourceType,
-            @Count,
-            @Speed,
-            @Distance,
-            @Calorie,
-            @DeviceUuid,
-            @PkgName,
-            @DataUuid,
-            @DayTime
-        FROM DUAL
-        WHERE NOT EXISTS
-        (
-            SELECT 1
-            FROM tbl_StepDailyTrend
-            WHERE data_uuid = @DataUuid
-        );";
+INSERT INTO tbl_StepDailyTrend
+(
+    PersonID_FK,
+    binning_data,
+    update_time,
+    create_time,
+    source_pkg_name,
+    source_type,
+    count,
+    speed,
+    distance,
+    calorie,
+    device_uuid,
+    pkg_name,
+    data_uuid,
+    day_time
+)
+VALUES
+(
+    @PersonID_FK,
+    @BinningData,
+    @UpdateTime,
+    @CreateTime,
+    @SourcePkgName,
+    @SourceType,
+    @Count,
+    @Speed,
+    @Distance,
+    @Calorie,
+    @DeviceUuid,
+    @PkgName,
+    @DataUuid,
+    @DayTime
+)
+ON DUPLICATE KEY UPDATE
+    PersonID_FK = IF(@UpdateTime > update_time, @PersonID_FK, PersonID_FK),
+    binning_data = IF(@UpdateTime > update_time, @BinningData, binning_data),
+    source_pkg_name = IF(@UpdateTime > update_time, @SourcePkgName, source_pkg_name),
+    source_type = IF(@UpdateTime > update_time, @SourceType, source_type),
+    count = IF(@UpdateTime > update_time, @Count, count),
+    speed = IF(@UpdateTime > update_time, @Speed, speed),
+    distance = IF(@UpdateTime > update_time, @Distance, distance),
+    calorie = IF(@UpdateTime > update_time, @Calorie, calorie),
+    device_uuid = IF(@UpdateTime > update_time, @DeviceUuid, device_uuid),
+    pkg_name = IF(@UpdateTime > update_time, @PkgName, pkg_name),
+    day_time = IF(@UpdateTime > update_time, @DayTime, day_time),
+    update_time = IF(@UpdateTime > update_time, @UpdateTime, update_time),
+    create_time = IF(@UpdateTime > update_time, @CreateTime, create_time)";
         }
 
+        public string CmdInsertHeavyApp()
+        {
+            return @"
+INSERT INTO tbl_HeavyApp
+(
+    PersonID_FK,
+    Title,
+    StartTime,
+    EndTime,
+    Description,
+    ExerciseTitle,
+    SupersetId,
+    ExerciseNotes,
+    SetIndex,
+    SetType,
+    WeightKg,
+    Reps,
+    DistanceKm,
+    DurationSeconds,
+    Rpe,
+    UpdateDate
+)
+VALUES
+(
+    @PersonID_FK,
+    @Title,
+    @StartTime,
+    @EndTime,
+    @Description,
+    @ExerciseTitle,
+    @SupersetId,
+    @ExerciseNotes,
+    @SetIndex,
+    @SetType,
+    @WeightKg,
+    @Reps,
+    @DistanceKm,
+    @DurationSeconds,
+    @Rpe,
+    NULL
+)
+ON DUPLICATE KEY UPDATE
+
+    Title = VALUES(Title),
+    Description = VALUES(Description),
+    ExerciseNotes = VALUES(ExerciseNotes),
+    SupersetId = VALUES(SupersetId),
+    SetType = VALUES(SetType),
+    WeightKg = VALUES(WeightKg),
+    Reps = VALUES(Reps),
+    DistanceKm = VALUES(DistanceKm),
+    DurationSeconds = VALUES(DurationSeconds),
+    Rpe = VALUES(Rpe),
+
+    UpdateDate = CURRENT_TIMESTAMP(3);";
+        }
 
 
         public string CmdCountPersonsInTable()
@@ -281,6 +367,20 @@ CREATE TABLE IF NOT EXISTS tbl_Abmessungen (
                     WHERE PersonID_FK = @PersonID
                       AND source_type = -2
                     ORDER BY create_time";
+        }
+
+        public string CmdGetHeavyAppWorkoutEntries()
+        {
+            return @"
+        SELECT
+            StartTime,
+            ExerciseTitle,
+            WeightKg,
+            Reps,
+            SetIndex
+        FROM tbl_HeavyApp
+        WHERE PersonID_FK = @PersonID
+        ORDER BY StartTime, ExerciseTitle, SetIndex;";
         }
 
 

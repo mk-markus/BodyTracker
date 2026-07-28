@@ -1,21 +1,35 @@
 ﻿using BodyTracker.MVVM.ViewModels;
 using BodyTracker.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
 namespace BodyTracker.MVVM.Views.Pages
 {
     /// <summary>
-    /// Interaktionslogik für StepDailyTrendPage.xaml
+    /// Interaktionslogik für HeavyAppImportPage.xaml
     /// </summary>
-    public partial class StepDailyTrendPage : Page
+    public partial class HeavyAppImportPage : Page
     {
+
         /// <summary>
         /// A private, read-only reference to the application's <see cref="MainWindow"/>.
         /// This reference, often referred to as the 'shell', is used to coordinate 
         /// top-level UI actions, such as navigation between different pages or 
         /// accessing global window states.
         /// </summary>
-        private readonly MainWindow _shell;
+        private readonly MainWindow mainWindow;
 
         /// <summary>
         /// A private, read-only reference to the <see cref="DatabaseService"/>.
@@ -24,31 +38,26 @@ namespace BodyTracker.MVVM.Views.Pages
         /// </summary>
         private readonly DatabaseService databaseService;
 
-        /// <summary>
-        /// The extractor service used to parse Samsung Health step trend data from CSV files.
-        /// </summary>
-        private SamsungHealthDataCsvExtractor samsungHealthDataCsvExtractor = new SamsungHealthDataCsvExtractor();
 
         /// <summary>
         /// The view model instance managing the data and logic for the daily step trend view.
         /// </summary>
-        private readonly StepDailyTrendViewModel stepDailyTrendViewModel;
+        private readonly HeavyAppImportPageViewModel heavyAppImportPageViewModel;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="StepDailyTrendPage"/> class.
-        /// </summary>
-        /// <param name="shell">The main window shell reference.</param>
-        /// <param name="db">The <see cref="DatabaseService"/> instance used for data operations.</param>
-        public StepDailyTrendPage(MainWindow shell, DatabaseService db)
+
+
+        public HeavyAppImportPage(MainWindow shell, DatabaseService db)
         {
             InitializeComponent();
-            _shell = shell;
+
+            mainWindow = shell;
 
             databaseService = db;
 
-            stepDailyTrendViewModel = new StepDailyTrendViewModel(databaseService);
+            heavyAppImportPageViewModel = new HeavyAppImportPageViewModel(mainWindow, databaseService);
 
-            DataContext = stepDailyTrendViewModel;
+            DataContext = heavyAppImportPageViewModel;
+
         }
     }
 }

@@ -15,6 +15,19 @@
                 <ResourceDictionary Source="/Styles/ButtonStyles.xaml"/>
                 <ResourceDictionary Source="/Styles/DataGridStyles.xaml"/>
                 <ResourceDictionary Source="/Styles/CheckBoxStyles.xaml"/>
+                <ResourceDictionary Source="/Styles/RadioButtonStyles.xaml"/>
+                <ResourceDictionary Source="/Styles/BorderStyles.xaml"/>
+                <ResourceDictionary Source="/Styles/ColorPaletteStyles.xaml"/>
+                <ResourceDictionary Source="/Styles/RectangleStyles.xaml"/>
+                <ResourceDictionary Source="/Styles/ProgressbarStyles.xaml"/>
+                <ResourceDictionary Source="/Styles/ContentControlStyles.xaml"/>
+                <ResourceDictionary Source="/Styles/FrameStyles.xaml"/>
+
+
+
+
+
+                <!--<ResourceDictionary Source="/Styles/DashboardStyles.xaml"/>-->
             
             </ResourceDictionary.MergedDictionaries>
         
