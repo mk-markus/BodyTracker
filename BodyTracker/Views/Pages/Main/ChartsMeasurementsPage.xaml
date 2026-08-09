@@ -1,0 +1,214 @@
+﻿<Page x:Class="BodyTracker.Views.ChartsMeasurementsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:BodyTracker.Views"
+      mc:Ignorable="d" 
+      d:DesignHeight="700" d:DesignWidth="1000"
+      Title="ChartsPage">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                  Padding="0"
+                  Margin="0,12,0,0">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+
+            <!-- SECTION 1: CONTROLS & FILTERS HEADER -->
+            <Grid Grid.Column="0"
+                  Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+
+                <!-- 1.1 Timespan Selection Card -->
+                <Border Style="{DynamicResource BorderDashboardCardStyle}" 
+                        Grid.Column="0"
+                        Margin="0,0,10,0">
+
+                    <StackPanel>
+                        
+                        <TextBlock Text="Select Chart Timespan" 
+                                   Style="{DynamicResource TextBlockDashBoardTitle}" 
+                                   Margin="0,0,0,10"/>
+                        
+                        <!-- Datepickers -->
+                        <WrapPanel Margin="0,0,0,12">
+                            
+                            <TextBlock Text="Start Date:"
+                                       Style="{DynamicResource TextBlockDescribing}" 
+                                       Margin="0,0,4,0"/>
+                            
+                            <DatePicker SelectedDate="{Binding StartDate, Mode=TwoWay, 
+                                                       UpdateSourceTrigger=PropertyChanged}" 
+                                        Margin="0,0,16,0"/>
+
+                            <TextBlock Text="End Date: " 
+                                       VerticalAlignment="Center" 
+                                       Style="{DynamicResource TextBlockDescribing}" 
+                                       Margin="0,0,4,0"/>
+                            
+                            <DatePicker SelectedDate="{Binding EndDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        
+                        </WrapPanel>
+
+                        <!-- Quick Range Buttons -->
+                        <UniformGrid Columns="4">
+                            
+                            <Button x:Name="AcutalYear" 
+                                    Content="Actual Year" 
+                                    Style="{StaticResource SubActionButtonStyle}" 
+                                    Command="{Binding SetActualYearCommand}" 
+                                    Margin="0,0,4,0"/>
+                            
+                            <Button x:Name="ActualWeek" 
+                                    Content="Actual Week" 
+                                    Style="{StaticResource SubActionButtonStyle}" 
+                                    Command="{Binding SetActualWeekCommand}" 
+                                    Margin="2,0,2,0"/>
+                            
+                            <Button x:Name="ActualMonth" Content="Actual Month" 
+                                    Style="{StaticResource SubActionButtonStyle}" 
+                                    Command="{Binding SetActualMonthCommand}" 
+                                    Margin="2,0,2,0"/>
+                            
+                            <Button x:Name="AllMeasurements" Content="Show All" 
+                                    Style="{StaticResource PrimaryActionButtonStyle}" 
+                                    Command="{Binding ShowAllDataCommand}" 
+                                    Margin="4,0,0,0"/>
+                                                  
+                        </UniformGrid>                    
+                    </StackPanel>
+                </Border>
+
+                <!-- 1.2 Metric Visibility Toggles Card -->
+                <Border Style="{StaticResource BorderDashboardCardStyle}"
+                        Grid.Column="1"
+                        Padding="10">
+                    <StackPanel>
+                    
+                        <TextBlock Text="Show Measurement Values" 
+                                   Style="{DynamicResource TextBlockDashBoardTitle}" 
+                                   Margin="0,0,0,10"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                
+                                <CheckBox Content="Body Weight" 
+                                          IsChecked="{Binding ShowBodyWeight}" 
+                                          Command="{Binding RefreshChart}" 
+                                          Style="{StaticResource StandardCheckBox}"
+                                          Margin="0,0,0,8"/>
+
+                                <CheckBox Content="Body Muscle" 
+                                          IsChecked="{Binding ShowBodyMuscle}" 
+                                          Command="{Binding RefreshChart}" 
+                                          Style="{StaticResource StandardCheckBox}" 
+                                          Margin="0,0,0,8"/>
+
+                                <CheckBox Content="Body Fat" 
+                                          IsChecked="{Binding ShowBodyFat}" 
+                                          Command="{Binding RefreshChart}" 
+                                          Style="{StaticResource StandardCheckBox}" 
+                                          Margin="0,0,0,8"/>
+
+
+                                <CheckBox Content="Body Water" 
+                                          IsChecked="{Binding ShowBodyWater}" 
+                                          Command="{Binding RefreshChart}" 
+                                          Style="{StaticResource StandardCheckBox}"
+                                          Margin="0,0,0,8"/>
+                                
+                            </StackPanel>
+
+
+                            <StackPanel Grid.Column="1"
+                                        Margin="10,0,0,0">
+                                
+                                <CheckBox Content="Weight Trend" 
+                                          IsChecked="{Binding ShowBodyWeightTrend}"
+                                          Command="{Binding RefreshChart}" 
+                                          Style="{StaticResource StandardCheckBox}" 
+                                          Margin="0,0,0,8"/>
+                         
+                                <CheckBox Content="Muscle Trend" 
+                                          IsChecked="{Binding ShowBodyMuscleTrend}"
+                                          Command="{Binding RefreshChart}" 
+                                          Style="{StaticResource StandardCheckBox}" 
+                                          Margin="0,0,0,8"/>
+
+                            
+
+                                <CheckBox Content="Fat Trend" 
+                                          IsChecked="{Binding ShowBodyFatTrend}" 
+                                          Command="{Binding RefreshChart}" 
+                                          Style="{StaticResource StandardCheckBox}" 
+                                          Margin="0,0,0,8"/>
+
+
+
+                                <CheckBox Content="Water Trend" 
+                                          IsChecked="{Binding ShowBodyWaterTrend}" 
+                                          Command="{Binding RefreshChart}" 
+                                          Style="{StaticResource StandardCheckBox}"
+                                          Margin="0,0,0,8"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>                
+                </Border>            
+            </Grid>
+
+            <!-- SECTION 2: MODERNIZED CARTESIAN CHART CONTAINER -->
+            <Border Style="{StaticResource BorderDashboardCardStyle}"
+                    Grid.Column="0"
+                    Grid.Row="1"
+                    Margin="0,12,0,0">
+                
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+
+                    </Grid.RowDefinitions>
+                        
+                    <TextBlock Text="Progress Analytics Chart" 
+                                   Style="{DynamicResource TextBlockDashBoardTitle}"
+                                   Grid.Column="0"
+                                   Grid.Row="0"
+                                   Margin="0,0,0,12"/>
+
+                    <lvc:CartesianChart x:Name="BodyChart"
+                                        Series="{Binding Series}" 
+                                        XAxes="{Binding XAxes}" 
+                                        YAxes="{Binding YAxes}" 
+                                        LegendPosition="Bottom"
+                                        Background="Transparent"
+                                        Grid.Column="0"
+                                        Grid.Row="1">
+                        </lvc:CartesianChart>
+
+                </Grid>
+            </Border>
+        </Grid>
+    </ScrollViewer>
+</Page>

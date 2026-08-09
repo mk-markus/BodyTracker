@@ -2,53 +2,7 @@
                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                 xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2">
 
-    <!--#region Color Palette & Brushes-->
-    <SolidColorBrush x:Key="AppBackgroundBrush"
-                    Color="#F7F6F3"/>
-    <SolidColorBrush x:Key="SidebarBackgroundBrush"
-                    Color="#ECEBE7"/>
-    <SolidColorBrush x:Key="CardBackgroundBrush"
-                    Color="#FFFFFF"/>
-
-    <SolidColorBrush x:Key="AccentBlueBrush"
-                    Color="#D4A373"/>
-    <SolidColorBrush x:Key="AccentTealBrush"
-                    Color="#CCD5AE"/>
-
-    <SolidColorBrush x:Key="TextPrimaryBrush"
-                    Color="#2B2D2F"/>
-    <SolidColorBrush x:Key="TextSecondaryBrush"
-                    Color="#7A7D82"/>
-
-    <SolidColorBrush x:Key="BorderBrushColor"
-                    Color="#E2E0DB"/>
-
-    <SolidColorBrush x:Key="ProgressbarPreviousValueBackgroundBrush"
-                    Color="#15000000"/>
-    <SolidColorBrush x:Key="ProgressbarCurrentValueBackgroundBrush"
-                    Color="Transparent"/>
-
-    <!-- Neue Keys für spezifische Data-Grid-Farben -->
-    <SolidColorBrush x:Key="DataGridRowHeaderBorderBrush"
-                    Color="#E0E0E0"/>
-    <SolidColorBrush x:Key="DataGridRowHeaderBackgroundBrush"
-                    Color="#FAFAFA"/>
-    <SolidColorBrush x:Key="DataGridHeaderBackgroundBrush"
-                    Color="#F8F9FA"/>
-    <SolidColorBrush x:Key="DataGridExternalBorderBrush"
-                    Color="#DEE2E6"/>
-    <SolidColorBrush x:Key="ControlFocusBackgroundBrush"
-                    Color="#E9ECEF"/>
-    <SolidColorBrush x:Key="GridLineAndBorderBrush"
-                    Color="#F1F3F5"/>
-    <SolidColorBrush x:Key="DataGridSelectionBackgroundBrush"
-                    Color="#E7F1FF"/>
-    <SolidColorBrush x:Key="DataGridSelectionForegroundBrush"
-                    Color="#0056B3"/>
-    <SolidColorBrush x:Key="ErrorTextBrush"
-                    Color="#DC3545"/>
-    <!--#endregion-->
-
+    
     <!--#region Data Grid Gripper Style-->
     <Style x:Key="ColumnHeaderGripperStyle" TargetType="{x:Type Thumb}">
         <Setter Property="Width" Value="6"/>

@@ -1,7 +1,7 @@
 <Application x:Class="BodyTracker.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             StartupUri="/MVVM/Views/Windows/UserSelectWindow.xaml">
+             StartupUri="/Views/Windows/LauncherWindow.xaml">
 
     <Application.Resources>
         

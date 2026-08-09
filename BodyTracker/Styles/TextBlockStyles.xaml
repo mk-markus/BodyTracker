@@ -1,22 +1,20 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
+    <!-- Standard text block style defining general appearance, typography, alignment, and padding for primary text elements. -->
     <Style x:Key="StandardTextBlock" TargetType="TextBlock">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="Black"/>
-        <Setter Property="Padding" Value="2"/>
+        <Setter Property="Padding" Value="4"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="FontFamily" Value="Arial"/>
         <Setter Property="TextAlignment" Value="Right"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="MinWidth" Value="100"/>
         <Setter Property="Margin" Value="3"/>
-        <Setter Property="Padding" Value="4"/>
-
     </Style>
 
-
-
+    <!-- Compact information text block style defining smaller typography, width limits, and margins for data displays. -->
     <Style x:Key="StandardTextBlockInfo" TargetType="TextBlock">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="Black"/>
@@ -28,112 +26,130 @@
         <Setter Property="MinWidth" Value="50"/>
         <Setter Property="Width" Value="Auto"/>
         <Setter Property="Margin" Value="1"/>
-
     </Style>
 
-
+    <!-- Dashboard title text block style providing a prominent heading appearance using Segoe UI. -->
     <Style x:Key="TextBlockDashBoardTitle" TargetType="TextBlock">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
-
         <Setter Property="FontSize" Value="16"/>
         <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
-
         <Setter Property="Margin" Value="0,0,4,0"/>
         <Setter Property="Padding" Value="0"/>
     </Style>
 
+    <!-- Previous month text block style defining muted styling for historical comparison data. -->
     <Style x:Key="TextBlockPreviousMonth" TargetType="TextBlock">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
-
         <Setter Property="FontSize" Value="11"/>
-        <Setter Property="FontFamily" Value="Arial"/>
         <Setter Property="FontFamily" Value="Segoe UI"/>
-
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
-
         <Setter Property="Margin" Value="0,0,4,0"/>
         <Setter Property="Padding" Value="0"/>
     </Style>
 
+    <!-- Actual month text block style defining standard current-period data presentation formatting. -->
     <Style x:Key="TextBlockActualMonth" TargetType="TextBlock">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
-
         <Setter Property="FontSize" Value="11"/>
         <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontWeight" Value="Normal"/>
-
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
-
         <Setter Property="Margin" Value="0,0,4,0"/>
         <Setter Property="Padding" Value="0"/>
     </Style>
 
-
-
+    <!-- Describing text block style providing standard layout configuration for data labels and descriptors. -->
     <Style x:Key="TextBlockDescribing" TargetType="TextBlock">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
-
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
-
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
-
         <Setter Property="Margin" Value="0,0,4,0"/>
         <Setter Property="Padding" Value="0"/>
     </Style>
 
+    <!-- Trend arrow text block style configuring bold directional indicator typography and alignment. -->
     <Style x:Key="TextBlockTrendArrow" TargetType="TextBlock">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
-
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontWeight" Value="Bold"/>
-
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
-
         <Setter Property="Margin" Value="0,0,4,0"/>
         <Setter Property="Padding" Value="0"/>
     </Style>
 
+    <!-- Difference text block style formatting comparative variance values in lists and summaries. -->
     <Style x:Key="TextBlockDifference" TargetType="TextBlock">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
-
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
-
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
-
         <Setter Property="Margin" Value="0,0,4,0"/>
         <Setter Property="Padding" Value="0"/>
     </Style>
 
-    <Style x:Key="TextNavButtonTabTitle" TargetType="TextBlock">
+    <!-- Navigation button tab title style defining layout and typography for tab headers and navigation controls. -->
+    <Style x:Key="TextBlockNavButtonTabTitle" TargetType="TextBlock">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
-
         <Setter Property="FontSize" Value="16"/>
         <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
-
         <Setter Property="Margin" Value="0"/>
         <Setter Property="Padding" Value="10"/>
     </Style>
 
-   
+    <!-- Workout insights header number style defining large, prominent numeric display formatting for key metrics. -->
+    <Style x:Key="TextBlockWorkoutInsightsHeaderNumberStyle" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+        <Setter Property="FontSize" Value="32"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="FontFamily" Value="Segoe UI Semibold"/>
+    </Style>
 
+    <!-- Workout insights header title style defining typography and margins for metric card subtitles. -->
+    <Style x:Key="TextBlockWorkoutInsightsHeaderTitleStyle" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="0,10,0,10"/>
+    </Style>
 
+    <!-- Workout insights chart title style configuring prominent headings for analytical charts. -->
+    <Style x:Key="TextBlockWorkoutInsightsChartTitleStyle" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Margin" Value="15,15,15,5"/>
+        <Setter Property="FontFamily" Value="Segoe UI Semibold"/>
+    </Style>
+
+    <!-- Workout insights percentage style defining subtle, compact layout formatting for secondary percentage readouts. -->
+    <Style x:Key="TextBlockWorkoutInsightsPercentageStyle" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="LightSlateGray"/>
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Margin" Value="0,0,20,0"/>
+        <Setter Property="FontFamily" Value="Segoe UI Semibold"/>
+    </Style>
+    
 </ResourceDictionary>

@@ -15,11 +15,35 @@
     <Optimize>False</Optimize>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Views\Pages\OLD\**" />
+    <EmbeddedResource Remove="Views\Pages\OLD\**" />
+    <None Remove="Views\Pages\OLD\**" />
+    <Page Remove="Views\Pages\OLD\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="License\AdditionalLicense.txt" />
+    <None Remove="License\License.txt" />
+    <None Remove="Ressources\CsvFiles\heavyappentries.csv" />
+    <None Remove="Ressources\CsvFiles\workout_data.csv" />
     <None Remove="Ressources\Images\Body-Fat-Percentage-Calculator-Caliper-Male-Female.jpg" />
     <None Remove="Ressources\JsonFiles\Database_Exercises.json" />
+    <None Remove="Ressources\JsonFiles\exercises.json" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Icon\ProgramIcon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="License\AdditionalLicense.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="License\License.txt">
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Ressources\CsvFiles\heavyappentries.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Ressources\CsvFiles\workout_data.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Ressources\JsonFiles\Database_Exercises.json">
@@ -27,30 +51,28 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="CsvHelper" Version="33.1.0" />
-    <PackageReference Include="MySqlConnector" Version="2.5.0" />
-    <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF" Version="2.0.0-rc4" />
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Ressources\Images\Body-Fat-Percentage-Calculator-Caliper-Male-Female.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Ressources\JsonFiles\exercises.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Update="License\AdditionalLicense.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="License\License.txt">
-      <Generator>MSBuild:Compile</Generator>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageReference Include="CsvHelper" Version="33.1.0" />
+    <PackageReference Include="LiveChartsCore" Version="2.0.5" />
+    <PackageReference Include="LiveChartsCore.SkiaSharpView" Version="2.0.5" />
+    <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF" Version="2.0.5" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.142" />
+    <PackageReference Include="MySqlConnector" Version="2.6.1" />
+    <PackageReference Include="Portkit.ComponentModel" Version="1.1.2" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="MVVM\Views\Pages\MultiImportPage.xaml.cs">
+    <Compile Update="Views\Pages\Main\MultiImportPage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="MVVM\Views\Pages\StepDailyTrendIMportPage.xaml.cs">
+    <Compile Update="Views\Pages\Main\StepDailyTrendIMportPage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Properties\Resources.Designer.cs">

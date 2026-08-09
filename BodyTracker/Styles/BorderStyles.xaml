@@ -1,13 +1,29 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <Style x:Key="DashboardCardStyle" TargetType="Border">
+    <!-- Dashboard card style defining dynamic card background brush, corner radius, padding, dynamic border brush, and border thickness for container cards. -->
+    <Style x:Key="BorderDashboardCardStyle" TargetType="Border">
         <Setter Property="Background" Value="{DynamicResource CardBackgroundBrush}"/>
         <Setter Property="CornerRadius" Value="16"/>
         <Setter Property="Padding" Value="20"/>
         <Setter Property="BorderBrush" Value="{DynamicResource BorderBrushColor}"/>
         <Setter Property="BorderThickness" Value="1"/>
     </Style>
+
+    <!-- Border workout insight dashboard style defining a dark slate background, corner radius, margins, and a drop shadow effect for specialized workout metric containers. -->
+    <Style x:Key="BorderWorkoutInsightDashBoardStyle" TargetType="Border">
+        <Setter Property="Background" Value="#1E293B"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Margin" Value="10"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="Black" Opacity="0.2" BlurRadius="10" ShadowDepth="4"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+
 
 
 </ResourceDictionary>
