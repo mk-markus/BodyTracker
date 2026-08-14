@@ -1,9 +1,0 @@
-<Window x:Class="BodyTracker.Views.ChartsWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
-        Title="Diagramme" Height="480" Width="900">
-    <Grid Margin="8">
-        <lvc:CartesianChart Series="{Binding Series}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes}" LegendPosition="Top" />
-    </Grid>
-</Window>
