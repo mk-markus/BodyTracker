@@ -1,0 +1,22 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Progressbar previous bar value style configuring height, vertical alignment, secondary foreground, background brush, and border thickness for historical progress indicators. -->
+    <Style x:Key="ProgressbarPreviousBarValue" TargetType="ProgressBar">
+        <Setter Property="Height" Value="6"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource ProgressbarPreviousValueBackgroundBrush}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+
+    <!-- Progressbar current bar value style configuring height, vertical alignment, primary foreground, background brush, and border thickness for active progress indicators. -->
+    <Style x:Key="ProgressbarCurrentBarValue" TargetType="ProgressBar">
+        <Setter Property="Height" Value="6"/>
+        <Setter Property="VerticalAlignment" Value="Bottom"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource ProgressbarCurrentValueBackgroundBrush}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+
+</ResourceDictionary>

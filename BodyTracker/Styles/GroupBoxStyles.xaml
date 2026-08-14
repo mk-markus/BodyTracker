@@ -3,6 +3,7 @@
 
 
 
+    <!-- Standard group box style defining font size, family, weight, docking layout, margins, border thickness, border brush, and padding for container sections. -->
     <Style x:Key="StandardGroupBox" TargetType="GroupBox">
         <Setter Property="FontSize" Value="20"/>
         <Setter Property="FontFamily" Value="Arial"/>
