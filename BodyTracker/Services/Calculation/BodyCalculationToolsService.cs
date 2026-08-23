@@ -33,7 +33,7 @@ namespace BodyTracker.Services
 
             // Wir berechnen den KFA für jeden Tag einzeln und bilden dann den Durchschnitt
             var kfaValues = ordered
-                .Select(d => CalculateKFA7PointCaliperForEntry(d, true, 36))
+                .Select(d => CalculateBodyFat7Point(d, true, 36))
                 .Where(kfa => kfa > 0)
                 .ToList();
 
@@ -84,7 +84,7 @@ namespace BodyTracker.Services
         /// <param name="male">Specifies whether the calculation is for a male (true) or female (false).</param>
         /// <param name="age">The age of the individual in years.</param>
         /// <returns>The calculated body fat percentage; returns 0 if any bodyMeasurement values are missing or invalid.</returns>
-        public static float CalculateKFA7PointCaliperForEntry(FullBodyMeasurementDatasModel d, bool male, int age)
+        public static float CalculateBodyFat7Point(FullBodyMeasurementDatasModel d, bool male, int age)
         {
             // Collect the 7 values for this specific day
             float[] values = {

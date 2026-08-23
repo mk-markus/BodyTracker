@@ -1,5 +1,41 @@
 [
   {
+    "name": "Push Up Plus",
+    "force": "push",
+    "level": "beginner",
+    "mechanic": "compound",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "Chest",
+      "Serratus anterior"
+    ],
+    "secondaryMuscles": [
+      "Shoulders",
+      "Triceps"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "push_up_plus"
+  },
+  {
+    "name": "Einarmig Fliegende Reverse (Kabel)",
+    "force": "pull",
+    "level": "beginner",
+    "mechanic": "isolation",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "Shoulders"
+    ],
+    "secondaryMuscles": [
+      "Middle back"
+    ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "einarmig_fliegende_reverse_kabel"
+  },
+  {
     "name": "Laufband",
     "force": null,
     "level": "beginner",

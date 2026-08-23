@@ -10,7 +10,7 @@
         FontWeight="Bold"
         Height="700" 
         Width="1210"
-        Icon="/Icon/ProgramIcon.ico">
+        Icon="/Ressources/Images/ProgramIcon_GeminiGenerated.jpg">
     
     <Grid>
         <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden"/>

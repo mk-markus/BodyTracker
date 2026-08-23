@@ -1,4 +1,4 @@
-﻿MIT License
+﻿MIT License with Public Resources Disclaimer
 
 Copyright (c) 2025 Kerschbaumer Markus
 
@@ -11,6 +11,12 @@ furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
+
+PUBLIC RESOURCES NOTICE:
+The Software may access, retrieve, process, or integrate public resources, 
+datasets, or external data feeds. The author/copyright holder assumes no 
+responsibility, warranty, or liability regarding the availability, accuracy, 
+completeness, legality, or continuous operation of these external public resources.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,

@@ -655,7 +655,7 @@ namespace BodyTracker.ViewModels
             try
             {
                 var pid = AppState.SelectedPersonId;
-                var lastM = await databaseService.GetLastBodyMetricAsync(pid, DateTime.Today);
+                var lastM = await databaseService.GetLatestBodyMetricAsync(pid, DateTime.Today);
                 var height = AppState.SelectedPersonHeight;
                 var weight = lastM?.BodyWeight ?? 0f;
 
@@ -671,7 +671,7 @@ namespace BodyTracker.ViewModels
                 BodyBoneMass = lastM?.BodyBoneMass.ToString() ?? string.Empty;
                 BodyVisceralFat = lastM?.BodyVisceralFat.ToString() ?? string.Empty;
 
-                var lastA = await databaseService.GetLastBodyDimensionsAsync(pid, DateTime.Today);
+                var lastA = await databaseService.GetLatestBodyDimensionsAsync(pid, DateTime.Today);
                 ChestCircumference = lastA?.ChestCircumference.ToString() ?? string.Empty;
                 WaistCircumference = lastA?.WaistCircumference.ToString() ?? string.Empty;
                 HipsCircumference = lastA?.HipsCircumference.ToString() ?? string.Empty;
@@ -763,7 +763,7 @@ namespace BodyTracker.ViewModels
                         FatTongThighCrease = fatTongThighCrease,
                         FatTongBackCrease = fatTongBackCrease
                     };
-                    bool measurementAlreadyExists = await databaseService.IsMeasurementExistingAsync(bodyMetric.MeasurementDate, bodyMetric.PersonID);
+                    bool measurementAlreadyExists = await databaseService.MeasurementExistsAsync(bodyMetric.MeasurementDate, bodyMetric.PersonID);
 
                     if (measurementAlreadyExists)
                     {
@@ -772,11 +772,11 @@ namespace BodyTracker.ViewModels
 
                     else
                     {
-                        await databaseService.InsertBodyMetricAsync(bodyMetric);
+                        await databaseService.AddBodyMetricAsync(bodyMetric);
 
-                        await databaseService.InsertBodyDimensionAsync(bodyDimension);
+                        await databaseService.AddBodyDimensionAsync(bodyDimension);
 
-                        WeakReferenceMessenger.Default.Send(new NavigationMessage(NavigationMessage.ShowDashboardPage));
+                        WeakReferenceMessenger.Default.Send(new NavigationMessage(NavigationMessage.ShowDashboard));
 
                     }
 

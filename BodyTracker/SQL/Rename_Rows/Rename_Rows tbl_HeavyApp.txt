@@ -1,0 +1,41 @@
+ALTER TABLE tbl_HeavyApp
+    -- IDs & Metadaten
+    CHANGE COLUMN HeavyAppID exercise_log_id BIGINT(20) NOT NULL AUTO_INCREMENT,
+    CHANGE COLUMN PersonID_FK person_id BIGINT(20) NOT NULL,
+    CHANGE COLUMN Title workout_title VARCHAR(255) NULL,
+    CHANGE COLUMN StartTime start_time DATETIME NOT NULL,
+    CHANGE COLUMN EndTime end_time DATETIME NULL,
+    CHANGE COLUMN Description description TEXT NULL,
+    CHANGE COLUMN ExerciseTitle exercise_title VARCHAR(255) NOT NULL,
+    CHANGE COLUMN SupersetId superset_id VARCHAR(100) NULL,
+    CHANGE COLUMN ExerciseNotes exercise_notes TEXT NULL,
+    CHANGE COLUMN SetIndex set_index INT(11) NOT NULL,
+    CHANGE COLUMN SetType set_type VARCHAR(50) NULL,
+
+    -- Messwerte mit Trennung (Initial vs. Current)
+    CHANGE COLUMN WeightKg weight_current DOUBLE NULL,
+    ADD COLUMN weight_initial DOUBLE NULL AFTER weight_current,
+
+    CHANGE COLUMN Reps reps_current INT(11) NULL,
+    ADD COLUMN reps_initial INT(11) NULL AFTER reps_current,
+
+    CHANGE COLUMN DistanceKm distance_current DOUBLE NULL,
+    ADD COLUMN distance_initial DOUBLE NULL AFTER distance_current,
+
+    CHANGE COLUMN DurationSeconds duration_sec_current INT(11) NULL,
+    ADD COLUMN duration_sec_initial INT(11) NULL AFTER duration_sec_current,
+
+    CHANGE COLUMN Rpe rpe_current DOUBLE NULL,
+    ADD COLUMN rpe_initial DOUBLE NULL AFTER rpe_current,
+
+    -- Vorhandene UpdateDate-Spalte übernehmen und automatisieren
+    CHANGE COLUMN UpdateDate update_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+
+-- Ursprungswerte initial kopieren
+UPDATE tbl_HeavyApp 
+SET 
+    weight_initial = weight_current,
+    reps_initial = reps_current,
+    distance_initial = distance_current,
+    duration_sec_initial = duration_sec_current,
+    rpe_initial = rpe_current;

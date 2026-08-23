@@ -1,0 +1,36 @@
+CREATE TABLE `tbl_KoerperMetriken` (
+	`metric_id` INT(11) NOT NULL AUTO_INCREMENT,
+	`person_id` INT(11) NOT NULL,
+	`create_at` DATETIME NULL DEFAULT current_timestamp(),
+	`update_at` DATETIME NULL DEFAULT NULL,
+	`weight_current` DECIMAL(7,2) NULL DEFAULT NULL,
+	`bmi_current` DECIMAL(7,2) NULL DEFAULT NULL,
+	`body_fat_percentage_current` DECIMAL(7,2) NULL DEFAULT NULL,
+	`upper_body_fat_percentage_current` DECIMAL(7,2) NULL DEFAULT NULL,
+	`lower_body_fat_percentage_current` DECIMAL(7,2) NULL DEFAULT NULL,
+	`muscle_mass_percentage_current` DECIMAL(7,2) NULL DEFAULT NULL,
+	`upper_body_muscle_mass_percentage_current` DECIMAL(7,2) NULL DEFAULT NULL,
+	`lower_body_muscle_mass_percentage_current` DECIMAL(7,2) NULL DEFAULT NULL,
+	`body_water_percentage_current` DECIMAL(7,2) NULL DEFAULT NULL,
+	`bone_mass_current` DECIMAL(10,2) NULL DEFAULT NULL,
+	`visceral_fat_current` TINYINT(4) NULL DEFAULT NULL,
+	`weight_initial` DECIMAL(7,2) NULL DEFAULT NULL,
+	`bmi_initial` DECIMAL(7,2) NULL DEFAULT NULL,
+	`body_fat_percentage_initial` DECIMAL(7,2) NULL DEFAULT NULL,
+	`upper_body_fat_percentage_initial` DECIMAL(7,2) NULL DEFAULT NULL,
+	`lower_body_fat_percentage_initial` DECIMAL(7,2) NULL DEFAULT NULL,
+	`muscle_mass_percentage_initial` DECIMAL(7,2) NULL DEFAULT NULL,
+	`upper_body_muscle_mass_percentage_initial` DECIMAL(7,2) NULL DEFAULT NULL,
+	`lower_body_muscle_mass_percentage_initial` DECIMAL(7,2) NULL DEFAULT NULL,
+	`body_water_percentage_initial` DECIMAL(7,2) NULL DEFAULT NULL,
+	`bone_mass_initial` DECIMAL(10,2) NULL DEFAULT NULL,
+	`visceral_fat_initial` TINYINT(4) NULL DEFAULT NULL,
+	PRIMARY KEY (`metric_id`) USING BTREE,
+	UNIQUE INDEX `UNIQUE KEY` (`create_at`) USING BTREE,
+	INDEX `KEY` (`person_id`) USING BTREE,
+	CONSTRAINT `fk_person_metric` FOREIGN KEY (`person_id`) REFERENCES `tbl_Personen` (`person_id`) ON UPDATE CASCADE ON DELETE CASCADE
+)
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=1047
+;

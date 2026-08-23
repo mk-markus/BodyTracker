@@ -1,0 +1,34 @@
+CREATE TABLE `tbl_Abmessungen` (
+	`dimension_id` INT(11) NOT NULL AUTO_INCREMENT,
+	`person_id` INT(11) NOT NULL,
+	`create_at` DATETIME NULL DEFAULT current_timestamp(),
+	`update_at` DATETIME NULL DEFAULT NULL,
+	`chest_circumference_current` DECIMAL(7,2) NULL DEFAULT '0.00',
+	`chest_circumference_initial` DECIMAL(7,2) NULL DEFAULT '0.00',
+	`abdomen_circumference_current` DECIMAL(7,2) NULL DEFAULT '0.00',
+	`abdomen_circumference_initial` DECIMAL(7,2) NULL DEFAULT '0.00',
+	`hip_circumference_current` DECIMAL(7,2) NULL DEFAULT '0.00',
+	`hip_circumference_initial` DECIMAL(7,2) NULL DEFAULT '0.00',
+	`chest_skin_fold_current` DECIMAL(7,2) NULL DEFAULT '0.00',
+	`chest_skin_fold_initial` DECIMAL(7,2) NULL DEFAULT '0.00',
+	`axilla_skin_fold_current` DECIMAL(7,2) NULL DEFAULT '0.00',
+	`axilla_skin_fold_initial` DECIMAL(7,2) NULL DEFAULT '0.00',
+	`abdomen_skin_fold_current` DECIMAL(7,2) NULL DEFAULT '0.00',
+	`abdomen_skin_fold_initial` DECIMAL(7,2) NULL DEFAULT '0.00',
+	`hip_skin_fold_current` DECIMAL(7,2) NULL DEFAULT '0.00',
+	`hip_skin_fold_initial` DECIMAL(7,2) NULL DEFAULT '0.00',
+	`thigh_skin_fold_current` DECIMAL(7,2) NULL DEFAULT '0.00',
+	`thigh_skin_fold_initial` DECIMAL(7,2) NULL DEFAULT '0.00',
+	`back_skin_fold_current` DECIMAL(7,2) NULL DEFAULT '0.00',
+	`back_skin_fold_initial` DECIMAL(7,2) NULL DEFAULT '0.00',
+	`tricep_skin_fold_current` DECIMAL(7,2) NULL DEFAULT '0.00',
+	`tricep_skin_fold_initial` DECIMAL(7,2) NULL DEFAULT '0.00',
+	PRIMARY KEY (`dimension_id`) USING BTREE,
+	UNIQUE INDEX `UNIQUE KEY` (`create_at`) USING BTREE,
+	INDEX `KEY` (`person_id`) USING BTREE,
+	CONSTRAINT `fk_body_dimension` FOREIGN KEY (`person_id`) REFERENCES `tbl_Personen` (`person_id`) ON UPDATE CASCADE ON DELETE CASCADE
+)
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=1039
+;

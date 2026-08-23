@@ -1,0 +1,198 @@
+﻿<Page x:Class="BodyTracker.Views.Pages.BodyTrackerView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:BodyTracker.Views.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="StartPageNew">
+
+    <Grid Background="{StaticResource AppBackgroundBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="72"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+
+
+        <!-- ================= LEFT MENUE ================= -->
+        <Border Grid.Column="0" 
+                Grid.Row="0"
+                Background="{StaticResource SidebarBackgroundBrush}" 
+                BorderBrush="{StaticResource BorderBrushColor}" 
+                BorderThickness="0,0,1,0">
+            <StackPanel Margin="0,20,0,0" HorizontalAlignment="Center">
+                <Border Width="40" Height="40" CornerRadius="10" Background="{StaticResource AccentTealBrush}" Margin="0,0,0,30">
+                    <TextBlock Text="{Binding UserNameInitial}" 
+                               Style="{DynamicResource TextBlockDashBoardTitle}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Padding="0"
+                               Margin="0"
+                               ToolTip="{Binding UserName}"/>
+                </Border>
+
+                <!-- ================= DASHBOARD ================= -->
+                <RadioButton Style="{StaticResource NavButtonStyle}" 
+                             ToolTip="Dashboard"
+                             IsChecked="{Binding IsDashboardSelected, Mode=TwoWay}">
+                    <TextBlock Text="🏠" FontSize="16"/>
+                </RadioButton>
+
+                <!-- ================= DATABASE ================= -->
+                <RadioButton Style="{StaticResource NavButtonStyle}" 
+                             ToolTip="Database"
+                             IsChecked="{Binding IsMeasurementDatabaseSelected, Mode=TwoWay}">
+                    <TextBlock Text="🗄️" FontSize="16"/>
+                </RadioButton>
+
+                <!-- ================= Charts ================= -->
+                <RadioButton Style="{StaticResource NavButtonStyle}" 
+                             ToolTip="Charts"
+                             IsChecked="{Binding IsChartsSelected, Mode=TwoWay}">
+                    <TextBlock Text="📈" FontSize="16"/>
+                </RadioButton>
+
+                <!-- ================= NEW ENTRY ================= -->
+                <RadioButton Style="{StaticResource NavButtonStyle}" 
+                             ToolTip="New Entry"
+                             IsChecked="{Binding IsNewEntrySelected, Mode=TwoWay}">
+                    
+                    <TextBlock Text="🆕" FontSize="16"/>
+                    
+                </RadioButton>
+
+                <!-- ================= IMPORT DATAS ================= -->
+                <RadioButton Style="{StaticResource NavButtonStyle}" 
+                             ToolTip="Import Datas"
+                             IsChecked="{Binding IsImportSelected, Mode=TwoWay}">
+                    <TextBlock Text="📥" FontSize="16"/>
+                </RadioButton>
+
+                <!-- ================= SETTINGS ================= -->
+                <!--<RadioButton Style="{StaticResource NavButtonStyle}" 
+                             ToolTip="Settings">
+
+                    <TextBlock Text="🔧" FontSize="20"/>
+                    
+                </RadioButton>-->
+
+                <!-- ================= INFO DATAS ================= -->
+                <RadioButton Style="{StaticResource NavButtonStyle}" 
+                             ToolTip="Info"
+                             IsChecked="{Binding IsInfoSelected, Mode=TwoWay}">
+                    
+                    <TextBlock Text="ⓘ" FontSize="30"/>
+                </RadioButton>
+
+            </StackPanel>
+        </Border>
+
+        <!-- ================= PAGE CONTENT ================= -->
+        <Grid Grid.Column="1" 
+                Grid.Row="0"
+                Margin="24">
+            <Frame x:Name="MainContentFrame" 
+                   NavigationUIVisibility="Hidden"
+                   Content="{Binding CurrentPage}"/>
+        </Grid>
+
+
+
+        <Grid Grid.Column="0"
+    Grid.ColumnSpan="2"
+    Grid.Row="1"
+    HorizontalAlignment="Left"
+    VerticalAlignment="Center"
+    Margin="0,0,10,0">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Orientation="Horizontal"
+              Grid.Column="0">
+
+                <TextBlock Text="🔌: "
+                 Style="{DynamicResource TextBlockDescribing}"
+                 FontWeight="Bold"
+                 Margin="5,0,5,0"/>
+
+
+                <TextBlock Text="{Binding SqlConnectionStatusMessage}" 
+                     Foreground="{Binding SqlConnectionStatusColor}"
+                     Style="{DynamicResource TextBlockDescribing}"
+                     Margin="0,0,5,0"/>
+
+                <TextBlock Text="{Binding SqlAddtionalConnectionStatusMessage}" 
+                     Foreground="{Binding SqlConnectionStatusColor}"
+                     Style="{DynamicResource TextBlockDescribing}"
+                     Margin="0,0,5,0"/>
+
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal"
+                  Grid.Column="1">
+
+                <TextBlock Text="| 👤: "
+                     Style="{DynamicResource TextBlockDescribing}"
+                     FontWeight="Bold"
+                     Margin="5,0,5,0"/>
+
+
+                <TextBlock Text="{Binding ActualUser}" 
+                     Style="{DynamicResource TextBlockDescribing}"
+                     Margin="0,0,5,0"/>
+
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal"
+            Grid.Column="2">
+
+                <TextBlock Text="| 🗄️: "
+                     Style="{DynamicResource TextBlockDescribing}"
+                     FontWeight="Bold"
+                     Margin="5,0,5,0"/>
+
+
+                <TextBlock Text="{Binding ActualDatabase}" 
+                     Style="{DynamicResource TextBlockDescribing}"
+                     Margin="0,0,5,0"/>
+
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal"
+              Grid.Column="3">
+
+
+                <TextBlock Text="| ❌: "
+                 Style="{DynamicResource TextBlockDescribing}"
+                 FontWeight="Bold"
+                 Margin="5,0,5,0"/>
+
+                <TextBlock Text="{Binding DatabaseFailureMessage}"
+                 Style="{DynamicResource TextBlockDescribing}"
+                 Foreground="Red"/>
+
+                <TextBlock Text="{Binding GeneralFailureMessage}" 
+                 Style="{DynamicResource TextBlockDescribing}"
+        Foreground="Red"/>
+
+
+            </StackPanel>
+
+
+        </Grid>
+
+
+    </Grid>
+</Page>

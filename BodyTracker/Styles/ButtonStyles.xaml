@@ -199,4 +199,54 @@
         </Setter>
     </Style>
 
+
+    <!-- Modern standard button style configuring adaptive sizing, Segoe UI typography, border colors, padding, and comprehensive interactive triggers for modern UI layouts. -->
+    <Style x:Key="IconStandardButton" TargetType="Button">
+        <Setter Property="Margin" Value="0,0,4,0"/>
+        <Setter Property="Width" Value="40"/>
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrushColor}"/>
+        <Setter Property="Background" Value="#F3F3F3"/>
+        <Setter Property="Foreground" Value="#222222"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" 
+                      Background="{TemplateBinding Background}" 
+                      BorderBrush="{TemplateBinding BorderBrush}"
+                      BorderThickness="{TemplateBinding BorderThickness}"
+                      CornerRadius="5" 
+                      SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                      Margin="{TemplateBinding Padding}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#E5F1FB"/>
+                            <Setter TargetName="border" Property="BorderBrush" Value="#0078D4"/>
+                            <Setter Property="Foreground" Value="#0078D4"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#CCE4F7"/>
+                            <Setter TargetName="border" Property="BorderBrush" Value="#005A9E"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="border" Property="Background" Value="#F9F9F9"/>
+                            <Setter TargetName="border" Property="BorderBrush" Value="#E1E1E1"/>
+                            <Setter Property="Foreground" Value="#999999"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>

@@ -1,0 +1,26 @@
+UPDATE tbl_KoerperMetriken
+SET
+	 update_at = create_at,
+    weight_current = COALESCE(weight_current, 0),
+    bmi_current = COALESCE(bmi_current, 0),
+    body_fat_percentage_current = COALESCE(body_fat_percentage_current, 0),
+    upper_body_fat_percentage_current = COALESCE(upper_body_fat_percentage_current, 0),
+    lower_body_fat_percentage_current = COALESCE(lower_body_fat_percentage_current, 0),
+    muscle_mass_percentage_current = COALESCE(muscle_mass_percentage_current, 0),
+    upper_body_muscle_mass_percentage_current = COALESCE(upper_body_muscle_mass_percentage_current, 0),
+    lower_body_muscle_mass_percentage_current = COALESCE(lower_body_muscle_mass_percentage_current, 0),
+    body_water_percentage_current = COALESCE(body_water_percentage_current, 0),
+    bone_mass_current = COALESCE(bone_mass_current, 0),
+    visceral_fat_current = COALESCE(visceral_fat_current, 0),
+
+    weight_original = COALESCE(weight_current, 0),
+    bmi_original = COALESCE(bmi_current, 0),
+    body_fat_percentage_original = COALESCE(body_fat_percentage_current, 0),
+    upper_body_fat_percentage_original = COALESCE(upper_body_fat_percentage_current, 0),
+    lower_body_fat_percentage_original = COALESCE(lower_body_fat_percentage_current, 0),
+    muscle_mass_percentage_original = COALESCE(muscle_mass_percentage_current, 0),
+    upper_body_muscle_mass_percentage_original = COALESCE(upper_body_muscle_mass_percentage_current, 0),
+    lower_body_muscle_mass_percentage_original = COALESCE(lower_body_muscle_mass_percentage_current, 0),
+    body_water_percentage_original = COALESCE(body_water_percentage_current, 0),
+    bone_mass_original = COALESCE(bone_mass_current, 0),
+    visceral_fat_original = COALESCE(visceral_fat_current, 0);

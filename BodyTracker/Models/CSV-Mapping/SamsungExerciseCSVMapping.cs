@@ -1,0 +1,82 @@
+﻿using CsvHelper.Configuration;
+using BodyTracker.Models;
+
+public sealed class SamsungExerciseMap : ClassMap<SamsungExerciseModel>
+{
+    public SamsungExerciseMap()
+    {
+        Map(m => m.LiveDataInternal).Name("live_data_internal");
+        Map(m => m.MissionValue).Name("mission_value");
+        Map(m => m.RaceTarget).Name("race_target");
+        Map(m => m.SubsetData).Name("subset_data");
+        Map(m => m.StartLongitude).Name("start_longitude");
+        Map(m => m.RoutineDataUuid).Name("routine_datauuid");
+        Map(m => m.TotalCalorie).Name("total_calorie");
+        Map(m => m.CompletionStatus).Name("completion_status");
+        Map(m => m.PaceInfoId).Name("pace_info_id");
+        Map(m => m.ActivityType).Name("activity_type");
+        Map(m => m.PaceLiveData).Name("pace_live_data");
+        Map(m => m.SensingStatus).Name("sensing_status");
+        Map(m => m.SourceType).Name("source_type");
+        Map(m => m.MissionType).Name("mission_type");
+        Map(m => m.Ftp).Name("ftp");
+        Map(m => m.TrackingStatus).Name("tracking_status");
+        Map(m => m.ProgramId).Name("program_id");
+        Map(m => m.Title).Name("title");
+        Map(m => m.RewardStatus).Name("reward_status");
+        Map(m => m.HeartRateSampleCount).Name("heart_rate_sample_count");
+        Map(m => m.StartLatitude).Name("start_latitude");
+        Map(m => m.MissionExtraValue).Name("mission_extra_value");
+        Map(m => m.ProgramScheduleId).Name("program_schedule_id");
+        Map(m => m.HeartRateDeviceUuid).Name("heart_rate_deviceuuid");
+        Map(m => m.LocationDataInternal).Name("location_data_internal");
+        Map(m => m.CustomId).Name("custom_id");
+        Map(m => m.AdditionalInternal).Name("additional_internal");
+        Map(m => m.Duration).Name("com.samsung.health.exercise.duration");
+        Map(m => m.Additional).Name("com.samsung.health.exercise.additional");
+        Map(m => m.CreateShVer).Name("com.samsung.health.exercise.create_sh_ver");
+        Map(m => m.MeanCaloricBurnRate).Name("com.samsung.health.exercise.mean_caloricburn_rate");
+        Map(m => m.LocationData).Name("com.samsung.health.exercise.location_data");
+        Map(m => m.StartTime).Name("com.samsung.health.exercise.start_time");
+        Map(m => m.ExerciseType).Name("com.samsung.health.exercise.exercise_type");
+        Map(m => m.Custom).Name("com.samsung.health.exercise.custom");
+        Map(m => m.MaxAltitude).Name("com.samsung.health.exercise.max_altitude");
+        Map(m => m.InclineDistance).Name("com.samsung.health.exercise.incline_distance");
+        Map(m => m.MeanHeartRate).Name("com.samsung.health.exercise.mean_heart_rate");
+        Map(m => m.CountType).Name("com.samsung.health.exercise.count_type");
+        Map(m => m.MeanRpm).Name("com.samsung.health.exercise.mean_rpm");
+        Map(m => m.MinAltitude).Name("com.samsung.health.exercise.min_altitude");
+        Map(m => m.ModifyShVer).Name("com.samsung.health.exercise.modify_sh_ver");
+        Map(m => m.MaxHeartRate).Name("com.samsung.health.exercise.max_heart_rate");
+        Map(m => m.UpdateTime).Name("com.samsung.health.exercise.update_time");
+        Map(m => m.CreateTime).Name("com.samsung.health.exercise.create_time");
+        Map(m => m.ClientDataId).Name("com.samsung.health.exercise.client_data_id");
+        Map(m => m.MaxPower).Name("com.samsung.health.exercise.max_power");
+        Map(m => m.MaxSpeed).Name("com.samsung.health.exercise.max_speed");
+        Map(m => m.MeanCadence).Name("com.samsung.health.exercise.mean_cadence");
+        Map(m => m.MinHeartRate).Name("com.samsung.health.exercise.min_heart_rate");
+        Map(m => m.ClientDataVer).Name("com.samsung.health.exercise.client_data_ver");
+        Map(m => m.Count).Name("com.samsung.health.exercise.count");
+        Map(m => m.Distance).Name("com.samsung.health.exercise.distance");
+        Map(m => m.MaxCaloricBurnRate).Name("com.samsung.health.exercise.max_caloricburn_rate");
+        Map(m => m.Calorie).Name("com.samsung.health.exercise.calorie");
+        Map(m => m.MaxCadence).Name("com.samsung.health.exercise.max_cadence");
+        Map(m => m.DeclineDistance).Name("com.samsung.health.exercise.decline_distance");
+        Map(m => m.Vo2Max).Name("com.samsung.health.exercise.vo2_max");
+        Map(m => m.TimeOffset).Name("com.samsung.health.exercise.time_offset");
+        Map(m => m.DeviceUuid).Name("com.samsung.health.exercise.deviceuuid");
+        Map(m => m.MaxRpm).Name("com.samsung.health.exercise.max_rpm");
+        Map(m => m.Comment).Name("com.samsung.health.exercise.comment");
+        Map(m => m.LiveData).Name("com.samsung.health.exercise.live_data");
+        Map(m => m.MeanPower).Name("com.samsung.health.exercise.mean_power");
+        Map(m => m.MeanSpeed).Name("com.samsung.health.exercise.mean_speed");
+        Map(m => m.PkgName).Name("com.samsung.health.exercise.pkg_name");
+        Map(m => m.AltitudeGain).Name("com.samsung.health.exercise.altitude_gain");
+        Map(m => m.AltitudeLoss).Name("com.samsung.health.exercise.altitude_loss");
+        Map(m => m.ExerciseCustomType).Name("com.samsung.health.exercise.exercise_custom_type");
+        Map(m => m.AuxiliaryDevices).Name("com.samsung.health.exercise.auxiliary_devices");
+        Map(m => m.EndTime).Name("com.samsung.health.exercise.end_time");
+        Map(m => m.DataUuid).Name("com.samsung.health.exercise.datauuid");
+        Map(m => m.SweatLoss).Name("com.samsung.health.exercise.sweat_loss");
+    }
+}

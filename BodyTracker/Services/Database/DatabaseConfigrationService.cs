@@ -15,24 +15,24 @@ namespace BodyTracker.Services
         /// <summary>
         /// Gets the absolute path to the appsettings.json file. 
         /// </summary>
-        public string   sAppSettingsPath {  get; private set; } = string.Empty;
+        public string   AppSettingsPath {  get; private set; } = string.Empty;
 
         /// <summary>
         /// The default directory path for application settings, 
         /// using environment variables for user-specific local storage.
         /// </summary>
-        private string sDefautlPath = @"%Userprofile%\AppData\Local\BodyTracker";
+        private string DefautlPath = @"%Userprofile%\AppData\Local\BodyTracker";
 
         /// <summary>
         /// Gets a value indicating whether a valid configuration file was found or created.
         /// </summary>
-        public bool     bPathOK {  get; private set; } = false;
+        public bool     PathOK {  get; private set; } = false;
 
         /// <summary>
         /// Gets the database username retrieved from the configuration.
         /// This property is used to identify the user for the SQL server authentication.
         /// </summary>
-        public string   sUser {  get; private set; } = string.Empty ;
+        public string   User {  get; private set; } = string.Empty ;
 
         /// <summary>
         /// Stores the decrypted or plain-text password temporarily during the connection string assembly.
@@ -44,13 +44,13 @@ namespace BodyTracker.Services
         /// Gets the name of the target database schema.
         /// This property defines which specific database on the server the application will interact with.
         /// </summary>
-        public string   sDatabse { get; private set; } = string.Empty;
+        public string   Databse { get; private set; } = string.Empty;
 
         //// <summary>
         /// Gets the network port number used for the SQL server connection.
         /// The default value is 3306 for MySQL/MariaDB environments.
         /// </summary>
-        public int      iPortNumber { get; private set; } = 3306;
+        public int      PortNumber { get; private set; } = 3306;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DatabaseConfigrationService"/>.
@@ -61,9 +61,9 @@ namespace BodyTracker.Services
         public DatabaseConfigrationService()
         { 
             // Check if path is empty than use an default path. 
-            (bPathOK, this.sAppSettingsPath) = checkConfigFileAvialable(sDefautlPath);
+            (PathOK, this.AppSettingsPath) = ConfigFileAvialable(DefautlPath);
          
-            if(!bPathOK) throw new ArgumentException("The app setting file does not exist at: " + sAppSettingsPath);
+            if(!PathOK) throw new ArgumentException("The app setting file does not exist at: " + AppSettingsPath);
          
         }
 
@@ -75,12 +75,12 @@ namespace BodyTracker.Services
         /// The deserialized <see cref="SQLConfigurationModel"/> containing database settings and encryption keys.
         /// </returns>
         /// <remarks>
-        /// This method reads the entire content of the file specified in <see cref="sAppSettingsPath"/>.
+        /// This method reads the entire content of the file specified in <see cref="AppSettingsPath"/>.
         /// Ensure that the path is validated before calling this method to avoid file system exceptions.
         /// </remarks>
         public SQLConfigurationModel LoadConfigurationFile()
         {
-            return JsonSerializer.Deserialize<SQLConfigurationModel>(File.ReadAllText(sAppSettingsPath)) ?? new SQLConfigurationModel();
+            return JsonSerializer.Deserialize<SQLConfigurationModel>(File.ReadAllText(AppSettingsPath)) ?? new SQLConfigurationModel();
         }
 
         /// <summary>
@@ -89,12 +89,12 @@ namespace BodyTracker.Services
         /// <param name="cfg">The <see cref="SQLConfigurationModel"/> instance containing the updated settings to be saved.</param>
         /// <remarks>
         /// This method serializes the object into a human-readable JSON format (indented) 
-        /// and overwrites the existing content of the file at <see cref="sAppSettingsPath"/>.
+        /// and overwrites the existing content of the file at <see cref="AppSettingsPath"/>.
         /// </remarks>
         public void Save(SQLConfigurationModel cfg)
         {
             var json = JsonSerializer.Serialize(cfg, new JsonSerializerOptions{ WriteIndented = true });
-            File.WriteAllText(sAppSettingsPath, json);
+            File.WriteAllText(AppSettingsPath, json);
         }
 
         /// <summary>
@@ -145,11 +145,12 @@ namespace BodyTracker.Services
         {
             var cfg = LoadConfigurationFile();
             var pwd = string.IsNullOrEmpty(cfg.PasswordEnc) ? "" : CryptoHelper.Unprotect(cfg.PasswordEnc);
-            return  $"Server={CryptoHelper.Unprotect(cfg.ServerIP)};" +
+            return $"Server={CryptoHelper.Unprotect(cfg.ServerIP)};" +
                     $"Port={CryptoHelper.Unprotect(cfg.PortNumber)};" +
                     $"Database={CryptoHelper.Unprotect(cfg.DatabaseName)};" +
                     $"Uid={CryptoHelper.Unprotect(cfg.User)};" +
-                    $"Pwd={pwd};SslMode=Preferred";
+                    $"Pwd={pwd};SslMode=Preferred;" +
+                    $"AllowLoadLocalInfile = true";
         }
 
         /// <summary>
@@ -157,7 +158,7 @@ namespace BodyTracker.Services
         /// </summary>
         /// <param name="directoryPath">
         /// The File Path needs the structure like %UserProfile\AppData\BodyTracker without the file name !!!!
-        /// The target directory path. If null or empty, the method falls back to <see cref="sDefautlPath"/>.
+        /// The target directory path. If null or empty, the method falls back to <see cref="DefautlPath"/>.
         /// Supports environment variables (e.g., %UserProfile%).
         /// </param>
         /// <returns>
@@ -169,15 +170,15 @@ namespace BodyTracker.Services
         /// </returns>
         /// <remarks>
         /// This method resolves environment variables, creates missing directories, and 
-        /// automatically triggers <see cref="generateAppSettingsFile"/> if the file is missing.
+        /// automatically triggers <see cref="CreateAppSettingsFile"/> if the file is missing.
         /// </remarks>
-        public (bool, string) checkConfigFileAvialable(string directoryPath)
+        public (bool, string) ConfigFileAvialable(string directoryPath)
         {
             string filePath= string.Empty;
 
             // Check file Path exist when not create filepath
             if (!string.IsNullOrEmpty(directoryPath)) filePath = Environment.ExpandEnvironmentVariables(directoryPath);
-            else filePath = Environment.ExpandEnvironmentVariables(sDefautlPath);
+            else filePath = Environment.ExpandEnvironmentVariables(DefautlPath);
 
 
             // Check Directory exist
@@ -192,7 +193,7 @@ namespace BodyTracker.Services
             // if no file is available a new app settings file will be created.
             else
             {
-                generateAppSettingsFile(filePath);
+                CreateAppSettingsFile(filePath);
                 if (File.Exists(filePath)) return (true, filePath);
                 else return (false, string.Empty);
             }
@@ -206,7 +207,7 @@ namespace BodyTracker.Services
         /// default MySQL port (3306). The resulting JSON is indented for better human readability.
         /// Note: Ensure the application has write permissions for the target directory.
         /// </remarks>
-        public void generateAppSettingsFile(string filePath)
+        public void CreateAppSettingsFile(string filePath)
         {
 
             var config = new SQLConfigurationModel();
@@ -236,7 +237,7 @@ namespace BodyTracker.Services
         /// <item><description><c>IPAddress?</c>: The parsed <see cref="IPAddress"/> object, or null if invalid.</description></item>
         /// </list>
         /// </returns>
-        public (bool, int, IPAddress?) checkIPAdressOK(string IP)
+        public (bool, int, IPAddress?) IPAdressOK(string IP)
         {
             if (string.IsNullOrEmpty(IP)) return (false, 0, null);
             if(IPAddress.TryParse(IP, out IPAddress address))

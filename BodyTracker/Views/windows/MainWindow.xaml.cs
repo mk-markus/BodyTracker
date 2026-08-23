@@ -30,7 +30,7 @@ namespace BodyTracker
             _db = db;
             
             //var entry = new StartPage(this, databaseService);
-            var entry = new BodyTrackerToolPage(this, _db);
+            var entry = new BodyTrackerView(this, _db);
 
             MainFrame.Navigate(entry);
 

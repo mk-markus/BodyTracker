@@ -17,7 +17,7 @@ public static class ChartSeriesBuilder
     /// <param name="loessFraction">The smoothing fraction parameter used for the LOESS trend line calculations.</param>
     /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ISeries"/> containing all generated chart and trend series.</returns>
     public static IEnumerable<ISeries> CreateSeries<T>(IEnumerable<T> source,
-                                                       IEnumerable<ChartSeriesDefinition<T>> definitions,
+                                                       IEnumerable<ChartSeriesModel<T>> definitions,
                                                        double loessFraction)
     {
         var result = new List<ISeries>();

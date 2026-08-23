@@ -23,9 +23,10 @@
   <ItemGroup>
     <None Remove="License\AdditionalLicense.txt" />
     <None Remove="License\License.txt" />
-    <None Remove="Ressources\CsvFiles\heavyappentries.csv" />
-    <None Remove="Ressources\CsvFiles\workout_data.csv" />
-    <None Remove="Ressources\Images\Body-Fat-Percentage-Calculator-Caliper-Male-Female.jpg" />
+    <None Remove="Ressources\Images\Caliper-Male-Female.jpg" />
+    <None Remove="Ressources\Images\Gemini_Generated_Image_zew65qzew65qzew6_1.jpg" />
+    <None Remove="Ressources\Images\icons8-pulse-oximeter-100.png" />
+    <None Remove="Ressources\Images\ProgramIcon_GeminiGenerated.jpg" />
     <None Remove="Ressources\JsonFiles\Database_Exercises.json" />
     <None Remove="Ressources\JsonFiles\exercises.json" />
   </ItemGroup>
@@ -40,10 +41,13 @@
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Ressources\CsvFiles\heavyappentries.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="Ressources\Images\Caliper-Male-Female.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Ressources\CsvFiles\workout_data.csv">
+    <Content Include="Ressources\Images\icons8-pulse-oximeter-100.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Ressources\Images\ProgramIcon_GeminiGenerated.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Ressources\JsonFiles\Database_Exercises.json">
@@ -51,8 +55,8 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Ressources\Images\Body-Fat-Percentage-Calculator-Caliper-Male-Female.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="Ressources\Images\Caliper-Male-Female_old.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Ressources\JsonFiles\exercises.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -69,10 +73,10 @@
     <PackageReference Include="Portkit.ComponentModel" Version="1.1.2" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Views\Pages\Main\MultiImportPage.xaml.cs">
+    <Compile Update="Views\Pages\Main\MultiImportView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\Pages\Main\StepDailyTrendIMportPage.xaml.cs">
+    <Compile Update="Views\Pages\Main\StepTrendImportView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Properties\Resources.Designer.cs">
@@ -86,5 +90,8 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Ressources\CsvFiles\" />
   </ItemGroup>
 </Project>

@@ -1,0 +1,45 @@
+CREATE TABLE tbl_OxygenSaturation
+(
+	oxygen_saturation_id INT(11) NOT NULL,
+	person_id INT(11) NOT NULL,
+	
+	integrated_id TEXT NULL,
+	client_data_id TEXT NULL,
+	tag_id INT NULL,
+	
+	start_time DATETIME(3) NULL,
+	end_time DATETIME(3) NULL,
+	update_time DATETIME(3) NULL,
+	create_time DATETIME(3) NULL,
+	time_offset TEXT NULL,
+	
+	custom TEXT NULL,
+	
+	spo2 DOUBLE NULL,
+	spo2_max DOUBLE NULL,
+	spo2_min DOUBLE NULL,
+	low_spo2duration INT NULL,
+	coverage_rate INT NULL,
+
+ 
+	heart_rate DOUBLE NULL,
+	
+	comment TEXT NULL,
+	
+	data_uuid CHAR(50) NULL,
+	device_uuid CHAR(50) NULL,
+	
+	package_name TEXT NULL,
+	createShVer INT NULL,
+	modify_shver INT NULL,
+	client_dataver INT NULL,
+	
+	source TEXT NULL,
+	binning_data TEXT NULL,
+
+
+  	PRIMARY KEY (`oxygen_saturation_id`) USING BTREE,
+	UNIQUE INDEX `UNIQUE KEY` (`data_uuid`) USING BTREE,
+	INDEX `KEY` (`person_id`) USING BTREE,
+	CONSTRAINT `fk_oxygen_saturation` FOREIGN KEY (`person_id`) REFERENCES `tbl_Personen` (`person_id`) ON UPDATE CASCADE ON DELETE CASCADE
+)

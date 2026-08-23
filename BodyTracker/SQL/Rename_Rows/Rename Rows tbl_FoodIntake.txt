@@ -1,0 +1,37 @@
+ALTER TABLE tbl_FoodIntake
+    -- IDs & Metadaten
+    CHANGE COLUMN FoodIntakeID food_intake_id BIGINT(20) NOT NULL AUTO_INCREMENT,
+    CHANGE COLUMN PersonID_FK person_id BIGINT(20) NOT NULL,
+    CHANGE COLUMN create_sh_ver create_sync_version BIGINT(20) NULL,
+    CHANGE COLUMN modify_sh_ver modify_sync_version BIGINT(20) NULL,
+    CHANGE COLUMN client_data_ver client_data_version VARCHAR(255) NULL,
+    CHANGE COLUMN start_time start_time DATETIME NOT NULL,
+    CHANGE COLUMN meal_type meal_type INT(11) NOT NULL,
+    CHANGE COLUMN name food_name VARCHAR(500) NOT NULL,
+    CHANGE COLUMN unit unit_id BIGINT(20) NOT NULL,
+    CHANGE COLUMN custom custom_text TEXT NULL,
+    CHANGE COLUMN client_data_id client_data_id VARCHAR(255) NULL,
+    CHANGE COLUMN time_offset time_offset VARCHAR(50) NULL,
+    CHANGE COLUMN device_uuid device_uuid VARCHAR(255) NULL,
+    CHANGE COLUMN comment comment_text TEXT NULL,
+    CHANGE COLUMN pkg_name package_name VARCHAR(255) NULL,
+    CHANGE COLUMN data_uuid data_uuid CHAR(36) NULL,
+    CHANGE COLUMN food_info_id food_info_id VARCHAR(255) NULL,
+    CHANGE COLUMN create_time create_at DATETIME NULL,
+
+    -- Amount
+    CHANGE COLUMN amount amount_current DOUBLE NULL,
+    ADD COLUMN amount_initial DOUBLE NULL AFTER amount_current,
+
+    -- Calories
+    CHANGE COLUMN calorie calories_current DOUBLE NULL,
+    ADD COLUMN calories_initial DOUBLE NULL AFTER calories_current,
+
+    -- Vorhandene update_time Spalte automatisieren
+    CHANGE COLUMN update_time update_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+
+-- Ursprungswerte initial kopieren
+UPDATE tbl_FoodIntake 
+SET 
+    amount_initial = amount_current,
+    calories_initial = calories_current;

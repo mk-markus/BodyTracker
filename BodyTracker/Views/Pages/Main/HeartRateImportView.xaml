@@ -1,0 +1,157 @@
+﻿<Page x:Class="BodyTracker.Views.Pages.Main.HeartRateImportView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Heart Rate">
+
+    <Border Style="{DynamicResource BorderDashboardCardStyle}"
+            Margin="0,10,0,0">
+
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0"
+                        Orientation="Horizontal"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Left"
+                        Margin="10">
+
+
+                <Button Content="🔄"
+                        ToolTip="Refresh"
+                        Command="{Binding CommandRefresh}"
+                        Style="{DynamicResource IconStandardButton}" />
+
+                <Button Content="📁"
+                        ToolTip="Open File Dialog"
+                        Command="{Binding CommandOpen}"
+                        Style="{DynamicResource IconStandardButton}" />
+
+                <Button Content="📤"
+                        ToolTip="Insert Datas in Database"
+                        Command="{Binding CommandInsert}"
+                        Style="{DynamicResource IconStandardButton}" />
+
+                <!--<ProgressBar Height="25"
+                             MinWidth="100"
+                             IsIndeterminate="True"
+                             Value="{Binding ProgressValue}"
+                             Visibility="{Binding IsLoading, Converter={StaticResource bool2VisibilityConverter}}"
+                             Style="{DynamicResource ProgressbarCurrentBarValue}" />-->
+
+                <WrapPanel>
+                    <TextBlock Text="{Binding TimeElapse}"
+                               Margin="10"
+                               TextAlignment="Center"
+                               Style="{DynamicResource TextBlockDescribing}" />
+
+                    <TextBlock Text="{Binding ProgressText}"
+                               TextAlignment="Center"
+                               Style="{DynamicResource TextBlockDescribing}" />
+
+                </WrapPanel>
+
+            </StackPanel>
+
+            <DataGrid Grid.Row="1"
+                    ItemsSource="{Binding HeartRateDatas}"
+                    AutoGenerateColumns="False"
+                    IsReadOnly="True"
+                    CanUserAddRows="False"
+                    Style="{StaticResource DataGrid_Default}">
+
+                <DataGrid.Columns>
+
+                    <DataGridTextColumn Header="source"
+                                        Binding="{Binding Source}"
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="tag__id"
+                                        Binding="{Binding TagId}"
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.heart__rate.create__sh__ver"
+                                        Binding="{Binding CreateShVer}"
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.heart__rate.heart__beat__count"
+                                        Binding="{Binding HeartBeatCount}"
+                                        Width="Auto"/>
+                    
+                    <DataGridTextColumn Header="com.samsung.health.heart__rate.start__time"
+                                        Binding="{Binding StartTime,StringFormat=dd.MM.yyyy HH:mm:ss}"
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.heart__rate.custom"
+                                        Binding="{Binding Custom}"
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.heart__rate.binning__data"
+                                        Binding="{Binding BinningData}"
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.heart__rate.modify__sh__ver"
+                                        Binding="{Binding ModifyShVer}"
+                                        Width="Auto"/>
+                    
+                    <DataGridTextColumn Header="com.samsung.health.heart__rate.update__time"
+                                        Binding="{Binding UpdateTime,StringFormat=dd.MM.yyyy HH:mm:ss}"
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.heart__rate.create__time"
+                                        Binding="{Binding CreateTime,StringFormat=dd.MM.yyyy HH:mm:ss}"
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.heart__rate.client__data__id"
+                                        Binding="{Binding ClientDataId}"
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.heart__rate.max"
+                                        Binding="{Binding HeartRateMax}"
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.heart__rate.min"
+                                        Binding="{Binding HeartRateMin}"
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.heart__rate.client__data__ver"
+                                        Binding="{Binding ClientDataVer}"
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.heart__rate.time__offset"
+                                        Binding="{Binding TimeOffset}"
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.heart__rate.deviceuuid"
+                                        Binding="{Binding DeviceUuid}"
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.heart__rate.comment"
+                                        Binding="{Binding Comment}"
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.heart__rate.pkg__name"
+                                        Binding="{Binding PkgName}"
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.heart__rate.end__time"
+                                        Binding="{Binding EndTime,StringFormat=dd.MM.yyyy HH:mm:ss}"
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.heart__rate.datauuid"
+                                        Binding="{Binding DataUuid}"
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.heart__rate.heart__rate"
+                                        Binding="{Binding HeartRate}"
+                                        Width="Auto"/>
+
+                </DataGrid.Columns>
+
+            </DataGrid>
+        </Grid>
+
+    </Border>
+</Page>

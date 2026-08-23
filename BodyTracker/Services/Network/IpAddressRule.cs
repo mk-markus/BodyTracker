@@ -21,7 +21,7 @@ namespace BodyTracker.Services
             var service = new DatabaseConfigrationService();
             string input = value as string ?? string.Empty;
 
-            var (isValid, _, _) = service.checkIPAdressOK(input);
+            var (isValid, _, _) = service.IPAdressOK(input);
 
             return isValid
                 ? ValidationResult.ValidResult

@@ -59,17 +59,17 @@ public sealed class MessengerStatusService
             DatabaseConnected = m.Value;
         });
 
-        WeakReferenceMessenger.Default.Register<DatabaseAdditionalConnectionStateMessage>(this, (r, m) =>
+        WeakReferenceMessenger.Default.Register<AdditionalDatabaseConnectionMessage>(this, (r, m) =>
         {
             SqlAdditionalConnectionStatusMessage = m.Value ?? string.Empty;
         });
 
-        WeakReferenceMessenger.Default.Register<LoggedInDatabaseUserMessage>(this, (r, m) =>
+        WeakReferenceMessenger.Default.Register<DatabaseUserLoggedInMessage>(this, (r, m) =>
         {
             ActualUser = m.Value ?? string.Empty;
         });
 
-        WeakReferenceMessenger.Default.Register<UsedAcutalDatabaseNameMessage>(this, (r, m) =>
+        WeakReferenceMessenger.Default.Register<ActiveDatabaseNameMessage>(this, (r, m) =>
         {
             ActualDatabase = m.Value ?? string.Empty;
         });

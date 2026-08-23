@@ -11,7 +11,7 @@ namespace BodyTracker.Services
         /// <remarks>Maps properties such as limits, position, visibility settings, and the custom number formatting function from the given definition model to a newly initialized chart axis.</remarks>
         /// <param name="definition">The configuration definition containing the properties for the axis.</param>
         /// <returns>A configured <see cref="Axis"/> instance ready for use within the charting component.</returns>
-        public static Axis Create(ChartYAxisDefinition definition)
+        public static Axis Create(ChartYAxisModel definition)
         {
             return new Axis
             {

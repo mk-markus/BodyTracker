@@ -17,35 +17,32 @@
         /// <summary>
         /// Gets the navigation target key for displaying the dashboard page.
         /// </summary>
-        public static string ShowDashboardPage => "ShowDashboardPage";
+        public static string ShowDashboard => "ShowDashboard";
 
         /// <summary>
         /// Gets the navigation target key for displaying the bodyMeasurement database page.
         /// </summary>
-        public static string ShowMeasurementDatabasePage => "ShowMeasurementDatabasePageAsync";
+        public static string ShowMeasurement => "ShowMeasurementDatabasePageAsync";
 
         /// <summary>
         /// Gets the navigation target key for displaying the new entry creation page.
         /// </summary>
-        public static string ShowNewEntryPage => "ShowNewEntryPage";
+        public static string ShowNewEntry => "ShowNewEntry";
 
         /// <summary>
         /// Gets the navigation target key for displaying the multi-chart visualization page.
         /// </summary>
-        public static string ShowMultiChartPage => "ShowMultiChartPage";
+        public static string ShowMultiChart => "ShowMultiChart";
 
         /// <summary>
         /// Gets the navigation target key for displaying the Launcher Home Page visualization page.
         /// </summary>
-        public static string ShowLaunscherHomepage => "ShowLauncherHomePage";
-
+        public static string ShowLauncher => "ShowLauncher";
 
         /// <summary>
-        /// Gets the navigation target key for displaying the multi-chart visualization page.
+        /// Gets the navigation target key for displaying the Launcher Home Page visualization page.
         /// </summary>
-        public static string GeneralErrorMessageNewDataEntryModel => "NewDataEntryModel";
-
-
+        public static string ShowInfo => "ShowInfo";
 
     }
 }

@@ -185,7 +185,7 @@ namespace BodyTracker.ViewModels
 
             });
 
-            WeakReferenceMessenger.Default.Register<DatabaseAdditionalConnectionStateMessage>(this, (r, m) =>
+            WeakReferenceMessenger.Default.Register<AdditionalDatabaseConnectionMessage>(this, (r, m) =>
             {
                 string message = m.Value;
 
@@ -198,7 +198,7 @@ namespace BodyTracker.ViewModels
                     }));
             });
 
-            WeakReferenceMessenger.Default.Register<LoggedInDatabaseUserMessage>(this, (r, m) =>
+            WeakReferenceMessenger.Default.Register<DatabaseUserLoggedInMessage>(this, (r, m) =>
             {
                 string message = m.Value;
 
@@ -211,7 +211,7 @@ namespace BodyTracker.ViewModels
                     }));
             });
 
-            WeakReferenceMessenger.Default.Register<UsedAcutalDatabaseNameMessage>(this, (r, m) =>
+            WeakReferenceMessenger.Default.Register<ActiveDatabaseNameMessage>(this, (r, m) =>
             {
                 string message = m.Value;
 
@@ -226,7 +226,7 @@ namespace BodyTracker.ViewModels
 
             WeakReferenceMessenger.Default.Register<NavigationMessage>(this, (r, m) =>
             {
-                if (m.Target == NavigationMessage.ShowLaunscherHomepage) _ = ShowHomePageAsync();
+                if (m.Target == NavigationMessage.ShowLauncher) _ = ShowHomePageAsync();
             });
         }
 

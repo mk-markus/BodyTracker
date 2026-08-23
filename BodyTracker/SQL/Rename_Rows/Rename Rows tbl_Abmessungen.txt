@@ -1,0 +1,56 @@
+ALTER TABLE tbl_Abmessungen
+    CHANGE COLUMN AbmessungID dimension_id INT AUTO_INCREMENT,
+    CHANGE COLUMN Messdatum Messdatum DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+    
+    -- Brustumfang
+    CHANGE COLUMN Brustumfang_cm chest_circumference_current DECIMAL(7,2) NULL DEFAULT '0.00',
+    ADD COLUMN chest_circumference_initial DECIMAL(7,2) NULL DEFAULT '0.00' AFTER chest_circumference_current,
+
+    -- Bauchumfang
+    CHANGE COLUMN Bauchumfang_cm abdomen_circumference_current DECIMAL(7,2) NULL DEFAULT '0.00',
+    ADD COLUMN abdomen_circumference_initial DECIMAL(7,2) NULL DEFAULT '0.00' AFTER abdomen_circumference_current,
+
+    -- Hüftumfang (Hueftumfang)
+    CHANGE COLUMN Hueftumfang_cm hip_circumference_current DECIMAL(7,2) NULL DEFAULT '0.00',
+    ADD COLUMN hip_circumference_initial DECIMAL(7,2) NULL DEFAULT '0.00' AFTER hip_circumference_current,
+
+    -- Brustfalte
+    CHANGE COLUMN Brustfalte_mm chest_skin_fold_current DECIMAL(7,2) NULL DEFAULT '0.00',
+    ADD COLUMN chest_skin_fold_initial DECIMAL(7,2) NULL DEFAULT '0.00' AFTER chest_skin_fold_current,
+
+    -- Achselfalte
+    CHANGE COLUMN Achselfalte_mm axilla_skin_fold_current DECIMAL(7,2) NULL DEFAULT '0.00',
+    ADD COLUMN axilla_skin_fold_initial DECIMAL(7,2) NULL DEFAULT '0.00' AFTER axilla_skin_fold_current,
+
+    -- Bauchfalte
+    CHANGE COLUMN Bauchfalte_mm abdomen_skin_fold_current DECIMAL(7,2) NULL DEFAULT '0.00',
+    ADD COLUMN abdomen_skin_fold_initial DECIMAL(7,2) NULL DEFAULT '0.00' AFTER abdomen_skin_fold_current,
+
+    -- Hüftfalte
+    CHANGE COLUMN Hüftfalte_mm hip_skin_fold_current DECIMAL(7,2) NULL DEFAULT '0.00',
+    ADD COLUMN hip_skin_fold_initial DECIMAL(7,2) NULL DEFAULT '0.00' AFTER hip_skin_fold_current,
+
+    -- Oberschenkelfalte
+    CHANGE COLUMN Oberschenkelfalte_mm thigh_skin_fold_current DECIMAL(7,2) NULL DEFAULT '0.00',
+    ADD COLUMN thigh_skin_fold_initial DECIMAL(7,2) NULL DEFAULT '0.00' AFTER thigh_skin_fold_current,
+
+    -- Rückenfalte
+    CHANGE COLUMN Rückenfalte_mm back_skin_fold_current DECIMAL(7,2) NULL DEFAULT '0.00',
+    ADD COLUMN back_skin_fold_initial DECIMAL(7,2) NULL DEFAULT '0.00' AFTER back_skin_fold_current,
+
+    -- Trizepsfalte
+    CHANGE COLUMN Trizepsfalte_mm tricep_skin_fold_current DECIMAL(7,2) NULL DEFAULT '0.00',
+    ADD COLUMN tricep_skin_fold_initial DECIMAL(7,2) NULL DEFAULT '0.00' AFTER tricep_skin_fold_current;
+    
+    UPDATE tbl_Abmessungen SET 
+    chest_circumference_initial = chest_circumference_current,
+    abdomen_circumference_initial = abdomen_circumference_current,
+    hip_circumference_initial = hip_circumference_current,
+    chest_skin_fold_initial = chest_skin_fold_current,
+    axilla_skin_fold_initial = axilla_skin_fold_current,
+    abdomen_skin_fold_initial = abdomen_skin_fold_current,
+    hip_skin_fold_initial = hip_skin_fold_current,
+    thigh_skin_fold_initial = thigh_skin_fold_current,
+    back_skin_fold_initial = back_skin_fold_current,
+    tricep_skin_fold_initial = tricep_skin_fold_current;
+    

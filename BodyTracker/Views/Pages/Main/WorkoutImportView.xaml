@@ -1,0 +1,141 @@
+﻿<Page x:Class="BodyTracker.Views.Pages.WorkoutImportView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:vm="clr-namespace:BodyTracker.ViewModels"
+      Title="Heavy App CSC Import">
+
+    <Border Style="{DynamicResource BorderDashboardCardStyle}"
+            Margin="0,10,0,0">
+
+        <Grid Margin="10">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Controls -->
+
+            <StackPanel Grid.Row="0"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Left"
+                        Margin="10">
+
+                <Button Content="🔄"
+                        ToolTip="Refresh"
+                        Command="{Binding CommandRefresh}"
+                        Style="{DynamicResource IconStandardButton}" />
+
+                <Button Content="📁"
+                        ToolTip="Open File Dialog"
+                        Command="{Binding CommandOpen}"
+                        Style="{DynamicResource IconStandardButton}" />
+
+                <Button Content="📤"  
+                        ToolTip="Insert Datas in Database"
+                        Command="{Binding CommandInsert}"
+                        Style="{DynamicResource IconStandardButton}" />
+
+                <!--<ProgressBar Height="25"
+                                 MinWidth="100"
+                                 IsIndeterminate="True"
+                                 Value="{Binding ProgressValue}"
+                                 Visibility="{Binding IsLoading, Converter={StaticResource bool2VisibilityConverter}}"
+                                 Style="{DynamicResource ProgressbarCurrentBarValue}" />-->
+
+                <WrapPanel>
+                    <TextBlock Text="{Binding TimeElapse}"
+                               Margin="10"
+                               TextAlignment="Center"
+                               Style="{DynamicResource TextBlockDescribing}" />
+
+                    <TextBlock Text="{Binding ProgressText}"
+                               TextAlignment="Center"
+                               Style="{DynamicResource TextBlockDescribing}" />
+
+                </WrapPanel>
+
+            </StackPanel>
+
+            <!-- Data Preview -->
+
+            <DataGrid Grid.Row="1"
+                      ItemsSource="{Binding HeavyAppDatas}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      Margin="10"
+                      EnableRowVirtualization="True"
+                      EnableColumnVirtualization="True"
+                      VirtualizingPanel.IsVirtualizing="True"
+                      VirtualizingPanel.VirtualizationMode="Recycling"
+                      ScrollViewer.CanContentScroll="True"
+                      Style="{StaticResource DataGrid_Default}">
+
+                <DataGrid.Columns>
+
+                    <DataGridTextColumn Header="title"
+                                        Binding="{Binding Title}"
+                                        Width="Auto" />
+                    
+                    <DataGridTextColumn Header="start__time"
+                                        Binding="{Binding StartTime, StringFormat=dd.MM.yyyy HH:mm}"
+                                        Width="Auto" />
+
+                    <DataGridTextColumn Header="end__time"
+                                        Binding="{Binding EndTime, StringFormat=dd.MM.yyyy HH:mm}"
+                                        Width="Auto" />
+
+                    <DataGridTextColumn Header="description"
+                                        Binding="{Binding Description}"
+                                        Width="Auto" />
+
+                    <DataGridTextColumn Header="exercise__title"
+                                        Binding="{Binding ExerciseTitle}"
+                                        Width="Auto" />
+
+                    <DataGridTextColumn Header="superset__id"
+                                        Binding="{Binding SupersetId}"
+                                        Width="Auto" />
+
+                    <DataGridTextColumn Header="exercise__notes"
+                                        Binding="{Binding ExerciseNotes}"
+                                        Width="Auto" />
+
+                    <DataGridTextColumn Header="set__index"
+                                        Binding="{Binding SetIndex}"
+                                        Width="Auto" />
+
+                    <DataGridTextColumn Header="set__type"
+                                        Binding="{Binding SetType}"
+                                        Width="Auto" />
+
+                    <DataGridTextColumn Header="weight__kg"
+                                        Binding="{Binding WeightKg, StringFormat=F2}"
+                                        Width="Auto" />
+
+                    <DataGridTextColumn Header="reps"
+                                        Binding="{Binding Reps}"
+                                        Width="Auto" />
+
+                    <DataGridTextColumn Header="distance__km"
+                                        Binding="{Binding DistanceKm, StringFormat=F2}"
+                                        Width="Auto" />
+
+                    <DataGridTextColumn Header="duration__seconds"
+                                        Binding="{Binding DurationSeconds}"
+                                        Width="Auto" />
+
+                    <DataGridTextColumn Header="rpe"
+                                        Binding="{Binding Rpe, StringFormat=F1}"
+                                        Width="70" />
+
+                </DataGrid.Columns>
+            </DataGrid>
+
+        </Grid>
+
+    </Border>
+
+</Page>

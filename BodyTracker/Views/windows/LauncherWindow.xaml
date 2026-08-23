@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BodyTracker.Views.windows"
         mc:Ignorable="d"
-        Title="Loggin Window" 
+        Title="Login Window" 
         Height="450" 
         Width="800"
-        Icon="/Icon/ProgramIcon.ico">
+        Icon="/Ressources/Images/ProgramIcon_GeminiGenerated.jpg">
     <Grid Background="{StaticResource AppBackgroundBrush}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="72"/>

@@ -1,0 +1,43 @@
+-- 1. Spalten auf Englisch umbenennen (zu "_current") und die "_original"-Spalten hinzufügen
+ALTER TABLE tbl_KoerperMetriken
+    -- Weight
+    CHANGE COLUMN weight_original weight_inital DECIMAL(7,2) NULL,
+    CHANGE COLUMN bmi_original bmi_original DECIMAL(7,2) NULL,
+    CHANGE COLUMN body_fat_percentage_original body_fat_percentage_original DECIMAL(7,2) NULL,
+    CHANGE COLUMN upper_body_fat_percentage_original upper_body_fat_percentage_original DECIMAL(7,2) NULL,
+    CHANGE COLUMN lower_body_fat_percentage_original lower_body_fat_percentage_original DECIMAL(7,2) NULL,
+    CHANGE COLUMN muscle_mass_percentage_original muscle_mass_percentage_original DECIMAL(7,2) NULL,
+    CHANGE COLUMN upper_body_muscle_mass_percentage_original upper_body_muscle_mass_percentage_original DECIMAL(7,2) NULL,
+
+    CHANGE COLUMN upper_body_muscle_mass_percentage_original upper_body_muscle_mass_percentage_original DECIMAL(7,2) NULL,
+	     CHANGE COLUMN upper_body_muscle_mass_percentage_original upper_body_muscle_mass_percentage_original DECIMAL(7,2) NULL,    
+    -- Lower Body Muscle Mass Percentage
+    CHANGE COLUMN Muskelmasse_unten_Prozent lower_body_muscle_mass_percentage_current DECIMAL(7,2) NULL,
+    ADD COLUMN lower_body_muscle_mass_percentage_original DECIMAL(7,2) NULL,
+
+    -- Body Water Percentage
+    CHANGE COLUMN Koerperwasser_Prozent body_water_percentage_current DECIMAL(7,2) NULL,
+    ADD COLUMN body_water_percentage_original DECIMAL(7,2) NULL,
+
+    -- Bone Mass
+    CHANGE COLUMN Koerperknochen_Masse bone_mass_current DECIMAL(10,2) NULL,
+    ADD COLUMN bone_mass_original DECIMAL(10,2) NULL,
+
+    -- Visceral Fat
+    CHANGE COLUMN Viszeralfett visceral_fat_current TINYINT(4) NULL,
+    ADD COLUMN visceral_fat_original TINYINT(4) NULL;
+
+-- 2. Bestehende Werte initial in die Original-Spalten rüberschreiben
+UPDATE tbl_KoerperMetriken 
+SET 
+    weight_original = weight_current,
+    bmi_original = bmi_current,
+    body_fat_percentage_original = body_fat_percentage_current,
+    upper_body_fat_percentage_original = upper_body_fat_percentage_current,
+    lower_body_fat_percentage_original = lower_body_fat_percentage_current,
+    muscle_mass_percentage_original = muscle_mass_percentage_current,
+    upper_body_muscle_mass_percentage_original = upper_body_muscle_mass_percentage_current,
+    lower_body_muscle_mass_percentage_original = lower_body_muscle_mass_percentage_current,
+    body_water_percentage_original = body_water_percentage_current,
+    bone_mass_original = bone_mass_current,
+    visceral_fat_original = visceral_fat_current;

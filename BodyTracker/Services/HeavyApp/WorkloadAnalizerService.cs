@@ -15,56 +15,56 @@ namespace BodyTracker.Services
         /// Gets or sets the path pointing from the execution directory up to the project root directory.
         /// </summary>
         /// <remarks>Navigates upwards from build output directories (such as bin\Debug\net8.0-windows) to locate source assets and configuration files.</remarks>
-        private readonly string projectRoot = string.Empty;
+        private readonly string ProjectRootPath = string.Empty;
 
         /// <summary>
         /// Gets or sets the absolute or relative file path pointing to the exercise configuration JSON file.
         /// </summary>
         /// <remarks>Used by data loading routines to locate and read exercise metadata definitions from disk.</remarks>
-        private readonly string jsonFilePath = string.Empty;
+        private readonly string JsonFilePath = ".\\Ressources\\JsonFiles\\Database_Exercises.json";
 
         /// <summary>
         /// Gets the dictionary mapping exercise names to their corresponding JSON configuration models.
         /// </summary>
         /// <remarks>Provides case-insensitive O(1) lookups for exercise details, primary muscles, and secondary muscle groups.</remarks>
-        public Dictionary<string, JsonGymExerciseModel> ExerciseDictionary { get; private set; }
+        public Dictionary<string, JsonGymExerciseModel> ExerciseByName { get; private set; }
 
         /// <summary>
         /// Contains already the Converted to GymWorkoutEntryModel Datas form the App Data CSV
         /// </summary>
         /// <remarks>Holds the standardized workout log entries parsed from external application CSV imports for evaluation and charting.</remarks>
-        public IEnumerable<GymWorkoutEntryModel> AppWorkoutEntries { get; private set; }
+        public IEnumerable<GymWorkoutEntryModel> WorkoutEntries { get; private set; }
 
         /// <summary>
         /// Gets or sets the aggregated total workout volume metrics across all muscle groups.
         /// </summary>
         /// <remarks>Represents the generalized summary of lifting output incorporating primary and secondary weighting factors.</remarks>
-        public TotalWorkoutModel TotalWorkoutVolume { get; private set; }
+        public TotalWorkoutModel WorkoutVolume { get; private set; }
 
 
         /// <summary>
         /// Gets or sets the aggregated total workout volume metrics across all muscle groups.
         /// </summary>
         /// <remarks>Represents the generalized summary of lifting output incorporating primary and secondary weighting factors.</remarks>
-        public MuscleDataResults TotalWorkoutEntries { get; private set; }
+        public MuscleDataResultsModel MuscleData { get; private set; }
 
         /// <summary>
         /// Gets the collection of most frequently performed exercises.
         /// </summary>
         /// <remarks>Provides a publicly readable collection of <see cref="ExerciseFrequencyModel"/> entries populated by analysis routines.</remarks>
-        public IEnumerable<ExerciseFrequencyModel> FrequentlyPerformedExercises { get; private set; }
+        public IEnumerable<ExerciseFrequencyModel> TopExercises { get; private set; }
 
         /// <summary>
         /// A private field representing the starting date boundary for exercise filtering.
         /// </summary>
         /// <remarks>Initialized to a default <see cref="DateTime"/> value and used to bound analytical queries.</remarks>
-        private DateTime startDateExercise = new DateTime();
+        private DateTime FilteredStartDate = new DateTime();
 
         /// <summary>
         /// A private field representing the ending date boundary for exercise filtering.
         /// </summary>
         /// <remarks>Initialized to a default <see cref="DateTime"/> value and used to bound analytical queries.</remarks>
-        private DateTime endDateExercise = new DateTime();
+        private DateTime FilteredEndDate = new DateTime();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AppWorkoutLoadAnalyzer"/> class with the specified configuration path, workout data, and weighting factors.
@@ -81,19 +81,20 @@ namespace BodyTracker.Services
 
             if (string.IsNullOrEmpty(dictionaryJsonFilePath))
             {
-                projectRoot = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory));
-                jsonFilePath = Path.Combine(projectRoot, "Ressources", "JsonFiles", "Database_Exercises.json");
+                ProjectRootPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory));
+                JsonFilePath = Path.Combine(ProjectRootPath, "Ressources", "JsonFiles", "Database_Exercises.json");
+
             }
 
-            if (!File.Exists(jsonFilePath)) throw new FileNotFoundException($"Die JSON-Datei wurde unter '{jsonFilePath}' nicht gefunden.");
+            if (!File.Exists(JsonFilePath)) throw new FileNotFoundException($"Die JSON-Datei wurde unter '{JsonFilePath}' nicht gefunden.");
 
-            ExerciseDictionary = GetExercideDictionary(jsonFilePath);
+            ExerciseByName = LoadExerciseLookup(JsonFilePath);
 
-            AppWorkoutEntries = ConvertToHeavyAppCSVDatasToGymWorkoutEntries(appDatas);
+            WorkoutEntries = ParseHeavyWorkouts(appDatas);
 
-            TotalWorkoutVolume = GetTotalWorkoutVolume(AppWorkoutEntries, primaryMuscleFactor, secondaryMuscleFactor);
+            WorkoutVolume = GetVolume(WorkoutEntries, primaryMuscleFactor, secondaryMuscleFactor);
 
-            FrequentlyPerformedExercises = GetExerciseFrequency(AppWorkoutEntries);
+            TopExercises = CalculateExerciseFrequency(WorkoutEntries);
 
 
         }
@@ -114,19 +115,19 @@ namespace BodyTracker.Services
 
             if (string.IsNullOrEmpty(dictionaryJsonFilePath))
             {
-                projectRoot = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\"));
-                jsonFilePath = Path.Combine(projectRoot, "Ressources", "JsonFiles", "Database_Exercises.json");
+                ProjectRootPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\"));
+                JsonFilePath = Path.Combine(ProjectRootPath, "Ressources", "JsonFiles", "Database_Exercises.json");
             }
 
-            if (!File.Exists(jsonFilePath)) throw new FileNotFoundException($"Die JSON-Datei wurde unter '{jsonFilePath}' nicht gefunden.");
+            if (!File.Exists(JsonFilePath)) throw new FileNotFoundException($"Die JSON-Datei wurde unter '{JsonFilePath}' nicht gefunden.");
 
-            ExerciseDictionary = GetExercideDictionary(jsonFilePath);
+            ExerciseByName = LoadExerciseLookup(JsonFilePath);
 
-            AppWorkoutEntries = appDatas;
+            WorkoutEntries = appDatas;
 
-            TotalWorkoutVolume = GetTotalWorkoutVolume(AppWorkoutEntries, primaryMuscleFactor, secondaryMuscleFactor);
+            WorkoutVolume = GetVolume(WorkoutEntries, primaryMuscleFactor, secondaryMuscleFactor);
 
-            FrequentlyPerformedExercises = GetExerciseFrequency(AppWorkoutEntries);
+            TopExercises = CalculateExerciseFrequency(WorkoutEntries);
 
 
         }
@@ -140,30 +141,30 @@ namespace BodyTracker.Services
         /// <param name="endDate">The end date of the evaluation period (inclusive).</param>
         /// <param name="primaryFactor">The weighting factor applied to primary volume calculations (defaults to 1.0).</param>
         /// <param name="secondaryFactor">The weighting factor applied to secondary volume calculations (defaults to 0.5).</param>
-        /// <returns>A <see cref="MuscleDataResults"/> object containing the aggregated volume metrics for all muscles.</returns>
-        public TotalWorkoutModel GetTotalWorkoutVolume(IEnumerable<GymWorkoutEntryModel> gymAppLogs,
-                                                        double primaryFactor = 1.0,
-                                                        double secondaryFactor = 0.5,
-                                                        DateTime startDate = default,
-                                                        DateTime endDate = default)
+        /// <returns>A <see cref="MuscleDataResultsModel"/> object containing the aggregated volume metrics for all muscles.</returns>
+        public TotalWorkoutModel GetVolume(IEnumerable<GymWorkoutEntryModel> gymAppLogs,
+                                           double primaryFactor = 1.0,
+                                           double secondaryFactor = 0.5,
+                                           DateTime startDate = default,
+                                           DateTime endDate = default)
         {
 
             if (gymAppLogs == null || !gymAppLogs.Any()) throw new ArgumentException("The provided gymAppLogs collection is null or empty.", nameof(gymAppLogs));
 
             if (startDate == default || endDate == default)
             {
-                startDateExercise = gymAppLogs.Min(x => x.ExcerciseDate).Date;
-                endDateExercise = gymAppLogs.Max(x => x.ExcerciseDate).Date;
+                FilteredStartDate = gymAppLogs.Min(x => x.ExcerciseDate).Date;
+                FilteredEndDate = gymAppLogs.Max(x => x.ExcerciseDate).Date;
             }
 
             else
             {
-                startDateExercise = startDate;
-                endDateExercise = endDate;
+                FilteredStartDate = startDate;
+                FilteredEndDate = endDate;
             }
 
             //// 1. Filter by date range
-            var filteredLogs = gymAppLogs.Where(log => log.ExcerciseDate.Date >= startDateExercise.Date && log.ExcerciseDate.Date <= endDateExercise.Date);
+            var filteredLogs = gymAppLogs.Where(log => log.ExcerciseDate.Date >= FilteredStartDate.Date && log.ExcerciseDate.Date <= FilteredEndDate.Date);
 
             double totalVolume = 0;
 
@@ -174,7 +175,7 @@ namespace BodyTracker.Services
             foreach (var entry in filteredLogs)
             {
                 // Optionally verify if the exercise exists in the dictionary (filtering for known exercises only)
-                if (!ExerciseDictionary.ContainsKey(entry.ExerciseName))
+                if (!ExerciseByName.ContainsKey(entry.ExerciseName))
                     continue;
 
                 // Calculate set volume (weight * repetitions) and accumulate
@@ -209,13 +210,13 @@ namespace BodyTracker.Services
         /// <param name="endDate">The inclusive ending date boundary for filtering workout entries.</param>
         /// <param name="primaryFactor">The multiplier factor applied to primary volume calculations. Defaults to 1.0.</param>
         /// <param name="secondaryFactor">The multiplier factor applied to secondary volume calculations. Defaults to 0.5.</param>
-        /// <returns>A task representing the asynchronous operation, containing a list of <see cref="MonthlyExerciseTraningVolume"/> aggregated records.</returns>
-        /// <exception cref="ArgumentException">Thrown when the <see cref="AppWorkoutEntries"/> collection is null or empty.</exception>
-        public async Task<List<MonthlyExerciseTraningVolume>> GetMonthlyOverviewExerciseVolumeAsync(DateTime startDate, DateTime endDate, double primaryFactor = 1.0, double secondaryFactor = 0.5)
+        /// <returns>A task representing the asynchronous operation, containing a list of <see cref="MonthlyExerciseTrainingVolumeModel"/> aggregated records.</returns>
+        /// <exception cref="ArgumentException">Thrown when the <see cref="WorkoutEntries"/> collection is null or empty.</exception>
+        public async Task<List<MonthlyExerciseTrainingVolumeModel>> CalculateMonthlyVolumeAsync(DateTime startDate, DateTime endDate, double primaryFactor = 1.0, double secondaryFactor = 0.5)
         {
-            if (AppWorkoutEntries == null || !AppWorkoutEntries.Any()) throw new ArgumentException("The provided AppWorkoutEntries collection is null or empty.", nameof(AppWorkoutEntries));
+            if (WorkoutEntries == null || !WorkoutEntries.Any()) throw new ArgumentException("The provided WorkoutEntries collection is null or empty.", nameof(WorkoutEntries));
 
-            var filteredLogs = AppWorkoutEntries
+            var filteredLogs = WorkoutEntries
                 .Where(log =>
                     log.ExcerciseDate.Date >= startDate.Date &&
                     log.ExcerciseDate.Date <= endDate.Date)
@@ -225,7 +226,7 @@ namespace BodyTracker.Services
                                     .GroupBy(x => x.ExcerciseDate.Date)
                                     .OrderBy(g => g.Key);
 
-            var result = new List<MonthlyExerciseTraningVolume>();
+            var result = new List<MonthlyExerciseTrainingVolumeModel>();
 
 
             foreach (var group in monthlyGroups)
@@ -242,7 +243,7 @@ namespace BodyTracker.Services
                     totalExercises++;
                 }
 
-                result.Add(new MonthlyExerciseTraningVolume
+                result.Add(new MonthlyExerciseTrainingVolumeModel
                 {
                     Date = lastDateInMonth, // Das letzte konkrete Trainingsdatum des Monats
                     PrimaryVolume = totalVolume * primaryFactor,
@@ -263,8 +264,8 @@ namespace BodyTracker.Services
         /// <param name="gymAppLogs">The optional collection of workout logs; falls back to default app entries if null or empty.</param>
         /// <param name="primaryFactor">The weighting factor for primary muscle involvement (defaults to 1.0).</param>
         /// <param name="secondaryFactor">The weighting factor for secondary muscle involvement (defaults to 0.5).</param>
-        /// <returns>A list of <see cref="MuscleDataResults"/> sorted by percentage share in descending order.</returns>
-        public List<MuscleDataResults> GetMuscleDistribution(IEnumerable<GymWorkoutEntryModel> gymAppLogs,
+        /// <returns>A list of <see cref="MuscleDataResultsModel"/> sorted by percentage share in descending order.</returns>
+        public List<MuscleDataResultsModel> CalculateMuscleSplit(IEnumerable<GymWorkoutEntryModel> gymAppLogs,
                                                              double primaryFactor = 1.0,
                                                              double secondaryFactor = 0.5,
                                                              DateTime startDate = default,
@@ -275,30 +276,30 @@ namespace BodyTracker.Services
 
             if (startDate == default || endDate == default)
             {
-                startDateExercise = gymAppLogs.Min(x => x.ExcerciseDate).Date;
-                endDateExercise = gymAppLogs.Max(x => x.ExcerciseDate).Date;
+                FilteredStartDate = gymAppLogs.Min(x => x.ExcerciseDate).Date;
+                FilteredEndDate = gymAppLogs.Max(x => x.ExcerciseDate).Date;
             }
 
             else
             {
-                startDateExercise = startDate;
-                endDateExercise = endDate;
+                FilteredStartDate = startDate;
+                FilteredEndDate = endDate;
             }
 
 
 
             //// Fall back to default app entries if no logs were provided or the list is empty
-            //var logsToProcess = (gymAppLogs == null || !gymAppLogs.Any()) ? AppWorkoutEntries : gymAppLogs;
+            //var logsToProcess = (gymAppLogs == null || !gymAppLogs.Any()) ? WorkoutEntries : gymAppLogs;
 
             // 1. Filter by date
-            var filteredLogs = gymAppLogs.Where(log => log.ExcerciseDate.Date >= startDateExercise.Date && log.ExcerciseDate.Date <= endDateExercise.Date);
+            var filteredLogs = gymAppLogs.Where(log => log.ExcerciseDate.Date >= FilteredStartDate.Date && log.ExcerciseDate.Date <= FilteredEndDate.Date);
 
             var primaryMap = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
             var secondaryMap = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
 
             foreach (var entry in filteredLogs)
             {
-                if (!ExerciseDictionary.TryGetValue(entry.ExerciseName, out var exercise))
+                if (!ExerciseByName.TryGetValue(entry.ExerciseName, out var exercise))
                     continue;
 
                 // Calculate set volume (weight * repetitions)
@@ -323,14 +324,14 @@ namespace BodyTracker.Services
 
             // Merge all involved muscle groups
             var allMuscles = primaryMap.Keys.Union(secondaryMap.Keys, StringComparer.OrdinalIgnoreCase);
-            var rawResults = new List<MuscleDataResults>();
+            var rawResults = new List<MuscleDataResultsModel>();
 
             foreach (var muscle in allMuscles)
             {
                 primaryMap.TryGetValue(muscle, out double pVol);
                 secondaryMap.TryGetValue(muscle, out double sVol);
 
-                rawResults.Add(new MuscleDataResults
+                rawResults.Add(new MuscleDataResultsModel
                 {
                     MuscleGroup = muscle,
                     PrimaryVolume = pVol,
@@ -341,12 +342,12 @@ namespace BodyTracker.Services
             // Determine grand total volume across all muscles to calculate percentage shares
             double grandTotalVolume = rawResults.Sum(x => x.TotalVolume);
 
-            var chartData = new List<MuscleDataResults>();
+            var chartData = new List<MuscleDataResultsModel>();
             foreach (var item in rawResults)
             {
                 double share = grandTotalVolume > 0 ? item.TotalVolume / grandTotalVolume * 100.0 : 0.0;
 
-                chartData.Add(new MuscleDataResults
+                chartData.Add(new MuscleDataResultsModel
                 {
                     MuscleGroup = item.MuscleGroup,
                     PrimaryVolume = item.PrimaryVolume,
@@ -364,7 +365,7 @@ namespace BodyTracker.Services
         /// <remarks>Safely maps CSV properties, handles null values with fallback defaults, and structures the records into domain-compliant workout entries.</remarks>
         /// <param name="csvModels">The collection of raw CSV import records.</param>
         /// <returns>A list of standardized <see cref="GymWorkoutEntryModel"/> instances.</returns>
-        public List<GymWorkoutEntryModel> ConvertToHeavyAppCSVDatasToGymWorkoutEntries(IEnumerable<HeavyAppCSVModel> csvModels)
+        public List<GymWorkoutEntryModel> ParseHeavyWorkouts(IEnumerable<HeavyAppCSVModel> csvModels)
         {
             if (csvModels == null)
             {
@@ -400,7 +401,7 @@ namespace BodyTracker.Services
         /// <param name="filePath">The absolute or relative path to the target JSON file.</param>
         /// <returns>A dictionary mapping exercise names to their corresponding <see cref="JsonGymExerciseModel"/> definitions.</returns>
         /// <exception cref="FileNotFoundException">Thrown when the specified JSON file cannot be located.</exception>
-        public Dictionary<string, JsonGymExerciseModel> GetExercideDictionary(string filePath)
+        public Dictionary<string, JsonGymExerciseModel> LoadExerciseLookup(string filePath)
         {
             if (!File.Exists(filePath))
             {
@@ -424,9 +425,9 @@ namespace BodyTracker.Services
         /// Ermittelt die Häufigkeit aller Übungen innerhalb eines Zeitraums.
         /// Die Ergebnisse werden nach Häufigkeit absteigend sortiert.
         /// </summary>
-        public IEnumerable<ExerciseFrequencyModel> GetExerciseFrequency(IEnumerable<GymWorkoutEntryModel> gymAppLogs,
-                                                                        DateTime startDate = default,
-                                                                        DateTime endDate = default)
+        public IEnumerable<ExerciseFrequencyModel> CalculateExerciseFrequency(IEnumerable<GymWorkoutEntryModel> gymAppLogs,
+                                                                              DateTime startDate = default,
+                                                                              DateTime endDate = default)
         {
 
             if (startDate == default || endDate == default)
@@ -442,7 +443,7 @@ namespace BodyTracker.Services
 
             // Nur bekannte Übungen berücksichtigen
             var exerciseCounts = filteredLogs
-                .Where(x => ExerciseDictionary.ContainsKey(x.ExerciseName))
+                .Where(x => ExerciseByName.ContainsKey(x.ExerciseName))
                 .GroupBy(x => x.ExerciseName)
                 .Select(g => new
                 {
@@ -465,56 +466,56 @@ namespace BodyTracker.Services
             });
         }
 
-       /// <summary>
-       /// Calculates and returns the daily exercise training volume for the year 2026.
-       /// </summary>
-       /// <remarks>Validates that the workout entries collection is not null or empty, filters entries for the year 2026, groups them by calendar date, validates exercises against the exercise dictionary, computes weighted primary and secondary volumes, and counts distinct exercises performed each day.</remarks>
-       /// <returns>A list of <see cref="MonthlyExerciseTraningVolume"/> aggregated records representing daily training volumes for 2026.</returns>
-       /// <exception cref="ArgumentException">Thrown when the <see cref="AppWorkoutEntries"/> collection is null or empty.</exception>
-        public List<MonthlyExerciseTraningVolume> GetDailyExerciseVolumeFor2026()
-        {
-            if (AppWorkoutEntries == null || !AppWorkoutEntries.Any())
-            {
-                throw new ArgumentException(
-                    "The provided AppWorkoutEntries collection is null or empty.",
-                    nameof(AppWorkoutEntries));
-            }
+       ///// <summary>
+       ///// Calculates and returns the daily exercise training volume for the year 2026.
+       ///// </summary>
+       ///// <remarks>Validates that the workout entries collection is not null or empty, filters entries for the year 2026, groups them by calendar date, validates exercises against the exercise dictionary, computes weighted primary and secondary volumes, and counts distinct exercises performed each day.</remarks>
+       ///// <returns>A list of <see cref="MonthlyExerciseTraningVolume"/> aggregated records representing daily training volumes for 2026.</returns>
+       ///// <exception cref="ArgumentException">Thrown when the <see cref="WorkoutEntries"/> collection is null or empty.</exception>
+       // public List<MonthlyExerciseTraningVolume> GetDailyExerciseVolumeFor2026()
+       // {
+       //     if (WorkoutEntries == null || !WorkoutEntries.Any())
+       //     {
+       //         throw new ArgumentException(
+       //             "The provided WorkoutEntries collection is null or empty.",
+       //             nameof(WorkoutEntries));
+       //     }
 
-            var entries2026 = AppWorkoutEntries
-                .Where(x => x.ExcerciseDate.Year == 2026)
-                .ToList();
+       //     var entries2026 = WorkoutEntries
+       //         .Where(x => x.ExcerciseDate.Year == 2026)
+       //         .ToList();
 
-            var result = new List<MonthlyExerciseTraningVolume>();
+       //     var result = new List<MonthlyExerciseTraningVolume>();
 
-            var dailyGroups = entries2026
-                .GroupBy(x => x.ExcerciseDate.Date)
-                .OrderBy(x => x.Key);
+       //     var dailyGroups = entries2026
+       //         .GroupBy(x => x.ExcerciseDate.Date)
+       //         .OrderBy(x => x.Key);
 
-            foreach (var day in dailyGroups)
-            {
-                double totalVolume = 0;
+       //     foreach (var day in dailyGroups)
+       //     {
+       //         double totalVolume = 0;
 
-                foreach (var entry in day)
-                {
-                    if (!ExerciseDictionary.ContainsKey(entry.ExerciseName))
-                        continue;
+       //         foreach (var entry in day)
+       //         {
+       //             if (!ExerciseByName.ContainsKey(entry.ExerciseName))
+       //                 continue;
 
-                    totalVolume += entry.Weight.Value * entry.Reps.Value;
-                }
+       //             totalVolume += entry.Weight.Value * entry.Reps.Value;
+       //         }
 
-                result.Add(new MonthlyExerciseTraningVolume
-                {
-                    Date = day.Key,
-                    PrimaryVolume = totalVolume * 1,
-                    SecondaryVolume = totalVolume * 0.5,
-                    TotalExercises = day
-                        .Select(x => x.ExerciseName)
-                        .Distinct()
-                        .Count()
-                });
-            }
+       //         result.Add(new MonthlyExerciseTraningVolume
+       //         {
+       //             Date = day.Key,
+       //             PrimaryVolume = totalVolume * 1,
+       //             SecondaryVolume = totalVolume * 0.5,
+       //             TotalExercises = day
+       //                 .Select(x => x.ExerciseName)
+       //                 .Distinct()
+       //                 .Count()
+       //         });
+       //     }
 
-            return result;
-        }
+       //     return result;
+       // }
     }
 }

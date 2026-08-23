@@ -8,11 +8,14 @@ using LiveChartsCore;
 using LiveChartsCore.Kernel.Sketches;
 using LiveChartsCore.Measure;
 using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.RightsManagement;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -112,6 +115,21 @@ namespace BodyTracker.ViewModels
         [ObservableProperty] private ICartesianAxis[] yAxesBodyMeasurements = Array.Empty<ICartesianAxis>();
 
         /// <summary>
+        ///  
+        /// </summary>
+        [ObservableProperty] private ISeries[] seriesMuscleDistributionSpiderChart = Array.Empty<ISeries>();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [ObservableProperty] private IPolarAxis[] angleAxisMuscleDistirbutionSpiderChart = Array.Empty<IPolarAxis>();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [ObservableProperty] private IPolarAxis[] radiusAxisMuscleDistirbutionSpiderChart = Array.Empty<IPolarAxis>();
+
+        /// <summary>
         /// Gets or sets the currently selected bodyMeasurement record from the list.
         /// Nullable, as no record may be selected.
         /// </summary>
@@ -123,13 +141,11 @@ namespace BodyTracker.ViewModels
         /// </summary>
         [ObservableProperty] private string userName = string.Empty;
 
-
         /// <summary>
         /// Gets or sets the name of the person currently being viewed.
         /// Used for display purposes in headers or titles.
         /// </summary>
         [ObservableProperty] private string userNameInitial = string.Empty;
-
 
         /// <summary>
         /// Gets or sets the mean start date used for calculations or scheduling.
@@ -488,7 +504,7 @@ namespace BodyTracker.ViewModels
         private async Task ReloadAsync()
         {
             var pid = AppState.SelectedPersonId;
-            var all = await databaseService.GetBodyMeasurementAsync(pid, databaseService.DatabaseCommands.CmdGetMeasurement());
+            var all = await databaseService.GetBodyMeasurementAsync(pid, databaseService.DatabaseCommands.GetPersonMeasurementsSql());
 
             BodyMeasurement.Clear();
             foreach (var m in all)
@@ -496,140 +512,9 @@ namespace BodyTracker.ViewModels
                 BodyMeasurement.Add(m);
             }
 
-
-       
-
-           await CalculateAndSetKpiMetrics(MeanStartDateCurrentMonth, MeanEndDateCurrentMonth);
-
             await RefreshChartAsync();
 
             OnPropertyChanged(nameof(BodyMeasurement));
-        }
-
-        /// <summary>
-        /// Calculates averages for the current period and previous month using GetAverageValues,
-        /// updates the bar chart properties, and sets the trend arrows and difference texts.
-        /// </summary>
-        /// <param name="start">Start date of the current period.</param>
-        /// <param name="end">End date of the current period.</param>
-        public async Task CalculateAndSetKpiMetrics(DateTime start, DateTime end)
-        {
-
-
-            try
-            {
-
-                // 1. Get current period averages using your method
-                //var currentPeriodAverages = GetAverageValues(start, end);
-
-                var currentPeriodAverages = BodyCalculationToolsService.GetAverageValues(start, end, BodyMeasurement);
-
-
-                // 2. Get previous period / month averages (shifted back by 1 month)
-                var prevStart = start.AddMonths(-1);
-                var prevEnd = end.AddMonths(-1);
-                var previousPeriodAverages = BodyCalculationToolsService.GetAverageValues(prevStart, prevEnd, BodyMeasurement);
-
-                // Extract values safely (assuming GetAverageValues returns a collection containing at least one summary model, or empty)
-                var currentModel = currentPeriodAverages?.FirstOrDefault();
-                var previousModel = previousPeriodAverages?.FirstOrDefault();
-
-                double currentWeight = currentModel?.BodyWeight ?? 0;
-                double previousWeight = previousModel?.BodyWeight ?? 0;
-
-                double currentBodyFat = currentModel?.BodyFatPercentage ?? 0;
-                double previousBodyFat = previousModel?.BodyFatPercentage ?? 0;
-
-                double currentBodyWater = currentModel?.BodyWaterPercentage ?? 0;
-                double previousBodyWater = previousModel?.BodyWaterPercentage ?? 0;
-
-                double currentBodyMuscle = currentModel?.BodyMusclePercentage ?? 0;
-                double previousBodyMuscle = previousModel?.BodyMusclePercentage ?? 0;
-
-
-                // --- WEIGHT METRICS ---
-                BodyWeightCurrentBarValue = currentWeight;
-                BodyWeightPreviousBarValue = previousWeight;
-                double maxWeight = Math.Max(currentWeight, previousWeight);
-                BodyWeightCurrentMaxValue = maxWeight > 0 ? maxWeight * 1.1 : 100.0;
-
-                // Call your GetArrow method for Weight
-                (BodyWeightTrendArrow, BodyWeightDifference) = GetArrow(previousWeight, currentWeight);
-
-                // --- BODY FAT METRICS ---
-                BodyFatCurrentBarValue = currentBodyFat;
-                BodyFatPreviousBarValue = previousBodyFat;
-                double maxBodyFat = Math.Max(currentBodyFat, previousBodyFat);
-                BodyFatCurrentMaxValue = maxBodyFat > 0 ? maxBodyFat * 1.1 : 100.0;
-
-                // Call your GetArrow method for Body Fat
-                (BodyFatTrendArrow, BodyFatDifference) = GetArrow(previousBodyFat, currentBodyFat);
-
-
-                // --- BODY MUSCLE METRICS ---
-                BodyMuscleMassCurrentBarValue = currentBodyMuscle;
-                BodyMuscleMassPreviousBarValue = previousBodyMuscle;
-                double maxBodyMuscle = Math.Max(currentBodyMuscle, previousBodyMuscle);
-                BodyMuscleMassCurrentMaxValue = maxBodyMuscle > 0 ? maxBodyMuscle * 1.1 : 100.0;
-
-                // Call your GetArrow method for Body Fat
-                (BodyMuscleMassTrendArrow, BodyMuscleMassDifference) = GetArrow(previousBodyMuscle, currentBodyMuscle);
-
-
-
-                // --- BODY Water METRICS ---
-                BodyWaterCurrentBarValue = currentBodyWater;
-                BodyWaterPreviousBarValue = previousBodyWater;
-                double maxBodyWater = Math.Max(currentBodyWater, previousBodyWater);
-                BodyFatCurrentMaxValue = maxBodyWater > 0 ? maxBodyWater * 1.1 : 100.0;
-
-                // Call your GetArrow method for Body Fat
-                (BodyWaterTrendArrow, BodyWaterDifference) = GetArrow(previousBodyFat, currentBodyFat);
-            }
-            catch (Exception ex)
-            {
-                GeneralErrorMessage = $"Error calculating KPI metrics: {ex.Message}";
-            }
-        }
-
-        /// <summary>
-        /// Updates the KPI data and bar chart values for weight comparison between the previous and current month.
-        /// </summary>
-        /// <param name="previousWeight">Weight value or average from the previous month.</param>
-        /// <param name="currentWeight">Weight value or average from the current month.</param>
-        public (TextBlock, string) GetArrow(double previousValue, double currentValue)
-        {
-
-            var valueArrow = new TextBlock();
-
-            try
-            {
-                var difference = Math.Round(currentValue - previousValue, 2); // Round to 2 decimal places
-
-                if (difference > 0)
-                {
-                    valueArrow.Text = "▲";
-                    valueArrow.Foreground = Brushes.IndianRed; // Red indicates weight increase
-                    return (valueArrow, difference.ToString("N2"));
-                }
-                else if (difference < 0)
-                {
-                    valueArrow.Text = "▼";
-                    valueArrow.Foreground = Brushes.SeaGreen; // Green indicates weight decrease
-                    return (valueArrow, difference.ToString("N2"));
-                }
-                else
-                {
-                    valueArrow.Text = "■";
-                    valueArrow.Foreground = Brushes.Gray; // Gray indicates no change
-                    return (valueArrow, difference.ToString("0"));
-                }
-            }
-            catch (Exception ex)
-            {
-                GeneralErrorMessage = $"Error calculating trend arrow: {ex.Message}";
-                return (valueArrow, "0");
-            }
         }
 
         /// <summary>
@@ -651,8 +536,18 @@ namespace BodyTracker.ViewModels
 
             try
             {
-                await GetBodyMeasurementDashboardValuesAsync();
-                await GetAppDashboardValuesAsync();
+                var list = await databaseService.GetHeavyAppWorkoutsAsync(AppState.SelectedPersonId);
+                var analyzer = new AppWorkoutLoadAnalyzer("", list, 1, 0.5);
+
+                var today = DateTime.Today;
+                var startDate = new DateTime(today.Year, today.Month, 1);
+                var endDate = startDate.AddMonths(1).AddDays(-1);
+
+                await GetKpiMetrics(startDate, endDate);
+                await GetChartBodyMeasurementDashboardValuesAsync(startDate, endDate);
+                await GetAppDashboardValuesAsync(analyzer, startDate, endDate);
+                await GetChartMuscleDistributionSpiderChart(analyzer, startDate, endDate);
+                await GetChartMonthlyTraningsVolumeAsync(analyzer, startDate, endDate);
                 SetActualMonthMeanValue();
 
             }
@@ -668,70 +563,187 @@ namespace BodyTracker.ViewModels
         }
 
         /// <summary>
-        /// Asynchrone Methode zum Laden der CSV-Daten und Aktualisieren des Pie-Charts.
-        /// Kann auch als Command an einen Refresh-Button im UI gebunden werden.
+        /// Calculates averages for the current period and previous month using GetAverageValues,
+        /// updates the bar chart properties, and sets the trend arrows and difference texts.
         /// </summary>
-        public async Task GetBodyMeasurementDashboardValuesAsync()
+        /// <param name="start">Start date of the current period.</param>
+        /// <param name="end">End date of the current period.</param>
+        public async Task GetKpiMetrics(DateTime start, DateTime end)
         {
-            try
+
+            // 1. Get current period averages using your method
+            //var currentPeriodAverages = GetAverageValues(start, end);
+
+            var currentPeriodAverages = BodyCalculationToolsService.GetAverageValues(start, end, BodyMeasurement);
+
+
+            // 2. Get previous period / month averages (shifted back by 1 month)
+            var prevStart = start.AddMonths(-1);
+            var prevEnd = end.AddMonths(-1);
+            var previousPeriodAverages = BodyCalculationToolsService.GetAverageValues(prevStart, prevEnd, BodyMeasurement);
+
+            // Extract values safely (assuming GetAverageValues returns a collection containing at least one summary model, or empty)
+            var currentModel = currentPeriodAverages?.FirstOrDefault();
+            var previousModel = previousPeriodAverages?.FirstOrDefault();
+
+            double currentWeight = currentModel?.BodyWeight ?? 0;
+            double previousWeight = previousModel?.BodyWeight ?? 0;
+
+            double currentBodyFat = currentModel?.BodyFatPercentage ?? 0;
+            double previousBodyFat = previousModel?.BodyFatPercentage ?? 0;
+
+            double currentBodyWater = currentModel?.BodyWaterPercentage ?? 0;
+            double previousBodyWater = previousModel?.BodyWaterPercentage ?? 0;
+
+            double currentBodyMuscle = currentModel?.BodyMusclePercentage ?? 0;
+            double previousBodyMuscle = previousModel?.BodyMusclePercentage ?? 0;
+
+
+            // --- WEIGHT METRICS ---
+            BodyWeightCurrentBarValue = currentWeight;
+            BodyWeightPreviousBarValue = previousWeight;
+            double maxWeight = Math.Max(currentWeight, previousWeight);
+            BodyWeightCurrentMaxValue = maxWeight > 0 ? maxWeight * 1.1 : 100.0;
+
+            // Call your GetArrow method for Weight
+            (BodyWeightTrendArrow, BodyWeightDifference) = GetArrow(previousWeight, currentWeight);
+
+            // --- BODY FAT METRICS ---
+            BodyFatCurrentBarValue = currentBodyFat;
+            BodyFatPreviousBarValue = previousBodyFat;
+            double maxBodyFat = Math.Max(currentBodyFat, previousBodyFat);
+            BodyFatCurrentMaxValue = maxBodyFat > 0 ? maxBodyFat * 1.1 : 100.0;
+
+            // Call your GetArrow method for Body Fat
+            (BodyFatTrendArrow, BodyFatDifference) = GetArrow(previousBodyFat, currentBodyFat);
+
+
+            // --- BODY MUSCLE METRICS ---
+            BodyMuscleMassCurrentBarValue = currentBodyMuscle;
+            BodyMuscleMassPreviousBarValue = previousBodyMuscle;
+            double maxBodyMuscle = Math.Max(currentBodyMuscle, previousBodyMuscle);
+            BodyMuscleMassCurrentMaxValue = maxBodyMuscle > 0 ? maxBodyMuscle * 1.1 : 100.0;
+
+            // Call your GetArrow method for Body Fat
+            (BodyMuscleMassTrendArrow, BodyMuscleMassDifference) = GetArrow(previousBodyMuscle, currentBodyMuscle);
+
+
+
+            // --- BODY Water METRICS ---
+            BodyWaterCurrentBarValue = currentBodyWater;
+            BodyWaterPreviousBarValue = previousBodyWater;
+            double maxBodyWater = Math.Max(currentBodyWater, previousBodyWater);
+            BodyFatCurrentMaxValue = maxBodyWater > 0 ? maxBodyWater * 1.1 : 100.0;
+
+            // Call your GetArrow method for Body Fat
+            (BodyWaterTrendArrow, BodyWaterDifference) = GetArrow(previousBodyFat, currentBodyFat);
+
+        }
+
+        /// <summary>
+        /// Updates the KPI data and bar chart values for weight comparison between the previous and current month.
+        /// </summary>
+        /// <param name="previousWeight">Weight value or average from the previous month.</param>
+        /// <param name="currentWeight">Weight value or average from the current month.</param>
+        public (TextBlock, string) GetArrow(double previousValue, double currentValue)
+        {
+
+            var valueArrow = new TextBlock();
+
+            var difference = Math.Round(currentValue - previousValue, 2); // Round to 2 decimal places
+
+            if (difference > 0)
             {
-
-                //var data = await databaseService.GetBodyMeasurementAsync(AppState.SelectedPersonId);
-                var data = BodyMeasurement.ToList<FullBodyMeasurementDatasModel>();
-
-                StartDate = DateTime.Now.AddMonths(-3);
-                EndDate = DateTime.Now;
-
-                (SeriesBodyMeasurements, XAxesBodyMeasurements, YAxesBodyMeasurements) = ChartTemplateService.BodyMeasurementChart(StartDate, EndDate, data, isTrendLineLegendVisible,
-                                                                                                    strokeThickness, geometrySize, LoessFraction,
-                                                                                                    true, true,
-                                                                                                    true, true,
-                                                                                                    true, true,
-                                                                                                    true, true);
+                valueArrow.Text = "▲";
+                valueArrow.Foreground = Brushes.IndianRed; // Red indicates weight increase
+                return (valueArrow, difference.ToString("N2"));
             }
-            catch(Exception ex)
+            else if (difference < 0)
             {
-                GeneralErrorMessage = $"Error refreshing body measurement chart: {ex.Message}";
+                valueArrow.Text = "▼";
+                valueArrow.Foreground = Brushes.SeaGreen; // Green indicates weight decrease
+                return (valueArrow, difference.ToString("N2"));
             }
+            else
+            {
+                valueArrow.Text = "■";
+                valueArrow.Foreground = Brushes.Gray; // Gray indicates no change
+                return (valueArrow, difference.ToString("0"));
             }
+
+        }
 
         /// <summary>
         /// Asynchrone Methode zum Laden der CSV-Daten und Aktualisieren des Pie-Charts.
         /// Kann auch als Command an einen Refresh-Button im UI gebunden werden.
         /// </summary>
-        public async Task GetAppDashboardValuesAsync()
+        public async Task GetChartBodyMeasurementDashboardValuesAsync(DateTime startDate, DateTime endDate)
         {
-            try
+
+            var data = BodyMeasurement.ToList<FullBodyMeasurementDatasModel>();
+
+            startDate = startDate.AddMonths(-1);
+            (SeriesBodyMeasurements, XAxesBodyMeasurements, YAxesBodyMeasurements) = ChartTemplateService.CreateBodyMeasurementChart(startDate, endDate, data, isTrendLineLegendVisible,
+                                                                                                                                  strokeThickness, geometrySize, LoessFraction,
+                                                                                                                                  true, true,
+                                                                                                                                  true, true,
+                                                                                                                                  true, true,
+                                                                                                                                  true, true);
+        }
+
+        /// <summary>
+        /// Asynchronously calculates muscle distribution metrics for the specified date range and the preceding month, 
+        /// then configures the corresponding spider chart series and polar axes.
+        /// </summary>
+        /// <param name="analyzer">The workout load analyzer instance used to compute muscle distribution data.</param>
+        /// <param name="startDate">The start date for the current period analysis.</param>
+        /// <param name="endDate">The end date for the current period analysis.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task GetChartMuscleDistributionSpiderChart(AppWorkoutLoadAnalyzer analyzer, DateTime startDate, DateTime endDate)
+        {
+            var prevstartDate = startDate.AddMonths(-1);
+
+            var prevendDate = prevstartDate.AddMonths(1).AddDays(-1);
+
+            var actualMonthMuscleDistribution = analyzer.CalculateMuscleSplit(analyzer.WorkoutEntries,
+                                                                              startDate: startDate,
+                                                                              endDate: endDate);
+            var previousMonthMuscleDistribution = analyzer.CalculateMuscleSplit(analyzer.WorkoutEntries,
+                                                                                startDate: prevstartDate,
+                                                                                endDate: prevendDate);
+
+            (SeriesMuscleDistributionSpiderChart, AngleAxisMuscleDistirbutionSpiderChart, RadiusAxisMuscleDistirbutionSpiderChart) = ChartTemplateService.CreateMuscleSpiderChart(actualMonthMuscleDistribution, previousMonthMuscleDistribution,
+                                                                                                                                                                                 "Current",
+                                                                                                                                                                                 "Previous" , geometrySize: 0, strokeThickness: 1);
+        }
+
+        /// <summary>
+        /// Asynchrone Methode zum Laden der CSV-Daten und Aktualisieren des Pie-Charts.
+        /// Kann auch als Command an einen Refresh-Button im UI gebunden werden.
+        /// </summary>
+        public async Task GetAppDashboardValuesAsync(AppWorkoutLoadAnalyzer analyzer, DateTime startDate, DateTime endDate)
+        {
+
+            if (AppState.SelectedPersonId < 0)
             {
-
-
-                if (AppState.SelectedPersonId < 0)
-                {
-                    GeneralErrorMessage = "The Person ID is <0";
-                }
-                    
-                var list = await databaseService.GetHeavyAppWorkoutEntriesAsync(AppState.SelectedPersonId);
-
-                // 2. Analyzer initialisieren und Konvertierung durchführen
-                var analyzer = new AppWorkoutLoadAnalyzer("", list, 1, 0.5);
-
-                TotalWorkoutsVolume = analyzer.TotalWorkoutVolume.TotalVolume.ToString("N0", new System.Globalization.CultureInfo("de-DE")) + " kg";
-                TotalWorkoutsPrimaryVolume = analyzer.TotalWorkoutVolume.PrimaryVolume.ToString("N0", new System.Globalization.CultureInfo("de-DE")) + " kg";
-                TotalWorkoutsSecondaryVolume = analyzer.TotalWorkoutVolume.SecondaryVolume.ToString("N0", new System.Globalization.CultureInfo("de-DE")) + " kg";
-
-                TotalWorkouts = analyzer.TotalWorkoutVolume.TotalExercises.ToString("N0", new System.Globalization.CultureInfo("de-DE")) + " x";
-
-                TopExercises = new ObservableCollection<ExerciseFrequencyModel>(analyzer.FrequentlyPerformedExercises);
-
-                WorkoutMuscleDistributionSeries = await GenerateMuscleDistributionSeriesAsync(analyzer.GetMuscleDistribution(analyzer.AppWorkoutEntries));
-
-                await GenerateMonthlyTraningsVolumeAsync(analyzer);
-
+                GeneralErrorMessage = "The Person ID is <0";
+                return;
             }
-            catch (Exception ex)
-            {
-                GeneralErrorMessage = $"Error refreshing body measurement chart: {ex.Message}";
-            }
+
+            startDate = startDate.AddMonths(-1);
+
+            var totalWorkoutVolume = analyzer.GetVolume(analyzer.WorkoutEntries, startDate: startDate, endDate: endDate);
+
+
+
+            TotalWorkoutsVolume = totalWorkoutVolume.TotalVolume.ToString("N0", new System.Globalization.CultureInfo("de-DE")) + " kg";
+            TotalWorkoutsPrimaryVolume = totalWorkoutVolume.PrimaryVolume.ToString("N0", new System.Globalization.CultureInfo("de-DE")) + " kg";
+            TotalWorkoutsSecondaryVolume = totalWorkoutVolume.SecondaryVolume.ToString("N0", new System.Globalization.CultureInfo("de-DE")) + " kg";
+
+            TotalWorkouts = totalWorkoutVolume.TotalExercises.ToString("N0", new System.Globalization.CultureInfo("de-DE")) + " x";
+
+            TopExercises = new ObservableCollection<ExerciseFrequencyModel>(analyzer.CalculateExerciseFrequency(analyzer.WorkoutEntries, startDate: startDate, endDate: endDate));
+
         }
 
         /// <summary>
@@ -740,7 +752,7 @@ namespace BodyTracker.ViewModels
         /// <remarks>Filters out muscle groups with zero or negative total volume, maps each remaining entry to a LiveCharts <see cref="PieSeries{T}"/> configuration, assigns custom data labels and tooltips, and formats percentage values to two decimal places.</remarks>
         /// <param name="muscleDistribution">The collection of muscle data results containing volume metrics and percentage shares.</param>
         /// <returns>A task representing the asynchronous operation, containing an array of configured chart series.</returns>
-        private async Task<IEnumerable<ISeries>> GenerateMuscleDistributionSeriesAsync(IEnumerable<MuscleDataResults> muscleDistribution)
+        private async Task<IEnumerable<ISeries>> GenerateChartMuscleDistributionSeriesAsync(IEnumerable<MuscleDataResultsModel> muscleDistribution)
         {
 
             var pieSeries = muscleDistribution
@@ -752,8 +764,6 @@ namespace BodyTracker.ViewModels
                    DataLabelsPosition = PolarLabelsPosition.Middle,
                    DataLabelsFormatter = point =>
                    {
-                       // point.Context.Label ist vom Typ IDrawnElement, daher prüfen wir auf null und geben andernfalls den Wert als String aus.
-                       // Da IDrawnElement keine sinnvolle ToString()-Implementierung hat, verwenden wir nur den Zahlenwert.
                        return $"{point.Coordinate.PrimaryValue.ToString("F2")} %";
                    },
                    ToolTipLabelFormatter = point =>
@@ -772,39 +782,31 @@ namespace BodyTracker.ViewModels
         /// <remarks>Extracts workout log date bounds to initialize filter ranges on first load, computes aggregated monthly volume metrics via the analyzer, and generates cartesian chart templates incorporating smoothing and trend line configurations.</remarks>
         /// <param name="analyzer">The initialized workout load analyzer instance providing access to parsed entries and volume calculations.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        private async Task GenerateMonthlyTraningsVolumeAsync(AppWorkoutLoadAnalyzer analyzer)
+        private async Task GetChartMonthlyTraningsVolumeAsync(AppWorkoutLoadAnalyzer analyzer, DateTime startDate, DateTime endDate)
         {
             if (analyzer == null) return;
 
-            try
+            var data = analyzer.WorkoutEntries;
+
+            startDate = startDate.AddMonths(-1);
+
+            minMeasurementsDateMonthlyTraningsVolume = data.Min(d => d.ExcerciseDate);
+            maxMeasurementsDateMonthlyTraningsVolume = data.Max(d => d.ExcerciseDate);
+
+            if (firstLoad)
             {
-                var data = analyzer.AppWorkoutEntries;
-
-                minMeasurementsDateMonthlyTraningsVolume = data.Min(d => d.ExcerciseDate);
-                maxMeasurementsDateMonthlyTraningsVolume = data.Max(d => d.ExcerciseDate);
-
-                if (firstLoad)
-                {
-                    StartDateMonthlyTraningsVolume = minMeasurementsDateMonthlyTraningsVolume;
-                    EndDateMonthlyTraningsVolume = maxMeasurementsDateMonthlyTraningsVolume;
-                    firstLoad = false;
-                }
-
-                var startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day).AddMonths(-6);
-                var endDate = DateTime.Now;
-
-                var results = await analyzer.GetMonthlyOverviewExerciseVolumeAsync(startDate, endDate);
-
-
-                (SeriesMonthlyTraningsVolume, XAxesMonthlyTraningsVolume, YAxesMonthlyTraningsVolume) = ChartTemplateService.MonthlyOverviewExerciseTraingingsVolume(startDate, endDate, results, isTrendLineLegendVisible,
-                                                                                                                                                                                                strokeThickness, geometrySize, LoessFractionMonthlyTraningsVolume,
-                                                                                                                                                                                                true, true);
-
+                StartDateMonthlyTraningsVolume = minMeasurementsDateMonthlyTraningsVolume;
+                EndDateMonthlyTraningsVolume = maxMeasurementsDateMonthlyTraningsVolume;
+                firstLoad = false;
             }
-            catch(Exception ex)
-            {
-                GeneralErrorMessage = $"Error generating monthly training volume chart: {ex.Message}";
-            }
+
+            var results = await analyzer.CalculateMonthlyVolumeAsync(startDate, endDate);
+
+
+            (SeriesMonthlyTraningsVolume, XAxesMonthlyTraningsVolume, YAxesMonthlyTraningsVolume) = ChartTemplateService.CreateMonthlyVolumeChart(startDate, endDate, results, isTrendLineLegendVisible,
+                                                                                                                                                                                            strokeThickness, geometrySize, LoessFractionMonthlyTraningsVolume,
+                                                                                                                                                                                            true, true);
+
         }
 
         /// <summary>
@@ -813,10 +815,9 @@ namespace BodyTracker.ViewModels
         /// <returns>A task that represents the asynchronous operation.</returns>
         private async Task ShowNewDatabaseEntryPage()
         {
-            WeakReferenceMessenger.Default.Send(new NavigationMessage(NavigationMessage.ShowNewEntryPage));
+            WeakReferenceMessenger.Default.Send(new NavigationMessage(NavigationMessage.ShowNewEntry));
             await Task.CompletedTask;
         }
-
 
         //// <summary>
         /// Sets the mean start and end dates to encompass the entire current calendar year (January 1st to December 31st).
@@ -859,7 +860,6 @@ namespace BodyTracker.ViewModels
             MeanEndDate = startOfWeek.AddDays(6); // Sunday
         }
 
-
         /// <summary>
         /// Executed automatically by the source generator when the <see cref="StartDate"/> property changes.
         /// Initiates an asynchronous refresh of the chart data to reflect the newly selected time range.
@@ -888,7 +888,7 @@ namespace BodyTracker.ViewModels
         /// </remarks>
         partial void OnMeanEndDateChanged(DateTime value)
         {
-           BodyCalculationToolsService.GetAverageValues(MeanStartDate, MeanEndDate, BodyMeasurement);
+            BodyCalculationToolsService.GetAverageValues(MeanStartDate, MeanEndDate, BodyMeasurement);
         }
 
         #region Disposal Pattern

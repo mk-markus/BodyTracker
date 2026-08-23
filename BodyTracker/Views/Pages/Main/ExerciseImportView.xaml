@@ -1,0 +1,253 @@
+﻿<Page x:Class="BodyTracker.Views.Pages.Main.ExerciseImportView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Exercise">
+
+    <Border Style="{DynamicResource BorderDashboardCardStyle}"
+            Margin="0,10,0,0">
+
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0"
+                            Orientation="Horizontal"
+                            Margin="10">
+
+
+
+                <Button Content="🔄"
+                        ToolTip="Refresh"
+                        Command="{Binding CommandRefresh}"
+                        Style="{DynamicResource IconStandardButton}" />
+
+                <Button Content="📁"
+                        ToolTip="Open File Dialog"
+                        Command="{Binding CommandOpen}"
+                        Style="{DynamicResource IconStandardButton}" />
+
+                <Button Content="📤"
+                        ToolTip="Insert Datas in Database"
+                        Command="{Binding CommandInsert}"
+                        Style="{DynamicResource IconStandardButton}" />
+
+                <!--<ProgressBar Height="25"
+                             MinWidth="100"
+                             IsIndeterminate="True"
+                             Value="{Binding ProgressValue}"
+                             Visibility="{Binding IsLoading, Converter={StaticResource bool2VisibilityConverter}}"
+                             Style="{DynamicResource ProgressbarCurrentBarValue}" />-->
+
+                <WrapPanel>
+                    <TextBlock Text="{Binding TimeElapse}"
+                               Margin="10"
+                               TextAlignment="Center"
+                               Style="{DynamicResource TextBlockDescribing}" />
+
+                    <TextBlock Text="{Binding ProgressText}"
+                               TextAlignment="Center"
+                               Style="{DynamicResource TextBlockDescribing}" />
+
+                </WrapPanel>
+
+
+            </StackPanel>
+
+
+            <DataGrid Grid.Row="1"
+                      ItemsSource="{Binding ExerciseDatas}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      CanUserAddRows="False"
+                      Style="{StaticResource DataGrid_Default}">
+
+                <DataGrid.Columns>
+                    
+                    <DataGridTextColumn Header="completion__status" 
+                                        Binding="{Binding CompletionStatus}" 
+                                        Width="Auto"/>
+                    
+                    <DataGridTextColumn Header="source__type" 
+                                        Binding="{Binding SourceType}"
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="mission__type" 
+                                        Binding="{Binding MissionType}" 
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="title" 
+                                        Binding="{Binding Title}" 
+                                        Width="Auto"/>
+                    
+                    <DataGridTextColumn Header="start__longitude" 
+                                        Binding="{Binding StartLongitude}" 
+                                        Width="Auto"/>
+                    
+                    <DataGridTextColumn Header="heart__rate__sample__count" 
+                                        Binding="{Binding HeartRateSampleCount}" 
+                                        Width="Auto"/>
+                    
+                    <DataGridTextColumn Header="start__latitude" 
+                                        Binding="{Binding StartLatitude}" 
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.exercise.duration"
+                                        Binding="{Binding Duration}" 
+                                        Width="Auto"/>
+                    
+                    <DataGridTextColumn Header="com.samsung.health.exercise.create__sh__ver"
+                                        Binding="{Binding CreateShVer}" 
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.exercise.mean__caloricburn__rate"
+                                        Binding="{Binding MeanCaloricburnRate}" 
+                                        Width="Auto"/>
+                    
+                    <DataGridTextColumn Header="com.samsung.health.exercise.start__time"
+                                        Binding="{Binding StartTime,StringFormat=dd.MM.yyyy HH:mm:ss}"
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.exercise.exercise__type"
+                                        Binding="{Binding ExerciseType}" 
+                                        Width="Auto"/>
+                    
+                    <DataGridTextColumn Header="com.samsung.health.exercise.max__altitude"
+                                        Binding="{Binding MaxAltitude}" 
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.exercise.incline__distance"
+                                        Binding="{Binding InclineDistance}" 
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.exercise.mean__heart__rate"
+                                        Binding="{Binding MeanHeartRate}" 
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.exercise.count__type"
+                                        Binding="{Binding CountType}" 
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.exercise.mean__rpm"
+                                        Binding="{Binding MeanRpm}" 
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.exercise.min__altitude"
+                                        Binding="{Binding MinAltitude}" 
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.exercise.modify__sh__ver"
+                                        Binding="{Binding ModifyShVer}"
+                                        Width="Auto"/>
+                    
+                    <DataGridTextColumn Header="com.samsung.health.exercise.max__heart__rate"
+                                        Binding="{Binding MaxHeartRate}" 
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.exercise.update__time"
+                                        Binding="{Binding UpdateTime,StringFormat=dd.MM.yyyy HH:mm:ss}"
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.exercise.create__time"
+                                        Binding="{Binding CreateTime,StringFormat=dd.MM.yyyy HH:mm:ss}"
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.exercise.client__data__id"
+                                        Binding="{Binding ClientDataId}"
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.exercise.max__power"
+                                        Binding="{Binding MaxPower}" 
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.exercise.max__speed"
+                                        Binding="{Binding MaxSpeed}" 
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.exercise.mean__cadence"
+                                        Binding="{Binding MeanCadence}" 
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.exercise.min__heart__rate"
+                                        Binding="{Binding MinHeartRate}" 
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.exercise.client__data__ver"
+                                        Binding="{Binding ClientDataVer}" 
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.exercise.count"
+                                        Binding="{Binding Count}" 
+                                        Width="Auto"/>
+                    
+                    <DataGridTextColumn Header="com.samsung.health.exercise.distance"
+                                        Binding="{Binding Distance}" 
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.exercise.calorie"
+                                        Binding="{Binding Calorie}" Width="100"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.exercise.max__cadence"
+                                        Binding="{Binding MaxCadence}" 
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.exercise.decline__distance"
+                                        Binding="{Binding DeclineDistance}" 
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.exercise.vo2__max"
+                                        Binding="{Binding Vo2Max}" 
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.exercise.deviceuuid"
+                                        Binding="{Binding DeviceUuid}" 
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.exercise.max__rpm"
+                                        Binding="{Binding MaxRpm}" 
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.exercise.comment"
+                                        Binding="{Binding Comment}" 
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.exercise.mean__power"
+                                        Binding="{Binding MeanPower}" 
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.exercise.mean__speed"
+                                        Binding="{Binding MeanSpeed}" 
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.exercise.pkg__name"
+                                        Binding="{Binding PkgName}" 
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.exercise.altitude__gain"
+                                        Binding="{Binding AltitudeGain}" 
+                                        Width="Auto"/>
+                    
+                    <DataGridTextColumn Header="com.samsung.health.exercise.altitude__loss"
+                                        Binding="{Binding AltitudeLoss}" 
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.exercise.end__time"
+                                        Binding="{Binding EndTime,StringFormat=dd.MM.yyyy HH:mm:ss}"
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.exercise.datauuid"
+                                        Binding="{Binding DataUuid}" 
+                                        Width="Auto"/>
+
+                    <DataGridTextColumn Header="com.samsung.health.exercise.sweat__loss"
+                                        Binding="{Binding SweatLoss}" 
+                                        Width="Auto"/>
+                    
+                </DataGrid.Columns>
+
+            </DataGrid>
+        </Grid>
+
+    </Border>
+</Page>

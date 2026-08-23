@@ -34,15 +34,15 @@ namespace BodyTracker.Services
         /// <param name="showBodyWater">A value indicating whether the body water percentage series is visible.</param>
         /// <param name="showBodyWaterTrend">A value indicating whether the body water trend line is displayed.</param>
         /// <returns>A tuple containing the generated array of chart series, X-axes, and Y-axes.</returns>
-        public static (ISeries[], ICartesianAxis[], ICartesianAxis[]) BodyMeasurementChart(DateTime startDate,
-                                                                                            DateTime endDate,
-                                                                                            List<FullBodyMeasurementDatasModel> data,
-                                                                                            bool isTrendLineLegendVisible,
-                                                                                            float strokeThickness, float geometrySize, double loessFraction,
-                                                                                            bool showBodyWeight, bool showBodyWeightTrend,
-                                                                                            bool showBodyFat, bool showBodyFatTrend,
-                                                                                            bool showBodyMuscle, bool showBodyMuscleTrend,
-                                                                                            bool showBodyWater, bool showBodyWaterTrend)
+        public static (ISeries[], ICartesianAxis[], ICartesianAxis[]) CreateBodyMeasurementChart(  DateTime startDate,
+                                                                                                   DateTime endDate,
+                                                                                                   List<FullBodyMeasurementDatasModel> data,
+                                                                                                   bool isTrendLineLegendVisible,
+                                                                                                   float strokeThickness, float geometrySize, double loessFraction,
+                                                                                                   bool showBodyWeight, bool showBodyWeightTrend,
+                                                                                                   bool showBodyFat, bool showBodyFatTrend,
+                                                                                                   bool showBodyMuscle, bool showBodyMuscleTrend,
+                                                                                                   bool showBodyWater, bool showBodyWaterTrend)
         {
 
             var ordered = data
@@ -71,7 +71,7 @@ namespace BodyTracker.Services
 
             var chartDefinitions = new[]
             {
-            new ChartSeriesDefinition<FullBodyMeasurementDatasModel>
+            new ChartSeriesModel<FullBodyMeasurementDatasModel>
             {
                 Name = "Body Weight (kg)",
                 TrendName = "Body Weight Trend (kg)",
@@ -89,7 +89,7 @@ namespace BodyTracker.Services
                 ValueSelector = x => (double?)x.BodyWeight
             },
 
-            new ChartSeriesDefinition<FullBodyMeasurementDatasModel>
+            new ChartSeriesModel<FullBodyMeasurementDatasModel>
             {
                 Name = "Body Water (%)",
                 TrendName = "Body Water Trend (%)",
@@ -107,7 +107,7 @@ namespace BodyTracker.Services
                 ValueSelector = x => (double?)x.BodyWaterPercentage
             },
 
-            new ChartSeriesDefinition<FullBodyMeasurementDatasModel>
+            new ChartSeriesModel<FullBodyMeasurementDatasModel>
             {
                 Name = "Body Muscle (%)",
                 TrendName = "Body Muscle Trend (%)",
@@ -125,7 +125,7 @@ namespace BodyTracker.Services
                 ValueSelector = x => (double?)x.BodyMusclePercentage
             },
 
-            new ChartSeriesDefinition<FullBodyMeasurementDatasModel>
+            new ChartSeriesModel<FullBodyMeasurementDatasModel>
             {
                 Name = "Body Fat (%)",
                 TrendName = "Body Fat Trend (%)",
@@ -162,7 +162,7 @@ namespace BodyTracker.Services
 
             var yAxisDefinitions = new[]
             {
-                new ChartYAxisDefinition
+                new ChartYAxisModel
                 {
                     Name = "kg",
                     MinLimit = minWeight - bufferMinWeight,
@@ -170,12 +170,178 @@ namespace BodyTracker.Services
 
                 },
 
-                new ChartYAxisDefinition
+                new ChartYAxisModel
                 {
                     Name = "%",
                     Position = AxisPosition.End,
                     ShowSeparatorLines = false
                 }
+        };
+
+            var YAxes = yAxisDefinitions.Select(ChartAxisBuilder.Create).ToArray();
+
+            return (series, XAxis, YAxes);
+        }
+
+        /// <summary>
+        /// Generates LiveCharts Cartesian series and axes configurations for daily step counts, distances, and burned calories over a specified date range.
+        /// </summary>
+        /// <param name="startDate">The start date of the filtering range.</param>
+        /// <param name="endDate">The end date of the filtering range.</param>
+        /// <param name="data">The collection of step daily trend chart models containing step counts, distances, and calorie metrics.</param>
+        /// <param name="isTrendLineLegendVisible">A value indicating whether trend lines should appear in the chart legend.</param>
+        /// <param name="strokeThickness">The stroke thickness for the chart lines.</param>
+        /// <param name="geometrySize">The size of the data point geometries on the chart.</param>
+        /// <param name="loessFraction">The LOESS smoothing fraction used for calculating trend lines.</param>
+        /// <param name="showSteps">A value indicating whether the daily steps series is visible.</param>
+        /// <param name="showStepsTrend">A value indicating whether the daily steps trend line is visible.</param>
+        /// <param name="showDistance">A value indicating whether the daily distance series is visible.</param>
+        /// <param name="showDistanceTrend">A value indicating whether the daily distance trend line is visible.</param>
+        /// <param name="showCalories">A value indicating whether the daily burned calories series is visible.</param>
+        /// <param name="showCaloriesTrend">A value indicating whether the daily burned calories trend line is visible.</param>
+        /// <returns>A tuple containing the generated series array, X-axis array, and Y-axes array.</returns>
+        public static (ISeries[], ICartesianAxis[], ICartesianAxis[]) CreateDailyActivityChart( DateTime startDate,
+                                                                                                DateTime endDate,
+                                                                                                List<StepDailyTrendChartModel> data,
+                                                                                                bool isTrendLineLegendVisible,
+                                                                                                float strokeThickness, float geometrySize, double loessFraction,
+                                                                                                bool showSteps, bool showStepsTrend,
+                                                                                                bool showDistance, bool showDistanceTrend,
+                                                                                                bool showCalories, bool showCaloriesTrend)
+        {
+            var ordered = data
+                        .Where(x =>
+                            x.SourceType == -2 &&
+                            x.CreateTime >= startDate &&
+                            x.CreateTime <= endDate)
+                        .OrderBy(x => x.CreateTime)
+                        .ToList();
+
+            var stepPoints = ordered
+               .Select(x => new DateTimePoint(
+                   x.CreateTime,
+                   x.Count))
+               .ToArray();
+
+            var distancePoints = ordered
+               .Select(x => new DateTimePoint(
+                   x.CreateTime,
+                   x.Distance))
+               .ToArray();
+
+            var caloriePoints = ordered
+                .Select(x => new DateTimePoint(
+                    x.CreateTime,
+                    x.Calorie))
+                .ToArray();
+
+            var maxSteps = stepPoints.Length > 0
+                 ? stepPoints.Max(x => x.Value)
+                 : 10000;
+
+            var maxDistance = distancePoints.Length > 0
+                ? distancePoints.Max(x => x.Value)
+                : 10000;
+
+            var maxCalories = caloriePoints.Length > 0
+                ? caloriePoints.Max(x => x.Value)
+                : 1000;
+
+            var chartSeries = new List<ISeries>();
+
+            var chartDefinitions = new[]
+            {
+                new ChartSeriesModel<StepDailyTrendChartModel>
+                {
+                    Name = "Daily Distance",
+                    TrendName = "Daily Distance Trend",
+                    Color = SKColors.BlueViolet,
+                    YAxisIndex = 1,
+
+                    IsVisible = showDistance,
+                    ShowTrend = showDistanceTrend,
+                    IsTrendLineVisible = isTrendLineLegendVisible,
+
+                    StrokeThickness = strokeThickness,
+                    GeometrySize = geometrySize,
+
+                    DateSelector = x => x.CreateTime,
+                    ValueSelector = x => (double?)x.Distance
+                },
+
+                new ChartSeriesModel<StepDailyTrendChartModel>
+                {
+                    Name = "Daily Burned Calories",
+                    TrendName = "Daily Burned Calories Trend",
+                    Color = SKColors.Red,
+                    YAxisIndex = 2,
+
+                    IsVisible = showCalories,
+                    ShowTrend = showCaloriesTrend,
+                    IsTrendLineVisible = isTrendLineLegendVisible,
+
+                    StrokeThickness = strokeThickness,
+                    GeometrySize = geometrySize,
+
+                    DateSelector = x => x.CreateTime,
+                    ValueSelector = x => (double?)x.Calorie
+                },
+
+                new ChartSeriesModel<StepDailyTrendChartModel>
+                {
+                    Name = "Daily Steps",
+                    TrendName = "Daily Steps Trend",
+                    Color = SKColors.Blue,
+                    YAxisIndex = 0,
+
+                    IsVisible = showSteps,
+                    ShowTrend = showStepsTrend,
+                    IsTrendLineVisible = isTrendLineLegendVisible,
+
+                    StrokeThickness = strokeThickness,
+                    GeometrySize = geometrySize,
+
+                    DateSelector = x => x.CreateTime,
+                    ValueSelector = x => (double?)x.Count
+                }
+            };
+
+            var series = ChartSeriesBuilder.CreateSeries(ordered,
+                                                         chartDefinitions,
+                                                         loessFraction).ToArray();
+
+            var XAxis = new ICartesianAxis[]
+            {
+            new DateTimeAxis(
+                TimeSpan.FromDays(1),
+                date => date.ToString("dd.MM.yyyy"))
+            {
+                Name = "Date"
+            }
+            };
+
+            var yAxisDefinitions = new[]
+            {
+            new ChartYAxisModel
+            {
+                Name = "Steps",
+                MinLimit = 0,
+                MaxLimit = maxSteps * 1.05
+            },
+            new ChartYAxisModel
+            {
+                Name = "Distance (m)",
+                Position = AxisPosition.End,
+                MinLimit = 0,
+                MaxLimit = maxDistance * 1.05
+            },
+            new ChartYAxisModel
+            {
+                Name = "Calories (kcal)",
+                Position = AxisPosition.End,
+                MinLimit = 0,
+                MaxLimit = maxCalories * 1.05
+            }
         };
 
             var YAxes = yAxisDefinitions.Select(ChartAxisBuilder.Create).ToArray();
@@ -197,12 +363,12 @@ namespace BodyTracker.Services
         /// <param name="showMonthlyTraniningsVolume">A value indicating whether the training volume series is visible.</param>
         /// <param name="showMonthlyTraniningsVolumeTrend">A value indicating whether the training volume trend line is displayed.</param>
         /// <returns>A tuple containing the generated array of chart series, X-axes, and Y-axes.</returns>
-        public static (ISeries[], ICartesianAxis[], ICartesianAxis[]) MonthlyOverviewExerciseTraingingsVolume(DateTime startDate,
-                                                                                                           DateTime endDate,
-                                                                                                           List<MonthlyExerciseTraningVolume> data,
-                                                                                                           bool isTrendLineLegendVisible,
-                                                                                                           float strokeThickness, float geometrySize, double loessFraction,
-                                                                                                           bool showMonthlyTraniningsVolume, bool showMonthlyTraniningsVolumeTrend)
+        public static (ISeries[], ICartesianAxis[], ICartesianAxis[]) CreateMonthlyVolumeChart( DateTime startDate,
+                                                                                                DateTime endDate,
+                                                                                                List<MonthlyExerciseTrainingVolumeModel> data,
+                                                                                                bool isTrendLineLegendVisible,
+                                                                                                float strokeThickness, float geometrySize, double loessFraction,
+                                                                                                bool showMonthlyTraniningsVolume, bool showMonthlyTraniningsVolumeTrend)
         {
 
             var ordered = data
@@ -231,7 +397,7 @@ namespace BodyTracker.Services
 
             var chartDefinitions = new[]
             {
-            new ChartSeriesDefinition<MonthlyExerciseTraningVolume>
+            new ChartSeriesModel<MonthlyExerciseTrainingVolumeModel>
             {
                 Name = "Volume (kg)",
                 TrendName = "Volume Trend (kg)",
@@ -249,7 +415,7 @@ namespace BodyTracker.Services
                 ValueSelector = x => x.TotalWeight
             },
 
-             new ChartSeriesDefinition<MonthlyExerciseTraningVolume>
+             new ChartSeriesModel<MonthlyExerciseTrainingVolumeModel>
             {
                 Name = "Monthly Workouts",
                 TrendName = "Workouts Trend",
@@ -285,11 +451,11 @@ namespace BodyTracker.Services
 
             var yAxisDefinitions = new[]
             {
-                new ChartYAxisDefinition
+                new ChartYAxisModel
                 {
                     Name = "kg",
                 },
-                new ChartYAxisDefinition
+                new ChartYAxisModel
                 {
                     Name = "Workouts",
                     Position = AxisPosition.End,
@@ -300,6 +466,169 @@ namespace BodyTracker.Services
             var YAxes = yAxisDefinitions.Select(ChartAxisBuilder.Create).ToArray();
 
             return (series, XAxis, YAxes);
+        }
+
+
+
+        /// <summary>
+        /// Generates LiveCharts spider chart series and polar axes configurations from a list of muscle distribution data results.
+        /// </summary>
+        /// <param name="results">The collection of muscle data results containing percentage shares and muscle group labels.</param>
+        /// <param name="seriesName">The name assigned to the polar line series.</param>
+        /// <param name="strokeThickness">The miniature stroke thickness for the series line. Default is 1.</param>
+        /// <param name="geometrySize">The size of the data point geometries on the chart. Default is 1.</param>
+        /// <param name="textSize">The font size for the axis labels. Default is 12.</param>
+        /// <param name="minStep">The minimum step value for the axes. Default is 0.5.</param>
+        /// <param name="labelRotation">The rotation angle for the axis labels. Default is 0.</param>
+        /// <returns>A tuple containing the generated series array, angle axis array, and radius axis array.</returns>
+        public static (ISeries[], IPolarAxis[], IPolarAxis[]) CreateMuscleSpiderChart( List<MuscleDataResultsModel> results, string seriesName,
+                                                                                       float strokeThickness = 1, float geometrySize = 1,
+                                                                                       int textSize = 12, double minStep = 0.5, int labelRotation = 0)
+        {
+            ISeries[] seriesValues = Array.Empty<ISeries>();
+
+            IPolarAxis[] angleAxis = Array.Empty<IPolarAxis>();
+
+            IPolarAxis[] radiusAxis = Array.Empty<IPolarAxis>();
+
+            if (results.Any())
+            {
+                var muscleDistributionValues = new List<double>();
+                var muscleDistributionSpiderChartAxisName = new List<string>();
+                foreach (var value in results)
+                {
+                    if (value == null) break;
+                    muscleDistributionValues.Add(value.PercentageShare);
+                    muscleDistributionSpiderChartAxisName.Add(value.MuscleGroup);
+                }
+
+                seriesValues = new ISeries[]
+                {
+             new PolarLineSeries<double>
+             {
+                Name=seriesName,
+                Values= muscleDistributionValues,
+                IsClosed= true,
+                GeometrySize = geometrySize,
+                MiniatureStrokeThickness = strokeThickness
+             }
+                };
+
+                angleAxis = new IPolarAxis[]
+                {
+                new PolarAxis
+                {
+                    Labels = muscleDistributionSpiderChartAxisName.ToArray(),
+                    LabelsRotation = labelRotation,
+                    TextSize= textSize,
+                    MinStep = minStep,
+                }
+                };
+
+                radiusAxis = new IPolarAxis[]
+               {
+                new PolarAxis
+                {
+                    MinLimit= 0,
+                    MaxLimit = 20,
+                    MinStep= minStep,
+                    Labeler = _ => string.Empty
+                }
+             };
+
+            }
+
+            return (seriesValues, angleAxis, radiusAxis);
+        }
+
+        /// <summary>
+        /// Generates LiveCharts spider chart series and polar axes configurations comparing current period and previous period muscle distribution data results.
+        /// </summary>
+        /// <param name="actResults">The collection of current period muscle data results containing percentage shares and muscle group labels.</param>
+        /// <param name="prevResults">The collection of previous period muscle data results containing percentage shares.</param>
+        /// <param name="actSereiesName">The name assigned to the current period polar line series.</param>
+        /// <param name="prevSeriesName">The name assigned to the previous period polar line series.</param>
+        /// <param name="strokeThickness">The miniature stroke thickness for the series lines. Default is 1.</param>
+        /// <param name="geometrySize">The size of the data point geometries on the chart. Default is 1.</param>
+        /// <param name="textSize">The font size for the axis labels. Default is 12.</param>
+        /// <param name="minStep">The minimum step value for the axes. Default is 1.</param>
+        /// <param name="labelRotation">The rotation angle for the axis labels. Default is 0.</param>
+        /// <returns>A tuple containing the generated series array, angle axis array, and radius axis array.</returns>
+        public static (ISeries[], IPolarAxis[], IPolarAxis[]) CreateMuscleSpiderChart( List<MuscleDataResultsModel> actResults, List<MuscleDataResultsModel> prevResults,
+                                                                                       string actSereiesName, string prevSeriesName, float strokeThickness = 1,
+                                                                                       float geometrySize = 1, int textSize = 12, int minStep = 1, int labelRotation = 0)
+        {
+            ISeries[] seriesValues = Array.Empty<ISeries>();
+
+            IPolarAxis[] angleAxis = Array.Empty<IPolarAxis>();
+
+            IPolarAxis[] radiusAxis = Array.Empty<IPolarAxis>();
+
+            if (actResults.Any() && prevResults.Any())
+            {
+                var actMuscleDistributionSpiderChartValues = new List<double>();
+                var actMuscleDistributionSpiderChartAxisName = new List<string>();
+                var prevMuscleDistributionSpiderChartValues = new List<double>();
+
+
+                foreach (var value in actResults)
+                {
+                    if (value == null) break;
+                    actMuscleDistributionSpiderChartValues.Add(value.PercentageShare);
+                    actMuscleDistributionSpiderChartAxisName.Add(value.MuscleGroup);
+                }
+
+                foreach (var value in prevResults)
+                {
+                    if (value == null) break;
+                    prevMuscleDistributionSpiderChartValues.Add(value.PercentageShare);
+                }
+
+
+                seriesValues = new ISeries[]
+                {
+             new PolarLineSeries<double>
+             {
+              Name=actSereiesName,
+              Values= actMuscleDistributionSpiderChartValues,
+              IsClosed= true,
+              GeometrySize = geometrySize,
+              MiniatureStrokeThickness = strokeThickness
+             },
+
+              new PolarLineSeries<double>
+             {
+              Name=prevSeriesName,
+              Values= prevMuscleDistributionSpiderChartValues,
+              IsClosed= true,
+              GeometrySize = geometrySize,
+              MiniatureStrokeThickness = strokeThickness
+             }
+                };
+
+                angleAxis = new IPolarAxis[]
+                {
+                new PolarAxis
+                {
+                    Labels = actMuscleDistributionSpiderChartAxisName.ToArray(),
+                    LabelsRotation = labelRotation,
+                    TextSize= textSize
+                }
+                };
+
+                radiusAxis = new IPolarAxis[]
+                {
+                new PolarAxis
+                {
+                    MinLimit= 0,
+                    MaxLimit = 20,
+                    MinStep= minStep,
+                    Labeler = _ => string.Empty
+                }
+                };
+            }
+
+            return (seriesValues, angleAxis, radiusAxis);
         }
     }
 }

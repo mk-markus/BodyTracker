@@ -16,6 +16,13 @@ namespace BodyTracker.Models
         /// <remarks>Initialized to an empty string by default.</remarks>
         public string Title { get; set; } = string.Empty;
 
+
+        /// <summary>
+        /// The timestamp indicating when the record was last updated.
+        /// </summary>
+        public DateTime? UpdateTime { get; set; }
+
+
         /// <summary>
         /// Gets or sets the timestamp indicating when the workout session or activity started.
         /// </summary>

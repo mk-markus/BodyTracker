@@ -1,0 +1,38 @@
+CREATE TABLE tbl_HeartRate
+(
+   heart_rate_id INT(11) NOT NULL,
+	person_id INT(11) NOT NULL,
+	
+   source TEXT NULL,
+   tag_id INT NULL,
+   createShVer INT NULL,
+ 
+   start_time DATETIME(3) NULL,
+   end_time DATETIME(3) NULL,
+   update_time DATETIME(3) NULL,
+   create_time DATETIME(3) NULL,
+   time_offset TEXT NULL,
+
+	custom TEXT NULL,
+   binning_data TEXT NULL,
+   modify_shver INT NULL,
+   client_data_id TEXT NULL,
+   
+	heart_rate FLOAT NULL,
+   heart_rate_max FLOAT NULL,
+   heart_rate_min FLOAT NULL,
+   heart_beat_count INT NULL,
+
+   client_dataver INT NULL,
+   
+   comment TEXT NULL,
+   package_name TEXT NULL,
+   
+   device_uuid TEXT NULL,
+   data_uuid CHAR(50) NULL,
+
+  	PRIMARY KEY (`heart_rate_id`) USING BTREE,
+	UNIQUE INDEX `UNIQUE KEY` (`data_uuid`) USING BTREE,
+	INDEX `KEY` (`person_id`) USING BTREE,
+	CONSTRAINT `fk_heart_rate` FOREIGN KEY (`person_id`) REFERENCES `tbl_Personen` (`person_id`) ON UPDATE CASCADE ON DELETE CASCADE
+)
