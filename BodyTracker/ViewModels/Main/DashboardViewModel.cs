@@ -19,6 +19,7 @@ using System.Security.RightsManagement;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
+using static SkiaSharp.HarfBuzz.SKShaper;
 
 namespace BodyTracker.ViewModels
 {
@@ -36,6 +37,87 @@ namespace BodyTracker.ViewModels
         /// accidental reassignment and ensuring architectural stability.
         /// </remarks>
         private readonly DatabaseService databaseService;
+
+        /// <summary>
+        /// Gets or sets the body weight in kilograms. 
+        /// Nullable to allow for empty input fields.
+        /// </summary>
+        [ObservableProperty] private string bodyWeight;
+
+        /// <summary>
+        /// Gets or sets the Body Mass Index (BMI).
+        /// </summary>
+        [ObservableProperty] private string bMI;
+
+        /// <summary>
+        /// Gets or sets the body fat percentage.
+        /// </summary>
+        [ObservableProperty] private string bodyFatPercentage;
+
+        /// <summary>
+        /// Gets or sets the measured body fat percentage for the upper body region.
+        /// </summary>
+        [ObservableProperty] private string bodyFatPercentageTop;
+
+        /// <summary>
+        /// Gets or sets the minimum body fat percentage value for the range filter.
+        /// </summary>
+        [ObservableProperty] private string bodyFatPercentageBottom;
+
+        /// <summary>
+        /// Gets or sets the skeletal muscle percentage.
+        /// </summary>
+        [ObservableProperty] private string bodyMusclePercentage;
+
+        /// <summary>
+        /// Gets or sets the percentage of muscle mass in the upper body, if available.
+        /// </summary>
+        [ObservableProperty] private string bodyMusclePercentageTop;
+
+        /// <summary>
+        /// Gets or sets the lower bound for the body muscle percentage range.
+        /// </summary>
+        [ObservableProperty] private string bodyMusclePercentageBottom;
+
+        /// <summary>
+        /// Gets or sets the percentage of body water, if available.
+        /// </summary>
+        [ObservableProperty] private string bodyWaterPercentage;
+
+        /// <summary>
+        /// Gets or sets the mass of the body bone, in kilograms.
+        /// </summary>
+        [ObservableProperty] private string bodyBoneMass;
+
+        /// <summary>
+        /// Gets or sets the chest circumference bodyMeasurement.
+        /// </summary> 
+        [ObservableProperty] private string chestCircumference;
+
+        /// <summary>
+        /// Gets or sets the waist circumference bodyMeasurement.
+        /// </summary>
+        [ObservableProperty] private string waistCircumference;
+
+        /// <summary>
+        /// Gets or sets the hip circumference bodyMeasurement.
+        /// </summary>
+        [ObservableProperty] private string hipsCircumference;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [ObservableProperty] private string bodyFatCaliper;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [ObservableProperty] private string fFM_kg;
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        [ObservableProperty] private string fFM_describing;
 
         /// <summary>
         /// Gets the command responsible for refreshing the bodyMeasurement history from the database.
@@ -82,9 +164,6 @@ namespace BodyTracker.ViewModels
                 WeakReferenceMessenger.Default.Send(new DatabaseErrorMessage(generalErrorMessage));
             }
         }
-
-
-        #region Observable Property Members
 
         /// <summary>
         /// Gets or sets the collection of body bodyMeasurement data displayed in the UI.
@@ -146,16 +225,6 @@ namespace BodyTracker.ViewModels
         /// Used for display purposes in headers or titles.
         /// </summary>
         [ObservableProperty] private string userNameInitial = string.Empty;
-
-        /// <summary>
-        /// Gets or sets the mean start date used for calculations or scheduling.
-        /// </summary>
-        [ObservableProperty] private DateTime meanStartDateCurrentMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-
-        /// <summary>
-        /// Gets or sets the mean end date for the operation.
-        /// </summary>
-        [ObservableProperty] private DateTime meanEndDateCurrentMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1).AddDays(-1);
 
         /// <summary>
         /// Gets or sets the UI text block indicating the trend direction of the body weight.
@@ -289,19 +358,6 @@ namespace BodyTracker.ViewModels
         /// <remarks>Defines the upper bound boundary of the chart axis to ensure proportional rendering.</remarks>
         [ObservableProperty] private double bodyWaterCurrentMaxValue;
 
-        // <summary>
-        /// Gets or sets the inclusive start date for the bodyMeasurement data filter.
-        /// This property determines the earliest record to be displayed in the charts and lists.
-        /// </summary>
-        [ObservableProperty] private DateTime startDate;
-
-        /// <summary>
-        /// Gets or sets the inclusive end date for the bodyMeasurement data filter.
-        /// This property defines the latest point in time for which records are retrieved 
-        /// and displayed in the UI components.
-        /// </summary>
-        [ObservableProperty] private DateTime endDate;
-
         /// <summary>
         /// Gets or sets the formatted string representing the total cumulative workout volume.
         /// </summary>
@@ -359,18 +415,35 @@ namespace BodyTracker.ViewModels
         /// </summary>
         [ObservableProperty] private ICartesianAxis[] yAxesMonthlyTraningsVolume = Array.Empty<ICartesianAxis>();
 
-        // <summary>
-        /// Gets or sets the inclusive start date for the bodyMeasurement data filter.
-        /// This property determines the earliest record to be displayed in the charts and lists.
+        /// <summary>
+        /// Gets or sets the fraction parameter for the LOESS smoothing algorithm, which determines 
+        /// the degree of local averaging applied to the trend line.
         /// </summary>
-        [ObservableProperty] private DateTime startDateMonthlyTraningsVolume;
+        [ObservableProperty] private double loessFraction = 0.5;
 
         /// <summary>
-        /// Gets or sets the inclusive end date for the bodyMeasurement data filter.
-        /// This property defines the latest point in time for which records are retrieved 
-        /// and displayed in the UI components.
+        /// Gets or sets the collection of mean full body bodyMeasurement data.
         /// </summary>
-        [ObservableProperty] private DateTime endDateMonthlyTraningsVolume;
+        /// <remarks>The collection is observable, allowing UI elements or other components to react to
+        /// changes such as additions or removals of bodyMeasurement data. This property is typically used for data binding
+        /// scenarios.</remarks>
+        [ObservableProperty] private ObservableCollection<FullBodyMeasurementDatasModel> meanMeasurement = new();
+
+        /// <summary>
+        /// Gets or sets the fraction parameter for the LOESS smoothing algorithm, which determines 
+        /// the degree of local averaging applied to the trend line.
+        /// </summary>
+        [ObservableProperty] private double loessFractionMonthlyTraningsVolume = 0.5;
+
+        /// <summary>
+        /// Gets or sets the mean start date used for calculations or scheduling.
+        /// </summary>
+        [ObservableProperty] private DateTime meanStartDate = new DateTime(2025, 1, 1);
+
+        /// <summary>
+        /// Gets or sets the mean end date for the operation.
+        /// </summary>
+        [ObservableProperty] private DateTime meanEndDate = DateTime.Now;
 
         /// <summary>
         /// Minimum date of all available measurements for the selected person. This value is used to set 
@@ -384,52 +457,31 @@ namespace BodyTracker.ViewModels
         /// </summary>
         public DateTime maxMeasurementsDateMonthlyTraningsVolume;
 
-        ///// <summary>
-        ///// Minimum date of all available measurements for the selected person. This value is used to set 
-        ///// the lower bound of the date range filter and to initialize the StartDate property on first load.
-        ///// </summary>
-        //public DateTime minMeasurementsDate;
-
-        ///// <summary>
-        ///// Maximum date of all available measurements for the selected person. This value is used to set the upper bound of the date range 
-        ///// filter and to initialize the EndDate property on first load.
-        ///// </summary>
-        //public DateTime maxMeasurementsDate;
+         // <summary>
+        /// Gets or sets the inclusive start date for the bodyMeasurement data filter.
+        /// This property determines the earliest record to be displayed in the charts and lists.
+        /// </summary>
+        [ObservableProperty] private DateTime startDate;
 
         /// <summary>
-        /// Gets or sets the fraction parameter for the LOESS smoothing algorithm, which determines 
-        /// the degree of local averaging applied to the trend line.
+        /// Gets or sets the inclusive end date for the bodyMeasurement data filter.
+        /// This property defines the latest point in time for which records are retrieved 
+        /// and displayed in the UI components.
         /// </summary>
-        [ObservableProperty] private double loessFraction = 0.5;
+        [ObservableProperty] private DateTime endDate;
 
+        // <summary>
+        /// Gets or sets the inclusive start date for the bodyMeasurement data filter.
+        /// This property determines the earliest record to be displayed in the charts and lists.
+        /// </summary>
+        [ObservableProperty] private DateTime startDateMonthlyTraningsVolume;
 
         /// <summary>
-        /// Gets or sets the collection of mean full body bodyMeasurement data.
+        /// Gets or sets the inclusive end date for the bodyMeasurement data filter.
+        /// This property defines the latest point in time for which records are retrieved 
+        /// and displayed in the UI components.
         /// </summary>
-        /// <remarks>The collection is observable, allowing UI elements or other components to react to
-        /// changes such as additions or removals of bodyMeasurement data. This property is typically used for data binding
-        /// scenarios.</remarks>
-        [ObservableProperty] private ObservableCollection<FullBodyMeasurementDatasModel> meanMeasurement = new();
-
-
-        /// <summary>
-        /// Gets or sets the fraction parameter for the LOESS smoothing algorithm, which determines 
-        /// the degree of local averaging applied to the trend line.
-        /// </summary>
-        [ObservableProperty] private double loessFractionMonthlyTraningsVolume = 0.5;
-
-
-        /// <summary>
-        /// Gets or sets the mean start date used for calculations or scheduling.
-        /// </summary>
-        [ObservableProperty] private DateTime meanStartDate = new DateTime(2025, 1, 1);
-
-        /// <summary>
-        /// Gets or sets the mean end date for the operation.
-        /// </summary>
-        [ObservableProperty] private DateTime meanEndDate = DateTime.Now;
-
-        #endregion
+        [ObservableProperty] private DateTime endDateMonthlyTraningsVolume;
 
 
         /// <summary>
@@ -536,7 +588,7 @@ namespace BodyTracker.ViewModels
 
             try
             {
-                var list = await databaseService.GetHeavyAppWorkoutsAsync(AppState.SelectedPersonId);
+                var list = await databaseService.GetHeavyAppAsync(AppState.SelectedPersonId);
                 var analyzer = new AppWorkoutLoadAnalyzer("", list, 1, 0.5);
 
                 var today = DateTime.Today;
@@ -683,12 +735,25 @@ namespace BodyTracker.ViewModels
             var data = BodyMeasurement.ToList<FullBodyMeasurementDatasModel>();
 
             startDate = startDate.AddMonths(-1);
-            (SeriesBodyMeasurements, XAxesBodyMeasurements, YAxesBodyMeasurements) = ChartTemplateService.CreateBodyMeasurementChart(startDate, endDate, data, isTrendLineLegendVisible,
+            
+            var result  = ChartTemplateService.CreateBodyMeasurementChart(startDate, endDate, data, isTrendLineLegendVisible,
                                                                                                                                   strokeThickness, geometrySize, LoessFraction,
-                                                                                                                                  true, true,
-                                                                                                                                  true, true,
-                                                                                                                                  true, true,
-                                                                                                                                  true, true);
+                                                                                                                                  true, false,
+                                                                                                                                  true, false,
+                                                                                                                                  true, false,
+                                                                                                                                  true, false);
+
+
+
+            // Sicherstellen, dass die UI-Zuweisung auf dem Dispatcher erfolgt
+            await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                SeriesBodyMeasurements = result.Series;
+                XAxesBodyMeasurements = result.XAxis;
+                YAxesBodyMeasurements = result.YAxis;
+
+            });
+
         }
 
         /// <summary>
@@ -712,7 +777,7 @@ namespace BodyTracker.ViewModels
                                                                                 startDate: prevstartDate,
                                                                                 endDate: prevendDate);
 
-            (SeriesMuscleDistributionSpiderChart, AngleAxisMuscleDistirbutionSpiderChart, RadiusAxisMuscleDistirbutionSpiderChart) = ChartTemplateService.CreateMuscleSpiderChart(actualMonthMuscleDistribution, previousMonthMuscleDistribution,
+            (SeriesMuscleDistributionSpiderChart, AngleAxisMuscleDistirbutionSpiderChart, RadiusAxisMuscleDistirbutionSpiderChart) = ChartTemplateService.CreateWorkloadMuscleSpiderChart(actualMonthMuscleDistribution, previousMonthMuscleDistribution,
                                                                                                                                                                                  "Current",
                                                                                                                                                                                  "Previous" , geometrySize: 0, strokeThickness: 1);
         }
@@ -733,9 +798,6 @@ namespace BodyTracker.ViewModels
             startDate = startDate.AddMonths(-1);
 
             var totalWorkoutVolume = analyzer.GetVolume(analyzer.WorkoutEntries, startDate: startDate, endDate: endDate);
-
-
-
             TotalWorkoutsVolume = totalWorkoutVolume.TotalVolume.ToString("N0", new System.Globalization.CultureInfo("de-DE")) + " kg";
             TotalWorkoutsPrimaryVolume = totalWorkoutVolume.PrimaryVolume.ToString("N0", new System.Globalization.CultureInfo("de-DE")) + " kg";
             TotalWorkoutsSecondaryVolume = totalWorkoutVolume.SecondaryVolume.ToString("N0", new System.Globalization.CultureInfo("de-DE")) + " kg";
@@ -788,7 +850,7 @@ namespace BodyTracker.ViewModels
 
             var data = analyzer.WorkoutEntries;
 
-            startDate = startDate.AddMonths(-1);
+            startDate = startDate.AddMonths(-3);
 
             minMeasurementsDateMonthlyTraningsVolume = data.Min(d => d.ExcerciseDate);
             maxMeasurementsDateMonthlyTraningsVolume = data.Max(d => d.ExcerciseDate);
@@ -803,10 +865,11 @@ namespace BodyTracker.ViewModels
             var results = await analyzer.CalculateMonthlyVolumeAsync(startDate, endDate);
 
 
-            (SeriesMonthlyTraningsVolume, XAxesMonthlyTraningsVolume, YAxesMonthlyTraningsVolume) = ChartTemplateService.CreateMonthlyVolumeChart(startDate, endDate, results, isTrendLineLegendVisible,
-                                                                                                                                                                                            strokeThickness, geometrySize, LoessFractionMonthlyTraningsVolume,
-                                                                                                                                                                                            true, true);
+           var result = ChartTemplateService.CreateWorkloadMonthlyVolumeBarChart(startDate, endDate, results, strokeThickness, geometrySize, 0);
 
+                SeriesMonthlyTraningsVolume = result.Series;
+                XAxesMonthlyTraningsVolume = result.XAxis;
+                YAxesMonthlyTraningsVolume = result.YAxis;
         }
 
         /// <summary>
@@ -873,7 +936,10 @@ namespace BodyTracker.ViewModels
         /// </remarks>
         partial void OnMeanStartDateChanged(DateTime value)
         {
-            MeanMeasurement = BodyCalculationToolsService.GetAverageValues(MeanStartDate, MeanEndDate, BodyMeasurement);
+          GetMeanValues();
+
+
+
         }
 
         /// <summary>
@@ -888,8 +954,47 @@ namespace BodyTracker.ViewModels
         /// </remarks>
         partial void OnMeanEndDateChanged(DateTime value)
         {
-            BodyCalculationToolsService.GetAverageValues(MeanStartDate, MeanEndDate, BodyMeasurement);
+            GetMeanValues();
+
         }
+
+
+
+
+        private void GetMeanValues()
+        {
+            try
+            {
+                var value = BodyCalculationToolsService.GetAverageValues(MeanStartDate, MeanEndDate, BodyMeasurement);
+
+                if (!value.Any()) return;
+
+                var ffm = BodyCalculationToolsService.CalculateFFM((float)value[0].BodyWeight, (float)value[0].BodyFatPercentage);
+                var ffm_index = BodyCalculationToolsService.GetFFMIndex(ffm, AppState.SelectedPersonHeight);
+
+                BodyWeight = value[0].BodyWeight?.ToString("N2");
+                BMI = value[0].BMI?.ToString("N2");
+                FFM_kg = ffm.ToString("F2");
+                FFM_describing = $"{ffm_index.ToString("N2")} | {BodyCalculationToolsService.GetFFMIndexDescribing(ffm_index, Services.Calculation.BodyCalculationGenderModel.Gender.Male)}";
+                BodyFatPercentage = value[0].BodyFatPercentage?.ToString("N2");
+                BodyFatCaliper = value[0].CaliperBodyFatPercentage?.ToString("N2");
+                BodyMusclePercentage = value[0].BodyMusclePercentage?.ToString("N2");
+                BodyWaterPercentage = value[0].BodyWaterPercentage?.ToString("N2");
+                ChestCircumference = value[0].ChestCircumference?.ToString("N2");
+                WaistCircumference = value[0].WaistCircumference?.ToString("N2");
+                HipsCircumference = value[0].HipsCircumference?.ToString("N2");
+
+            }
+            catch(Exception ex ) { GeneralErrorMessage = ex.ToString(); }
+
+
+
+
+
+
+        }
+
+
 
         #region Disposal Pattern
 

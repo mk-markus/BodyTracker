@@ -34,5 +34,5 @@ CREATE TABLE tbl_HeartRate
   	PRIMARY KEY (`heart_rate_id`) USING BTREE,
 	UNIQUE INDEX `UNIQUE KEY` (`data_uuid`) USING BTREE,
 	INDEX `KEY` (`person_id`) USING BTREE,
-	CONSTRAINT `fk_heart_rate` FOREIGN KEY (`person_id`) REFERENCES `tbl_Personen` (`person_id`) ON UPDATE CASCADE ON DELETE CASCADE
+	CONSTRAINT `fk_heart_rate` FOREIGN KEY (`person_id`) REFERENCES `tbl_Persons` (`person_id`) ON UPDATE CASCADE ON DELETE CASCADE
 )

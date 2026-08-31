@@ -54,7 +54,7 @@ namespace BodyTracker.Services
 
             await foreach (var item in csv.GetRecordsAsync<HeavyAppCSVModel>())
             {
-                item.DataUuid = CreateDeterministicGuid(item);
+                item.DataUuid = GenerateWorkoutHash(item);
 
                 result.Add(item);
 
@@ -72,10 +72,22 @@ namespace BodyTracker.Services
         /// <remarks>Constructs a composite string key from the record's start and end times in round-trip format, computes an MD5 hash of the UTF-8 bytes, and instantiates a GUID from the resulting hash.</remarks>
         /// <param name="item">The <see cref="HeavyAppCSVModel"/> record for which to generate a deterministic identifier.</param>
         /// <returns>A deterministic <see cref="Guid"/> derived from the record timestamps.</returns>
-        private static Guid CreateDeterministicGuid(HeavyAppCSVModel item)
+        private static Guid CreateDeterministicGuid(HeavyAppCSVModel workout)
         {
             var key =
-                $"{item.StartTime:O}|{item.EndTime:O}";
+                $"{workout.StartTime:yyyyMMddHHmmss}|" +
+                $"{workout.EndTime:yyyyMMddHHmmss}|" +
+                $"{workout.Title}|" +
+                $"{workout.Description}|" +
+                $"{workout.ExerciseTitle}|" +
+                $"{workout.ExerciseNotes}|" +
+                $"{workout.SetIndex}|" +
+                $"{workout.SetType}|" +
+                $"{workout.WeightKg}|" +
+                $"{workout.Reps}|" +
+                $"{workout.DistanceKm}|" +
+                $"{workout.DurationSeconds}|" +
+                $"{workout.Rpe}";
 
             var bytes = Encoding.UTF8.GetBytes(key);
 
@@ -83,5 +95,30 @@ namespace BodyTracker.Services
 
             return new Guid(hash);
         }
+
+        public static string GenerateWorkoutHash(HeavyAppCSVModel workout)
+        {
+            var rawString =
+                $"{workout.StartTime:yyyyMMddHHmmss}|" +
+                $"{workout.EndTime:yyyyMMddHHmmss}|" +
+                $"{workout.Title}|" +
+                $"{workout.Description}|" +
+                $"{workout.ExerciseTitle}|" +
+                $"{workout.ExerciseNotes}|" +
+                $"{workout.SetIndex}|" +
+                $"{workout.SetType}|" +
+                $"{workout.WeightKg}|" +
+                $"{workout.Reps}|" +
+                $"{workout.DistanceKm}|" +
+                $"{workout.DurationSeconds}|" +
+                $"{workout.Rpe}";
+
+            using var sha = SHA256.Create();
+
+            var bytes = Encoding.UTF8.GetBytes(rawString);
+
+            return Convert.ToHexString(sha.ComputeHash(bytes));
+        }
+
     }
 }

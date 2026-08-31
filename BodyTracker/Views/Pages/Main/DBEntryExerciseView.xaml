@@ -1,0 +1,194 @@
+﻿<Page x:Class="BodyTracker.Views.Pages.Main.DBEntryExerciseView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:BodyTracker.Views.Pages.Main"
+      mc:Ignorable="d"
+      xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="DBEntryExerciseView">
+
+    <Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+
+            <Border Style="{DynamicResource BorderDashboardCardStyle}"
+                 Margin="0,10,0,10"
+                 Grid.Column="0"
+                 Grid.Row="0">
+                <StackPanel Orientation="Vertical">
+
+                    <TextBlock Text="🛠️ Actions"
+                            Style="{DynamicResource TextBlockDashBoardTitle}"/>
+
+                    <StackPanel Orientation="Horizontal">
+
+                        <Button Content="🗑"
+                             ToolTip="Delete Selected Entry"
+                             Command="{Binding CommandDelete}"
+                             Style="{DynamicResource IconStandardButton}" 
+                             Margin="0,0,15,0"/>
+
+                        <Button Content="🔄"
+                             ToolTip="Refresh Datas --> Reload all datas from Database"
+                             Command="{Binding CommandRefresh}"
+                             Style="{DynamicResource IconStandardButton}" />
+
+                    </StackPanel>
+                </StackPanel>
+
+            </Border>
+
+            <Grid Grid.Column="0"
+               Grid.Row="1">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Border Style="{DynamicResource BorderDashboardCardStyle}"
+                     Grid.Column="0"
+                     Grid.Row="1">
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <!--<RowDefinition Height="*"/>-->
+                        </Grid.RowDefinitions>
+
+                        <!--<TextBlock Grid.Column="0"
+                                Grid.Row="0">
+                         
+                     <Run Text="Measurements from " 
+                          FontWeight="SemiBold"
+                          FontSize="12"/>
+                     <Run Text="{Binding UserName}" 
+                          FontWeight="Bold"
+                          FontSize="15"/>
+
+                     </TextBlock>-->
+
+                    <DataGrid x:Name="ExerciseGrid"
+                                ItemsSource="{Binding ExerciseDatas}"
+                                SelectedItem="{Binding SelectedData, Mode=TwoWay}"
+                                AutoGenerateColumns="False"
+                                CanUserAddRows="False"
+                                SelectionUnit="FullRow"
+                                SelectionMode="Single"
+                                Margin="0,10,10,0"
+                                FontWeight="Normal"
+                                VerticalScrollBarVisibility="Auto"
+                                HeadersVisibility="Column"
+                                ScrollViewer.CanContentScroll="True"
+                                EnableColumnVirtualization="True"
+                                EnableRowVirtualization="True"
+                                GridLinesVisibility="All"
+                                Style="{StaticResource DataGrid_Default}">
+
+                            <DataGrid.Columns>
+
+                                <DataGridTextColumn Header="DB ID" Binding="{Binding ExerciseID}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Live Data Internal" Binding="{Binding LiveDataInternal}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Mission Value" Binding="{Binding MissionValue}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Race Target" Binding="{Binding RaceTarget}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Subset Data" Binding="{Binding SubsetData}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Start Longitude" Binding="{Binding StartLongitude, StringFormat=N6}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Routine Data UUID" Binding="{Binding RoutineDataUuid}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Total Calorie" Binding="{Binding TotalCalorie, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Completion Status" Binding="{Binding CompletionStatus}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Pace Info ID" Binding="{Binding PaceInfoId}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Activity Type" Binding="{Binding ActivityType}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Pace Live Data" Binding="{Binding PaceLiveData}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Sensing Status" Binding="{Binding SensingStatus}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Source Type" Binding="{Binding SourceType}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Mission Type" Binding="{Binding MissionType}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="FTP" Binding="{Binding Ftp, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Tracking Status" Binding="{Binding TrackingStatus}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Program ID" Binding="{Binding ProgramId}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Title" Binding="{Binding Title}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Reward Status" Binding="{Binding RewardStatus}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Heart Rate Sample Count" Binding="{Binding HeartRateSampleCount}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Start Latitude" Binding="{Binding StartLatitude, StringFormat=N6}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Mission Extra Value" Binding="{Binding MissionExtraValue}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Program Schedule ID" Binding="{Binding ProgramScheduleId}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Heart Rate Device UUID" Binding="{Binding HeartRateDeviceUuid}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Location Data Internal" Binding="{Binding LocationDataInternal}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Custom ID" Binding="{Binding CustomId}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Additional Internal" Binding="{Binding AdditionalInternal}" IsReadOnly="True"/>
+
+                                <DataGridTextColumn Header="Duration" Binding="{Binding Duration}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Additional" Binding="{Binding Additional}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Create SH Version" Binding="{Binding CreateShVer}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Mean Caloric Burn Rate" Binding="{Binding MeanCaloricBurnRate, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Location Data" Binding="{Binding LocationData}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Start Time" Binding="{Binding StartTime, StringFormat=dd.MM.yyyy HH:mm:ss}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Exercise Type" Binding="{Binding ExerciseType}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Custom" Binding="{Binding Custom}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Max Altitude" Binding="{Binding MaxAltitude, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Incline Distance" Binding="{Binding InclineDistance, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Mean Heart Rate" Binding="{Binding MeanHeartRate, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Count Type" Binding="{Binding CountType}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Mean RPM" Binding="{Binding MeanRpm, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Min Altitude" Binding="{Binding MinAltitude, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Modify SH Version" Binding="{Binding ModifyShVer}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Max Heart Rate" Binding="{Binding MaxHeartRate, StringFormat=N2}" IsReadOnly="True"/>
+
+                                <DataGridTextColumn Header="Update Time" Binding="{Binding UpdateTime, StringFormat=dd.MM.yyyy HH:mm:ss}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Create Time" Binding="{Binding CreateTime, StringFormat=dd.MM.yyyy HH:mm:ss}" IsReadOnly="True"/>
+
+                                <DataGridTextColumn Header="Client Data ID" Binding="{Binding ClientDataId}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Max Power" Binding="{Binding MaxPower, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Max Speed" Binding="{Binding MaxSpeed, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Mean Cadence" Binding="{Binding MeanCadence, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Min Heart Rate" Binding="{Binding MinHeartRate, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Client Data Version" Binding="{Binding ClientDataVer}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Count" Binding="{Binding Count}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Distance" Binding="{Binding Distance, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Max Caloric Burn Rate" Binding="{Binding MaxCaloricBurnRate, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Calorie" Binding="{Binding Calorie, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Max Cadence" Binding="{Binding MaxCadence, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Decline Distance" Binding="{Binding DeclineDistance, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="VO2 Max" Binding="{Binding Vo2Max, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Time Offset" Binding="{Binding TimeOffset}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Device UUID" Binding="{Binding DeviceUuid}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Max RPM" Binding="{Binding MaxRpm, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Comment" Binding="{Binding Comment}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Live Data" Binding="{Binding LiveData}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Mean Power" Binding="{Binding MeanPower, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Mean Speed" Binding="{Binding MeanSpeed, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Package Name" Binding="{Binding PkgName}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Altitude Gain" Binding="{Binding AltitudeGain, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Altitude Loss" Binding="{Binding AltitudeLoss, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Exercise Custom Type" Binding="{Binding ExerciseCustomType}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Auxiliary Devices" Binding="{Binding AuxiliaryDevices}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="End Time" Binding="{Binding EndTime, StringFormat=dd.MM.yyyy HH:mm:ss}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Data UUID" Binding="{Binding DataUuid}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Sweat Loss" Binding="{Binding SweatLoss, StringFormat=N2}" IsReadOnly="True"/>
+
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Grid>
+    </Grid>
+</Page>

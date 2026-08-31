@@ -1,6 +1,8 @@
 ﻿using BodyTracker.Services;
+using BodyTracker.ViewModels.Main;
 using BodyTracker.Views;
 using BodyTracker.Views.Pages;
+using BodyTracker.Views.Pages.Main;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -53,7 +55,48 @@ namespace BodyTracker.ViewModels
         /// Gets the command responsible for navigating to the personal workout insights charts view.
         /// </summary>
         /// <remarks>Triggers an asynchronous page transition to display analytical charts of workout volume and exercise distribution.</remarks>
-        public IAsyncRelayCommand ShowWorkoutsCommand { get; }
+        public IAsyncRelayCommand CommandShowWorkouts { get; }
+
+        /// <summary>
+        /// Gets the command responsible for navigating to the personal workout insights charts view.
+        /// </summary>
+        /// <remarks>Triggers an asynchronous page transition to display analytical charts of workout volume and exercise distribution.</remarks>
+        public IAsyncRelayCommand CommandShowExercise { get; }
+
+        /// <summary>
+        /// Gets the command responsible for navigating to the personal workout insights charts view.
+        /// </summary>
+        /// <remarks>Triggers an asynchronous page transition to display analytical charts of workout volume and exercise distribution.</remarks>
+        public IAsyncRelayCommand CommandShowHeartRate { get; }
+
+        /// <summary>
+        /// Gets the command responsible for navigating to the personal workout insights charts view.
+        /// </summary>
+        /// <remarks>Triggers an asynchronous page transition to display analytical charts of workout volume and exercise distribution.</remarks>
+        public IAsyncRelayCommand CommandShowSpO2 { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private  ChartsMeasurementsView chartMeasurementView;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private  ChartsStepDailyTrendView chartStepTrendView;
+
+        private ExerciseChartView exerciseChartView;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private HeartRateChartView heartRateChartView;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private OxygenSaturationChartView oxygenSaturationChartView;
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MultiChartViewModel"/> class with the specified main window shell and database service.
@@ -68,8 +111,12 @@ namespace BodyTracker.ViewModels
 
             CommandShowMeasurements = new AsyncRelayCommand(ShowMeasurementsAsync);
 
-            ShowWorkoutsCommand = new AsyncRelayCommand(ShowWorkoutsPage);
+            CommandShowWorkouts = new AsyncRelayCommand(ShowWorkoutsPage);
+
             CommandShowDailyStep = new AsyncRelayCommand(ShowDailyStepsAsync);
+            CommandShowExercise = new AsyncRelayCommand(ShowExerciseAsync);
+            CommandShowHeartRate = new AsyncRelayCommand(ShowHeartRateAsync);
+            CommandShowSpO2 = new AsyncRelayCommand(ShowSpO2Async);
 
             _ = ShowMeasurementsAsync();
         }
@@ -82,8 +129,8 @@ namespace BodyTracker.ViewModels
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task ShowMeasurementsAsync()
         {
-            // Erzeuge Page hier; falls teure Initialisierung nötig ist, mach sie asynchron
-            CurrentPage = new ChartsMeasurementsPage(mainWindow, databaseService);
+            if (chartMeasurementView == null) chartMeasurementView = new ChartsMeasurementsView(databaseService);
+            CurrentPage = chartMeasurementView;
         }
 
 
@@ -94,10 +141,48 @@ namespace BodyTracker.ViewModels
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task ShowDailyStepsAsync()
         {
-            CurrentPage = new ChartsStepDailyTrendPage(mainWindow, databaseService);
+            if (chartStepTrendView == null) chartStepTrendView = new ChartsStepDailyTrendView(databaseService);
+            CurrentPage = chartStepTrendView;
 
         }
 
+
+        /// <summary>
+        /// Asynchronously navigates to the daily step trend charts view.
+        /// </summary>
+        /// <remarks>Instantiates the daily step trend charts page and sets it as the active content page.</remarks>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        private async Task ShowExerciseAsync()
+        {
+            if (exerciseChartView == null) exerciseChartView = new ExerciseChartView(databaseService);
+            CurrentPage = exerciseChartView;
+
+        }
+
+
+        /// <summary>
+        /// Asynchronously navigates to the daily step trend charts view.
+        /// </summary>
+        /// <remarks>Instantiates the daily step trend charts page and sets it as the active content page.</remarks>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        private async Task ShowHeartRateAsync()
+        {
+            if (heartRateChartView == null) heartRateChartView = new HeartRateChartView(databaseService);
+            CurrentPage = heartRateChartView;
+
+        }
+
+        /// <summary>
+        /// Asynchronously navigates to the daily step trend charts view.
+        /// </summary>
+        /// <remarks>Instantiates the daily step trend charts page and sets it as the active content page.</remarks>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        private async Task ShowSpO2Async()
+        {
+            if (oxygenSaturationChartView == null) oxygenSaturationChartView = new OxygenSaturationChartView(databaseService);
+            CurrentPage = oxygenSaturationChartView;
+
+        }
         /// <summary>
         /// Asynchronously navigates to the personal workout insights charts view.
         /// </summary>

@@ -162,7 +162,7 @@ namespace BodyTracker.ViewModels.Main
                 });
 
 
-                await databaseService.SyncHeartRatesAsync(pid, HeartRateDatas, progress);
+                await databaseService.UpsertHeartRatesSqlAsync(pid, HeartRateDatas, progress);
                
 
                 ProgressText = $"Uploaded {HeartRateDatas.Count} Datas";
@@ -238,7 +238,14 @@ namespace BodyTracker.ViewModels.Main
             try
             {
 
-                var path = Directory.GetFiles(searchPath, $"*{searchTerm}*");
+                var path = await Task.Run(() =>
+                {
+                    if (!Directory.Exists(searchPath))
+                    {
+                        throw new Exception($"The folder '{searchPath}' could not be reached.");
+                    }
+                    return Directory.GetFiles(searchPath, $"*{searchTerm}*");
+                });
 
                 if (!path.Any())
                 {

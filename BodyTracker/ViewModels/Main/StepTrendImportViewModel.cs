@@ -176,7 +176,14 @@ namespace BodyTracker.ViewModels
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task RefreshAsync()
         {
-            var path = Directory.GetFiles(searchPath, $"*{searchTerm}*");
+            var path = await Task.Run(() =>
+            {
+                if (!Directory.Exists(searchPath))
+                {
+                    throw new Exception($"The folder '{searchPath}' could not be reached.");
+                }
+                return Directory.GetFiles(searchPath, $"*{searchTerm}*");
+            });
 
             if (!path.Any())
             {
@@ -263,7 +270,7 @@ namespace BodyTracker.ViewModels
                 });
 
 
-                await databaseService.SyncStepTrendAsync(pid, StepTrendDatas, progress);
+                await databaseService.UpsertStepTrendSqlAsync(pid, StepTrendDatas, progress);
 
                 ProgressText = $"Uploaded {StepTrendDatas.Count} Datas";
             

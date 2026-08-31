@@ -1,4 +1,5 @@
-﻿using BodyTracker.Services;
+﻿using BodyTracker.Models;
+using BodyTracker.Services;
 using BodyTracker.State;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -6,11 +7,17 @@ using CommunityToolkit.Mvvm.Messaging;
 using LiveChartsCore;
 using LiveChartsCore.Kernel.Sketches;
 using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
+using SkiaSharp;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Media;
+using static SkiaSharp.HarfBuzz.SKShaper;
 
 namespace BodyTracker.ViewModels
 {
@@ -24,28 +31,73 @@ namespace BodyTracker.ViewModels
         /// </summary>
         private readonly DatabaseService databaseService;
 
-        #region Observable Property Member
+        /// <summary>
+        /// The backing collection storing the complete list of comprehensive body measurement records.
+        /// </summary>
+        private List<FullBodyMeasurementDatasModel> data;
 
         /// <summary>
         /// Gets or sets the collection of data series to be displayed in the chart.
         /// This property is observable, meaning any changes to the series (e.g., adding or removing metrics) 
         /// will automatically trigger a UI update in the view.
         /// </summary>
-        [ObservableProperty] private ISeries[] series = Array.Empty<ISeries>();
+        [ObservableProperty] private ISeries[] seriesBodyWeigth = Array.Empty<ISeries>();
+
+        /// <summary>
+        /// Gets or sets the collection of data series to be displayed in the chart.
+        /// This property is observable, meaning any changes to the series (e.g., adding or removing metrics) 
+        /// will automatically trigger a UI update in the view.
+        /// </summary>
+        [ObservableProperty] private ISeries[] seriesBodyFatMuscle = Array.Empty<ISeries>();
+
+        /// <summary>
+        /// Gets or sets the collection of data series to be displayed in the chart.
+        /// This property is observable, meaning any changes to the series (e.g., adding or removing metrics) 
+        /// will automatically trigger a UI update in the view.
+        /// </summary>
+        [ObservableProperty] private ISeries[] seriesBodyWater = Array.Empty<ISeries>();
 
         /// <summary>
         /// Gets or sets the X-axes configuration for the Cartesian chart.
         /// This property defines the horizontal scale, including labels (e.g., dates), 
         /// unit spacing, and title formatting.
         /// </summary>
-        [ObservableProperty] private ICartesianAxis[] xAxes = Array.Empty<ICartesianAxis>();
+        [ObservableProperty] private ICartesianAxis[] xAxesBodyWeight = Array.Empty<ICartesianAxis>();
 
         /// <summary>
         /// Gets or sets the Y-axes configuration for the Cartesian chart.
         /// This property defines the vertical scale, including the numerical range, 
         /// value formatting (e.g., "kg" or "%"), and grid line intervals.
         /// </summary>
-        [ObservableProperty] private ICartesianAxis[] yAxes = Array.Empty<ICartesianAxis>();
+        [ObservableProperty] private ICartesianAxis[] yAxesBodyWeight = Array.Empty<ICartesianAxis>();
+
+        /// <summary>
+        /// Gets or sets the X-axes configuration for the Cartesian chart.
+        /// This property defines the horizontal scale, including labels (e.g., dates), 
+        /// unit spacing, and title formatting.
+        /// </summary>
+        [ObservableProperty] private ICartesianAxis[] xAxesBodyFatMuscle = Array.Empty<ICartesianAxis>();
+
+        /// <summary>
+        /// Gets or sets the Y-axes configuration for the Cartesian chart.
+        /// This property defines the vertical scale, including the numerical range, 
+        /// value formatting (e.g., "kg" or "%"), and grid line intervals.
+        /// </summary>
+        [ObservableProperty] private ICartesianAxis[] yAxesBodyFatMuscle = Array.Empty<ICartesianAxis>();
+
+        /// <summary>
+        /// Gets or sets the X-axes configuration for the Cartesian chart.
+        /// This property defines the horizontal scale, including labels (e.g., dates), 
+        /// unit spacing, and title formatting.
+        /// </summary>
+        [ObservableProperty] private ICartesianAxis[] xAxesBodyWater = Array.Empty<ICartesianAxis>();
+
+        /// <summary>
+        /// Gets or sets the Y-axes configuration for the Cartesian chart.
+        /// This property defines the vertical scale, including the numerical range, 
+        /// value formatting (e.g., "kg" or "%"), and grid line intervals.
+        /// </summary>
+        [ObservableProperty] private ICartesianAxis[] yAxesBodyWater = Array.Empty<ICartesianAxis>();
 
         // <summary>
         /// Gets or sets the inclusive start date for the bodyMeasurement data filter.
@@ -95,22 +147,22 @@ namespace BodyTracker.ViewModels
         /// <summary>
         /// Gets or sets a boolean flag indicating whether the LOESS trend line for body weight should be displayed in the chart.
         /// </summary>
-        [ObservableProperty] public bool showBodyWeightTrend = true;
+        [ObservableProperty] public bool showBodyWeightTrend = false;
 
         /// <summary>
         /// // Gets or sets a boolean flag indicating whether the LOESS trend line for body water should be displayed in the chart.
         /// </summary>
-        [ObservableProperty] public bool showBodyWaterTrend = true;
+        [ObservableProperty] public bool showBodyWaterTrend = false;
 
         /// <summary>
         /// Gets or sets a boolean flag indicating whether the LOESS trend line for body muscle should be displayed in the chart.
         /// </summary>
-        [ObservableProperty] public bool showBodyMuscleTrend = true;
+        [ObservableProperty] public bool showBodyMuscleTrend = false;
 
         /// <summary>
         /// Gets or sets a boolean flag indicating whether the LOESS trend line for body fat should be displayed in the chart.
         /// </summary>
-        [ObservableProperty] public bool showBodyFatTrend = true;
+        [ObservableProperty] public bool showBodyFatTrend = false;
 
         /// <summary>
         /// Gets or sets the fraction parameter for the LOESS smoothing algorithm, which determines 
@@ -118,32 +170,35 @@ namespace BodyTracker.ViewModels
         /// </summary>
         [ObservableProperty] private double loessFraction = 0.5;
 
-        #endregion
+        /// <summary>
+        /// Gets the command that triggers an asynchronous refresh of the chart and application data based on current filter settings.
+        /// </summary>
+        public IAsyncRelayCommand CommandRefreshAsync { get; }
 
         /// <summary>
-        /// Gets the command that triggers an asynchronous refresh of the chart data based on the current filter settings.
+        /// Gets the command that triggers an asynchronous reload and re-rendering of all associated charts.
         /// </summary>
-        public IAsyncRelayCommand RefreshChart { get; }
+        public IAsyncRelayCommand CommandReloadChartsAsync { get; }
 
         /// <summary>
-        /// 
+        /// Gets the command that sets the current filter period to the active/actual year.
         /// </summary>
-        public IRelayCommand SetActualYearCommand { get; }
+        public IRelayCommand CommandSetActualYear { get; }
 
         /// <summary>
-        /// 
+        /// Gets the command that sets the current filter period to the active/actual month.
         /// </summary>
-        public IRelayCommand SetActualMonthCommand { get; }
+        public IRelayCommand CommandSetActualMonth { get; }
 
         /// <summary>
-        /// 
+        /// Gets the command that sets the current filter period to the active/actual calendar week.
         /// </summary>
-        public IRelayCommand SetActualWeekCommand { get; }
+        public IRelayCommand CommandSetActualWeek { get; }
 
         /// <summary>
-        /// 
+        /// Gets the command that clears all active filters and displays the complete historical dataset.
         /// </summary>
-        public IRelayCommand ShowAllDataCommand { get; }
+        public IRelayCommand CommandShowAllData { get; }
 
         /// <summary>
         /// Constants for the stroke thickness of the line series in the chart. 
@@ -162,15 +217,22 @@ namespace BodyTracker.ViewModels
         private static bool isTrendLineLegendVisible = false;
 
         /// <summary>
-        /// 
+        /// Gets or sets a value indicating whether the view or view model is performing its initial load cycle.
+        /// Used to bypass or handle startup-specific logic.
         /// </summary>
         private bool firstLoad = true;
 
         /// <summary>
-        /// 
+        /// Gets or sets a value indicating whether reloading mechanisms or event triggers are temporarily suppressed 
+        /// to prevent recursive updates or redundant data fetches.
         /// </summary>
-        private bool isRefreshing = false;
+        private bool suppressReload;
 
+        /// <summary>
+        /// A synchronization primitive used to ensure that data reloading or refresh operations 
+        /// are thread-safe and prevent concurrent or overlapping executions.
+        /// </summary>
+        private readonly SemaphoreSlim reloadLock = new(1, 1);
 
         /// <summary>
         /// Backing field for the general error message string.
@@ -204,15 +266,27 @@ namespace BodyTracker.ViewModels
         public MeasurementChartViewModel(DatabaseService db)
         {
             databaseService = db;
-            XAxes = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yyyy")) { Name = "Date" } };
-            RefreshChart = new AsyncRelayCommand(RefreshChartAsync);
-            SetActualYearCommand = new RelayCommand(SetActualYear);
-            SetActualMonthCommand = new RelayCommand(SetActualMonth);
-            SetActualWeekCommand = new RelayCommand(SetActualWeek);
-            ShowAllDataCommand = new RelayCommand(ShowAllData);
 
+            CommandReloadChartsAsync = new AsyncRelayCommand(ReloadChartAsync);
+            CommandSetActualYear = new RelayCommand(SetActualYear);
+            CommandSetActualMonth = new RelayCommand(SetActualMonth);
+            CommandSetActualWeek = new RelayCommand(SetActualWeek);
+            CommandShowAllData = new RelayCommand(ShowAllData);
+            CommandRefreshAsync = new AsyncRelayCommand(RefreshChartDataAsync);
+
+            _ = RefreshChartDataAsync();
         }
 
+        /// <summary>
+        /// Asynchronously fetches the latest body measurement records for the selected person from the database 
+        /// and triggers a subsequent reload and re-rendering of the associated charts.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        private async Task RefreshChartDataAsync()
+        {
+            data = await databaseService.GetBodyMeasurementAsync(AppState.SelectedPersonId, databaseService.DatabaseCommands.GetPersonMeasurementsSql());
+            await ReloadChartAsync();
+        }
 
         /// <summary>
         /// Executed automatically by the source generator when the <see cref="StartDate"/> property changes.
@@ -222,12 +296,13 @@ namespace BodyTracker.ViewModels
         /// <remarks>
         /// This method uses a "fire-and-forget" pattern (<c>_ = ...</c>) because partial methods 
         /// generated by the toolkit are synchronous by design. The actual data retrieval and 
-        /// UI update are handled within the asynchronous <see cref="RefreshChartAsync"/> method 
+        /// UI update are handled within the asynchronous <see cref="ReloadChartAsync"/> method 
         /// to maintain UI responsiveness.
         /// </remarks>
         partial void OnStartDateChanged(DateTime value)
         {
-            _ = RefreshChartAsync();
+            if (suppressReload) return;
+            _ = ReloadChartAsync();
         }
 
         /// <summary>
@@ -238,11 +313,12 @@ namespace BodyTracker.ViewModels
         /// <remarks>
         /// This partial method acts as an event hook provided by the CommunityToolkit. 
         /// Using the discard pattern (<c>_ = ...</c>) allows the UI to remain responsive by 
-        /// launching the <see cref="RefreshChartAsync"/> task without blocking the property setter's execution thread.
+        /// launching the <see cref="ReloadChartAsync"/> task without blocking the property setter's execution thread.
         /// </remarks>
         partial void OnEndDateChanged(DateTime value)
         {
-            _ = RefreshChartAsync();
+            if (suppressReload) return;
+            _ = ReloadChartAsync();
         }
 
         /// <summary>
@@ -251,8 +327,9 @@ namespace BodyTracker.ViewModels
         /// normal data series or smoothed LOESS trend series depending on the global settings.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        public async Task RefreshChartAsync()
+        public async Task ReloadChartAsync()
         {
+            if (!await reloadLock.WaitAsync(0)) return;
 
             if (AppState.SelectedPersonId <= 0)
             {
@@ -260,31 +337,63 @@ namespace BodyTracker.ViewModels
                 return;
             }
 
-            if (isRefreshing) return;
-
-            isRefreshing = true;
-
             try
             {
-                var data = await databaseService.GetBodyMeasurementAsync(AppState.SelectedPersonId, databaseService.DatabaseCommands.GetPersonMeasurementsSql());
 
-                if (data.Count<=0) return;
-                minMeasurementsDate = data.Min(d => d.MeasurementDate);
-                maxMeasurementsDate = data.Max(d => d.MeasurementDate);
+                if (data == null) return;
+
+                minMeasurementsDate = data[0].MeasurementDate;
+                maxMeasurementsDate = data[0].MeasurementDate;
+
+                foreach (var item in data)
+                {
+                    if (item.MeasurementDate < minMeasurementsDate)
+                        minMeasurementsDate = item.MeasurementDate;
+
+                    if (item.MeasurementDate > maxMeasurementsDate)
+                        maxMeasurementsDate = item.MeasurementDate;
+                }
 
                 if (firstLoad)
                 {
+                    suppressReload = true;
+
                     StartDate = minMeasurementsDate;
                     EndDate = maxMeasurementsDate;
+
+                    suppressReload = false;
                     firstLoad = false;
                 }
 
-                (Series, XAxes, YAxes) = ChartTemplateService.CreateBodyMeasurementChart( StartDate, EndDate, data, isTrendLineLegendVisible,
-                                                                                       strokeThickness, geometrySize, loessFraction,
-                                                                                       ShowBodyWeight, ShowBodyWeightTrend,
-                                                                                       ShowBodyFat, ShowBodyFatTrend,
-                                                                                       ShowBodyMuscle, ShowBodyMuscleTrend,
-                                                                                       ShowBodyWater, ShowBodyWaterTrend);
+                var source = data
+                .Where(d => d.MeasurementDate >= StartDate &&
+                            d.MeasurementDate <= EndDate)
+                .OrderBy(d => d.MeasurementDate)
+                .ToList();
+
+                var resultBodyWeight=ChartTemplateService.CreateWeightChart(StartDate, EndDate, source, isTrendLineLegendVisible,
+                                                                                           strokeThickness, geometrySize, loessFraction,
+                                                                                           ShowBodyWeight, ShowBodyWeightTrend);
+
+                var resultBodyFatMuscle = ChartTemplateService.CreateBodyMuscleFatPercantageChart(StartDate, EndDate, source, isTrendLineLegendVisible,
+                                                                                                      strokeThickness, geometrySize, loessFraction, ShowBodyFat, ShowBodyFatTrend, ShowBodyMuscle, ShowBodyMuscleTrend);
+
+
+                var resultBodyWater = ChartTemplateService.CreateBodyWaterChart(StartDate, EndDate, source, isTrendLineLegendVisible,
+                                                                                       strokeThickness, geometrySize, loessFraction, ShowBodyWater, ShowBodyWaterTrend);
+
+
+                    SeriesBodyWeigth = resultBodyWeight.Series;
+                    XAxesBodyWeight = resultBodyWeight.XAxis;
+                    YAxesBodyWeight = resultBodyWeight.YAxis;
+
+                    SeriesBodyFatMuscle = resultBodyFatMuscle.Series;
+                    XAxesBodyFatMuscle = resultBodyFatMuscle.XAxis;
+                    YAxesBodyFatMuscle = resultBodyFatMuscle.YAxis;
+
+                    SeriesBodyWater = resultBodyWater.Series;
+                    XAxesBodyWater = resultBodyWater.XAxis;
+                    YAxesBodyWater = resultBodyWater.YAxis;
 
             }
             catch (Exception ex)
@@ -293,8 +402,9 @@ namespace BodyTracker.ViewModels
             }
             finally
             {
-                isRefreshing = false;
-            }        
+                reloadLock.Release();
+
+            }
         }
 
         /// <summary>
@@ -303,9 +413,7 @@ namespace BodyTracker.ViewModels
         private void SetActualYear()
         {
             StartDate = new DateTime(
-                DateTime.Today.Year,
-                1,
-                1);
+                DateTime.Today.Year, 1, 1);
 
             EndDate = DateTime.Today;
         }

@@ -2,6 +2,7 @@
 using BodyTracker.State;
 using BodyTracker.Views;
 using BodyTracker.Views.Pages;
+using BodyTracker.Views.Pages.Main;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -198,9 +199,9 @@ namespace BodyTracker.ViewModels
 
             CommandShowChartsPageAsync = new AsyncRelayCommand(ShowChartsPageAsync);
             CommandShowDashboardPageAsync = new AsyncRelayCommand(ShowDashboardPageAsync);
-            CommandShowMeasurementDatabasePageAsync = new AsyncRelayCommand(ShowMeasurementDatabasePageAsync);
+            CommandShowMeasurementDatabasePageAsync = new AsyncRelayCommand(ShowMultiDBEntryViewAsync);
             CommandNewDatabaseEntryPageAsync = new AsyncRelayCommand(ShowNewDatabaseEntryPageAsync);
-            CommandMultiImportPageAsync = new AsyncRelayCommand(ShowMeasurementDatabasePageAsync);
+            CommandMultiImportPageAsync = new AsyncRelayCommand(ShowMultiDBEntryViewAsync);
             CommandInfoPageAsync = new AsyncRelayCommand(ShowInfoPageAsync);
 
             WeakReferenceMessenger.Default.Register<GeneralErrorMessage>(this, (r, m) =>
@@ -233,7 +234,7 @@ namespace BodyTracker.ViewModels
             {
                 if (m.Target == NavigationMessage.ShowDashboard) _ = ShowDashboardPageAsync();
                 if (m.Target == NavigationMessage.ShowNewEntry) _ = ShowNewDatabaseEntryPageAsync();
-                if (m.Target == NavigationMessage.ShowMeasurement) _ = ShowMeasurementDatabasePageAsync();
+                if (m.Target == NavigationMessage.ShowMeasurement) _ = ShowMultiDBEntryViewAsync();
                 if (m.Target == NavigationMessage.ShowMultiChart) _ = ShowChartsPageAsync();
                 if (m.Target == NavigationMessage.ShowInfo) _ = ShowInfoPageAsync();
             });
@@ -355,7 +356,7 @@ namespace BodyTracker.ViewModels
         partial void OnIsMeasurementDatabaseSelectedChanged(bool value)
         {
             if (!value || suppressSelectionAction) return;
-            _ = ShowMeasurementDatabasePageAsync();
+            _ = ShowMultiDBEntryViewAsync();
         }
 
         /// <summary>
@@ -454,9 +455,9 @@ namespace BodyTracker.ViewModels
         /// </summary>
         /// <remarks>Instantiates the bodyMeasurement page view and uses suppression guards to synchronize navigation toggle flags without triggering recursive loops.</remarks>
         /// <returns>A task representing the asynchronous operation.</returns>
-        private async Task ShowMeasurementDatabasePageAsync()
+        private async Task ShowMultiDBEntryViewAsync()
         {
-            var page = new DataBaseEntriesBodyMeasurementPage(mainWindow, databaseService);
+            var page = new MultiDatabaseView(databaseService);
             CurrentPage = page;
 
             suppressSelectionAction = true;

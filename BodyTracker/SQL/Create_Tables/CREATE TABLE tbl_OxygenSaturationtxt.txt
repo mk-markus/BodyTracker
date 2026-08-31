@@ -41,5 +41,5 @@ CREATE TABLE tbl_OxygenSaturation
   	PRIMARY KEY (`oxygen_saturation_id`) USING BTREE,
 	UNIQUE INDEX `UNIQUE KEY` (`data_uuid`) USING BTREE,
 	INDEX `KEY` (`person_id`) USING BTREE,
-	CONSTRAINT `fk_oxygen_saturation` FOREIGN KEY (`person_id`) REFERENCES `tbl_Personen` (`person_id`) ON UPDATE CASCADE ON DELETE CASCADE
+	CONSTRAINT `fk_oxygen_saturation` FOREIGN KEY (`person_id`) REFERENCES `tbl_Persons` (`person_id`) ON UPDATE CASCADE ON DELETE CASCADE
 )

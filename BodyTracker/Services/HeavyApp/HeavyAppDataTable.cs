@@ -12,10 +12,13 @@ public static class HeavyAppDataTable
         var table = new DataTable();
 
         table.Columns.Add("person_id", typeof(int));
+
         table.Columns.Add("workout_title", typeof(string));
+
         table.Columns.Add("start_time", typeof(DateTime));
         table.Columns.Add("end_time", typeof(DateTime));
         table.Columns.Add("update_at", typeof(DateTime));
+
         table.Columns.Add("description", typeof(string));
         table.Columns.Add("exercise_title", typeof(string));
         table.Columns.Add("superset_id", typeof(string));
@@ -23,20 +26,17 @@ public static class HeavyAppDataTable
         table.Columns.Add("set_index", typeof(int));
         table.Columns.Add("set_type", typeof(string));
 
-        table.Columns.Add("weight_current", typeof(double));
-        table.Columns.Add("weight_initial", typeof(double));
+        table.Columns.Add("weight", typeof(double));
 
-        table.Columns.Add("reps_current", typeof(int));
-        table.Columns.Add("reps_initial", typeof(int));
+        table.Columns.Add("reps", typeof(int));
 
-        table.Columns.Add("distance_current", typeof(double));
-        table.Columns.Add("distance_initial", typeof(double));
+        table.Columns.Add("distance", typeof(double));
 
-        table.Columns.Add("duration_sec_current", typeof(double));
-        table.Columns.Add("duration_sec_initial", typeof(double));
+        table.Columns.Add("duration_sec", typeof(int));
 
-        table.Columns.Add("rpe_current", typeof(double));
-        table.Columns.Add("rpe_initial", typeof(double));
+        table.Columns.Add("rpe", typeof(double));
+
+        table.Columns.Add("uuid", typeof(string));
 
         foreach (var item in workouts)
         {
@@ -44,9 +44,11 @@ public static class HeavyAppDataTable
 
             row["person_id"] = personId;
             row["workout_title"] = (object?)item.Title ?? DBNull.Value;
+
             row["start_time"] = (object?)item.StartTime ?? DBNull.Value;
             row["end_time"] = (object?)item.EndTime ?? DBNull.Value;
-            row["update_at"] = (object?)item.StartTime ?? DBNull.Value;
+            row["update_at"] = DateTime.Now;
+            
             row["description"] = (object?)item.Description ?? DBNull.Value;
             row["exercise_title"] = (object?)item.ExerciseTitle ?? DBNull.Value;
             row["superset_id"] = (object?)item.SupersetId ?? DBNull.Value;
@@ -54,20 +56,17 @@ public static class HeavyAppDataTable
             row["set_index"] = (object?)item.SetIndex ?? DBNull.Value;
             row["set_type"] = (object?)item.SetType ?? DBNull.Value;
 
-            row["weight_current"] = (object?)item.WeightKg ?? DBNull.Value;
-            row["weight_initial"] = (object?)item.WeightKg ?? DBNull.Value;
+            row["weight"] = (object?)item.WeightKg ?? DBNull.Value;
 
-            row["reps_current"] = (object?)item.Reps ?? DBNull.Value;
-            row["reps_initial"] = (object?)item.Reps ?? DBNull.Value;
+            row["reps"] = (object?)item.Reps ?? DBNull.Value;
 
-            row["distance_current"] = (object?)item.DistanceKm ?? DBNull.Value;
-            row["distance_initial"] = (object?)item.DistanceKm ?? DBNull.Value;
+            row["distance"] = (object?)item.DistanceKm ?? DBNull.Value;
 
-            row["duration_sec_current"] = (object?)item.DurationSeconds ?? DBNull.Value;
-            row["duration_sec_initial"] = (object?)item.DurationSeconds ?? DBNull.Value;
+            row["duration_sec"] = (object?)item.DurationSeconds ?? DBNull.Value;
 
-            row["rpe_current"] = (object?)item.Rpe ?? DBNull.Value;
-            row["rpe_initial"] = (object?)item.Rpe ?? DBNull.Value;
+            row["rpe"] = (object?)item.Rpe ?? DBNull.Value;
+
+            row["uuid"] = (object?)item.DataUuid ?? DBNull.Value;
 
             table.Rows.Add(row);
         }

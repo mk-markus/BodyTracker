@@ -10,6 +10,11 @@ namespace BodyTracker.Models
     public class SamsungFoodIntakeModel
     {
         /// <summary>
+        /// Contains the Food Intake ID from the database table
+        /// </summary>
+        public int? FoodIntakeID { get; set; }
+
+        /// <summary>
         /// The version of the Samsung Health app when the record was created.
         /// </summary>
         public long CreateShVer { get; set; }

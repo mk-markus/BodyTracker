@@ -4,6 +4,7 @@ namespace BodyTracker.Models.SamsungHealth
 {
     public class SamsungOxygenSaturationModel
     {
+        public int? OxygenSaturationID { get; set; }
         public string? IntegratedId { get; set; }
         public string? ClientDataId { get; set; }
         public int? TagId { get; set; }

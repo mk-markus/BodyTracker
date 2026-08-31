@@ -5,10 +5,15 @@ namespace BodyTracker.Models
     public class HeavyAppCSVModel
     {
         /// <summary>
-        /// Gets or sets the unique global identifier for the workout or data entry record.
+        /// Gets or sets the ID for the workout or data entry record.
         /// </summary>
-        /// <remarks>Serves as the primary database key or unique tracking reference for the entry.</remarks>
-        public Guid DataUuid { get; set; }
+        public int? ExerciseLogID { get; set; }
+
+        ///// <summary>
+        ///// Gets or sets the unique global identifier for the workout or data entry record.
+        ///// </summary>
+        ///// <remarks>Serves as the primary database key or unique tracking reference for the entry.</remarks>
+        //public Guid DataUuid { get; set; }
 
         /// <summary>
         /// Gets or sets the title of the workout session or activity record.
@@ -100,5 +105,12 @@ namespace BodyTracker.Models
         /// </summary>
         /// <remarks>Represents the subjective intensity scale (typically 1-10) reported by the user. Can be null if not recorded.</remarks>
         public double? Rpe { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string DataUuid { get; set; }
+
+
     }
 }

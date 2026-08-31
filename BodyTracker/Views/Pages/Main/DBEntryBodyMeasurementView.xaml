@@ -1,4 +1,4 @@
-﻿<Page x:Class="BodyTracker.Views.DataBaseEntriesBodyMeasurementPage"
+﻿<Page x:Class="BodyTracker.Views.DBEntryBodyMeasurementView"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -20,22 +20,30 @@
 
 
             <Border Style="{DynamicResource BorderDashboardCardStyle}"
-                    Margin="0,0,0,10"
+                    Margin="0,10,0,10"
                     Grid.Column="0"
                     Grid.Row="0">
                 <StackPanel Orientation="Vertical">
 
-                    <TextBlock Text="Manage Measurements"
-                               Margin="0"
-                               Style="{DynamicResource TextBlockWorkoutInsightsChartTitleStyle}"/>
+                    <TextBlock Text="🛠️ Actions"
+                               Style="{DynamicResource TextBlockDashBoardTitle}"/>
+                    
+                    <StackPanel Orientation="Horizontal">
 
-                    <Button Content="Delete Mesasurement" 
-                           Command="{Binding CommandDeleteBodyDatabaseEntry}"
-                            VerticalAlignment="Center"
-                            HorizontalAlignment="Left"
-                            Style="{DynamicResource ModernStandardButton}" />
+                        <Button Content="🗑"
+                                ToolTip="Delete Selected Entry"
+                                Command="{Binding CommandDelete}"
+                                Style="{DynamicResource IconStandardButton}" 
+                                Margin="0,0,15,0"/>
 
+                        <Button Content="🔄"
+                                ToolTip="Refresh Datas --> Reload all datas from Database"
+                                Command="{Binding CommandRefresh}"
+                                Style="{DynamicResource IconStandardButton}" />
+
+                    </StackPanel>
                 </StackPanel>
+                
             </Border>
 
             <Grid Grid.Column="0"
@@ -61,11 +69,11 @@
                         </Grid.ColumnDefinitions>
 
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
+                            <!--<RowDefinition Height="*"/>-->
                         </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Column="0"
+                        <!--<TextBlock Grid.Column="0"
                                    Grid.Row="0">
                             
                         <Run Text="Measurements from " 
@@ -75,7 +83,7 @@
                              FontWeight="Bold"
                              FontSize="15"/>
 
-                        </TextBlock>
+                        </TextBlock>-->
 
                         <DataGrid x:Name="MeasurementsGrid"
                                   ItemsSource="{Binding BodyMeasurement, UpdateSourceTrigger=PropertyChanged}" 
@@ -95,16 +103,27 @@
                                   GridLinesVisibility="All"
                                   Style="{StaticResource DataGrid_Default}"
                                   Grid.Column="0"
-                                  Grid.Row="1">
+                                  Grid.Row="0">
 
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="RowEditEnding">
-                                    <i:InvokeCommandAction Command="{Binding CommandBodyMeasurementRowEditEnding}"
+                                    <i:InvokeCommandAction Command="{Binding CommandRowEditEnding}"
                                                            PassEventArgsToCommand="True" />
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
 
                             <DataGrid.Columns>
+                                <DataGridTextColumn Header="DB Metric ID" 
+                                                    Binding="{Binding MetricID}"
+                                                    Width="Auto"
+                                                    IsReadOnly="True"/>
+                                
+                                <DataGridTextColumn Header="DB Dimension ID" 
+                                                    Binding="{Binding DemensionID}"
+                                                    Width="Auto"
+                                                    IsReadOnly="True"/>
+
+                                
                                 <DataGridTextColumn Header="Date" 
                                                     Binding="{Binding MeasurementDate, StringFormat='dddd, dd.MM.yyyy'}"
                                                     Width="Auto"

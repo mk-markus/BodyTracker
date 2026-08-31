@@ -7,26 +7,26 @@
         /// <summary>
         /// Generates the SQL command string for inserting a new person record into the database.
         /// </summary>
-        /// <remarks>Constructs an INSERT statement for the <c>tbl_Personen</c> table using parameterized values for first name, last name, date of birth, and height, followed by a SELECT statement to retrieve the last inserted identifier.</remarks>
+        /// <remarks>Constructs an INSERT statement for the <c>tbl_Persons</c> table using parameterized values for first name, last name, date of birth, and height, followed by a SELECT statement to retrieve the last inserted identifier.</remarks>
         /// <returns>A string containing the parameterized SQL insert query and ID selection command.</returns>
         public string GetNewPersonCreateSql()
         {
-            return "INSERT INTO tbl_Personen (person_first_name, person_last_name, person_birth_date, person_height) VALUES (@v, @n, @g, @k); SELECT LAST_INSERT_ID();";
+            return "INSERT INTO tbl_Persons (person_first_name, person_last_name, person_birth_date, person_height) VALUES (@v, @n, @g, @k); SELECT LAST_INSERT_ID();";
         }
 
         /// <summary>
         /// Generates the SQL script to create the core application database tables if they do not already exist.
         /// </summary>
-        /// <remarks>Creates the <c>tbl_Personen</c>, <c>tbl_KoerperMetriken</c> (with unique constraints and foreign key relationships), and <c>tbl_Abmessungen</c> tables for storing personal information, body metrics, and circumference or skinfold measurements.</remarks>
+        /// <remarks>Creates the <c>tbl_Persons</c>, <c>tbl_BodyMetrics</c> (with unique constraints and foreign key relationships), and <c>tbl_BodyDimensions</c> tables for storing personal information, body metrics, and circumference or skinfold measurements.</remarks>
         /// <returns>A string containing the complete multi-table creation SQL script.</returns>
         public string CmdCreateTableIfNotExist()
         {
-            return @"CREATE TABLE IF NOT EXISTS tbl_Personen (  ID INT AUTO_INCREMENT PRIMARY KEY,
+            return @"CREATE TABLE IF NOT EXISTS tbl_Persons (  ID INT AUTO_INCREMENT PRIMARY KEY,
                                                                 person_first_name VARCHAR(50),
                                                                 person_last_name VARCHAR(50),
                                                                 person_birth_date DATE
                                                             );
-                                                            CREATE TABLE IF NOT EXISTS tbl_KoerperMetriken (
+                                                            CREATE TABLE IF NOT EXISTS tbl_BodyMetrics (
 	                                                            MetrikID INT(11) NOT NULL AUTO_INCREMENT,
 	                                                            PersonID_FK INT(11) NOT NULL,
 	                                                            create_at DATETIME NULL DEFAULT current_timestamp(),
@@ -43,9 +43,9 @@
 	                                                            Viszeralfett INT(11) NULL DEFAULT NULL,
 	                                                            PRIMARY KEY (MetrikID) USING BTREE,
 	                                                            UNIQUE INDEX UQ_Metrik_Person_Datum (PersonID_FK, create_at) USING BTREE,
-	                                                            CONSTRAINT FK_PersonMetrik FOREIGN KEY (PersonID_FK) REFERENCES tbl_Personen (ID) ON UPDATE RESTRICT ON DELETE CASCADE
+	                                                            CONSTRAINT FK_PersonMetrik FOREIGN KEY (PersonID_FK) REFERENCES tbl_Persons (ID) ON UPDATE RESTRICT ON DELETE CASCADE
                                                             );
-                                                            CREATE TABLE IF NOT EXISTS tbl_Abmessungen (
+                                                            CREATE TABLE IF NOT EXISTS tbl_BodyDimensions (
                                                                 AbmessungID INT AUTO_INCREMENT PRIMARY KEY,
                                                                 PersonID_FK INT NOT NULL,
                                                                 create_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -59,18 +59,18 @@
                                                                 Oberschenkelfalte_mm DECIMAL(7,2),
                                                                 Rückenfalte_mm DECIMAL(7,2),
                                                                 Trizepsfalte_mm DECIMAL(7,2),
-                                                                CONSTRAINT FK_PersonAbmessung FOREIGN KEY (PersonID_FK) REFERENCES tbl_Personen (ID) ON DELETE CASCADE
+                                                                CONSTRAINT FK_PersonAbmessung FOREIGN KEY (PersonID_FK) REFERENCES tbl_Persons (ID) ON DELETE CASCADE
                                                             );";
         }
 
         /// <summary>
         /// Generates the SQL query string to count the total number of person records stored in the database.
         /// </summary>
-        /// <remarks>Constructs a <c>SELECT COUNT(*)</c> statement targeting the <c>tbl_Personen</c> table.</remarks>
+        /// <remarks>Constructs a <c>SELECT COUNT(*)</c> statement targeting the <c>tbl_Persons</c> table.</remarks>
         /// <returns>A string containing the SQL count query.</returns>
         public string GetPersonCountSql()
         {
-            return "SELECT COUNT(*) FROM tbl_Personen";
+            return "SELECT COUNT(*) FROM tbl_Persons";
         }
 
         #endregion
@@ -80,27 +80,27 @@
         /// <summary>
         /// Generates the SQL command string for deleting a person's body bodyMeasurement or dimension record by its unique identifier.
         /// </summary>
-        /// <remarks>Constructs a parameterized DELETE statement targeting the <c>tbl_Abmessungen</c> table.</remarks>
+        /// <remarks>Constructs a parameterized DELETE statement targeting the <c>tbl_BodyDimensions</c> table.</remarks>
         /// <returns>A string containing the parameterized SQL delete query for body dimensions.</returns>
         public string GetPersonDimensionDeleteSql()
         {
-            return "DELETE FROM tbl_Abmessungen WHERE dimension_id=@id";
+            return "DELETE FROM tbl_BodyDimensions WHERE dimension_id=@id";
         }
 
         /// <summary>
         /// Generates the SQL command string for deleting a person's body metric record by its unique identifier.
         /// </summary>
-        /// <remarks>Constructs a parameterized DELETE statement targeting the <c>tbl_KoerperMetriken</c> table.</remarks>
+        /// <remarks>Constructs a parameterized DELETE statement targeting the <c>tbl_BodyMetrics</c> table.</remarks>
         /// <returns>A string containing the parameterized SQL delete query for body metrics.</returns>
         public string GetPersonMetricDeleteSql()
         {
-            return "DELETE FROM tbl_KoerperMetriken WHERE metric_id=@id";
+            return "DELETE FROM tbl_BodyMetrics WHERE metric_id=@id";
         }
 
         /// <summary>
         /// Generates the SQL query string to retrieve the most recent body dimension or circumference record for a specific person up to a given date.
         /// </summary>
-        /// <remarks>Constructs a SELECT statement targeting the <c>tbl_Abmessungen</c> table, filtering by person ID and date boundary, ordered descending by bodyMeasurement date with a limit of one.</remarks>
+        /// <remarks>Constructs a SELECT statement targeting the <c>tbl_BodyDimensions</c> table, filtering by person ID and date boundary, ordered descending by bodyMeasurement date with a limit of one.</remarks>
         /// <returns>A string containing the parameterized SQL query for retrieving the last person dimension record.</returns>
         public string GetLastPersonDimensionsSql()
         {
@@ -118,7 +118,7 @@
                 thigh_skin_fold_current,
                 back_skin_fold_current,
                 tricep_skin_fold_current
-            FROM tbl_Abmessungen
+            FROM tbl_BodyDimensions
             WHERE person_id = @pid
               AND DATE(create_at) <= @today
             ORDER BY create_at DESC
@@ -128,7 +128,7 @@
         /// <summary>
         /// Generates the SQL query string to retrieve the most recent body metric record for a specific person up to a given date.
         /// </summary>
-        /// <remarks>Constructs a SELECT statement targeting the <c>tbl_KoerperMetriken</c> table, filtering by person ID and date boundary, ordered descending by bodyMeasurement date with a limit of one.</remarks>
+        /// <remarks>Constructs a SELECT statement targeting the <c>tbl_BodyMetrics</c> table, filtering by person ID and date boundary, ordered descending by bodyMeasurement date with a limit of one.</remarks>
         /// <returns>A string containing the parameterized SQL query for retrieving the last person metric record.</returns>
         public string GetLastPersonMetricsSql()
         {
@@ -147,7 +147,7 @@
                 bone_mass_current,
                 body_water_percentage_current,
                 visceral_fat_current
-            FROM tbl_KoerperMetriken
+            FROM tbl_BodyMetrics
             WHERE person_id = @pid
               AND DATE(create_at) <= @today
             ORDER BY create_at DESC
@@ -157,7 +157,7 @@
         /// <summary>
         /// Generates the SQL query string to retrieve combined body metrics and dimensions joined by bodyMeasurement date for a specific person.
         /// </summary>
-        /// <remarks>Constructs a SELECT statement with a LEFT JOIN between <c>tbl_KoerperMetriken</c> and <c>tbl_Abmessungen</c> based on 
+        /// <remarks>Constructs a SELECT statement with a LEFT JOIN between <c>tbl_BodyMetrics</c> and <c>tbl_BodyDimensions</c> based on 
         /// matching dates and person IDs, ordered ascending by bodyMeasurement date.</remarks>
         /// <returns>A string containing the parameterized SQL join query for complete current measurements.</returns>
         public string GetPersonMeasurementsSql()
@@ -189,8 +189,8 @@
                 a.back_skin_fold_current,
                 a.tricep_skin_fold_current
 
-            FROM tbl_KoerperMetriken m
-            LEFT JOIN tbl_Abmessungen a
+            FROM tbl_BodyMetrics m
+            LEFT JOIN tbl_BodyDimensions a
                 ON DATE(m.create_at) = DATE(a.create_at)
                 AND a.person_id = m.person_id
             WHERE m.person_id = @pid
@@ -200,7 +200,7 @@
         /// <summary>
         /// Generates the SQL query string to retrieve initial baseline body composition and dimension measurements for a person.
         /// </summary>
-        /// <remarks>Constructs a SELECT statement joining the <c>tbl_KoerperMetriken</c> and <c>tbl_Abmessungen</c> tables by person ID and 
+        /// <remarks>Constructs a SELECT statement joining the <c>tbl_BodyMetrics</c> and <c>tbl_BodyDimensions</c> tables by person ID and 
         /// matching creation dates, ordered chronologically.</remarks>
         /// <returns>A string containing the SQL query for initial person measurements.</returns>
         public string GetInitialPersonMeasurementsSql()
@@ -233,8 +233,8 @@
                 a.back_skin_fold_initial,
                 a.tricep_skin_fold_initial
 
-            FROM tbl_KoerperMetriken m
-            LEFT JOIN tbl_Abmessungen a
+            FROM tbl_BodyMetrics m
+            LEFT JOIN tbl_BodyDimensions a
                 ON DATE(m.create_at) = DATE(a.create_at)
                 AND a.person_id = m.person_id
             WHERE m.person_id = @pid
@@ -244,21 +244,21 @@
         /// <summary>
         /// Generates the SQL query string to retrieve all person records ordered alphabetically by last name and first name.
         /// </summary>
-        /// <remarks>Constructs a SELECT statement targeting the <c>tbl_Personen</c> table.</remarks>
+        /// <remarks>Constructs a SELECT statement targeting the <c>tbl_Persons</c> table.</remarks>
         /// <returns>A string containing the SQL query to fetch all persons.</returns>
         public string GetPersonExistenceCheckSql()
         {
-            return "SELECT person_id, person_first_name, person_last_name, person_birth_date, person_height FROM tbl_Personen ORDER BY person_last_name, person_first_name";
+            return "SELECT person_id, person_first_name, person_last_name, person_birth_date, person_height FROM tbl_Persons ORDER BY person_last_name, person_first_name";
         }
 
         /// <summary>
         /// Generates the SQL command string for inserting a new body dimension or circumference record into the database.
         /// </summary>
-        /// <remarks>Constructs an INSERT statement targeting the <c>tbl_Abmessungen</c> table using parameterized values for circumferences and skinfold measurements.</remarks>
+        /// <remarks>Constructs an INSERT statement targeting the <c>tbl_BodyDimensions</c> table using parameterized values for circumferences and skinfold measurements.</remarks>
         /// <returns>A string containing the parameterized SQL insert query for person dimensions.</returns>
         public string GetPersonDimensionInsertSql()
         {
-            return @"INSERT INTO tbl_Abmessungen(
+            return @"INSERT INTO tbl_BodyDimensions(
                 person_id,
                 create_at,
                 update_at,
@@ -315,11 +315,11 @@
         /// <summary>
         /// Generates the SQL command string for inserting a new body metric record into the database.
         /// </summary>
-        /// <remarks>Constructs an INSERT statement targeting the <c>tbl_KoerperMetriken</c> table using parameterized values for weight, BMI, body fat percentages, muscle mass, bone mass, body water, and visceral fat.</remarks>
+        /// <remarks>Constructs an INSERT statement targeting the <c>tbl_BodyMetrics</c> table using parameterized values for weight, BMI, body fat percentages, muscle mass, bone mass, body water, and visceral fat.</remarks>
         /// <returns>A string containing the parameterized SQL insert query for person metrics.</returns>
         public string GetPersonMetricInsertSql()
         {
-            return @"INSERT INTO tbl_KoerperMetriken(
+            return @"INSERT INTO tbl_BodyMetrics(
                 person_id,
                 create_at,
                 update_at,
@@ -379,12 +379,12 @@
         /// <summary>
         /// Generates the SQL command string for updating an existing person's body metric record in the database.
         /// </summary>
-        /// <remarks>Constructs an UPDATE statement targeting the <c>tbl_KoerperMetriken</c> table using parameterized values 
+        /// <remarks>Constructs an UPDATE statement targeting the <c>tbl_BodyMetrics</c> table using parameterized values 
         /// for weight, BMI, body fat percentages, muscle mass, body water, bone mass, and visceral fat, filtered by metric ID.</remarks>
         /// <returns>A string containing the parameterized SQL update query for person metrics.</returns>
         public string GetPersonMetricUpdateSql()
         {
-            return @"UPDATE tbl_KoerperMetriken
+            return @"UPDATE tbl_BodyMetrics
                     SET
                         weight_current=@gw,
                         bmi_current=@bmi,
@@ -404,12 +404,12 @@
         /// <summary>
         /// Generates the SQL command string for updating an existing person's body dimension or circumference record in the database.
         /// </summary>
-        /// <remarks>Constructs an UPDATE statement targeting the <c>tbl_Abmessungen</c> table using parameterized values for 
+        /// <remarks>Constructs an UPDATE statement targeting the <c>tbl_BodyDimensions</c> table using parameterized values for 
         /// circumferences and skinfold measurements, filtered by dimension ID.</remarks>
         /// <returns>A string containing the parameterized SQL update query for person dimensions.</returns>
         public string GetPersonDimensionUpdateSql()
         {
-            return @"UPDATE tbl_Abmessungen
+            return @"UPDATE tbl_BodyDimensions
                     SET
                         chest_circumference_current=@br,
                         abdomen_circumference_current=@ba,
@@ -430,22 +430,22 @@
         /// <summary>
         /// Generates the SQL query string to check whether any body measurements exist for a specific person within a given date range.
         /// </summary>
-        /// <remarks>Constructs a <c>SELECT COUNT(1)</c> statement targeting the <c>tbl_KoerperMetriken</c> table, filtering by 
+        /// <remarks>Constructs a <c>SELECT COUNT(1)</c> statement targeting the <c>tbl_BodyMetrics</c> table, filtering by 
         /// person ID and a half-open date interval.</remarks>
         /// <returns>A string containing the parameterized SQL existence check query.</returns>
         public string GetPersonMeasurementsExistSql()
         {
-            return @"SELECT COUNT(1) FROM tbl_KoerperMetriken WHERE person_id = @pid AND create_at >= @start AND create_at < @end";
+            return @"SELECT COUNT(1) FROM tbl_BodyMetrics WHERE person_id = @pid AND create_at >= @start AND create_at < @end";
         }
 
         /// <summary>
         /// Generates the SQL command string for updating an existing person's details in the database.
         /// </summary>
-        /// <remarks>Constructs an UPDATE statement targeting the <c>tbl_Personen</c> table using parameterized values for first name, last name, date of birth, and height, filtered by person ID.</remarks>
+        /// <remarks>Constructs an UPDATE statement targeting the <c>tbl_Persons</c> table using parameterized values for first name, last name, date of birth, and height, filtered by person ID.</remarks>
         /// <returns>A string containing the parameterized SQL update query for person details.</returns>
         public string GetPersonUpdateSql()
         {
-            return "UPDATE tbl_Personen SET person_first_name=@v, person_last_name=@n, person_birth_date=@g, person_height=@k WHERE person_id=@pid";
+            return "UPDATE tbl_Persons SET person_first_name=@v, person_last_name=@n, person_birth_date=@g, person_height=@k WHERE person_id=@pid";
         }
 
         #endregion
@@ -547,7 +547,8 @@
 
             comment          = VALUES(comment),
             package_name     = VALUES(package_name),
-            update_time      = CURRENT_TIMESTAMP;";
+            device_uuid      = VALUES(device_uuid),
+            data_uuid        = VALUES(data_uuid);";
         }
 
         /// <summary>
@@ -594,6 +595,66 @@
                update_time
                FROM tbl_HeartRate
                WHERE person_id = @PersonId;";
+        }
+
+        /// <summary>
+        /// Generates the SQL statement to retrieve Samsung Health heart rate records from the database, ordered by start time descending.
+        /// </summary>
+        /// <returns>A SQL select query string targeting the <c>tbl_HeartRate</c> table.</returns>
+        public string GetSamsungHeartRateSql()
+        {
+            return @"
+                    SELECT
+                    heart_rate_id,
+                    source,
+                    tag_id,
+                    createShVer,
+                    start_time,
+                    end_time,
+                    update_time,
+                    create_time,
+                    time_offset,
+                    custom,
+                    binning_data,
+                    modify_shver,
+                    client_data_id,
+                    heart_rate,
+                    heart_rate_max,
+                    heart_rate_min,
+                    heart_beat_count,
+                    client_dataver,
+                    device_uuid,
+                    comment,
+                    package_name,
+                    data_uuid
+                FROM tbl_HeartRate
+                WHERE person_id = @PersonID
+                ORDER BY start_time DESC;";
+        }
+
+        /// <summary>
+        /// Generates the SQL query string used to retrieve essential heart rate dashboard metrics for a specific person, ordered by create time ascending.
+        /// </summary>
+        /// <returns>A SQL select query string targeting the <c>tbl_HeartRate</c> table for dashboard aggregation.</returns>
+        public string GetSamsungHeartRateDashboardSql()
+        {
+            return @"SELECT
+                create_time,
+                heart_rate,
+                heart_rate_max,                    
+                heart_rate_min
+            FROM tbl_HeartRate
+            WHERE person_id = @PersonId
+            ORDER BY create_time;";
+        }
+
+        /// <summary>
+        /// Retrieves the SQL command string used to delete a specific heart rate record from the database by its unique identifier.
+        /// </summary>
+        /// <returns>A SQL delete command string targeting the <c>tbl_HeartRate</c> table.</returns>
+        public string GetSamsungHeartRateDeleteSql()
+        {
+            return @"DELETE FROM tbl_HeartRate WHERE heart_rate_id = @id";
         }
 
         #endregion
@@ -791,6 +852,76 @@
                 AND data_uuid = @DataUuid;";
         }
 
+        /// <summary>
+        /// Generates the SQL command string for updating existing Samsung Health oxygen saturation records in the database.
+        /// </summary>
+        /// <remarks>Constructs an UPDATE statement targeting the <c>tbl_OxygenSaturation</c> table using parameterized SpO2 metrics
+        /// and device metadata, filtered by person ID and data UUID.</remarks>
+        /// <returns>A string containing the parameterized SQL update query for oxygen saturation.</returns>
+        public string GetSamsungOxygenSaturationSql()
+        {
+            return @"SELECT
+                    oxygen_saturation_id,
+                    person_id,
+                    integrated_id,
+                    client_data_id,
+                    tag_id,
+                    start_time,
+                    end_time,
+                    update_time,
+                    create_time,
+                    time_offset,
+                    custom,
+                    spo2,
+                    spo2_max,
+                    spo2_min,
+                    low_spo2duration,
+                    coverage_rate,
+                    heart_rate,
+                    comment,
+                    data_uuid,
+                    device_uuid,
+                    package_name,
+                    createShVer,
+                    modify_shver,
+                    client_dataver,
+                    source,
+                    binning_data
+                FROM tbl_OxygenSaturation
+                WHERE person_id = @PersonId
+                ORDER BY start_time DESC;";
+        }
+
+        /// <summary>
+        /// Generates the SQL command string for updating existing Samsung Health oxygen saturation records in the database.
+        /// </summary>
+        /// <remarks>Constructs an UPDATE statement targeting the <c>tbl_OxygenSaturation</c> table using parameterized SpO2 metrics
+        /// and device metadata, filtered by person ID and data UUID.</remarks>
+        /// <returns>A string containing the parameterized SQL update query for oxygen saturation.</returns>
+        public string GetSamsungOxygenSaturationDashboardSql()
+        {
+            return @"SELECT
+                    start_time,
+                    spo2,
+                    spo2_max,
+                    spo2_min,
+                    low_spo2duration,
+                    coverage_rate
+                FROM tbl_OxygenSaturation
+                WHERE person_id = @PersonId
+                ORDER BY start_time DESC;";
+        }
+
+
+        /// <summary>
+        /// Retrieves the SQL command string used to delete a specific food intake record from the database by its unique identifier.
+        /// </summary>
+        /// <returns>A SQL delete command string targeting the <c>tbl_FoodIntake</c> table.</returns>
+        public string GetOxygenSaturationDeleteSql()
+        {
+            return @"DELETE FROM tbl_OxygenSaturation WHERE oxygen_saturation_id=@id";
+        }
+
         #endregion
 
         #region Samsung Health Step Trend SQL Command
@@ -798,10 +929,10 @@
         /// <summary>
         /// Generates the SQL query string to retrieve Samsung Health daily step trend records for a specific person.
         /// </summary>
-        /// <remarks>Constructs a SELECT statement targeting the <c>tbl_StepDailyTrend</c> table, filtering by person ID and 
+        /// <remarks>Constructs a SELECT statement targeting the <c>tbl_StepTrend</c> table, filtering by person ID and 
         /// source type <c>-2</c>, ordered ascending by creation time.</remarks>
         /// <returns>A string containing the parameterized SQL query for step trends.</returns>
-        public string GetSamsungStepTrendSql()
+        public string GetSamsungStepTrendSpecificSql()
         {
             return @"SELECT
                     create_at,
@@ -809,7 +940,7 @@
                     step_count_current,
                     distance_current,
                     calories_current
-                    FROM tbl_StepDailyTrend
+                    FROM tbl_StepTrend
                     WHERE person_id = @PersonID
                     AND source_type = -2
                     ORDER BY create_at";
@@ -818,11 +949,11 @@
         /// <summary>
         /// Generates the SQL command string for updating existing Samsung Health daily step trend records in the database.
         /// </summary>
-        /// <remarks>Constructs an UPDATE statement targeting the <c>tbl_StepDailyTrend</c> table using parameterized activity metrics and source metadata, filtered by data UUID.</remarks>
+        /// <remarks>Constructs an UPDATE statement targeting the <c>tbl_StepTrend</c> table using parameterized activity metrics and source metadata, filtered by data UUID.</remarks>
         /// <returns>A string containing the parameterized SQL update query for daily step trends.</returns>
         public string GetSamsungStepTrendUpdateSql()
         {
-            return @"UPDATE tbl_StepDailyTrend
+            return @"UPDATE tbl_StepTrend
                     SET
                         person_id = @PersonID_FK,
                         binning_data = @BinningData,
@@ -831,7 +962,7 @@
                         source_package = @SourcePkgName,
                         source_type = @SourceType,
 
-                        step_count_current = @Count,
+                        step_count_current = @StepCount,
                         speed_current = @Speed,
                         distance_current = @Distance,
                         calories_current = @Calorie,
@@ -844,16 +975,15 @@
                     WHERE data_uuid = @DataUuid;";
         }
 
-
         /// <summary>
         /// Generates the SQL command string for inserting or updating Samsung Health daily step trend records using an upsert pattern.
         /// </summary>
-        /// <remarks>Constructs an INSERT statement targeting the <c>tbl_StepDailyTrend</c> table with conditional <c>ON DUPLICATE KEY UPDATE</c> 
+        /// <remarks>Constructs an INSERT statement targeting the <c>tbl_StepTrend</c> table with conditional <c>ON DUPLICATE KEY UPDATE</c> 
         /// logic based on update timestamps.</remarks>
         /// <returns>A string containing the parameterized SQL upsert query for daily step trends.</returns>
         public string GetSamsungStepTrendUpsertSql()
         {
-            return @"INSERT INTO tbl_StepDailyTrend(
+            return @"INSERT INTO tbl_StepTrend(
                 person_id,
                 binning_data,
                 update_at,
@@ -886,8 +1016,8 @@
                 @SourcePkgName,
                 @SourceType,
 
-                @Count,
-                @Count,
+                @StepCount,
+                @StepCount,
 
                 @Speed,
                 @Speed,
@@ -908,7 +1038,7 @@
 
                 person_id = person_id,
 
-                step_count_current = @Count,
+                step_count_current = @StepCount,
                 speed_current = @Speed,
                 distance_current = @Distance,
                 calories_current = @Calorie,
@@ -921,16 +1051,56 @@
         /// <summary>
         /// Generates the SQL query string to retrieve existing Samsung Health daily step trend identifiers for synchronization checks.
         /// </summary>
-        /// <remarks>Constructs a SELECT statement targeting the <c>tbl_StepDailyTrend</c> table to fetch data UUIDs and update timestamps for a specific person.</remarks>
+        /// <remarks>Constructs a SELECT statement targeting the <c>tbl_StepTrend</c> table to fetch data UUIDs and update timestamps for a specific person.</remarks>
         /// <returns>A string containing the SQL query for existing step trend checks.</returns>
         public string GetSamsungStepTrendExistenceCheckSql()
         {
             return @"SELECT
                data_uuid,
                update_at
-               FROM tbl_StepDailyTrend
+               FROM tbl_StepTrend
                WHERE person_id = @PersonId;";
         }
+
+
+        /// <summary>
+        /// Generates the SQL query string to retrieve Samsung Health daily step trend records.
+        /// </summary>
+        /// <remarks>Constructs a SELECT statement targeting the <c>tbl_StepTrend</c> table, filtering by person ID and 
+        /// source type <c>-2</c>, ordered ascending by creation time.</remarks>
+        /// <returns>A string containing the parameterized SQL query for step trends.</returns>
+        public string GetSamsungStepTrendSql()
+        {
+            return @"
+                    SELECT
+                    step_trend_id,
+                    binning_data,
+                    update_at,
+                    create_at,
+                    source_package,
+                    source_type,
+                    step_count_current,
+                    speed_current,
+                    distance_current,
+                    calories_current,
+                    device_uuid,
+                    package_name,
+                    data_uuid,
+                    record_date
+                FROM tbl_StepTrend
+                WHERE person_id = @PersonID
+                ORDER BY record_date DESC;";
+        }
+
+        /// <summary>
+        /// Retrieves the SQL command string used to delete a specific step trend record from the database by its unique identifier.
+        /// </summary>
+        /// <returns>A SQL delete command string targeting the <c>tbl_StepTrend</c> table.</returns>
+        public string GetSamsungStepTrendDeleteSql()
+        {
+            return @"DELETE FROM tbl_StepTrend WHERE step_trend_id=@id";
+        }
+
 
         #endregion
 
@@ -999,7 +1169,7 @@
                 mean_cadence            = @MeanCadence,
                 min_heart_rate          = @MinHeartRate,
                 client_data_version     = @ClientDataVer,
-                count_value             = @Count,
+                count_value             = @StepCount,
                 distance                = @Distance,
                 max_caloric_burn_rate   = @MaxCaloricBurnRate,
                 calorie                 = @Calorie,
@@ -1175,7 +1345,7 @@
                         @MeanCadence,
                         @MinHeartRate,
                         @ClientDataVer,
-                        @Count,
+                        @StepCount,
                         @Distance,
                         @MaxCaloricBurnRate,
                         @Calorie,
@@ -1280,13 +1450,130 @@
         /// </summary>
         /// <remarks>Constructs a SELECT statement targeting the <c>tbl_Exercise</c> table to fetch data UUIDs and update timestamps for a specific person.</remarks>
         /// <returns>A string containing the SQL query for existing exercise checks.</returns>
-        public string GetExerciseExistenceCheckSql()
+        public string GetSamsungExerciseExistenceCheckSql()
         {
             return @"SELECT
                data_uuid,
                update_at
                FROM tbl_Exercise
                WHERE person_id = @PersonId;";
+        }
+
+        /// <summary>
+        /// Retrieves the SQL query string used to fetch all Samsung exercise records for a specific person, ordered by start time descending.
+        /// </summary>
+        /// <returns>A SQL select query string targeting the <c>tbl_Exercise</c> table.</returns>
+        public string GetSamsungExerciseSql()
+        {
+            return @"SELECT
+                        exercise_id,
+                        live_data_internal,
+                        mission_value,
+                        race_target,
+                        subset_data,
+                        start_longitude,
+                        routine_data_uuid,
+                        total_calorie,
+                        completion_status,
+                        pace_info_id,
+                        activity_type,
+                        pace_live_data,
+                        sensing_status,
+                        source_type,
+                        mission_type,
+                        ftp,
+                        tracking_status,
+                        program_id,
+                        title,
+                        reward_status,
+                        heart_rate_sample_count,
+                        start_latitude,
+                        mission_extra_value,
+                        program_schedule_id,
+                        heart_rate_device_uuid,
+                        location_data_internal,
+                        custom_id,
+                        additional_internal,
+                        duration,
+                        additional,
+                        create_sync_version,
+                        mean_caloric_burn_rate,
+                        location_data,
+                        start_time,
+                        exercise_type,
+                        custom_text,
+                        max_altitude,
+                        incline_distance,
+                        mean_heart_rate,
+                        count_type,
+                        mean_rpm,
+                        min_altitude,
+                        modify_sync_version,
+                        max_heart_rate,
+                        update_at,
+                        create_at,
+                        client_data_id,
+                        max_power,
+                        max_speed,
+                        mean_cadence,
+                        min_heart_rate,
+                        client_data_version,
+                        count_value,
+                        distance,
+                        max_caloric_burn_rate,
+                        calorie,
+                        max_cadence,
+                        decline_distance,
+                        vo2_max,
+                        time_offset,
+                        device_uuid,
+                        max_rpm,
+                        comment_text,
+                        live_data,
+                        mean_power,
+                        mean_speed,
+                        package_name,
+                        altitude_gain,
+                        altitude_loss,
+                        exercise_custom_type,
+                        auxiliary_devices,
+                        end_time,
+                        data_uuid,
+                        sweat_loss
+                    FROM tbl_Exercise
+                    WHERE person_id = @PersonID
+                    ORDER BY start_time DESC;";
+        }
+
+        /// <summary>
+        /// Generates the SQL query string used to retrieve essential exercise dashboard metrics for a specific person, ordered by start time ascending.
+        /// </summary>
+        /// <returns>A SQL select query string targeting the <c>tbl_Exercise</c> table for dashboard aggregation.</returns>
+        public string GetSamsungExerciseDashboardSql()
+        {
+            return @"SELECT
+                start_time,
+                title,
+                duration,
+                distance,
+                calorie,
+                mean_heart_rate,
+                max_heart_rate,                    
+                min_heart_rate,
+                mean_speed,
+                exercise_type
+            FROM tbl_Exercise
+            WHERE person_id = @PersonId
+            ORDER BY start_time;";
+        }
+
+        /// <summary>
+        /// Retrieves the SQL command string used to delete a specific exercise record from the database by its unique identifier.
+        /// </summary>
+        /// <returns>A SQL delete command string targeting the <c>tbl_Exercise</c> table.</returns>
+        public string GetSamsungExerciseDeleteSql()
+        {
+            return @"DELETE FROM tbl_Exercise WHERE exercise_id=@id";
         }
 
         #endregion
@@ -1442,165 +1729,322 @@
                WHERE person_id = @PersonId;";
         }
 
+        /// <summary>
+        /// Retrieves the SQL query string used to fetch all Samsung food intake records for a specific person, ordered by start time descending.
+        /// </summary>
+        /// <returns>A SQL select query string targeting the <c>tbl_FoodIntake</c> table.</returns>
+        public string GetSamsungFoodIntakeSql()
+        {
+            return @"SELECT
+                    food_intake_id,
+                    create_sync_version,
+                    start_time,
+                    amount_current,
+                    custom_text,
+                    modify_sync_version,
+                    update_at,
+                    create_at,
+                    meal_type,
+                    client_data_id,
+                    food_name,
+                    unit_id,
+                    client_data_version,
+                    calories_current,
+                    time_offset,
+                    device_uuid,
+                    comment_text,
+                    package_name,
+                    data_uuid,
+                    food_info_id
+              FROM tbl_FoodIntake
+              WHERE person_id = @PersonID
+              ORDER BY start_time DESC;";
+        }
+
+        /// <summary>
+        /// Retrieves the SQL command string used to delete a specific food intake record from the database by its unique identifier.
+        /// </summary>
+        /// <returns>A SQL delete command string targeting the <c>tbl_FoodIntake</c> table.</returns>
+        public string GetFoodIntakeDeleteSql()
+        {
+            return @"DELETE FROM tbl_FoodIntake WHERE food_intake_id=@id";
+        }
+
         #endregion
 
         #region Heavy App SQL Commands
 
         /// <summary>
+        /// Generates the SQL query string to retrieve workout log identifiers, UUIDs, and start times for a specific person.
+        /// </summary>
+        /// <returns>A string containing the SQL query for workout log UUIDs.</returns>
+        public string GetWorkoutLogUuidSql()
+        {
+            return @"SELECT
+                  exercise_log_id,
+                  uuid,
+                  start_time
+               FROM tbl_WorkoutLog
+               WHERE person_id = @PersonId;";
+        }
+
+        /// <summary>
+        /// Generates the SQL delete statement to remove a workout log entry by its unique exercise log identifier.
+        /// </summary>
+        /// <returns>A string containing the parameterized SQL delete query.</returns>
+        public string GetWorkoutLogDeleteByWorkoutIdSql()
+        {
+            return @"DELETE
+               FROM tbl_WorkoutLog
+               WHERE exercise_log_id = @WorkoutId;";
+        }
+
+        /// <summary>
+        /// Generates the SQL update statement to modify an existing workout log entry based on its exercise log identifier.
+        /// </summary>
+        /// <returns>A string containing the parameterized SQL update query.</returns>
+        public string GetWorkoutLogUpdateByWorkoutIdSql()
+        {
+            return @"UPDATE tbl_WorkoutLog
+              SET
+                  uuid = @Uuid,
+                  workout_title = @Title,
+                  start_time = @StartTime,
+                  end_time = @EndTime,
+                  description = @Description,
+                  exercise_title = @ExerciseTitle,
+                  superset_id = @SupersetId,
+                  exercise_notes = @ExerciseNotes,
+                  set_index = @SetIndex,
+                  set_type = @SetType,
+                  weight = @WeightKg,
+                  reps = @Reps,
+                  distance = @DistanceKm,
+                  duration_sec = @DurationSeconds,
+                  rpe = @Rpe,
+                  update_at = NOW()
+              WHERE exercise_log_id = @WorkoutId;";
+        }
+
+        /// <summary>
+        /// Generates the SQL insert statement to add a new workout log record into the database.
+        /// </summary>
+        /// <returns>A string containing the parameterized SQL insert query.</returns>
+        public string GetWorkoutLogInsertSql()
+        {
+            return @"INSERT INTO tbl_WorkoutLog
+              (
+                  person_id,
+                  workout_title,
+                  start_time,
+                  end_time,
+                  update_at,
+                  description,
+                  exercise_title,
+                  superset_id,
+                  exercise_notes,
+                  set_index,
+                  set_type,
+                  weight,
+                  reps,
+                  distance,
+                  duration_sec,
+                  rpe,
+                  uuid
+              )
+              VALUES
+              (
+                  @PersonID_FK,
+                  @Title,
+                  @StartTime,
+                  @EndTime,
+                  NOW(),
+                  @Description,
+                  @ExerciseTitle,
+                  @SupersetId,
+                  @ExerciseNotes,
+                  @SetIndex,
+                  @SetType,
+                  @WeightKg,
+                  @Reps,
+                  @DistanceKm,
+                  @DurationSeconds,
+                  @Rpe,
+                  @Uuid
+              );";
+        }
+
+        /// <summary>
         /// Generates the SQL command string for inserting or updating Hevy workout application records using an upsert pattern.
         /// </summary>
-        /// <remarks>Constructs an INSERT statement targeting the <c>tbl_HeavyApp</c> table with an <c>ON DUPLICATE KEY UPDATE</c> 
+        /// <remarks>Constructs an INSERT statement targeting the <c>tbl_WorkoutLog</c> table with an <c>ON DUPLICATE KEY UPDATE</c> 
         /// clause that refreshes workout set details and sets the update timestamp.</remarks>
         /// <returns>A string containing the parameterized SQL upsert query for workout tracking data.</returns>
-        public string GetWorkoutUpsertSql()
+        public string GetWorkoutLogUpsertSql()
         {
-            return @"INSERT INTO tbl_HeavyApp(
-                person_id,
-                workout_title,
-                start_time,
-                end_time,
-                update_at,
-                description,
-                exercise_title,
-                superset_id,
-                exercise_notes,
-                set_index,
-                set_type,
-
-                weight_current,
-                weight_initial,
-
-                reps_current,
-                reps_initial,
-
-                distance_current,
-                distance_initial,
-
-                duration_sec_current,
-                duration_sec_initial,
-
-                rpe_current,
-                rpe_initial
-
-            )
-            VALUES
-            (
-                @PersonID_FK,
-                @Title,
-                @StartTime,
-                @EndTime,
-                @StartTime,
-                @Description,
-                @ExerciseTitle,
-                @SupersetId,
-                @ExerciseNotes,
-                @SetIndex,
-                @SetType,
-
-                @WeightKg,
-                @WeightKg,
-
-                @Reps,
-                @Reps,
-
-                @DistanceKm,
-                @DistanceKm,
-
-                @DurationSeconds,
-                @DurationSeconds,
-
-                @Rpe,
-                @Rpe
-            )
-            ON DUPLICATE KEY UPDATE
-
-                workout_title = VALUES(workout_title),
-                description = VALUES(description),
-                exercise_notes = VALUES(exercise_notes),
-                superset_id = VALUES(superset_id),
-                set_type = VALUES(set_type),
-
-                weight_current = VALUES(weight_current),
-                reps_current = VALUES(reps_current),
-                distance_current = VALUES(distance_current),
-                duration_sec_current = VALUES(duration_sec_current),
-                rpe_current = VALUES(rpe_current),
-
-                update_at = CURRENT_TIMESTAMP;";
+            return @"
+          INSERT INTO tbl_WorkoutLog
+          (
+              person_id,
+              workout_title,
+              start_time,
+              end_time,
+              update_at,
+              description,
+              exercise_title,
+              superset_id,
+              exercise_notes,
+              set_index,
+              set_type,
+              weight,
+              reps,
+              distance,
+              duration_sec,
+              rpe,
+              uuid
+          )
+          VALUES
+          (
+              @PersonID_FK,
+              @Title,
+              @StartTime,
+              @EndTime,
+              CURRENT_TIMESTAMP,
+              @Description,
+              @ExerciseTitle,
+              @SupersetId,
+              @ExerciseNotes,
+              @SetIndex,
+              @SetType,
+              @WeightKg,
+              @Reps,
+              @DistanceKm,
+              @DurationSeconds,
+              @Rpe,
+              @Uuid
+          )
+          ON DUPLICATE KEY UPDATE
+              workout_title = VALUES(workout_title),
+              description = VALUES(description),
+              exercise_notes = VALUES(exercise_notes),
+              superset_id = VALUES(superset_id),
+              set_type = VALUES(set_type),
+              weight_current = VALUES(weight_current),
+              reps_current = VALUES(reps),
+              distance_current = VALUES(distance),
+              duration_sec_current = VALUES(duration),
+              rpe_current = VALUES(rpe),
+              start_time = VALUES(start_time),
+              end_time = VALUES(end_time),
+              update_at = CURRENT_TIMESTAMP;";
         }
 
         /// <summary>
         /// Generates the SQL command string for updating existing Hevy workout set records in the database.
         /// </summary>
-        /// <remarks>Constructs an UPDATE statement targeting the <c>tbl_HeavyApp</c> table using parameterized workout metrics and metadata, 
+        /// <remarks>Constructs an UPDATE statement targeting the <c>tbl_WorkoutLog</c> table using parameterized workout metrics and metadata, 
         /// filtered by person ID, start time, exercise title, and set index.</remarks>
         /// <returns>A string containing the parameterized SQL update query for Hevy workouts.</returns>
-        public string GetWorkoutUpdateSql()
+        public string GetWorkoutLogUpdateSql()
         {
-            return @"UPDATE tbl_HeavyApp
-                    SET
-                        workout_title = @Title,
-                        start_time = @StartTime,
-                        end_time = @EndTime,
-                        update_at = CURRENT_TIMESTAMP,
-                        description = @Description,
-                        superset_id = @SupersetId,
-                        exercise_notes = @ExerciseNotes,
-                        set_type = @SetType,
+            return @"UPDATE tbl_WorkoutLog
+              SET
+                  workout_title = @Title,
+                  start_time = @StartTime,
+                  end_time = @EndTime,
+                  update_at = CURRENT_TIMESTAMP,
+                  description = @Description,
+                  superset_id = @SupersetId,
+                  exercise_notes = @ExerciseNotes,
+                  set_type = @SetType,
 
-                        weight_current = @WeightKg,
-                        reps_current = @Reps,
-                        distance_current = @DistanceKm,
-                        duration_sec_current = @DurationSeconds,
-                        rpe_current = @Rpe
+                  weight = @WeightKg,
+                  reps = @Reps,
+                  distance = @DistanceKm,
+                  duration_sec = @DurationSeconds,
+                  rpe = @Rpe
 
-                    WHERE
-                        person_id = @PersonID_FK
-                        AND start_time = @StartTime
-                        AND exercise_title = @ExerciseTitle
-                        AND set_index = @SetIndex;";
+              WHERE
+                  person_id = @PersonID
+                  AND start_time = @StartTime
+                  AND exercise_title = @ExerciseTitle
+                  AND set_index = @SetIndex;";
         }
 
         /// <summary>
         /// Generates the SQL query string to retrieve existing Hevy workout set records for synchronization checks.
         /// </summary>
-        /// <remarks>Constructs a SELECT statement targeting the <c>tbl_HeavyApp</c> table to fetch core timing, exercise details, and performance metrics for a specific person.</remarks>
+        /// <remarks>Constructs a SELECT statement targeting the <c>tbl_WorkoutLog</c> table to fetch core timing, exercise details, and performance metrics for a specific person.</remarks>
         /// <returns>A string containing the SQL query for existing Hevy workout checks.</returns>
-        public string GetWorkoutExistenceCheckSql()
+        public string GetWorkoutLogExistenceCheckSql()
         {
             return @"SELECT
-                    start_time,
-                    end_time,
-                    exercise_title,
-                    set_index,
-                    weight_current,
-                    reps_current,
-                    distance_current,
-                    duration_sec_current,
-                    rpe_current
-                    FROM tbl_HeavyApp
-                    WHERE person_id = @PersonId;";
+              start_time,
+              end_time,
+              exercise_title,
+              set_index,
+              weight,
+              reps,
+              distance,
+              duration_sec,
+              rpe
+              FROM tbl_WorkoutLog
+              WHERE person_id = @PersonId;";
+        }
+
+        /// <summary>
+        /// Generates the SQL query string to retrieve specific workout set metrics for a person, ordered by start time, exercise title, and set index.
+        /// </summary>
+        /// <returns>A string containing the parameterized SQL query for specific workout entries.</returns>
+        public string GetWorkoutEntriesSpecificSql()
+        {
+            return @"SELECT
+                  start_time,
+                  end_time,
+                  exercise_title,
+                  weight,
+                  reps,
+                  distance,
+                  duration_sec,
+                  rpe,
+                  set_index
+              FROM tbl_WorkoutLog
+              WHERE person_id = @PersonID
+              ORDER BY start_time,
+                       exercise_title,
+                       set_index;";
         }
 
         /// <summary>
         /// Generates the SQL query string to retrieve workout set entries from the Hevy application records for a specific person.
         /// </summary>
-        /// <remarks>Constructs a SELECT statement targeting the <c>tbl_HeavyApp</c> table, filtering by person ID and ordered by start time, exercise title, and set index.</remarks>
+        /// <remarks>Constructs a SELECT statement targeting the <c>tbl_WorkoutLog</c> table, filtering by person ID and ordered by start time, exercise title, and set index.</remarks>
         /// <returns>A string containing the parameterized SQL query for workout entries.</returns>
         public string GetWorkoutEntriesSql()
         {
             return @"SELECT
-                start_time,
-                exercise_title,
-                weight_current,
-                reps_current,
-                set_index
-            FROM tbl_HeavyApp
-            WHERE person_id = @PersonID
-            ORDER BY start_time,
-                     exercise_title,
-                     set_index;";
+              exercise_log_id,
+              workout_title,  
+              update_at,
+              start_time,
+              end_time,
+              description,
+              exercise_title,
+              superset_id,
+              exercise_notes,
+              set_index,
+              set_type,
+              weight,
+              reps,
+              distance,
+              duration_sec,
+              rpe,
+              uuid
+          FROM tbl_WorkoutLog
+          WHERE person_id = @PersonId
+          ORDER BY start_time DESC;";
         }
+
 
         #endregion
     }

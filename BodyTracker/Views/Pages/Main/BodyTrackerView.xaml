@@ -44,6 +44,15 @@
                     <TextBlock Text="🏠" FontSize="16"/>
                 </RadioButton>
 
+                <!-- ================= NEW ENTRY ================= -->
+                <RadioButton Style="{StaticResource NavButtonStyle}" 
+                             ToolTip="New Entry"
+                             IsChecked="{Binding IsNewEntrySelected, Mode=TwoWay}">
+
+                    <TextBlock Text="🆕" FontSize="16"/>
+
+                </RadioButton>
+
                 <!-- ================= DATABASE ================= -->
                 <RadioButton Style="{StaticResource NavButtonStyle}" 
                              ToolTip="Database"
@@ -56,15 +65,6 @@
                              ToolTip="Charts"
                              IsChecked="{Binding IsChartsSelected, Mode=TwoWay}">
                     <TextBlock Text="📈" FontSize="16"/>
-                </RadioButton>
-
-                <!-- ================= NEW ENTRY ================= -->
-                <RadioButton Style="{StaticResource NavButtonStyle}" 
-                             ToolTip="New Entry"
-                             IsChecked="{Binding IsNewEntrySelected, Mode=TwoWay}">
-                    
-                    <TextBlock Text="🆕" FontSize="16"/>
-                    
                 </RadioButton>
 
                 <!-- ================= IMPORT DATAS ================= -->

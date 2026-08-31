@@ -763,7 +763,7 @@ namespace BodyTracker.ViewModels
                         FatTongThighCrease = fatTongThighCrease,
                         FatTongBackCrease = fatTongBackCrease
                     };
-                    bool measurementAlreadyExists = await databaseService.MeasurementExistsAsync(bodyMetric.MeasurementDate, bodyMetric.PersonID);
+                    bool measurementAlreadyExists = await databaseService.GetMeasurementExistsSqlAsync(bodyMetric.MeasurementDate, bodyMetric.PersonID);
 
                     if (measurementAlreadyExists)
                     {
@@ -772,9 +772,9 @@ namespace BodyTracker.ViewModels
 
                     else
                     {
-                        await databaseService.AddBodyMetricAsync(bodyMetric);
+                        await databaseService.InsertBodyMetricSqlAsync(bodyMetric);
 
-                        await databaseService.AddBodyDimensionAsync(bodyDimension);
+                        await databaseService.InsertBodyDimensionSqlAsync(bodyDimension);
 
                         WeakReferenceMessenger.Default.Send(new NavigationMessage(NavigationMessage.ShowDashboard));
 

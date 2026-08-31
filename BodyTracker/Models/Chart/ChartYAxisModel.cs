@@ -1,4 +1,6 @@
 ﻿using LiveChartsCore.Measure;
+using LiveChartsCore.SkiaSharpView.Painting;
+using SkiaSharp;
 using System.Globalization;
 
 namespace BodyTracker.Services
@@ -34,6 +36,12 @@ namespace BodyTracker.Services
         /// </summary>
         /// <remarks>Controls the visibility of background grid lines corresponding to axis tick intervals.</remarks>
         public bool ShowSeparatorLines { get; set; } = true;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether separator or grid lines are displayed along the axis.
+        /// </summary>
+        /// <remarks>Controls the visibility of background grid lines corresponding to axis tick intervals.</remarks>
+        public SolidColorPaint SeparatorsPaint = new SolidColorPaint(SKColors.LightGray) { StrokeThickness = 1 };
 
         /// <summary>
         /// Gets the formatting string applied to numerical values along the axis.

@@ -235,7 +235,14 @@ namespace BodyTracker.ViewModels
             try
             {
 
-                var path = Directory.GetFiles(searchPath, $"*{searchTerm}*");
+                var path = await Task.Run(() =>
+                {
+                    if (!Directory.Exists(searchPath))
+                    {
+                        throw new Exception($"The folder '{searchPath}' could not be reached.");
+                    }
+                    return Directory.GetFiles(searchPath, $"*{searchTerm}*");
+                });
 
                 if (!path.Any())
                 {

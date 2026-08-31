@@ -29,17 +29,25 @@ namespace BodyTracker.Services
                 ["Dezember"] = 12,
 
                 ["Jan"] = 1,
+                ["Jan."] = 1,
                 ["Feb"] = 2,
+                ["Feb."] = 2,
 
                 ["Apr"] = 4,
+                ["Apr."] = 4,
 
 
 
                 ["Aug"] = 8,
+                ["Aug."] = 8,
                 ["Sept"] = 9,
+                ["Sept."] = 9,
                 ["Okt"] = 10,
+                ["Okt."] = 10,
                 ["Nov"] = 11,
-                ["Dez"] = 12
+                ["Nov."] = 11,
+                ["Dez"] = 12,
+                ["Dez."] = 12
             };
 
         /// <summary>

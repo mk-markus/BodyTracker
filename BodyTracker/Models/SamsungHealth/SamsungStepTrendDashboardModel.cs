@@ -3,7 +3,7 @@
 namespace BodyTracker.Models
 {
 
-    public class StepDailyTrendChartModel
+    public class SamsungStepTrendDashboardModel
     {
         /// <summary>
         /// Gets or sets the timestamp indicating when the tracking entry or record was created.
@@ -21,7 +21,7 @@ namespace BodyTracker.Models
         /// Gets or sets the numerical count value associated with the record.
         /// </summary>
         /// <remarks>Represents discrete metrics such as step counts or repetition totals for the given timeframe.</remarks>
-        public int Count { get; set; }
+        public int StepCount { get; set; }
 
         /// <summary>
         /// Gets or sets the distance metric associated with the activity entry.

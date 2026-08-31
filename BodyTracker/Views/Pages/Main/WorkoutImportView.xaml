@@ -129,7 +129,11 @@
 
                     <DataGridTextColumn Header="rpe"
                                         Binding="{Binding Rpe, StringFormat=F1}"
-                                        Width="70" />
+                                        Width="Auto" />
+
+                    <DataGridTextColumn Header="DataUuid"
+                                        Binding="{Binding DataUuid}"
+                                        Width="Auto" />
 
                 </DataGrid.Columns>
             </DataGrid>

@@ -10,12 +10,12 @@ using System.Windows.Data;
 namespace BodyTracker.Views
 {
     /// <summary>
-    /// Interaktionslogik für DataBaseEntriesBodyMeasurementPage.xaml
+    /// Interaktionslogik für DBEntryBodyMeasurementView.xaml
     /// </summary>
-    public partial class DataBaseEntriesBodyMeasurementPage : Page
+    public partial class DBEntryBodyMeasurementView : Page
     {
         /// <summary>
-        /// A private, read-only reference to the <see cref="BodyMeasurementEntriesViewModel"/>.
+        /// A private, read-only reference to the <see cref="DBEntryBodyMeasurementView"/>.
         /// This instance serves as the primary data context for the page, orchestrating 
         /// the business logic, data retrieval, and command execution for body measurements.
         /// </summary>
@@ -23,7 +23,7 @@ namespace BodyTracker.Views
         /// The ViewModel is instantiated during the page construction to ensure that 
         /// data binding is established before the UI is rendered.
         /// </remarks>
-        private readonly BodyMeasurementEntriesViewModel measurementViewModel;
+        private readonly DBEntryBodyMeasurementViewModel measurementViewModel;
 
         /// <summary>
         /// A private, read-only reference to the <see cref="DatabaseService"/>.
@@ -37,37 +37,25 @@ namespace BodyTracker.Views
         private readonly DatabaseService databaseService;
 
         /// <summary>
-        /// A private, read-only reference to the <see cref="MainWindow"/>, acting as the application's "Shell".
-        /// This reference provides the page with access to top-level UI orchestration, 
-        /// navigation controls, and global application state management.
-        /// </summary>
-        /// <remarks>
-        /// Following the Shell pattern, this field allows the current page to interact with 
-        /// the main window's container, for example, to trigger navigation or update global status bars.
-        /// </remarks>
-        private readonly MainWindow _shell;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DataBaseEntriesBodyMeasurementPage"/> class.
+        /// Initializes a new instance of the <see cref="DBEntryBodyMeasurementView"/> class.
         /// Sets up dependency injection for services, initializes the ViewModel, 
         /// and configures the event handler for automatic data synchronization.
         /// </summary>
         /// <param name="shell">The main application window instance used for top-level UI orchestration.</param>
         /// <param name="db">The database service instance used for persistent data operations.</param>
         /// <remarks>
-        /// This constructor establishes the <see cref="DataContext"/> by creating a new <see cref="BodyMeasurementEntriesViewModel"/>
+        /// This constructor establishes the <see cref="DataContext"/> by creating a new <see cref="DBEntryBodyMeasurementView"/>
         /// and subscribes to the <see cref="UIElement.IsVisibleChanged"/> event to ensure data remains 
         /// current when the user navigates between tabs.
         /// </remarks>
-        public DataBaseEntriesBodyMeasurementPage(MainWindow shell, DatabaseService db)
+        public DBEntryBodyMeasurementView( DatabaseService db)
         {
             InitializeComponent();
             databaseService = db;
-            _shell = shell;
-            measurementViewModel = new BodyMeasurementEntriesViewModel(databaseService);
+            measurementViewModel = new DBEntryBodyMeasurementViewModel(databaseService);
             DataContext = measurementViewModel;
 
-            this.IsVisibleChanged += MeasurementPage_IsVisibleChanged;
+            this.IsVisibleChanged += CurrentPage_IsVisibleChanged;
             this.Unloaded += (s, e) => measurementViewModel.Dispose();
 
         }
@@ -76,7 +64,7 @@ namespace BodyTracker.Views
         /// Automatically refreshes the measurements whenever the page becomes visible.
         /// This ensures data consistency when switching between different tabs/pages.
         /// </summary>
-        private async void MeasurementPage_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private async void CurrentPage_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
 
             ICollectionView view = CollectionViewSource.GetDefaultView(MeasurementsGrid.ItemsSource);

@@ -1,4 +1,4 @@
-UPDATE tbl_KoerperMetriken
+UPDATE tbl_BodyMetrics
 SET
 	 update_at = create_at,
     weight_current = COALESCE(weight_current, 0),

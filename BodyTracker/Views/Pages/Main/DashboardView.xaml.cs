@@ -33,7 +33,7 @@ namespace BodyTracker.Views.Pages
         private readonly MainWindow mainWindow;
 
         /// <summary>
-        /// A private, read-only reference to the <see cref="BodyMeasurementEntriesViewModel"/>.
+        /// A private, read-only reference to the <see cref="DBEntryBodyMeasurementView"/>.
         /// This instance serves as the primary data context for the page, orchestrating 
         /// the business logic, data retrieval, and command execution for body measurements.
         /// </summary>

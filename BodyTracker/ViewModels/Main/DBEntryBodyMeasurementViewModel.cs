@@ -16,7 +16,7 @@ namespace BodyTracker.ViewModels
     // <summary>
     /// Serves as the primary logic controller for the main application view, managing body bodyMeasurement data and user interactions.
     /// </summary>
-    public partial class BodyMeasurementEntriesViewModel : ObservableObject
+    public partial class DBEntryBodyMeasurementViewModel : ObservableObject
     {
         /// <summary>
         /// A private, read-only reference to the <see cref="DatabaseService"/>.
@@ -29,10 +29,6 @@ namespace BodyTracker.ViewModels
         /// accidental reassignment and ensuring architectural stability.
         /// </remarks>
         private readonly DatabaseService databaseService;
-
-
-
-
 
         #region Observiable Properties
 
@@ -52,14 +48,6 @@ namespace BodyTracker.ViewModels
         [ObservableProperty] private ObservableCollection<FullBodyMeasurementDatasModel> initialBodyMeasurement = new();
 
         /// <summary>
-        /// Gets or sets the collection of mean full body bodyMeasurement data.
-        /// </summary>
-        /// <remarks>The collection is observable, allowing UI elements or other components to react to
-        /// changes such as additions or removals of bodyMeasurement data. This property is typically used for data binding
-        /// scenarios.</remarks>
-        [ObservableProperty] private ObservableCollection<FullBodyMeasurementDatasModel> meanMeasurement = new();
-
-        /// <summary>
         /// Gets or sets the currently selected bodyMeasurement record from the list.
         /// Nullable, as no record may be selected.
         /// </summary>
@@ -71,15 +59,6 @@ namespace BodyTracker.ViewModels
         /// </summary>
         [ObservableProperty] private string userName = string.Empty;
 
-        /// <summary>
-        /// Gets or sets the mean start date used for calculations or scheduling.
-        /// </summary>
-        [ObservableProperty] private DateTime meanStartDate = new DateTime(2025, 1, 1);
-
-        /// <summary>
-        /// Gets or sets the mean end date for the operation.
-        /// </summary>
-        [ObservableProperty] private DateTime meanEndDate = DateTime.Now;
 
         #endregion
 
@@ -90,7 +69,7 @@ namespace BodyTracker.ViewModels
         /// Gets the command responsible for refreshing the bodyMeasurement history from the database.
         /// Triggers an asynchronous reload of the <see cref="Measurement"/> collection.
         /// </summary>
-        public IAsyncRelayCommand CommandBodyMeasurementRowEditEnding { get; }
+        public IAsyncRelayCommand CommandRowEditEnding { get; }
 
         /// <summary>
         /// Gets the command that initiates the deletion of the currently selected bodyMeasurement.
@@ -100,7 +79,18 @@ namespace BodyTracker.ViewModels
         /// This command should typically check if <see cref="selectedMeasurement"/> is not null 
         /// before execution (via CanExecute logic).
         /// </remarks>
-        public IAsyncRelayCommand CommandDeleteBodyDatabaseEntry { get; }
+        public IAsyncRelayCommand CommandDelete { get; }
+
+
+        /// <summary>
+        /// Gets the command that initiates the deletion of the currently selected bodyMeasurement.
+        /// This operation removes the record from the database and updates the UI collection.
+        /// </summary>
+        /// <remarks>
+        /// This command should typically check if <see cref="selectedMeasurement"/> is not null 
+        /// before execution (via CanExecute logic).
+        /// </remarks>
+        public IAsyncRelayCommand CommandRefresh { get; }
 
         #endregion
 
@@ -123,7 +113,7 @@ namespace BodyTracker.ViewModels
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BodyMeasurementEntriesViewModel"/> class.
+        /// Initializes a new instance of the <see cref="DBEntriesBodyMeasurementView"/> class.
         /// Sets up database access, initializes asynchronous commands, and retrieves 
         /// context information from the global application state.
         /// </summary>
@@ -133,14 +123,15 @@ namespace BodyTracker.ViewModels
         /// </param>
         /// <remarks>
         /// The constructor links commands to their respective asynchronous implementations 
-        /// and ensures that the <see cref="CommandDeleteBodyDatabaseEntry"/> is governed by selection-based 
+        /// and ensures that the <see cref="CommandDelete"/> is governed by selection-based 
         /// execution logic (<see cref="CanDelete"/>).
         /// </remarks>
-        public BodyMeasurementEntriesViewModel(DatabaseService db)
+        public DBEntryBodyMeasurementViewModel(DatabaseService db)
         {
             databaseService = db;
-            CommandDeleteBodyDatabaseEntry = new AsyncRelayCommand(DeleteSelectedAsync, CanDelete);
-            CommandBodyMeasurementRowEditEnding = new AsyncRelayCommand<DataGridRowEditEndingEventArgs>(MeasurementsGrid_RowEditEnding);
+            CommandDelete = new AsyncRelayCommand(DeleteSelectedAsync, CanDelete);
+            CommandRefresh = new AsyncRelayCommand(ReloadAsync);
+            CommandRowEditEnding = new AsyncRelayCommand<DataGridRowEditEndingEventArgs>(MeasurementsGrid_RowEditEnding);
             UserName = AppState.SelectedPersonName;
         }
 
@@ -223,7 +214,7 @@ namespace BodyTracker.ViewModels
         /// otherwise, <c>false</c>.
         /// </returns>
         /// <remarks>
-        /// This method is used as the predicate for the <see cref="CommandDeleteBodyDatabaseEntry"/>. 
+        /// This method is used as the predicate for the <see cref="CommandDelete"/>. 
         /// In WPF, the command's associated UI element (e.g., a Button) will be 
         /// automatically enabled or disabled based on this return value.
         /// </remarks>
@@ -237,13 +228,13 @@ namespace BodyTracker.ViewModels
         /// </summary>
         /// <param name="value">The new selected bodyMeasurement record (or null if deselected).</param>
         /// <remarks>
-        /// This method ensures the UI remains responsive by forcing the <see cref="CommandDeleteBodyDatabaseEntry"/> 
+        /// This method ensures the UI remains responsive by forcing the <see cref="CommandDelete"/> 
         /// to re-evaluate its execution logic (<see cref="CanDelete"/>). 
         /// It utilizes a safe cast to <see cref="AsyncRelayCommand"/> to trigger the notification.
         /// </remarks>
         partial void OnSelectedMeasurementChanged(FullBodyMeasurementDatasModel? value)
         {
-            (CommandDeleteBodyDatabaseEntry as AsyncRelayCommand)?.NotifyCanExecuteChanged();
+            (CommandDelete as AsyncRelayCommand)?.NotifyCanExecuteChanged();
         }
 
         /// <summary>
@@ -263,8 +254,8 @@ namespace BodyTracker.ViewModels
                 var result = MessageBox.Show("Are you sure you want to delete the selected measurement?", "Confirm Deletion", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 if (result != MessageBoxResult.Yes) return;
                 if (SelectedMeasurement == null) return;
-                if (SelectedMeasurement.MetricID.HasValue) await databaseService.DeleteBodyMetricAsync(SelectedMeasurement.MetricID.Value);
-                if (SelectedMeasurement.DemensionID.HasValue) await databaseService.DeleteBodyDimensionAsync(SelectedMeasurement.DemensionID.Value);
+                if (SelectedMeasurement.MetricID.HasValue) await databaseService.GetBodyMetricDeleteSqlAsync(SelectedMeasurement.MetricID.Value);
+                if (SelectedMeasurement.DemensionID.HasValue) await databaseService.GetBodyDimensionDeleteSqlAsync(SelectedMeasurement.DemensionID.Value);
                 await ReloadAsync();
             }
             catch(Exception ex)
@@ -292,7 +283,7 @@ namespace BodyTracker.ViewModels
         {
             try
             {
-                await databaseService.UpdateMeasurementAsync(
+                await databaseService.GetMeasurementUpdateSqlAsync(
                     personId,
                     row.MetricID,
                     row.DemensionID,

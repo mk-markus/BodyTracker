@@ -1,5 +1,5 @@
 -- 1. Spalten auf Englisch umbenennen (zu "_current") und die "_original"-Spalten hinzufügen
-ALTER TABLE tbl_KoerperMetriken
+ALTER TABLE tbl_BodyMetrics
     -- Weight
     CHANGE COLUMN weight_original weight_inital DECIMAL(7,2) NULL,
     CHANGE COLUMN bmi_original bmi_original DECIMAL(7,2) NULL,
@@ -28,7 +28,7 @@ ALTER TABLE tbl_KoerperMetriken
     ADD COLUMN visceral_fat_original TINYINT(4) NULL;
 
 -- 2. Bestehende Werte initial in die Original-Spalten rüberschreiben
-UPDATE tbl_KoerperMetriken 
+UPDATE tbl_BodyMetrics 
 SET 
     weight_original = weight_current,
     bmi_original = bmi_current,

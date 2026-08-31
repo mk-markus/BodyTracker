@@ -1,0 +1,134 @@
+﻿<Page x:Class="BodyTracker.Views.Pages.Main.MultiDatabaseView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:BodyTracker.Views.Pages.Main"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="MultiDatabaseView">
+
+    <Grid Background="{StaticResource AppBackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Linke Sidebar -->
+        <Border Grid.Column="0"
+             Grid.Row="0"
+             Style="{DynamicResource BorderDashboardCardStyle}">
+
+            <StackPanel VerticalAlignment="Top"
+                     HorizontalAlignment="Left"
+                     Orientation="Horizontal">
+
+                <!-- ================= SHOW DATABASE ENTRIES MEASUREMENT ================= -->
+                <RadioButton Style="{StaticResource NavButtonTabStyle}"
+             Command="{Binding CommandShowBodyMeasurementEntryView}"
+             GroupName="ImportSelection"
+             IsChecked="True"
+             ToolTip="Measurement Database Entries">
+
+                    <TextBlock Text="📋 Body Measurements"
+               Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
+
+                </RadioButton>
+
+
+                <!-- ================= SHOW DATABASE ENTRIES SAMSUNG FOOD INTAKE ================= -->
+                <RadioButton Style="{StaticResource NavButtonTabStyle}"
+                          Command="{Binding CommandShowFoodIntakeEntryView}"
+                          GroupName="ImportSelection"
+                          IsChecked="False"
+                          ToolTip="Samsung Food Intake Database Entries">
+
+                    <TextBlock Text="🥗 Food Intake"
+                            Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
+
+                </RadioButton>
+
+                <!-- ================= SHOW DATABASE ENTRIES SAMSUNG DAILY STEP ================= -->
+                <RadioButton Style="{StaticResource NavButtonTabStyle}" 
+                          Command="{Binding CommandShowStepTrendEntryView}"
+                          GroupName="ImportSelection"
+                          ToolTip="Samsung Daily Step Trend Database Entries">
+
+                    <TextBlock Text="🚶 Daily Steps"
+                            Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
+
+                </RadioButton>
+
+                <!-- ================= SHOW DATABASE ENTRIES SAMSUNG EXERCISE ================= -->
+                <RadioButton Style="{StaticResource NavButtonTabStyle}" 
+                          Command="{Binding CommandShowExerciseEntryView}"
+                          GroupName="ImportSelection"
+                          ToolTip="Samsung Exercise Database Entries">
+
+                    <TextBlock Text="🏃‍♀️ Exercises"
+                            Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
+
+                </RadioButton>
+
+                <!-- ================= SHOW DATABASE ENTRIES SAMSUNG HEART RATE ================= -->
+                <RadioButton Style="{StaticResource NavButtonTabStyle}" 
+                          Command="{Binding CommandShowHeartRateEntryView}"
+                          GroupName="ImportSelection"
+                          ToolTip="Samsung Heart Rate Database Entries">
+
+                    <TextBlock Text="💓 Heart Rate"
+                            Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
+
+                </RadioButton>
+
+                <!-- ================= SHOW DATABASE ENTRIES SAMSUNG OXYGEN SATURATION ================= -->
+                <RadioButton Style="{StaticResource NavButtonTabStyle}" 
+                          Command="{Binding CommandOxygenSaturationEntryView}"
+                          GroupName="ImportSelection"
+                          ToolTip="Samsung Oxygen Saturation CSV Import">
+
+                    <TextBlock Style="{DynamicResource TextBlockNavButtonTabTitle}">
+
+                         <InlineUIContainer>
+                             <Image Source="/Ressources/Images/icons8-pulse-oximeter-100.png" 
+                                    Width="22" 
+                                    Height="22" 
+                                    Margin="0"/>
+                         </InlineUIContainer>
+                     
+                         <Run Text=" SpO₂"/>
+
+                    </TextBlock>
+
+
+
+                </RadioButton>
+
+                <!-- ================= SHOW DATABASE ENTRIES HEAVY APP ================= -->
+                <RadioButton Style="{StaticResource NavButtonTabStyle}" 
+                          Command="{Binding CommandShowHeavyAppEntryView}"
+                          GroupName="ImportSelection"
+                          ToolTip="Heavy App Database Entries">
+
+                    <TextBlock Text="🏋️ Gym"
+                            Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
+
+                </RadioButton>
+
+
+
+            </StackPanel>
+        </Border>
+
+        <!-- ================= CONTENT ================= -->
+        <Grid Grid.Row="1">
+            <Frame x:Name="MainChartContent" 
+                Content="{Binding CurrentPage}"
+                NavigationUIVisibility="Hidden"/>
+        </Grid>
+    </Grid>
+</Page>

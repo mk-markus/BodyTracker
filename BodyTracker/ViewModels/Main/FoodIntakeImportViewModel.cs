@@ -174,7 +174,14 @@ namespace BodyTracker.ViewModels
             try
             {
 
-                var path = Directory.GetFiles(searchPath, $"*{searchTerm}*");
+                var path = await Task.Run(() =>
+                {
+                    if (!Directory.Exists(searchPath))
+                    {
+                       throw new Exception($"The folder '{searchPath}' could not be reached.");
+                    }
+                    return Directory.GetFiles(searchPath, $"*{searchTerm}*");
+                });
 
                 if (!path.Any())
                 {
@@ -257,7 +264,7 @@ namespace BodyTracker.ViewModels
                     ProgressText = $"{value.Text} {value.value:F0}%";
                 });
 
-                await databaseService.SyncFoodIntakeAsync(pid, FoodIntakeDatas, progress);
+                await databaseService.UpsertFoodIntakeSqlAsync(pid, FoodIntakeDatas, progress);
 
                 ProgressText = $"Uploaded {FoodIntakeDatas.Count} Datas)";
             }

@@ -8,7 +8,7 @@
         Title="Login Window" 
         Height="450" 
         Width="800"
-        Icon="/Ressources/Images/ProgramIcon_GeminiGenerated.jpg">
+        Icon="/Ressources/Icon/ProgramIcon_GymRunning.ico">
     <Grid Background="{StaticResource AppBackgroundBrush}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="72"/>

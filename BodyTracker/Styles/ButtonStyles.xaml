@@ -146,6 +146,8 @@
         </Setter>
     </Style>
 
+  
+
     <!-- Modern standard button style configuring adaptive sizing, Segoe UI typography, border colors, padding, and comprehensive interactive triggers for modern UI layouts. -->
     <Style x:Key="ModernStandardButton" TargetType="Button">
         <Setter Property="Margin" Value="0,0,4,0"/>

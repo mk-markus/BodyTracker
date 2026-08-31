@@ -162,7 +162,7 @@ namespace BodyTracker.ViewModels.Main
                     ProgressText = $"{value.Text} {value.value:F0}%";
                 });
 
-                await databaseService.SyncExerciseAsync(pid, ExerciseDatas, progress);
+                await databaseService.UpsertExerciseSqlAsync(pid, ExerciseDatas, progress);
 
                 ProgressText = $"Uploaded ({ExerciseDatas.Count} Datas)";
             }
@@ -235,7 +235,14 @@ namespace BodyTracker.ViewModels.Main
             try
             {
 
-                var path = Directory.GetFiles(searchPath, $"*{searchTerm}*");
+                var path = await Task.Run(() =>
+                {
+                    if (!Directory.Exists(searchPath))
+                    {
+                        throw new Exception($"The folder '{searchPath}' could not be reached.");
+                    }
+                    return Directory.GetFiles(searchPath, $"*{searchTerm}*");
+                });
 
                 if (!path.Any())
                 {

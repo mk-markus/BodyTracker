@@ -15,10 +15,16 @@
         public double SecondaryVolume { get; set; }
 
         /// <summary>
-        /// Gets the combined total workout volume across all primary and secondary muscle groups.
+        /// Gets the combined total workout volume across all primary + secondary muscle groups.
         /// </summary>
         /// <remarks>Computed dynamically as the sum of <see cref="PrimaryVolume"/> and <see cref="SecondaryVolume"/>.</remarks>
-        public double TotalVolume => PrimaryVolume + SecondaryVolume;
+        public double TotalVolumeTrainigStimulus => PrimaryVolume + SecondaryVolume;
+
+        /// <summary>
+        /// Gets or sets the overall cumulative workout volume.
+        /// </summary>
+        /// <remarks>Represents the total lifting volume across all tracked exercises and sets.</remarks>
+        public double TotalVolume { get; set; }
 
         /// <summary>
         /// Gets or sets the total count of performed exercises or workout executions.

@@ -7,6 +7,12 @@ namespace BodyTracker.Models
     /// </summary>
     public class SamsungStepTrendModel
     {
+
+        /// <summary>
+        /// Contains the Step Trend ID from the database table
+        /// </summary>
+        public int? StepTrendID { get; set; }
+
         /// <summary>
         /// Reference to the associated binary/JSON data file.
         /// </summary>

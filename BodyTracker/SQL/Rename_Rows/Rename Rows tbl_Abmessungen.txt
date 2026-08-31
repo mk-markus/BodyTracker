@@ -1,4 +1,4 @@
-ALTER TABLE tbl_Abmessungen
+ALTER TABLE tbl_BodyDimensions
     CHANGE COLUMN AbmessungID dimension_id INT AUTO_INCREMENT,
     CHANGE COLUMN Messdatum Messdatum DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
     
@@ -42,7 +42,7 @@ ALTER TABLE tbl_Abmessungen
     CHANGE COLUMN Trizepsfalte_mm tricep_skin_fold_current DECIMAL(7,2) NULL DEFAULT '0.00',
     ADD COLUMN tricep_skin_fold_initial DECIMAL(7,2) NULL DEFAULT '0.00' AFTER tricep_skin_fold_current;
     
-    UPDATE tbl_Abmessungen SET 
+    UPDATE tbl_BodyDimensions SET 
     chest_circumference_initial = chest_circumference_current,
     abdomen_circumference_initial = abdomen_circumference_current,
     hip_circumference_initial = hip_circumference_current,

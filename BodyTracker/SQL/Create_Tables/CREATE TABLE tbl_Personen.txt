@@ -1,4 +1,4 @@
-CREATE TABLE `tbl_Personen` (
+CREATE TABLE `tbl_Persons` (
 	`person_id` INT(11) NOT NULL AUTO_INCREMENT,
 	`person_first_name` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8_general_ci',
 	`person_last_name` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8_general_ci',

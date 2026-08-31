@@ -5,9 +5,9 @@ using System.Windows.Controls;
 namespace BodyTracker.Views.Pages
 {
     /// <summary>
-    /// Interaktionslogik für ChartsStepDailyTrendPage.xaml
+    /// Interaktionslogik für ChartsStepDailyTrendView.xaml
     /// </summary>
-    public partial class ChartsStepDailyTrendPage : Page
+    public partial class ChartsStepDailyTrendView : Page
     {
         /// <summary>
         /// A private, read-only reference to the application's <see cref="MainWindow"/>.
@@ -30,24 +30,19 @@ namespace BodyTracker.Views.Pages
         private readonly StepTrendChartViewModel chartsStepsDailyTrendPageViewModel;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ChartsStepDailyTrendPage"/> class.
+        /// Initializes a new instance of the <see cref="ChartsStepDailyTrendView"/> class.
         /// </summary>
         /// <param name="shell">The main window shell reference.</param>
         /// <param name="db">The <see cref="DatabaseService"/> instance used for data operations.</param>
-        public ChartsStepDailyTrendPage(MainWindow shell, DatabaseService db)
+        public ChartsStepDailyTrendView(DatabaseService db)
         {
             InitializeComponent();
-
-            _shell = shell;
 
             databaseService = db;
 
             chartsStepsDailyTrendPageViewModel = new StepTrendChartViewModel(databaseService);
 
             DataContext = chartsStepsDailyTrendPageViewModel;
-
-            // Automatically refresh the chart data once the page is fully loaded.
-            Loaded += async (s, e) => await chartsStepsDailyTrendPageViewModel.RefreshChartAsync();
 
             Unloaded +=  (s, e) => chartsStepsDailyTrendPageViewModel.Dispose();
         }

@@ -159,7 +159,7 @@ namespace BodyTracker.ViewModels
         /// <returns>A task that represents the asynchronous database insert operation.</returns>
         private async Task CreatePersonAsync()
         {
-            if (double.TryParse(PersonHeight, out var height)) await databaseService.CreatePersonAsync(FirstName.Trim(), LastName.Trim(), BirthDate, height);
+            if (double.TryParse(PersonHeight, out var height)) await databaseService.GetPersonCreateSqlAsync(FirstName.Trim(), LastName.Trim(), BirthDate, height);
             else return;
 
             WeakReferenceMessenger.Default.Send(new NavigationMessage(NavigationMessage.ShowLauncher));

@@ -1,0 +1,356 @@
+﻿<Page x:Class="BodyTracker.Views.Pages.Main.OxygenSaturationChartView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"     
+      xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:BodyTracker.Views"
+      mc:Ignorable="d" 
+      d:DesignHeight="700" d:DesignWidth="1000"
+      Title="OxygenSaturationChartView">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" 
+           Padding="0"
+           Margin="0,12,0,0">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="300"/>
+                <RowDefinition Height="300"/>
+                <RowDefinition Height="300"/>
+            </Grid.RowDefinitions>
+
+
+            <!-- SECTION 1: CONTROLS & FILTERS HEADER -->
+            <Grid Grid.Column="0"
+           Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+
+                <!-- ================= TIMESPAN SECTION ================= -->
+                <Border Style="{StaticResource BorderDashboardCardStyle}"
+                 Grid.Column="0"
+                 Padding="10"
+                 Margin="0,0,10,0">
+
+                    <StackPanel>
+
+                        <TextBlock Text="📅 Timespan" 
+                            Style="{DynamicResource TextBlockDashBoardTitle}" 
+                            Margin="0,0,0,10"/>
+
+                        <!-- Datepickers -->
+                        <StackPanel Orientation="Horizontal">
+
+                            <TextBlock Text="From:" VerticalAlignment="Center" Margin="0,0,10,0" Style="{DynamicResource TextBlockDescribing}"/>
+                            <DatePicker SelectedDate="{Binding StartDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{DynamicResource ModernFlatDatePicker}"/>
+
+                            <TextBlock Text="To:" VerticalAlignment="Center" Margin="10,0,10,0" Style="{DynamicResource TextBlockDescribing}"/>
+
+                            <DatePicker SelectedDate="{Binding EndDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                 Style="{DynamicResource ModernFlatDatePicker}"/>
+
+                            <!-- ================= TOGGLE BUTTON QUICK DATE RANGES ================= -->
+                            <ToggleButton x:Name="DateShortCuts"
+                                   Style="{DynamicResource ModernStandardToggleButton}"
+                                   Content="📅 Quick Ranges ▼ "
+                                   Margin="10,0,0,0"          
+                                   ToolTip="Filters the chart to show data exclusively for the current year."/>
+
+                            <!-- ================= POPUP QUICK DATE RANGES ================= -->
+                            <Popup PlacementTarget="{Binding ElementName=DateShortCuts}"
+                            Placement="Bottom"
+                            StaysOpen="False"
+                            IsOpen="{Binding IsChecked, ElementName=DateShortCuts}" 
+                            AllowsTransparency="True">
+
+                                <Border Style="{DynamicResource BorderPopupDownCardStyle}"
+                                 Width="{Binding ActualWidth, ElementName=DateShortCuts}">
+
+                                    <StackPanel>
+
+                                        <Button Content="📅 Year" 
+                                         Style="{StaticResource ModernStandardButton}" 
+                                         Command="{Binding CommandSetActualYear}" 
+                                         ToolTip="Filter chart data for the current year."
+                                         Margin="0,0,0,0"/>
+
+                                        <Button Content="📆 Week" 
+                                         Style="{StaticResource ModernStandardButton}" 
+                                         Command="{Binding CommandSetActualWeek}" 
+                                         ToolTip="Filter chart data for the current week."
+                                         Margin="0,5,0,0"/>
+
+                                        <Button Content="🗓️ Month" 
+                                         Style="{StaticResource ModernStandardButton}" 
+                                         Command="{Binding CommandSetActualMonth}" 
+                                         ToolTip="Filter chart data for the current month."
+                                         Margin="0,5,0,0"/>
+
+                                        <Button Content="🌍 All Time" 
+                                         Style="{StaticResource ModernStandardButton}" 
+                                         Command="{Binding CommandShowAllData}" 
+                                         ToolTip="Display the complete historical dataset without time restrictions."
+                                         Margin="0,5,0,0"/>
+                                    </StackPanel>
+                                </Border>
+                            </Popup>
+
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- ================= METRICS SETTINGS SECTION ================= -->
+                <Border Style="{StaticResource BorderDashboardCardStyle}"
+                 Grid.Column="1"
+                 Padding="10">
+
+                    <StackPanel Orientation="Vertical">
+
+                        <TextBlock Text="📊 Series Visibility" 
+                            VerticalAlignment="Center"
+                            Style="{DynamicResource TextBlockDashBoardTitle}" 
+                            Margin="0,0,0,10"/>
+
+                        <StackPanel Orientation="Horizontal">
+
+                            <!-- ================= TOGGLE BUTTON SERIES MEASUREMENT DATAS ================= -->
+                            <ToggleButton x:Name="SeriesButton"
+                                   Style="{DynamicResource ModernStandardToggleButton}"
+                                   Content="📊 Show Measurements ▼ "
+                                   Margin="0,0,10,0"          
+                                   ToolTip="Select or clear the check boxes to show or hide in the following diagrams."/>
+
+
+                            <!-- ================= POPUP SERIES CHECKBOXES RANGES ================= -->
+                            <Popup PlacementTarget="{Binding ElementName=SeriesButton}"
+                            Placement="Bottom"
+                            StaysOpen="False"
+                            IsOpen="{Binding IsChecked, ElementName=SeriesButton}" 
+                            AllowsTransparency="True">
+
+
+                                <Border Style="{DynamicResource BorderPopupDownCardStyle}"
+                                  Width="{Binding ActualWidth, ElementName=SeriesButton}">
+
+
+                                    <StackPanel>
+                                        <CheckBox Content="📈 SpO₂" 
+                                                  IsChecked="{Binding ShowSpO2}"
+                                                  Command="{Binding CommandReloadChartsAsync}" 
+                                                  Style="{StaticResource StandardCheckBox}" 
+                                                  Margin="0,0,0,8"/>
+                                        
+                                        <CheckBox Content="📈 max. SpO₂" 
+                                           IsChecked="{Binding ShowMaxSpO2}"
+                                           Command="{Binding CommandReloadChartsAsync}" 
+                                           Style="{StaticResource StandardCheckBox}" 
+                                           Margin="0,0,0,8"/>
+
+                                        <CheckBox Content="📈 min.SpO₂" 
+                                           IsChecked="{Binding ShowMinSpO2}"
+                                           Command="{Binding CommandReloadChartsAsync}" 
+                                           Style="{StaticResource StandardCheckBox}" 
+                                           Margin="0,0,0,8"/>
+
+
+                                        <CheckBox Content="⏳ SpO₂ Low Duration" 
+                                           IsChecked="{Binding ShowLowSpO2Duration}"
+                                           Command="{Binding CommandReloadChartsAsync}" 
+                                           Style="{StaticResource StandardCheckBox}" 
+                                           Margin="0,0,0,8"/>
+
+                                        <CheckBox Content="📊 SpO₂ Coverage Rate" 
+                                           IsChecked="{Binding ShowSpO2CoverageRate}" 
+                                           Command="{Binding CommandReloadChartsAsync}" 
+                                           Style="{StaticResource StandardCheckBox}" 
+                                           Margin="0,0,0,8"/>
+
+                                    </StackPanel>
+
+                                </Border>
+                            </Popup>
+
+
+                            <!-- ================= TOGGLE BUTTON TREND SERIES MEASUREMENT DATAS ================= -->
+                            <ToggleButton x:Name="TrendSeriesButton"
+                                   Style="{DynamicResource ModernStandardToggleButton}"
+                                   Content="📈 Show Trends ▼ "
+                                   ToolTip="Select or clear the trend check boxes to show or hide in the following diagrams."/>
+
+                            <!-- ================= POPUP TREND SERIES CHECKBOXES RANGES ================= -->
+                            <Popup PlacementTarget="{Binding ElementName=TrendSeriesButton}"
+                            Placement="Bottom"
+                            StaysOpen="False"
+                            IsOpen="{Binding IsChecked, ElementName=TrendSeriesButton}"
+                            AllowsTransparency="True">
+
+                                <Border Background="White"
+                                 Style="{DynamicResource BorderPopupDownCardStyle}"
+                                  Width="{Binding ActualWidth, ElementName=TrendSeriesButton}">
+
+
+
+                                    <StackPanel>
+                                        <CheckBox Content="📈 SpO₂" 
+                                                  IsChecked="{Binding ShowSpO2Trend}"
+                                                  Command="{Binding CommandReloadChartsAsync}" 
+                                                  Style="{StaticResource StandardCheckBox}" 
+                                                  Margin="0,0,0,8"/>
+
+                                        <CheckBox Content="📈 max. SpO₂" 
+                                           IsChecked="{Binding ShowMaxSpO2Trend}"
+                                           Command="{Binding CommandReloadChartsAsync}" 
+                                           Style="{StaticResource StandardCheckBox}" 
+                                           Margin="0,0,0,8"/>
+
+                                        <CheckBox Content="📈 min.SpO₂" 
+                                           IsChecked="{Binding ShowMinSpO2Trend}"
+                                           Command="{Binding CommandReloadChartsAsync}" 
+                                           Style="{StaticResource StandardCheckBox}" 
+                                           Margin="0,0,0,8"/>
+
+
+                                        <CheckBox Content="⏳ SpO₂ Low Duration" 
+                                           IsChecked="{Binding ShowLowSpO2DurationTrend}"
+                                           Command="{Binding CommandReloadChartsAsync}" 
+                                           Style="{StaticResource StandardCheckBox}" 
+                                           Margin="0,0,0,8"/>
+
+                                        <CheckBox Content="📊 SpO₂ Coverage Rate" 
+                                           IsChecked="{Binding ShowSpO2CoverageRateTrend}" 
+                                           Command="{Binding CommandReloadChartsAsync}" 
+                                           Style="{StaticResource StandardCheckBox}" 
+                                           Margin="0,0,0,8"/>
+
+                                    </StackPanel>
+
+                                </Border>
+                            </Popup>
+
+
+                            <Button Content="🔄"
+                         ToolTip="Refresh Datas --> Reload all datas from Database"
+                         Command="{Binding CommandRefreshAsync}"
+                         Style="{DynamicResource IconStandardButton}" />
+
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- ================= POPUP SPO2 CHART ================= -->
+            <Border Style="{StaticResource BorderDashboardCardStyle}"
+             Grid.Column="0"
+             Grid.Row="1"
+             Margin="0,12,0,0">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="📈 SpO₂"
+                  Style="{DynamicResource TextBlockDashBoardTitle}"
+                  Grid.Column="0"
+                  Grid.Row="0"
+                  Margin="0,0,0,12"/>
+
+                    <lvc:CartesianChart  Series="{Binding SeriesSpO2}" 
+                                     XAxes="{Binding XAxesSpO2}" 
+                                     YAxes="{Binding YAxesSpO2}" 
+                                     LegendPosition="Bottom"
+                                     Background="Transparent"
+                                     Grid.Column="0"
+                                     Grid.Row="1">
+                    </lvc:CartesianChart>
+
+                </Grid>
+            </Border>
+
+            <!-- ================= POPUP LOW SPO2 DURATION CHART ================= -->
+            <Border Style="{StaticResource BorderDashboardCardStyle}"
+             Grid.Column="0"
+             Grid.Row="2"
+             Margin="0,12,0,0">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="⏳ SpO₂ Low Duration" 
+                  Style="{DynamicResource TextBlockDashBoardTitle}"
+                  Grid.Column="0"
+                  Grid.Row="0"
+                  Margin="0,0,0,12"/>
+
+                    <lvc:CartesianChart  Series="{Binding SeriesLowSpO2Duration}" 
+                       XAxes="{Binding XAxesLowSpO2Duration}" 
+                       YAxes="{Binding YAxesLowSpO2Duration}" 
+                       LegendPosition="Hidden"
+                       Background="Transparent"
+                       Grid.Column="0"
+                       Grid.Row="1">
+                    </lvc:CartesianChart>
+
+                </Grid>
+            </Border>
+
+            <!-- ================= POPUP SPO2 COVERAGE RATE CHART ================= -->
+            <Border Style="{StaticResource BorderDashboardCardStyle}"
+                Grid.Column="0"
+                Grid.Row="3"
+                Margin="0,12,0,0">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="📊 SpO₂ Coverage Rate" 
+                            Style="{DynamicResource TextBlockDashBoardTitle}"
+                            Grid.Column="0"
+                            Grid.Row="0"
+                            Margin="0,0,0,12"/>
+
+                    <lvc:CartesianChart  Series="{Binding SeriesSpO2CoverageRate}" 
+                                     XAxes="{Binding XAxesSpO2CoverageRate}" 
+                                     YAxes="{Binding YAxesSpO2CoverageRate}" 
+                                     LegendPosition="Hidden"
+                                     Background="Transparent"
+                                     Grid.Column="0"
+                                     Grid.Row="1">
+                    </lvc:CartesianChart>
+
+                </Grid>
+            </Border>
+        </Grid>
+    </ScrollViewer>
+</Page>

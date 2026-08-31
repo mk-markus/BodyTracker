@@ -33,8 +33,8 @@
                              Command="{Binding CommandShowMeasurements}"
                              GroupName="ChartSelection"
                              IsChecked="True">
-                    
-                    <TextBlock Text="Body Measurements"
+
+                    <TextBlock Text="📋 Body Measurement"
                                Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
 
                 </RadioButton>
@@ -43,18 +43,58 @@
                 <RadioButton Style="{StaticResource NavButtonTabStyle}" 
                              Command="{Binding CommandShowDailyStep}"
                              GroupName="ChartSelection">
-                    
-                    <TextBlock Text="Daily Steps"
+
+                    <TextBlock Text="📊 Movement | Energy"
                                Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
 
                 </RadioButton>
 
+                <!-- ================= SHOW EXERCISE CHARTS ================= -->
+                <RadioButton Style="{StaticResource NavButtonTabStyle}" 
+                             Command="{Binding CommandShowExercise}"
+                             GroupName="ChartSelection">
+
+                    <TextBlock Text="🏃 Exercise"
+                               Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
+
+                </RadioButton>
+
+                <!-- ================= SHOW HEART RATE CHARTS ================= -->
+                <RadioButton Style="{StaticResource NavButtonTabStyle}" 
+                             Command="{Binding CommandShowHeartRate}"
+                             GroupName="ChartSelection">
+
+                    <TextBlock Text="💓 Heart Rate"
+                               Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
+
+                </RadioButton>
+
+                <!-- ================= SHOW HEART RATE CHARTS ================= -->
+                <RadioButton Style="{StaticResource NavButtonTabStyle}" 
+                             Command="{Binding CommandShowSpO2}"
+                             GroupName="ChartSelection">
+
+                    <TextBlock Style="{DynamicResource TextBlockNavButtonTabTitle}">
+
+                    <InlineUIContainer>
+                        <Image Source="/Ressources/Images/icons8-pulse-oximeter-100.png" 
+                                Width="22" 
+                                Height="22" 
+                                Margin="0"/>
+                    </InlineUIContainer>
+    
+                    <Run Text=" SpO₂"/>
+                    </TextBlock>
+
+                </RadioButton>
+
+
                 <!-- ================= SHOW WORKOUT CHARTS & EXERCISES ================= -->
                 <RadioButton Style="{StaticResource NavButtonTabStyle}" 
-                             Command="{Binding ShowWorkoutsCommand}"
+                             Command="{Binding CommandShowWorkouts}"
                              GroupName="ChartSelection">
-                    
-                    <TextBlock Text="Workouts"
+
+                    <TextBlock Text="🏋️ Gym"
                                Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
 
                 </RadioButton>

@@ -23,7 +23,24 @@
     </Style>
 
 
+    <Style x:Key="TextboxBorder" TargetType="Border">
 
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="Padding" Value="3"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrushColor}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Width" Value="50"/>
+    </Style>
 
-
+    <!-- Popup card style defining dynamic card background brush, corner radius, padding, dynamic border brush, and border thickness for container cards. -->
+    <Style x:Key="BorderPopupDownCardStyle" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource CardBackgroundBrush}"/>
+        <Setter Property="CornerRadius" Value="4,4,16,16"/>
+        <Setter Property="Padding" Value="20"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrushColor}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
 </ResourceDictionary>

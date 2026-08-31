@@ -22,7 +22,7 @@
         /// <summary>
         /// Gets the navigation target key for displaying the bodyMeasurement database page.
         /// </summary>
-        public static string ShowMeasurement => "ShowMeasurementDatabasePageAsync";
+        public static string ShowMeasurement => "ShowMultiDBEntryViewAsync";
 
         /// <summary>
         /// Gets the navigation target key for displaying the new entry creation page.

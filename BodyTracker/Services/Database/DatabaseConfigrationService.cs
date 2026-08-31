@@ -24,6 +24,11 @@ namespace BodyTracker.Services
         private string DefautlPath = @"%Userprofile%\AppData\Local\BodyTracker";
 
         /// <summary>
+        /// The default directory path for certificate file.
+        /// </summary>
+        private string CertPath = string.Empty ;
+
+        /// <summary>
         /// Gets a value indicating whether a valid configuration file was found or created.
         /// </summary>
         public bool     PathOK {  get; private set; } = false;
@@ -61,7 +66,8 @@ namespace BodyTracker.Services
         public DatabaseConfigrationService()
         { 
             // Check if path is empty than use an default path. 
-            (PathOK, this.AppSettingsPath) = ConfigFileAvialable(DefautlPath);
+            (PathOK, this.AppSettingsPath) = ConfigFileAvialable(DefautlPath, "appsettings.json");
+            CertPath = GetFullFilePath(DefautlPath, "ca.pem");
          
             if(!PathOK) throw new ArgumentException("The app setting file does not exist at: " + AppSettingsPath);
          
@@ -149,8 +155,10 @@ namespace BodyTracker.Services
                     $"Port={CryptoHelper.Unprotect(cfg.PortNumber)};" +
                     $"Database={CryptoHelper.Unprotect(cfg.DatabaseName)};" +
                     $"Uid={CryptoHelper.Unprotect(cfg.User)};" +
-                    $"Pwd={pwd};SslMode=Preferred;" +
-                    $"AllowLoadLocalInfile = true";
+                    $"Pwd={pwd};" +
+                    $"SslMode=VerifyCA;" +
+                    $"AllowLoadLocalInfile = true;" +
+                    $"SslCa={CertPath}";
         }
 
         /// <summary>
@@ -172,7 +180,7 @@ namespace BodyTracker.Services
         /// This method resolves environment variables, creates missing directories, and 
         /// automatically triggers <see cref="CreateAppSettingsFile"/> if the file is missing.
         /// </remarks>
-        public (bool, string) ConfigFileAvialable(string directoryPath)
+        public (bool, string) ConfigFileAvialable(string directoryPath, string filename)
         {
             string filePath= string.Empty;
 
@@ -185,7 +193,7 @@ namespace BodyTracker.Services
             if (!Directory.Exists(filePath)) Directory.CreateDirectory(filePath);
          
             
-            filePath = Path.Combine(filePath, "appsettings.json");
+            filePath = Path.Combine(filePath, filename);
 
             // Check if app settings availvaible. If so, return the available file.
             if (File.Exists(filePath)) return (true, filePath);
@@ -198,6 +206,23 @@ namespace BodyTracker.Services
                 else return (false, string.Empty);
             }
         }
+
+
+        public string GetFullFilePath(string directoryPath, string filename)
+        {
+            string filePath = string.Empty;
+
+            // Check file Path exist when not create filepath
+            if (!string.IsNullOrEmpty(directoryPath)) filePath = Environment.ExpandEnvironmentVariables(directoryPath);
+            else filePath = Environment.ExpandEnvironmentVariables(DefautlPath);
+
+            filePath = Path.Combine(filePath, filename);
+
+            // Check if app settings availvaible. If so, return the available file.
+            if (File.Exists(filePath)) return filePath;
+            else return string.Empty;
+        }
+
 
         /// <summary>
         /// Creates a new 'appsettings.json' template file with default values in the current application directory.

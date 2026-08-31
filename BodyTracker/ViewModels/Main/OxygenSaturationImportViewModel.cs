@@ -163,7 +163,7 @@ namespace BodyTracker.ViewModels.Main
                 });
 
 
-                await databaseService.SyncOxygenSaturationAsync(pid, OxygenSaturationDatas, progress);
+                await databaseService.UpsertSpO2SqlAsync(pid, OxygenSaturationDatas, progress);
 
 
                 ProgressText = $"Uploaded ({OxygenSaturationDatas.Count} Datas)";
@@ -239,7 +239,14 @@ namespace BodyTracker.ViewModels.Main
             try
             {
 
-                var path = Directory.GetFiles(searchPath, $"*{searchTerm}*");
+                var path = await Task.Run(() =>
+                {
+                    if (!Directory.Exists(searchPath))
+                    {
+                        throw new Exception($"The folder '{searchPath}' could not be reached.");
+                    }
+                    return Directory.GetFiles(searchPath, $"*{searchTerm}*");
+                });
 
                 if (!path.Any())
                 {

@@ -65,7 +65,22 @@ namespace BodyTracker.Models
         /// <summary>
         /// Gets or sets the lower bound of the body muscle percentage range.
         /// </summary>
-        public float? BodyMusclePercentageBottom { get; set; }  
+        public float? BodyMusclePercentageBottom { get; set; }
+
+        /// <summary>
+        /// Gets or sets the absolute fat-free mass in kilograms.
+        /// </summary>
+        public float? FFM_kg { get; set; }
+
+        /// <summary>
+        /// Gets or sets the calculated Fat-Free Mass Index (FFMI).
+        /// </summary>
+        public float? FFM_index { get; set; }
+
+        /// <summary>
+        /// Gets or sets the descriptive classification of the FFMI value based on gender-specific thresholds.
+        /// </summary>
+        public string? FFM_index_describing { get; set; }
 
         /// <summary>
         /// Gets or sets the mass of the body bone, in kilograms.

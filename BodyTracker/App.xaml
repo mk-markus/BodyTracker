@@ -22,6 +22,9 @@
                 <ResourceDictionary Source="/Styles/ProgressbarStyles.xaml"/>
                 <ResourceDictionary Source="/Styles/ContentControlStyles.xaml"/>
                 <ResourceDictionary Source="/Styles/FrameStyles.xaml"/>
+                <ResourceDictionary Source="/Styles/ToggleButtonStyles.xaml"/>
+                <ResourceDictionary Source="/Styles/DatePickerStyles.xaml"/>
+                <ResourceDictionary Source="/Styles/ComboBoxStyles.xaml"/>
 
 
 

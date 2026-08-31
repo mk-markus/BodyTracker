@@ -1,19 +1,6 @@
-﻿using BodyTracker.ViewModels;
-using BodyTracker.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using BodyTracker.Services;
+using BodyTracker.ViewModels;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace BodyTracker.Views.Pages
 {
@@ -35,11 +22,9 @@ namespace BodyTracker.Views.Pages
         /// </summary>
         private readonly DatabaseService databaseService;
 
-        private ChartsMeasurementsPage chartsMeasurementsPage;
-
-        private ChartsStepDailyTrendPage chartStepDailyTrendPage;
-
-
+        /// <summary>
+        /// 
+        /// </summary>
         private readonly MultiImportViewModel multiImportPageViewModel;
 
 

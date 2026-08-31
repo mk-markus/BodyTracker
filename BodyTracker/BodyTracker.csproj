@@ -23,6 +23,8 @@
   <ItemGroup>
     <None Remove="License\AdditionalLicense.txt" />
     <None Remove="License\License.txt" />
+    <None Remove="Ressources\Icon\ProgramIcon_GymDumbbell.ico" />
+    <None Remove="Ressources\Icon\ProgramIcon_GymRunning.ico" />
     <None Remove="Ressources\Images\Caliper-Male-Female.jpg" />
     <None Remove="Ressources\Images\Gemini_Generated_Image_zew65qzew65qzew6_1.jpg" />
     <None Remove="Ressources\Images\icons8-pulse-oximeter-100.png" />
@@ -39,6 +41,12 @@
     </Content>
     <Content Include="License\License.txt">
       <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Ressources\Icon\ProgramIcon_GymDumbbell.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Ressources\Icon\ProgramIcon_GymRunning.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Ressources\Images\Caliper-Male-Female.jpg">
@@ -90,8 +98,5 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Ressources\CsvFiles\" />
   </ItemGroup>
 </Project>

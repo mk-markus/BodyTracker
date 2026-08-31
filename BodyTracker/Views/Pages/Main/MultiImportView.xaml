@@ -30,7 +30,7 @@
 
                 <!-- ================= SHOW IMPORT SAMSUNG FOOD INTAKE ================= -->
                 <RadioButton Style="{StaticResource NavButtonTabStyle}"
-                             Command="{Binding CommandShowFoodIntakeImportView}"
+                             Command="{Binding CommandShowFoodIntakeEntryView}"
                              GroupName="ImportSelection"
                              IsChecked="True"
                              ToolTip="Samsung Food Intake CSV Import">

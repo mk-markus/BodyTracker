@@ -1,6 +1,8 @@
 ﻿using BodyTracker.Models;
+using BodyTracker.Models.WorkoutLog;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -149,7 +151,7 @@ namespace BodyTracker.Services
                                            DateTime endDate = default)
         {
 
-            if (gymAppLogs == null || !gymAppLogs.Any()) throw new ArgumentException("The provided gymAppLogs collection is null or empty.", nameof(gymAppLogs));
+            if (gymAppLogs == null || !gymAppLogs.Any()) return new TotalWorkoutModel();
 
             if (startDate == default || endDate == default)
             {
@@ -171,6 +173,7 @@ namespace BodyTracker.Services
             int countExercises = 0;
 
             var lastDate = new DateTime(1500, 01, 01);
+            Debug.WriteLine("Totoal: " + countExercises);
 
             foreach (var entry in filteredLogs)
             {
@@ -187,7 +190,6 @@ namespace BodyTracker.Services
                     countExercises++;
                     lastDate = entry.ExcerciseDate;
                 }
-
             }
 
             var priMuscleVol = totalVolume * primaryFactor;
@@ -197,10 +199,58 @@ namespace BodyTracker.Services
             {
                 PrimaryVolume = priMuscleVol,
                 SecondaryVolume = secMuscleVol,
-                TotalExercises = countExercises
+                TotalVolume = totalVolume,
+                TotalExercises = countExercises,
+                
             };
         }
 
+
+        /// <summary>
+        /// Calculates progress metrics (such as peak weight, maximum 1RM, and total volume) for each exercise grouped by date within an optional range.
+        /// </summary>
+        /// <param name="gymAppLogs">The collection of gym workout entries to analyze.</param>
+        /// <param name="startDate">The inclusive start date for the filter. Defaults to the earliest log entry date if not specified.</param>
+        /// <param name="endDate">The inclusive end date for the filter. Defaults to the latest log entry date if not specified.</param>
+        /// <returns>An enumerable collection of <see cref="WorkoutExerciseProgressModel"/> sorted by exercise name and date.</returns>
+        public IEnumerable<WorkoutExerciseProgressModel> CalculateExerciseProgress(
+            IEnumerable<GymWorkoutEntryModel> gymAppLogs,
+            DateTime startDate = default,
+            DateTime endDate = default)
+        {
+            if (gymAppLogs == null || !gymAppLogs.Any())
+                return Enumerable.Empty<WorkoutExerciseProgressModel>();
+
+            if (startDate == default || endDate == default)
+            {
+                startDate = gymAppLogs.Min(x => x.ExcerciseDate);
+                endDate = gymAppLogs.Max(x => x.ExcerciseDate);
+            }
+
+            var filteredLogs = gymAppLogs
+                .Where(x => x.ExcerciseDate >= startDate.Date &&
+                            x.ExcerciseDate <= endDate.Date &&
+                            ExerciseByName.ContainsKey(x.ExerciseName));
+
+            var progressData = filteredLogs
+                .GroupBy(x => new { x.ExerciseName, Date = x.ExcerciseDate.Date })
+                .Select(g => new WorkoutExerciseProgressModel
+                {
+                    ExerciseName = g.Key.ExerciseName,
+                    Date = g.Key.Date,
+                    // Peak Weight: The heaviest weight of the day
+                    PeakWeight = g.Max(x => x.Weight.GetValueOrDefault()),
+                    // Max 1RM: Highest calculated 1RM value of the day (Epley formula: weight * (1 + reps / 30))
+                    MaxOneRepMax = g.Max(x => x.Weight.GetValueOrDefault() * (1.0 + x.Reps.GetValueOrDefault() / 30.0)),
+                    // Total Volume: Sum of weight * repetitions of all sets on that day
+                    TotalVolume = g.Sum(x => x.Weight.GetValueOrDefault() * x.Reps.GetValueOrDefault())
+                })
+                .OrderBy(x => x.ExerciseName)
+                .ThenBy(x => x.Date)
+                .ToList();
+
+            return progressData;
+        }
 
         /// <summary>
         /// Asynchronously calculates and returns the aggregated monthly exercise training volume within the specified date range.
@@ -212,7 +262,11 @@ namespace BodyTracker.Services
         /// <param name="secondaryFactor">The multiplier factor applied to secondary volume calculations. Defaults to 0.5.</param>
         /// <returns>A task representing the asynchronous operation, containing a list of <see cref="MonthlyExerciseTrainingVolumeModel"/> aggregated records.</returns>
         /// <exception cref="ArgumentException">Thrown when the <see cref="WorkoutEntries"/> collection is null or empty.</exception>
-        public async Task<List<MonthlyExerciseTrainingVolumeModel>> CalculateMonthlyVolumeAsync(DateTime startDate, DateTime endDate, double primaryFactor = 1.0, double secondaryFactor = 0.5)
+        public async Task<List<MonthlyExerciseTrainingVolumeModel>> CalculateMonthlyVolumeAsync(
+            DateTime startDate, 
+            DateTime endDate, 
+            double primaryFactor = 1.0, 
+            double secondaryFactor = 0.5)
         {
             if (WorkoutEntries == null || !WorkoutEntries.Any()) throw new ArgumentException("The provided WorkoutEntries collection is null or empty.", nameof(WorkoutEntries));
 
@@ -223,8 +277,8 @@ namespace BodyTracker.Services
                 .ToList();
 
             var monthlyGroups = filteredLogs
-                                    .GroupBy(x => x.ExcerciseDate.Date)
-                                    .OrderBy(g => g.Key);
+                .GroupBy(x => new { x.ExcerciseDate.Year, x.ExcerciseDate.Month })
+                .OrderBy(g => g.Key.Year).ThenBy(g => g.Key.Month);
 
             var result = new List<MonthlyExerciseTrainingVolumeModel>();
 
@@ -232,23 +286,21 @@ namespace BodyTracker.Services
             foreach (var group in monthlyGroups)
             {
                 double totalVolume = 0;
-                int totalExercises = 0;
-                // Ermittelt das späteste Datum (letzter Trainingstag) in diesem Monat als "lastDate"
-                DateTime lastDateInMonth = group.Max(x => x.ExcerciseDate.Date);
+
+                DateTime monthDate = new DateTime(group.Key.Year, group.Key.Month, 1);
 
                 foreach (var entry in group)
                 {
-                    double setVolume = entry.Weight.Value * entry.Reps.Value;
+                    double setVolume = entry.Weight.GetValueOrDefault() * entry.Reps.GetValueOrDefault();
                     totalVolume += setVolume;
-                    totalExercises++;
                 }
 
                 result.Add(new MonthlyExerciseTrainingVolumeModel
                 {
-                    Date = lastDateInMonth, // Das letzte konkrete Trainingsdatum des Monats
+                    Date = monthDate,
                     PrimaryVolume = totalVolume * primaryFactor,
                     SecondaryVolume = totalVolume * secondaryFactor,
-                    TotalExercises = totalExercises // Anzahl der eindeutigen Trainingstage in diesem Monat
+                    TotalExercises = monthlyGroups.Count(),
                 });
             }
 
@@ -420,15 +472,20 @@ namespace BodyTracker.Services
 
 
 
-
         /// <summary>
-        /// Ermittelt die Häufigkeit aller Übungen innerhalb eines Zeitraums.
-        /// Die Ergebnisse werden nach Häufigkeit absteigend sortiert.
+        /// Calculates the frequency and relative percentage of performed exercises based on gym workout logs within an optional date range.
         /// </summary>
-        public IEnumerable<ExerciseFrequencyModel> CalculateExerciseFrequency(IEnumerable<GymWorkoutEntryModel> gymAppLogs,
-                                                                              DateTime startDate = default,
-                                                                              DateTime endDate = default)
+        /// <param name="gymAppLogs">The collection of gym workout entries to analyze.</param>
+        /// <param name="startDate">The inclusive start date for the filter. Defaults to the earliest log entry date if not specified.</param>
+        /// <param name="endDate">The inclusive end date for the filter. Defaults to the latest log entry date if not specified.</param>
+        /// <returns>An enumerable collection of <see cref="ExerciseFrequencyModel"/> sorted by execution frequency in descending order.</returns>
+        public IEnumerable<ExerciseFrequencyModel> CalculateExerciseFrequency(
+            IEnumerable<GymWorkoutEntryModel> gymAppLogs,
+            DateTime startDate = default,
+            DateTime endDate = default)
         {
+            if (gymAppLogs == null || !gymAppLogs.Any())
+                return Enumerable.Empty<ExerciseFrequencyModel>();
 
             if (startDate == default || endDate == default)
             {
@@ -456,7 +513,7 @@ namespace BodyTracker.Services
             if (!exerciseCounts.Any())
                 return Enumerable.Empty<ExerciseFrequencyModel>();
 
-            int maxCount = exerciseCounts.Max(x => x.Count);
+            int maxCount = exerciseCounts[0].Count; // Da nach Count absteigend sortiert, ist das erste Element das Maximum.
 
             return exerciseCounts.Select(x => new ExerciseFrequencyModel
             {
@@ -466,56 +523,8 @@ namespace BodyTracker.Services
             });
         }
 
-       ///// <summary>
-       ///// Calculates and returns the daily exercise training volume for the year 2026.
-       ///// </summary>
-       ///// <remarks>Validates that the workout entries collection is not null or empty, filters entries for the year 2026, groups them by calendar date, validates exercises against the exercise dictionary, computes weighted primary and secondary volumes, and counts distinct exercises performed each day.</remarks>
-       ///// <returns>A list of <see cref="MonthlyExerciseTraningVolume"/> aggregated records representing daily training volumes for 2026.</returns>
-       ///// <exception cref="ArgumentException">Thrown when the <see cref="WorkoutEntries"/> collection is null or empty.</exception>
-       // public List<MonthlyExerciseTraningVolume> GetDailyExerciseVolumeFor2026()
-       // {
-       //     if (WorkoutEntries == null || !WorkoutEntries.Any())
-       //     {
-       //         throw new ArgumentException(
-       //             "The provided WorkoutEntries collection is null or empty.",
-       //             nameof(WorkoutEntries));
-       //     }
 
-       //     var entries2026 = WorkoutEntries
-       //         .Where(x => x.ExcerciseDate.Year == 2026)
-       //         .ToList();
 
-       //     var result = new List<MonthlyExerciseTraningVolume>();
 
-       //     var dailyGroups = entries2026
-       //         .GroupBy(x => x.ExcerciseDate.Date)
-       //         .OrderBy(x => x.Key);
-
-       //     foreach (var day in dailyGroups)
-       //     {
-       //         double totalVolume = 0;
-
-       //         foreach (var entry in day)
-       //         {
-       //             if (!ExerciseByName.ContainsKey(entry.ExerciseName))
-       //                 continue;
-
-       //             totalVolume += entry.Weight.Value * entry.Reps.Value;
-       //         }
-
-       //         result.Add(new MonthlyExerciseTraningVolume
-       //         {
-       //             Date = day.Key,
-       //             PrimaryVolume = totalVolume * 1,
-       //             SecondaryVolume = totalVolume * 0.5,
-       //             TotalExercises = day
-       //                 .Select(x => x.ExerciseName)
-       //                 .Distinct()
-       //                 .Count()
-       //         });
-       //     }
-
-       //     return result;
-       // }
     }
 }

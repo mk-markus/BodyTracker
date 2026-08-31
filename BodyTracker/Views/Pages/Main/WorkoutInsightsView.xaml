@@ -8,17 +8,8 @@
       mc:Ignorable="d"
       Background="{StaticResource AppBackgroundBrush}">
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="20">
-        <Grid Margin="0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="24">
+        <Grid>
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -27,510 +18,279 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <!-- ================= BODY PROGRESS ================= -->
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-            <!--<Border Grid.Column="0" 
-                    Grid.Row="0"
-                    Style="{DynamicResource BorderDashboardCardStyle}"
-                    Width="300"
-                    Height="Auto"
-                    VerticalAlignment="Top"
-                    Margin="0,0,10,0">
-                <StackPanel Margin="0">
+            <!-- ================= TIMESPAN SECTION | EXERCISE PROGRESS SELECTION | TOTAL WORKOUTS AND EXERCISE VOLUME OVERVIEW ================= -->
+            <Grid Grid.Column="0" Grid.Row="0" Margin="0,0,10,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-                    <TextBlock Text="📊 Body Progress (MoM)" 
-                               Style="{DynamicResource TextBlockDashBoardTitle}" 
-                               Margin="0,0,0,12"/>
-
-                    <StackPanel Orientation="Horizontal"
-                                Margin="0,0,0,10">
-
-                        <StackPanel Orientation="Horizontal" 
-                        Margin="0,0,16,0">
-
-                            <Rectangle Style="{DynamicResource RectanglePreviousMonth}"/>
-
-                            <TextBlock Text="Previous" 
-                                       Style="{DynamicResource TextBlockPreviousMonth}" 
-                                       Margin="6,0,0,0"/>
-
-                        </StackPanel>
+                <!-- ================= TIMESPAN SECTION ================= -->
+                <Border Grid.Row="0" Style="{StaticResource BorderDashboardCardStyle}" Padding="10" Margin="0,0,0,10">
+                    <StackPanel>
+                        <TextBlock Text="📅 Timespan" Style="{DynamicResource TextBlockDashBoardTitle}" Margin="0,0,0,10"/>
 
                         <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="From:" VerticalAlignment="Center" Margin="0,0,10,0" Style="{DynamicResource TextBlockDescribing}"/>
+                            <DatePicker SelectedDate="{Binding StartDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource ModernFlatDatePicker}"/>
 
-                            <Rectangle Style="{DynamicResource RectangleActualMonth}"/>
-
-                            <TextBlock Text="Current" 
-                                       Style="{DynamicResource TextBlockActualMonth}" 
-                                       Margin="6,0,0,0"/>
-
+                            <TextBlock Text="To:" VerticalAlignment="Center" Margin="10,0,10,0" Style="{DynamicResource TextBlockDescribing}"/>
+                            <DatePicker SelectedDate="{Binding EndDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource ModernFlatDatePicker}"/>
                         </StackPanel>
-                    </StackPanel>
 
-                    --><!-- 1. Weight --><!--
-                    <StackPanel Margin="0,0,0,10">
-                        <Grid Margin="0,0,0,5">
-
-                            <TextBlock Text="Weight (kg)" 
-                           Style="{DynamicResource TextBlockDescribing}"/>
-
-                            <StackPanel Orientation="Horizontal" 
-                            HorizontalAlignment="Right">
-
-                                <ContentControl Content="{Binding BodyWeightTrendArrow}" 
-                                    Style="{DynamicResource ContentControlTrendArrow}"/>
-
-                                <TextBlock Text="{Binding BodyWeightDifference}" 
-                               Style="{DynamicResource TextBlockDifference}" 
-                               Margin="4,0,0,0"/>
-
-                            </StackPanel>
-                        </Grid>
-
-                        <Grid Height="10">
-
-                            <ProgressBar Value="{Binding BodyWeightPreviousBarValue}" 
-                             Maximum="{Binding BodyWeightBarMaximum}" 
-                             Style="{DynamicResource ProgressbarPreviousBarValue}"/>
-
-                            <ProgressBar Value="{Binding BodyWeightCurrentBarValue}" 
-                             Maximum="{Binding BodyWeightBarMaximum}" 
-                             Style="{DynamicResource ProgressbarCurrentBarValue}"/>
-                        </Grid>
-                    </StackPanel>
-
-                    --><!-- 2. Body Fat --><!--
-                    <StackPanel Margin="0,0,0,10">
-                        <Grid Margin="0,0,0,5">
-
-                            <TextBlock Text="Body Fat (%)" 
-                           Style="{DynamicResource TextBlockDescribing}"/>
-
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-
-                                <ContentControl Content="{Binding BodyFatTrendArrow}" 
-                                    Style="{DynamicResource ContentControlTrendArrow}"/>
-
-                                <TextBlock Text="{Binding BodyFatDifference}" 
-                               Style="{DynamicResource TextBlockDifference}" 
-                               Margin="4,0,0,0"/>
-
-                            </StackPanel>
-                        </Grid>
-
-                        <Grid Height="10">
-
-                            <ProgressBar Value="{Binding BodyFatPreviousBarValue}" 
-                             Maximum="{Binding BodyFatBarMaximum}" 
-                             Style="{DynamicResource ProgressbarPreviousBarValue}"/>
-
-                            <ProgressBar Value="{Binding BodyFatCurrentBarValue}" 
-                             Maximum="{Binding BodyFatBarMaximum}" 
-                             Style="{DynamicResource ProgressbarCurrentBarValue}"/>
-
-                        </Grid>
-                    </StackPanel>
-
-                    --><!-- 3. Muscle Mass --><!--
-                    <StackPanel Margin="0,0,0,10">
-                        <Grid Margin="0,0,0,5">
-
-                            <TextBlock Text="Muscle Mass (%)" 
-                           Style="{DynamicResource TextBlockDescribing}"/>
-
-                            <StackPanel Orientation="Horizontal" 
-                            HorizontalAlignment="Right">
-
-                                <ContentControl Content="{Binding BodyMuscleMassTrendArrow}" 
-                                    Style="{DynamicResource ContentControlTrendArrow}"/>
-
-                                <TextBlock Text="{Binding BodyMuscleMassDifference}" 
-                               Style="{DynamicResource TextBlockDifference}" 
-                               Margin="4,0,0,0"/>
-
-                            </StackPanel>
-                        </Grid>
-                        <Grid Height="10">
-
-                            <ProgressBar Value="{Binding BodyMuscleMassPreviousBarValue}" 
-                             Maximum="{Binding BodyMuscleMassBarMaximum}" 
-                             Style="{DynamicResource ProgressbarPreviousBarValue}"/>
-
-                            <ProgressBar Value="{Binding BodyMuscleMassCurrentBarValue}" 
-                             Maximum="{Binding BodyMuscleMassBarMaximum}" 
-                             Style="{DynamicResource ProgressbarCurrentBarValue}"/>
-                        </Grid>
-                    </StackPanel>
-
-                    --><!-- 4. Body Water --><!--
-                    <StackPanel>
-                        <Grid Margin="0,0,0,4">
-                            <TextBlock Text="Body Water (%)" 
-                           Style="{DynamicResource TextBlockDescribing}"/>
-
-                            <StackPanel Orientation="Horizontal" 
-                            HorizontalAlignment="Right">
-
-                                <ContentControl Content="{Binding BodyWaterTrendArrow}" 
-                                    Style="{DynamicResource ContentControlTrendArrow}"/>
-
-                                <TextBlock Text="{Binding BodyWaterDifference}" 
-                               Style="{DynamicResource TextBlockDifference}" 
-                               Margin="4,0,0,0"/>
-
-                            </StackPanel>
-                        </Grid>
-                        <Grid Height="10">
-
-                            <ProgressBar Value="{Binding BodyWaterPreviousBarValue}" 
-                             Maximum="{Binding BodyWaterBarMaximum}" 
-                             Style="{DynamicResource ProgressbarPreviousBarValue}"/>
-
-                            <ProgressBar Value="{Binding BodyWaterCurrentBarValue}" 
-                             Maximum="{Binding BodyWaterBarMaximum}" Style="{DynamicResource ProgressbarCurrentBarValue}"/>
-
-                        </Grid>
-                    </StackPanel>
-                </StackPanel>
-            </Border>-->
-
-            <!-- ================= Average Body Measurements ================= -->
-
-            <Border Grid.Row="0" 
-                        Grid.Column="1"
-                    Grid.ColumnSpan="3"
-                            Style="{DynamicResource BorderDashboardCardStyle}"
-                            Margin="0,0,0,0">
-
-                <StackPanel Margin="0">
-                    <StackPanel Orientation="Vertical">
-
-                        <TextBlock Text="📐 Get Values" 
-                                               Style="{DynamicResource TextBlockDashBoardTitle}"
-                                               Margin="0,0,0,10"/>
-
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <!--<StackPanel Grid.Row="0"
-                                                    Grid.Column="0"
-                                                    Orientation="Horizontal"
-                                                    Margin="0,10,0,10">
-
-                                <TextBlock Text="Start Date: "
-                                                       Style="{DynamicResource TextBlockDescribing}"/>
-
-                                <DatePicker SelectedDate="{Binding StartDateDatas, Mode=TwoWay, 
-                                                                        UpdateSourceTrigger=PropertyChanged}"
-                                                        Margin="0,0,10,0"/>
-
-                                <TextBlock Text="End Date: "
-                                                       Style="{DynamicResource TextBlockDescribing}"/>
-
-                                <DatePicker SelectedDate="{Binding EndDateDatas, Mode=TwoWay, 
-                                                                  UpdateSourceTrigger=PropertyChanged}"/>
-
-                            </StackPanel>-->
-
-                            <StackPanel Grid.Row="1"
-                                                    Grid.Column="0"
-                                                    Orientation="Horizontal">
-
-                                <Button x:Name="AcutalYear"
-                                                    Content="Actual Year"
-                                                    Style="{DynamicResource ModernStandardButton}"
-                                                    Command="{Binding CommandSetActualYear}"/>
-
-                                <Button x:Name="ActualWeek"
-                                                    Content="Actual Week"
-                                                    Style="{DynamicResource ModernStandardButton}"
-                                                    Command="{Binding CommandSetActualWeek}"/>
-
-                                <Button x:Name="ActualMonth"
-                                                    Content="Actual Month"
-                                                    Style="{DynamicResource ModernStandardButton}"
-                                                    Command="{Binding CommandSetActualMonth}"/>
-
-                            </StackPanel>
-
-                            <!--<DataGrid x:Name="MeanValue"
-                                                  ItemsSource="{Binding MeanMeasurement, UpdateSourceTrigger=PropertyChanged}"
-                                                  AutoGenerateColumns="False" 
-                                                  CanUserAddRows="False" 
-                                                  SelectionUnit="FullRow"
-                                                  SelectionMode="Single"
-                                                  Margin="0,10,10,0"
-                                                  FontWeight="Normal"
-                                                  VerticalScrollBarVisibility="Auto"
-                                                  HeadersVisibility="Column"
-                                                  ScrollViewer.CanContentScroll="True"
-                                                  EnableColumnVirtualization="True"
-                                                  EnableRowVirtualization="True"
-                                                  Height="Auto"
-                                                  GridLinesVisibility="All"
-                                                  Style="{StaticResource DataGrid_Default}"
-                                                  Grid.Row="2">
-
-                                <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Bodyweight (kg)" 
-                                                                    Binding="{Binding BodyWeight, Mode=TwoWay, UpdateSourceTrigger=LostFocus, 
-                                                                                StringFormat=N2}"/>
-                                    <DataGridTextColumn Header="BMI"
-                                                                    Binding="{Binding BMI, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, 
-                                                                                StringFormat=N2}"
-                                                                    IsReadOnly="true"/>
-
-                                    <DataGridTextColumn Header="Body Fat (%)"
-                                                                    Binding="{Binding BodyFatPercentage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, 
-                                                                                StringFormat=N2}" />
-
-                                    <DataGridTextColumn Header="Muscle Mass (%)"
-                                                                    Binding="{Binding BodyMusclePercentage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, 
-                                                                                StringFormat=N2}"/>
-
-                                    <DataGridTextColumn Header="Body Water (%)" 
-                                                                    Binding="{Binding BodyWaterPercentage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, 
-                                                                                StringFormat=N2}"/>
-
-                                    <DataGridTextColumn Header="Chest Circumference (cm)"
-                                                                    Binding="{Binding ChestCircumference, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, 
-                                                                                StringFormat=N2}"/>
-
-                                    <DataGridTextColumn Header="Waist Circumference (cm)" 
-                                                                    Binding="{Binding WaistCircumference, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, 
-                                                                                StringFormat=N2}"/>
-
-                                    <DataGridTextColumn Header="Hips Circumference (cm)" 
-                                                                    Binding="{Binding HipsCircumference, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, 
-                                                                                StringFormat=N2}"/>
-
-                                    <DataGridTextColumn Header="Caliper Body Fat (%)" 
-                                                                    Binding="{Binding CaliperBodyFatPercentage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, 
-                                                                                StringFormat=N2}"/>
-                                </DataGrid.Columns>
-                            </DataGrid>-->
-
-                        </Grid>
-
-                    </StackPanel>
-                </StackPanel>
-            </Border>
-
-            <!-- ================= Body Metrics: Actual Last Months ================= --><!--
-            <Border Grid.Row="2"
-                    Grid.Column="0"
-                    Grid.ColumnSpan="4"
-                    Style="{DynamicResource BorderDashboardCardStyle}"
-                    Margin="0,10,0,10">
-
-                <StackPanel Margin="0">
-
-                    <TextBlock Text="📈 Body Metrics (MoM)" 
-                               Style="{DynamicResource TextBlockDashBoardTitle}" 
-                               Margin="0,0,0,10"/>
-
-                    <lvc:CartesianChart Height="220" 
-                                        Series="{Binding SeriesBodyMeasurements}" 
-                                        XAxes="{Binding XAxesBodyMeasurements}" 
-                                        YAxes="{Binding YAxesBodyMeasurements}"
-                                        LegendPosition="Bottom"/>
-                </StackPanel>
-            </Border>-->
-
-            <!-- ================= TOTAL WORKOUTS AND EXERCISE VOLUME OVERVIEW ================= -->
-            <Grid Grid.Row="3" 
-                  Grid.Column="0"
-                  Grid.ColumnSpan="4"
-                  Margin="0,0,0,10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="16"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-
-                <!-- ================= TOTAL WORKOUTS ================= -->
-                <Border Grid.Column="0" 
-                            Style="{DynamicResource BorderDashboardCardStyle}">
-                    <StackPanel Orientation="Vertical" 
-                                VerticalAlignment="Center" 
-                                Margin="16">
-
-                        <TextBlock Text="🏋️‍♂️ Lifetime Workouts" 
-                                   Style="{DynamicResource TextBlockWorkoutInsightsHeaderTitleStyle}"/>
-
-                        <TextBlock Text="{Binding TotalWorkouts}" 
-                                   Style="{DynamicResource TextBlockWorkoutInsightsHeaderNumberStyle}" 
-                                   Margin="0,4,0,0"/>
+                        <!-- ================= TOGGLE BUTTON QUICK DATE RANGES ================= -->
+                        <ToggleButton x:Name="DateShortCuts"
+                                       Style="{DynamicResource ModernStandardToggleButton}"
+                                       Content="📅 Quick Ranges ▼ "
+                                       Margin="0,10,0,0"
+                                      HorizontalAlignment="Left"
+                                       ToolTip="Filters the chart to show data exclusively for the current year."/>
+
+                        <!-- ================= POPUP QUICK DATE RANGES ================= -->
+                        <Popup PlacementTarget="{Binding ElementName=DateShortCuts}"
+                                Placement="Bottom"
+                                StaysOpen="False"
+                                IsOpen="{Binding IsChecked, ElementName=DateShortCuts}" 
+                                AllowsTransparency="True">
+
+                            <Border Style="{DynamicResource BorderPopupDownCardStyle}"
+                                     Width="{Binding ActualWidth, ElementName=DateShortCuts}">
+
+                                <StackPanel>
+
+                                    <Button Content="📅 Year" 
+                                             Style="{StaticResource ModernStandardButton}" 
+                                             Command="{Binding CommandSetActualYear}" 
+                                             ToolTip="Filter chart data for the current year."
+                                             Margin="0,0,0,0"/>
+
+                                    <Button Content="📆 Week" 
+                                             Style="{StaticResource ModernStandardButton}" 
+                                             Command="{Binding CommandSetActualWeek}" 
+                                             ToolTip="Filter chart data for the current week."
+                                             Margin="0,5,0,0"/>
+
+                                    <Button Content="🗓️ Month" 
+                                             Style="{StaticResource ModernStandardButton}" 
+                                             Command="{Binding CommandSetActualMonth}" 
+                                             ToolTip="Filter chart data for the current month."
+                                             Margin="0,5,0,0"/>
+
+                                    <!--<Button Content="🌍 All Time" 
+                                             Style="{StaticResource ModernStandardButton}" 
+                                             Command="{Binding CommandShowAllData}" 
+                                             ToolTip="Display the complete historical dataset without time restrictions."
+                                             Margin="0,5,0,0"/>-->
+                                </StackPanel>
+                            </Border>
+                        </Popup>
 
                     </StackPanel>
                 </Border>
 
-                <!-- ================= TOTAL EXERCISE VOLUME ================= -->
-                <Border Grid.Column="2" 
-                    Style="{DynamicResource BorderDashboardCardStyle}">
-
-                    <StackPanel Orientation="Vertical" 
-                                VerticalAlignment="Center" 
-                                Margin="16">
-
-                        <TextBlock Text="🏋️‍♂️ Exercise Volume" 
-                                   Style="{DynamicResource TextBlockWorkoutInsightsHeaderTitleStyle}"/>
-
-                        <TextBlock Text="{Binding TotalWorkoutsVolume, StringFormat={}{0:N0}}" 
-                                   Style="{DynamicResource TextBlockWorkoutInsightsHeaderNumberStyle}" 
-                                   Foreground="#34D399" 
-                                   Margin="0,4,0,0"/>
-
+                <!-- ================= EXERCISE PROGRESS SELECTION ================= -->
+                <Border Grid.Row="1" Style="{DynamicResource BorderDashboardCardStyle}" Padding="10" Margin="0,0,0,10">
+                    <StackPanel Margin="0">
+                        <TextBlock Text="🎯 Exercise Progress Selection" Style="{DynamicResource TextBlockWorkoutInsightsChartTitleStyle}" Margin="0,0,0,8"/>
+                        <ComboBox ItemsSource="{Binding ExercisesList}"
+                      SelectedItem="{Binding SelectedExerciseItem, Mode=TwoWay}"
+                      Style="{DynamicResource ModernFlatComboBox}"/>
                     </StackPanel>
                 </Border>
+
+                <!-- ================= TOTAL WORKOUTS AND EXERCISE VOLUME OVERVIEW ================= -->
+                <Border Grid.Row="2" Style="{DynamicResource BorderDashboardCardStyle}" Padding="10" Margin="0,0,0,0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Workouts Box -->
+                        <Border Grid.Column="0" Background="#F9F9F9" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Padding="12">
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="🏋️ Workouts" FontSize="11" Foreground="Gray" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{Binding TotalWorkouts}" FontSize="22" FontWeight="Bold" Foreground="#333333" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Volume Box -->
+                        <Border Grid.Column="2" Background="#F9F9F9" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Padding="12">
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="📊 Total Volume" FontSize="11" Foreground="Gray" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{Binding TotalWorkoutsVolume}" FontSize="18" FontWeight="Bold" Foreground="#2ECC71" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Border>
+
             </Grid>
 
-            <!-- ================= WORKOUT CHARTS & EXERCISES ================= -->
-            <Grid Grid.Row="4" 
-                  Grid.Column="0"
-                  Grid.ColumnSpan="6"
-                  Margin="0,0,0,16">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="16*"/>
-                    <ColumnDefinition Width="16*"/>
-                    <!--<ColumnDefinition Width="12*"/>-->
-                </Grid.ColumnDefinitions>
-
-                <!-- ================= MOST DONE EXERCISES ================= -->
-                <Border Grid.Column="0"
-                        Style="{DynamicResource BorderDashboardCardStyle}">
-                    <StackPanel Margin="16">
-                        <TextBlock Text="🏋️‍ Most Done Exercises" 
+       
+            <!-- ================= MOST DONE EXERCISES ================= -->
+            <Border Grid.Column="1"
+                    Grid.Row="0"
+                    Padding="10"
+                    Margin="0,0,10,0" 
+                    Height="{Binding ActualHeight, ElementName=TimeSECTION}"
+                    Style="{DynamicResource BorderDashboardCardStyle}">
+                <StackPanel Margin="16">
+                    <TextBlock Text="🔥 Most Done Exercises" 
                                    Style="{DynamicResource TextBlockWorkoutInsightsChartTitleStyle}" 
                                    Margin="0,0,0,12"/>
-                        <ScrollViewer VerticalScrollBarVisibility="Auto" 
-                                      MaxHeight="300">
-                            <ItemsControl ItemsSource="{Binding TopExercises}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid Margin="0,6">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="140"/>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
 
-                                            <!-- Exercise Name -->
-                                            <TextBlock Grid.Column="0" Style="{DynamicResource TextBlockDescribing}" 
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="350">
+                        <ItemsControl ItemsSource="{Binding TopExercises}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,6">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="130"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!-- Exercise Name -->
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource TextBlockDescribing}" 
                                                        Text="{Binding ExerciseName}" 
                                                        VerticalAlignment="Center" 
                                                        TextTrimming="CharacterEllipsis"/>
 
-                                            <!-- ProgressBar -->
-                                            <ProgressBar Grid.Column="1" Height="10" Minimum="0" Maximum="1" 
+                                        <!-- ProgressBar -->
+                                        <ProgressBar Grid.Column="1" Height="8" Minimum="0" Maximum="1" 
                                                          Value="{Binding Percentage}" 
                                                          VerticalAlignment="Center" 
                                                          Margin="10,0" 
                                                          Foreground="#38BDF8" 
                                                          Background="Transparent"/>
 
-                                            <!-- Percentage -->
-                                            <TextBlock Grid.Column="2" Text="{Binding Percentage, StringFormat={}{0:P0}}" 
+                                        <!-- Percentage -->
+                                        <TextBlock Grid.Column="2" Text="{Binding Percentage, StringFormat={}{0:P0}}" 
                                                        Style="{DynamicResource TextBlockWorkoutInsightsPercentageStyle}" 
                                                        VerticalAlignment="Center"/>
-
-                                        </Grid>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </ScrollViewer>
-                    </StackPanel>
-                </Border>
-
-                <!-- ================= WORKOUT MUSCLE DISTRIBUTION ================= -->
-                <!--
-                <Border Grid.Column="1" 
-                        Margin="10,0,0,0"
-                    Style="{DynamicResource BorderDashboardCardStyle}">
-                    <StackPanel Margin="16">
-
-                        <TextBlock Text="💪 Workout Muscle Distribution (MoM)" 
-                                   Style="{DynamicResource TextBlockWorkoutInsightsChartTitleStyle}" 
-                                   Margin="0,0,0,12"/>
-
-                        <lvc:PieChart Height="310"
-                                      VerticalAlignment="Stretch"
-                                      Series="{Binding WorkoutMuscleDistributionSeries}" 
-                                      LegendPosition="Bottom" 
-                                      InitialRotation="-90" 
-                                      LegendTextSize="9"/>
-
-                    </StackPanel>
-                </Border>-->
-
-
-                <!-- ================= Muscle Distribution Spider Chart ================= -->
-                <Border Grid.Row="0"
-                        Grid.Column="1"
-                        Grid.ColumnSpan="1"
-                        Style="{DynamicResource BorderDashboardCardStyle}"
-                        Margin="10,0,0,0">
-
-                    <Grid Margin="0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-
-                        <TextBlock Text="💪 Workout Muscle Distribution (MoM)" 
-                                   Grid.Column="0"
-                                   Grid.Row="0"
-                                   Style="{DynamicResource TextBlockDashBoardTitle}" 
-                                   Margin="0,0,0,10"/>
-
-                        <lvc:PolarChart Grid.Column="0"
-                                        Grid.Row="1"
-                                        Height="350"
-                                        Width="350"
-                                        VerticalAlignment="Center"
-                                        HorizontalAlignment="Center"
-                                        LegendPosition="Bottom"
-                                        Series="{Binding SeriesMuscleDistributionSpiderChart}" 
-                                        AngleAxes="{Binding AngleAxisMuscleDistirbutionSpiderChart}"
-                                        RadiusAxes="{Binding RadiusAxisMuscleDistirbutionSpiderChart}"/>
-                    </Grid>
-                </Border>
-
-            </Grid>
-
-
-
-
-            <!-- ================= MONTH WORKOUT OVERVIEW ================= -->
-            <Border Grid.Row="5"
-                    Grid.Column="0"
-                    Grid.ColumnSpan="4"
-                    Style="{DynamicResource BorderDashboardCardStyle}">
-                <StackPanel Margin="16">
-
-                    <TextBlock Text="📈 Training Overview (MoM)" 
-                               Style="{DynamicResource TextBlockWorkoutInsightsChartTitleStyle}" 
-                               Margin="0,0,0,12"/>
-
-                    <lvc:CartesianChart Height="250" 
-                                        Series="{Binding SeriesMonthlyTraningsVolume}" 
-                                        XAxes="{Binding XAxesMonthlyTraningsVolume}" 
-                                        YAxes="{Binding YAxesMonthlyTraningsVolume}" 
-                                        LegendPosition="Bottom"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
                 </StackPanel>
             </Border>
+
+            <!-- ================= Muscle Distribution Spider Chart ================= -->
+            <Border Grid.Row="0"
+                     Grid.RowSpan="2"
+                     Grid.Column="2"
+                     Grid.ColumnSpan="2"
+                     Style="{DynamicResource BorderDashboardCardStyle}"
+                     Margin="0,00,0,0">
+
+                <Grid Margin="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="💪 Workout Muscle Distribution (MoM)" 
+                                Grid.Column="0"
+                                Grid.Row="0"
+                                Style="{DynamicResource TextBlockDashBoardTitle}" 
+                                Margin="0,0,0,10"/>
+
+                    <lvc:PolarChart Grid.Column="0"
+                         Grid.Row="1"
+                         MinHeight="1"
+                         MinWidth="1"
+                         Height="Auto"
+                         Width="Auto"
+                         LegendPosition="Hidden"
+                         LegendTextSize="10"
+                         
+                         Series="{Binding SeriesMuscleDistributionSpiderChart}" 
+                         AngleAxes="{Binding AngleAxisMuscleDistirbutionSpiderChart}"
+                         RadiusAxes="{Binding RadiusAxisMuscleDistirbutionSpiderChart}"/>
+                </Grid>
+            </Border>
+
+
+            <!-- ================= PEAK VOLUME ================= -->
+            <Border Style="{DynamicResource BorderDashboardCardStyle}" 
+                    Grid.Column="0"
+                    Grid.ColumnSpan="4"
+                    Grid.Row="2"
+                    Padding="10"
+                    Margin="0,10,0,0">
+                
+                <StackPanel Margin="16">
+                    <TextBlock Text="📈 Peak Weight Progress" 
+                               Style="{DynamicResource TextBlockWorkoutInsightsChartTitleStyle}" 
+                               Margin="0,0,0,12"/>
+                    <lvc:CartesianChart Height="250" 
+                                       Series="{Binding SeriesWorkoutPeakProgress}" 
+                                       XAxes="{Binding XAxesWorkoutPeakProgress}" 
+                                       YAxes="{Binding YAxesWorkoutPeakProgress}" 
+                                       LegendPosition="Hidden"
+                                       />
+                </StackPanel>
+            </Border>
+
+            <!-- ================= TOTAL VOLUME ================= -->
+            <Border Style="{DynamicResource BorderDashboardCardStyle}" 
+                    Grid.Column="0"
+                    Grid.ColumnSpan="4"
+                    Grid.Row="3"
+                    Padding="10"
+                    Margin="0,10,0,0">
+                
+                <StackPanel Margin="16">
+                    <TextBlock Text="📈 Total Volume Progress" 
+                               Style="{DynamicResource TextBlockWorkoutInsightsChartTitleStyle}" 
+                               Margin="0,0,0,12"/>
+                    <lvc:CartesianChart Height="250" 
+                                       Series="{Binding SeriesWorkoutTotalVolumeProgress}" 
+                                       XAxes="{Binding XAxesWorkoutTotalVolumeProgress}" 
+                                       YAxes="{Binding YAxesWorkoutTotalVolumeProgress}" 
+                                       LegendPosition="Hidden"/>
+                </StackPanel>
+            </Border>
+
+            <!-- ================= MAX REPs VOLUME ================= -->
+            <Border Style="{DynamicResource BorderDashboardCardStyle}" 
+                    Grid.Column="0"
+                    Grid.ColumnSpan="4"
+                    Grid.Row="4"
+                    Padding="10"
+                    Margin="0,10,0,0">
+                
+                <StackPanel Margin="16">
+                    <TextBlock Text="📈 Max Reps Progress" 
+                               Style="{DynamicResource TextBlockWorkoutInsightsChartTitleStyle}" 
+                               Margin="0,0,0,12"/>
+                    <lvc:CartesianChart Height="250" 
+                                       Series="{Binding SeriesWorkoutMaxRepProgress}" 
+                                       XAxes="{Binding XAxesWorkoutMaxRepProgress}" 
+                                       YAxes="{Binding YAxesWorkoutMaxRepProgress}" 
+                                       LegendPosition="Hidden"/>
+                </StackPanel>
+            </Border>
+
         </Grid>
     </ScrollViewer>
 </Page>

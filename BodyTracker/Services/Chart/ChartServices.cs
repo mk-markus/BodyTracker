@@ -1,4 +1,5 @@
-﻿using LiveChartsCore.Defaults;
+﻿using LiveChartsCore;
+using LiveChartsCore.Defaults;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.SkiaSharpView.Painting.Effects;
@@ -21,8 +22,8 @@ namespace BodyTracker.Services
         public static LineSeries<DateTimePoint>? CreateTrendSeries(string name,
                                                                     DateTimePoint[] sourcePoints,
                                                                     SKColor color,
-                                                                    int yAxisIndex, 
-                                                                    float strokeThickness, 
+                                                                    int yAxisIndex,
+                                                                    float strokeThickness,
                                                                     float geometrySize)
         {
             // Require at least two distinct mathematical data points to trace a linear line.
@@ -90,11 +91,11 @@ namespace BodyTracker.Services
         /// <param name="color">The color used for the line stroke and point geometry.</param>
         /// <param name="yAxisIndex">The zero-based index mapping this series to either the primary or secondary Y-axis.</param>
         /// <returns>A configured line series ready to be rendered on the chart UI.</returns>
-        public static LineSeries<DateTimePoint> CreateNormalSeries(string name, 
-                                                                   DateTimePoint[] values, 
-                                                                   SKColor color, 
+        public static LineSeries<DateTimePoint> CreateNormalSeries(string name,
+                                                                   DateTimePoint[] values,
+                                                                   SKColor color,
                                                                    int yAxisIndex,
-                                                                   float strokeThickness, 
+                                                                   float strokeThickness,
                                                                    float geometrySize)
         {
             return new LineSeries<DateTimePoint>
@@ -117,6 +118,10 @@ namespace BodyTracker.Services
             };
         }
 
+
+
+
+
         /// <summary>
         /// Generates a smoothed trend line using Local Regression (LOESS) and returns it as a smooth, dashed chart series.
         /// </summary>
@@ -125,13 +130,16 @@ namespace BodyTracker.Services
         /// <param name="color">The color to be applied to the rendered trend line.</param>
         /// <param name="yAxisIndex">The zero-based index mapping this series to either the primary or secondary Y-axis.</param>
         /// <param name="fraction">The smoothing parameter determining the proportion of local data points included in each local regression.</param>
-        /// <returns>A configured smooth line series representing the local regression curve, or <c>null</c> if input points are insufficient.</returns>
+        /// <param name="isTrendLineLegendVisible"></param>
+        /// <param name="strokeThickness"></param>
+        /// <param name="geometrySize"></param>
+        /// <returns></returns>
         public static LineSeries<DateTimePoint>? CreateLoessSeries(string name,
                                                                     DateTimePoint[] sourcePoints,
                                                                     SKColor color,
                                                                     int yAxisIndex,
-                                                                    double fraction, 
-                                                                    bool isTrendLineLegendVisible, 
+                                                                    double fraction,
+                                                                    bool isTrendLineLegendVisible,
                                                                     float strokeThickness,
                                                                     float geometrySize)
         {
@@ -162,9 +170,33 @@ namespace BodyTracker.Services
                     StrokeThickness = strokeThickness,
                     PathEffect = new DashEffect(new float[] { 10, 6 }) // Match styling criteria across all trend representations
                 },
-                
+
             };
         }
+
+        /// <summary>
+        /// Creates a configured column series for a chart using the provided data points, display name, color, and Y-axis index.
+        /// </summary>
+        /// <param name="name">The display name of the column series in the chart legend.</param>
+        /// <param name="dataSeries">The collection of observable points to be rendered as columns.</param>
+        /// <param name="color">The color to be applied to the column fill.</param>
+        /// <param name="yAxisIndex">The zero-based index mapping this series to either the primary or secondary Y-axis.</param>
+        /// <returns>An ISeries instance representing the configured column series, or null if the data series is empty.</returns>
+        public static ISeries CreateNormalColumnSeries(
+            string name,
+            ObservablePoint[] dataSeries,
+            SKColor color,
+            int yAxisIndex)
+        {
+            return new ColumnSeries<ObservablePoint>
+            {
+                Name = name,
+                Values = dataSeries,
+                Fill = new SolidColorPaint(color),
+                ScalesYAt = yAxisIndex
+            };
+        }
+
 
         /// <summary>
         /// Computes Locally Estimated Scatterplot Smoothing (LOESS) for the given chronological data points.
@@ -183,15 +215,15 @@ namespace BodyTracker.Services
             fraction = Math.Max(0.1, Math.Min(0.95, fraction));
 
             // Enforce chronological sorting over the inputs.
-            var ordered = sourcePoints
-                .OrderBy(p => p.DateTime)
-                .ToArray();
+            //var ordered = sourcePoints
+            //    .OrderBy(p => p.DateTime)
+            //    .ToArray();
 
-            int n = ordered.Length;
+            int n = sourcePoints.Length;
 
             // Convert parameters to double arrays to accelerate inner matrix calculations.
-            var x = ordered.Select(p => p.DateTime.ToOADate()).ToArray();
-            var y = ordered.Select(p => p.Value).ToArray();
+            var x = sourcePoints.Select(p => p.DateTime.ToOADate()).ToArray();
+            var y = sourcePoints.Select(p => p.Value).ToArray();
 
             // Establish localized evaluation window span based on fraction scale.
             int bandwidth = Math.Max(3, (int)Math.Ceiling(fraction * n));
@@ -218,7 +250,7 @@ namespace BodyTracker.Services
                     if (maxDistance <= 0)
                     {
                         // Fall back to original entry value if all data values are stacked in a single point.
-                        result[i] = new DateTimePoint(ordered[i].DateTime, y[i]);
+                        result[i] = new DateTimePoint(sourcePoints[i].DateTime, y[i]);
                         continue;
                     }
                 }
@@ -274,7 +306,7 @@ namespace BodyTracker.Services
                 }
 
                 // Save the computed, smoothed coordinate back into the result container.
-                result[i] = new DateTimePoint(ordered[i].DateTime, yi);
+                result[i] = new DateTimePoint(sourcePoints[i].DateTime, yi);
             }
 
             return result;
@@ -297,6 +329,6 @@ namespace BodyTracker.Services
             return Math.Pow(t, 3);
         }
 
-       
+
     }
 }

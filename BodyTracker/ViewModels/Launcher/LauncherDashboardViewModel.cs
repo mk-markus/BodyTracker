@@ -270,7 +270,7 @@ namespace BodyTracker.ViewModels
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task UpdatePersonAsync(int personId, PersonModel row)
         {
-            await databaseService.UpdatePersonAsync(
+            await databaseService.GetPersonUpdateSqlAsync(
                 personId,
                 row.PersonFirstName,
                 row.PersonLastName,
