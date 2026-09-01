@@ -1,152 +1,143 @@
-BodyTracker – Funktionsübersicht \& Installationsanleitung
+# 💪 BodyTracker – Körperdaten-Verwaltung & Analyse
 
+Eine moderne WPF-Anwendung zur Erfassung, Verwaltung und Visualisierung deiner Körpermetriken mit MySQL-Datenbankanbindung und AES-Verschlüsselung.
 
+## 📋 Überblick
 
-✅ Überblick
+BodyTracker ermöglicht es dir, deine Körperdaten systematisch zu erfassen und zu analysieren. Mit intuitive Benutzeroberfläche, leistungsstarken Diagrammen und einer sicheren Datenbankanbindung behältst du deine Fortschritte immer im Blick.
 
-BodyTracker ist eine WPF-Anwendung zur Verwaltung und Analyse von Körperdaten. Sie bietet:
+### ✨ Kernfeatures
 
+- ✅ **Benutzerverwaltung** – Verwaltung mehrerer Benutzerprofile mit Personenstammdaten
+- ✅ **Körpermetriken-Erfassung** – Gewicht, BMI, Körperfett, Muskelmasse, Viszeralfett
+- ✅ **Körpermessungen** – Brustumfang, Bauchumfang, Hüftumfang, Fettzange
+- ✅ **Interaktive Diagramme** – Dual-Achsen-Visualisierung mit LiveCharts2
+- ✅ **Datenbankanbindung** – MySQL-Integration für zentrale Datenspeicherung
+- ✅ **Verschlüsselte Anmeldedaten** – AES-256-Verschlüsselung für Sicherheit
+- ✅ **Excel-Import** – Import historischer Daten mit Deduplikation
+- ✅ **MSI-Installer** – Setup-Projekt für einfache Installation
 
+---
 
-Benutzerverwaltung (Personenstammdaten)
+## 🚀 Hauptfunktionen
 
-Erfassung von Körpermetriken (Gewicht, BMI, Körperfett, Muskelmasse, Viszeralfett)
+### 1. 🔐 Benutzerauswahl & Anmeldung (UserSelectWindow)
 
-Erfassung von Abmessungen (Brustumfang, Bauchumfang, Hüftumfang)
+- **Benutzerverwaltung**: Wähle einen vorhandenen Benutzer oder erstelle einen neuen
+- **Datenbankverbindung**: Eingabe von MySQL-Benutzerdaten mit verschlüsselte Speicherung
+- **Auto-Login**: Automatische Verbindung bei gespeicherten Credentials
+- **AES-Verschlüsselung**: Passwörter werden verschlüsselt in `appsettings.json` abgelegt
 
-Zusätzliche Werte: Fettzange
+### 2. 📊 Hauptfenster – Datentabelle (NewDataEnntry)
 
-Diagrammansicht mit zwei Y-Achsen (Gewicht links, Prozentwerte rechts)
+Übersichtliche Tabellenansicht aller erfassten Messungen:
 
-Datenbankanbindung (MySQL)
+| Spalte | Beschreibung |
+|--------|-------------|
+| **Datum** | Format: `dd.MM.yyyy` |
+| **Gewicht** | in kg (Komma als Dezimaltrennzeichen) |
+| **BMI** | Body-Mass-Index |
+| **Körperfett %** | Körperfettanteil in Prozent |
+| **Muskelmasse %** | Muskelmasseanteil in Prozent |
+| **Viszeralfett** | Viszerales Fett (Organfett) |
+| **Brustumfang** | in cm |
+| **Bauchumfang** | in cm |
+| **Hüftumfang** | in cm |
+| **Fettzange** | Hautfaltenmessung in mm |
 
-AES-Verschlüsselung für gespeicherte Zugangsdaten
+**Funktionen:**
 
-Excel-Import für historische Daten
+- 📝 **Eingabe** – Neue Messung hinzufügen
+- 📈 **Diagramm** – Visualisierung der Daten öffnen
+- 🔄 **Neu laden** – Tabelle aktualisieren
+- 🗑️ **Löschen** – Markierte Zeile entfernen (mit Bestätigungsdialog)
+- ❌ **Schließen** – Anwendung beenden
 
-Setup-Projekt zur Erstellung eines MSI-Installers
+### 3. ✍️ Dateneingabe (DataEntryWindow)
 
+- **Vollständige Eingabefelder** für alle Metriken und Messungen
+- **Komma-Eingabe** – Dezimaltrennzeichen wird automatisch konvertiert
+- **Nullable Werte** – Leere Felder sind optional
+- **Vorbelegung** – Automatische Vorbelegung mit Werten vom Vortag
+- **Benutzerfreundlich** – Tab-Fokus markiert den gesamten Feldinhalt
+- **Validierung** – Eingabebeschränkungen für korrekte Daten
 
+### 4. 📈 Diagrammansicht (ChartsWindow)
 
+Interaktive Visualisierung deiner Fortschritte:
 
+- **Dual-Achsen-Design**:
+  - 📍 **Linke Y-Achse** – Gewicht (kg)
+  - 📍 **Rechte Y-Achse** – Körperfett % & Muskelmasse %
+- **X-Achse** – Datum (Format: `dd.MM.yyyy`)
+- **Liniendiagramm** – Trend-Visualisierung
+- **LiveCharts2-Integration** – Moderne, performante Grafiken
+- **Interaktiv** – Zoom, Pan und Hover-Details
 
-🔑 Hauptfunktionen der WPF-App
+### 5. ℹ️ Info-Page
 
-1\. Startfenster (UserSelectWindow)
+- **Lizenzanzeige** – `license.txt` in ScrollViewer-Fenster
+- **ViewModel-Integration** – Datei wird beim Start automatisch geladen
+- **Leseschutz** – Schreibgeschützte Anzeige
 
+---
 
+## 🔒 Sicherheit & Datenschutz
 
-Auswahl eines vorhandenen Benutzers oder Neuanlage.
+### Verschlüsselung
 
-Eingabe von DB-Benutzer und Passwort (verschlüsselte Speicherung in appsettings.json).
+- **AES-256-Verschlüsselung** für Datenbankpasswörter
+- **Verschlüsselte Speicherung** in `appsettings.json`
+- **Sichere Anmeldedaten** – Keine Passwörter im Klartext im Code
 
-Automatischer Verbindungsaufbau bei gespeicherten Credentials.
+### Datenbankzugriff
 
+- **MySQL-Authentifizierung** – Benutzerdefinierte Datenbank-Credentials
+- **Separate Benutzer-Profile** – Isolierung von Benutzerdaten
+- **Audit-Sicherheit** – Zentrale Datenspeicherung
 
+---
 
-2\. Hauptfenster (MainWindow)
+## 🛠️ Technische Besonderheiten
 
+### Dateneingabe & -format
 
+- ✅ **Komma statt Punkt** – Deutsche Eingabekonvention (1,75 statt 1.75)
+- ✅ **Nullable Werte** – Flexible Erfassung ohne Pflichtfelder
+- ✅ **Dezimalformatierung** – Einheitliche Anzahl von Dezimalstellen
 
-Anzeige aller Messungen in einer Tabelle:
+### Datenimport
 
+- 📊 **Excel-Import** – Import historischer Messdaten
+- 🔍 **Deduplikation** – Automatische Entfernung von Duplikaten
+- 🎯 **Fettzange-Support** – Import aller Metriken inklusive Fettzange
 
+### Installation & Deployment
 
-Datum, Gewicht, BMI, Körperfett %, Muskelmasse %, Viszeralfett
+- 📦 **MSI-Installer** – Setup-Projekt für Windows-Installation
+- 🔗 **Verknüpfungen** – Desktop- und Startmenü-Verknüpfungen
+- 📄 **Lizenzintegration** – Lizenztext beim Setup mit installiert
 
-Brustumfang, Bauchumfang, Hüftumfang
+---
 
+## 💻 Technologie-Stack
 
+| Komponente | Technologie |
+|-----------|------------|
+| **UI-Framework** | WPF (Windows Presentation Foundation) |
+| **Datenbank** | MySQL 8.0+ |
+| **Diagramme** | LiveCharts2 |
+| **Verschlüsselung** | AES-256 |
+| **Zielframework** | .NET 8 |
+| **Sprache** | C# |
 
+---
 
+## 📥 Installation
 
-Formatierung: Komma als Dezimaltrennzeichen, Nachkommastellen.
+### Voraussetzungen
 
-Buttons:
-
-
-
-Eingabe: Öffnet Eingabemaske.
-
-Diagramm: Öffnet Diagrammansicht.
-
-Neu laden: Aktualisiert Tabelle.
-
-Löschen: Entfernt markierte Zeile aus der Datenbank (mit Bestätigungsdialog).
-
-Schließen: Beendet die Anwendung.
-
-
-
-3\. Eingabefenster (DataEntryWindow)
-
-
-
-Felder für alle Werte inkl. Fettzange.
-
-Komma-Eingabe erlaubt (über Konverter).
-
-Leere Felder möglich (nullable).
-
-Tab-Fokus markiert den gesamten Inhalt.
-
-Automatische Vorbelegung mit Werten vom Vortag (falls vorhanden).
-
-
-
-4\. Diagrammfenster (ChartsWindow)
-
-
-
-Liniendiagramm mit:
-
-
-
-X-Achse: Datum (Format dd.MM.yyyy)
-
-Y-Achse links: Gewicht (kg)
-
-Y-Achse rechts: Körperfett %, Muskelmasse %
-
-
-
-LiveCharts2-Integration.
-
-
-
-5\. InfoPage
-
-Anzeige einer license.txt in einem ScrollViewer.
-
-ViewModel lädt Datei beim Start.
-
-
-
-
-
-🔒 Sicherheit
-
-
-
-AES-Verschlüsselung für DB-Passwort in appsettings.json.
-
-Klartext-Passwort nur bei Terminal-Importer (Hardcoded oder CLI).
-
-
-
-✅ Besondere Features
-
-
-
-Komma statt Punkt bei Eingabe und Anzeige.
-
-Nullable Werte für Löschbarkeit.
-
-AES-Verschlüsselung für Credentials.
-
-Diagramm mit zwei Y-Achsen.
-
-Excel-Import mit Fettzange und Deduplikation.
-
-Setup mit Lizenz und Verknüpfungen.
-
+- Windows 10/11 oder höher
+- .NET 8 Runtime
+- MySQL Server 8.0+ (lokal oder remote)
+- Datenbankzugriff (Benutzer und Passwort)
