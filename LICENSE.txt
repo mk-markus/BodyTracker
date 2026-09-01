@@ -1,4 +1,4 @@
-MIT License
+MIT License with Public Resources Disclaimer
 
 Copyright (c) 2025 Kerschbaumer Markus
 
@@ -12,6 +12,12 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
+PUBLIC RESOURCES NOTICE:
+The Software may access, retrieve, process, or integrate public resources, 
+datasets, or external data feeds. The author/copyright holder assumes no 
+responsibility, warranty, or liability regarding the availability, accuracy, 
+completeness, legality, or continuous operation of these external public resources.
+
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,17 +26,76 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
+Projekt-Quellen und Asset-Referenz
 
-Additonal Licence Information:
-Icons bereitgestellt durch:
-Examination Physical Statistic Fitness Diet Icon
-Icon Name in Project: ProgramIcon.ico
-Icon Name form Download: 5_116661.ico
+============================================================================================================================
+1. ICONS
+============================================================================================================================
+
+Icon-Beschreibung: Pulse Oximeter Icon
+Projekt-Name: -
+Download-Name / Quelle: Pulse Oximeter
+Urheber & Lizenz: Icons8
+URL: https://icons8.com/icon/1ywhPHT9sgZB/pulse-oximeter
+Download am: 23.08.20026
+
+----------------------------------------------------------------------------------------------------------------------------
+
+Icon-Beschreibung: Examination Physical Statistic Fitness Diet Icon
+Projekt-Name: ProgramIcon.ico
+Download-Name form Download: 5_116661.ico
 Urheber:
-	Designer:	Eugen
-	Categories:	Sport and games
-	Style:		Flat
-	Icons:		14
-	License: Free for commercial use
-	URL: https://icon-icons.com/pack/fitness-flat-art-color/1854, https://icon-icons.com/icon/aerobics-sport-fitness/116661
+    - Designer: Eugen
+    - Categories: Sport and games
+    - Style: Flat
+    - Icons: 14
+    - License: Free for commercial use
 Lizenz: icon-icons.com
+URL: https://icon-icons.com/pack/fitness-flat-art-color/1854, https://icon-icons.com/icon/aerobics-sport-fitness/116661
+
+----------------------------------------------------------------------------------------------------------------------------
+Bild-Beschreibung: Gym sport running Icon
+Projekt-Name: ProgramIcon_GymRunning.ico
+Download-Name from Download: gym_sport_running_icon_180207.ico
+Urheber: SJJB (über Icon-Icons.com)
+Beschreibung: Icon zur Darstellung sportlicher Aktivitäten und Lauf-Workouts, bezogen über das Autorenprofil von SJJB auf Icon-Icons.com.
+Download am: 23.08.2026
+
+----------------------------------------------------------------------------------------------------------------------------
+
+Bild-Beschreibung: Gym exercise dumbbell muscles Icon
+Projekt-Name: ProgramIcon_GymDumbbell.ico
+Download-Name from Download:gym_exercise_dumbbell_muscles_fitness_workout_icon_262726.ico
+Urheber: Icogenix icons (über Icon-Icons.com)
+Beschreibung: Icon zur Darstellung von Krafttraining und Muskelaufbau, bereitgestellt durch Icogenix icons auf Icon-Icons.com.
+Download am: 23.08.2026
+
+============================================================================================================================
+2. BILDER
+============================================================================================================================
+
+Bild-Beschreibung: Body-Fat-Percentage-Calculator-Caliper-Male-Female
+Projekt-Name: Body-Fat-Percentage-Calculator-Caliper-Male-Female.jpg
+Download-Name form Download: Body-Fat-Percentage-Calculator-Caliper-Male-Female.jpg
+Urheber: By Jeremy Fox | September 28, 2022 | Calculators | 0 Comments
+Download Bild am: 11.07.2026
+URL: https://www.bodybuildingmealplan.com/wp-content/uploads/4-Site-Skinfold-Male-Jackson-Pollock-Body-Fat-Percentage-Calculator.jpg
+
+----------------------------------------------------------------------------------------------------------------------------
+
+Bild-Beschreibung: 7-Punkte Hautfalten-Messmodell (7-Point Skinfold Measurement Model) - Moderne Ansicht basierend auf Jackson-Pollock Methode
+Projekt-Name: 7-Point-Skinfold-Measurement-Model.png
+Download-Name form Download: 7-Point-Skinfold-Measurement-Model.png
+Urheber: Erstellt mit Gemini (Google KI)
+Beschreibung: Rote Markierungen zeigen die 7 Messpunkte (Rotary Caliper Icons) für Männer und Frauen.
+Download am: 16.08.20026
+
+----------------------------------------------------------------------------------------------------------------------------
+
+Bild-Beschreibung: ProgramIcon_GeminiGenerated.jpg
+Projekt-Name: ProgramIcon_GeminiGenerated.jpg
+Download-Name form Download: Gemini_Generated_Image_zew65qzew65qzew6.jpg
+Urheber: Erstellt mit Gemini (Google KI)
+Beschreibung: 
+Download am: 23.08.20026
+
