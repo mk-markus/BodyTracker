@@ -105,11 +105,11 @@
 
 
         <Grid Grid.Column="0"
-    Grid.ColumnSpan="2"
-    Grid.Row="1"
-    HorizontalAlignment="Left"
-    VerticalAlignment="Center"
-    Margin="0,0,10,0">
+                Grid.ColumnSpan="2"
+                Grid.Row="1"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Margin="0,0,10,0">
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -174,18 +174,29 @@
               Grid.Column="3">
 
 
-                <TextBlock Text="| ❌: "
-                 Style="{DynamicResource TextBlockDescribing}"
-                 FontWeight="Bold"
-                 Margin="5,0,5,0"/>
+                <TextBlock Text="|"
+                           Style="{DynamicResource TextBlockDescribing}"
+                           FontWeight="Bold"
+                           Margin="5,0,5,0"/>
+                
+                <TextBlock Text="ⓘ"
+                           FontSize="20"
+                           Style="{DynamicResource TextBlockDescribing}"
+                           FontWeight="Bold"
+                           Margin="5,0,5,0"/>
+                
+                <TextBlock Text=": "
+                           Style="{DynamicResource TextBlockDescribing}"
+                           FontWeight="Bold"
+                           Margin="5,0,5,0"/>
 
                 <TextBlock Text="{Binding DatabaseFailureMessage}"
-                 Style="{DynamicResource TextBlockDescribing}"
-                 Foreground="Red"/>
+                           Style="{DynamicResource TextBlockDescribing}"
+                           Foreground="Red"/>
 
                 <TextBlock Text="{Binding GeneralFailureMessage}" 
-                 Style="{DynamicResource TextBlockDescribing}"
-        Foreground="Red"/>
+                            Style="{DynamicResource TextBlockDescribing}"
+                            Foreground="Red"/>
 
 
             </StackPanel>

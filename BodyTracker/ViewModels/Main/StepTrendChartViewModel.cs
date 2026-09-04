@@ -236,18 +236,18 @@ namespace BodyTracker.ViewModels
         /// <summary>
         /// Backing field for the general error message string.
         /// </summary>
-        private string generalErrorMessage = "";
+        private string generalInfoMessage = "";
 
         /// <summary>
         /// Gets or sets the general error message, sending a database error message via the messenger when the value changes.
         /// </summary>
-        public string GeneralErrorMessage
+        public string GeneralInfoMessage
         {
-            get => generalErrorMessage;
+            get => generalInfoMessage;
             set
             {
-                generalErrorMessage = value;
-                WeakReferenceMessenger.Default.Send(new DatabaseErrorMessage(generalErrorMessage));
+                generalInfoMessage = value;
+                WeakReferenceMessenger.Default.Send(new DatabaseErrorMessage(generalInfoMessage));
             }
         }
 
@@ -325,7 +325,7 @@ namespace BodyTracker.ViewModels
 
             if (AppState.SelectedPersonId <= 0)
             {
-                GeneralErrorMessage = "No person selected. Please select a person to view their step trend data.";
+                GeneralInfoMessage = "No person selected. Please select a person to view their step trend data.";
                 return;
             }
 
@@ -385,7 +385,7 @@ namespace BodyTracker.ViewModels
             }
             catch (Exception ex)
             {
-                GeneralErrorMessage = $"Error refreshing chart: {ex.Message}";
+                GeneralInfoMessage = $"Error refreshing chart: {ex.Message}";
             }
             finally
             {

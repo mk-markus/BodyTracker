@@ -8,8 +8,11 @@
       mc:Ignorable="d"
       Background="{StaticResource AppBackgroundBrush}">
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="24">
-        <Grid>
+    <ScrollViewer VerticalScrollBarVisibility="Auto"  Padding="0"
+            HorizontalScrollBarVisibility="Auto"
+                Margin="0,10,0,0">
+        <Grid MaxWidth="1550"
+        Margin="0">
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -47,14 +50,24 @@
                             <DatePicker SelectedDate="{Binding EndDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource ModernFlatDatePicker}"/>
                         </StackPanel>
 
-                        <!-- ================= TOGGLE BUTTON QUICK DATE RANGES ================= -->
-                        <ToggleButton x:Name="DateShortCuts"
+                        <StackPanel Orientation="Horizontal">
+
+                            <!-- ================= TOGGLE BUTTON QUICK DATE RANGES ================= -->
+                            <ToggleButton x:Name="DateShortCuts"
                                        Style="{DynamicResource ModernStandardToggleButton}"
                                        Content="📅 Quick Ranges ▼ "
                                        Margin="0,10,0,0"
                                       HorizontalAlignment="Left"
                                        ToolTip="Filters the chart to show data exclusively for the current year."/>
 
+                            <Button Content="🔄"
+                                ToolTip="Refresh Datas: Reload all datas from Database"
+                                Command="{Binding CommandRefresh}"
+                                Style="{DynamicResource IconStandardButton}" 
+                                Margin="10,10,0,0"/>
+
+
+                        </StackPanel>
                         <!-- ================= POPUP QUICK DATE RANGES ================= -->
                         <Popup PlacementTarget="{Binding ElementName=DateShortCuts}"
                                 Placement="Bottom"

@@ -75,28 +75,42 @@ namespace BodyTracker.ViewModels
         /// <remarks>Triggers an asynchronous page transition to display analytical charts of workout volume and exercise distribution.</remarks>
         public IAsyncRelayCommand CommandShowSpO2 { get; }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        private  ChartsMeasurementsView chartMeasurementView;
 
         /// <summary>
-        /// 
+        /// Gets the command responsible for navigating to the personal workout insights charts view.
         /// </summary>
-        private  ChartsStepDailyTrendView chartStepTrendView;
+        /// <remarks>Triggers an asynchronous page transition to display analytical charts of workout volume and exercise distribution.</remarks>
+        public IAsyncRelayCommand CommandShowFoodInfo { get; }
 
+        /// <summary>
+        /// Stores the view instance responsible for rendering and displaying general body measurement charts.
+        /// </summary>
+        private ChartsMeasurementsView chartMeasurementView;
+
+        /// <summary>
+        /// Stores the view instance responsible for rendering and displaying daily step trend charts.
+        /// </summary>
+        private ChartsStepDailyTrendView chartStepTrendView;
+
+        /// <summary>
+        /// Stores the view instance responsible for rendering and displaying exercise and activity charts.
+        /// </summary>
         private ExerciseChartView exerciseChartView;
 
         /// <summary>
-        /// 
+        /// Stores the view instance responsible for rendering and displaying heart rate analytics charts.
         /// </summary>
         private HeartRateChartView heartRateChartView;
 
         /// <summary>
-        /// 
+        /// Stores the view instance responsible for rendering and displaying oxygen saturation monitoring charts.
         /// </summary>
         private OxygenSaturationChartView oxygenSaturationChartView;
 
+        /// <summary>
+        /// Stores the view instance responsible for rendering and displaying food and nutritional information charts.
+        /// </summary>
+        private FoodInfoChartView foodInfoChartView;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MultiChartViewModel"/> class with the specified main window shell and database service.
@@ -117,6 +131,7 @@ namespace BodyTracker.ViewModels
             CommandShowExercise = new AsyncRelayCommand(ShowExerciseAsync);
             CommandShowHeartRate = new AsyncRelayCommand(ShowHeartRateAsync);
             CommandShowSpO2 = new AsyncRelayCommand(ShowSpO2Async);
+            CommandShowFoodInfo = new AsyncRelayCommand(ShowFoodInfoAsync);
 
             _ = ShowMeasurementsAsync();
         }
@@ -148,9 +163,9 @@ namespace BodyTracker.ViewModels
 
 
         /// <summary>
-        /// Asynchronously navigates to the daily step trend charts view.
+        /// Asynchronously navigates to the exercise and activity charts view.
         /// </summary>
-        /// <remarks>Instantiates the daily step trend charts page and sets it as the active content page.</remarks>
+        /// <remarks>Instantiates the exercise chart view and sets it as the active content page.</remarks>
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task ShowExerciseAsync()
         {
@@ -161,9 +176,9 @@ namespace BodyTracker.ViewModels
 
 
         /// <summary>
-        /// Asynchronously navigates to the daily step trend charts view.
+        /// Asynchronously navigates to the heart rate analytics charts view.
         /// </summary>
-        /// <remarks>Instantiates the daily step trend charts page and sets it as the active content page.</remarks>
+        /// <remarks>Instantiates the heart rate chart view and sets it as the active content page.</remarks>
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task ShowHeartRateAsync()
         {
@@ -173,9 +188,9 @@ namespace BodyTracker.ViewModels
         }
 
         /// <summary>
-        /// Asynchronously navigates to the daily step trend charts view.
+        /// Asynchronously navigates to the oxygen saturation monitoring charts view.
         /// </summary>
-        /// <remarks>Instantiates the daily step trend charts page and sets it as the active content page.</remarks>
+        /// <remarks>Instantiates the oxygen saturation chart view and sets it as the active content page.</remarks>
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task ShowSpO2Async()
         {
@@ -183,6 +198,21 @@ namespace BodyTracker.ViewModels
             CurrentPage = oxygenSaturationChartView;
 
         }
+
+
+        /// <summary>
+        /// Asynchronously navigates to the food information charts view.
+        /// </summary>
+        /// <remarks>Instantiates the food information charts page and sets it as the active content page.</remarks>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        private async Task ShowFoodInfoAsync()
+        {
+            if (foodInfoChartView == null) foodInfoChartView = new FoodInfoChartView(databaseService);
+            CurrentPage = foodInfoChartView;
+
+        }
+
+
         /// <summary>
         /// Asynchronously navigates to the personal workout insights charts view.
         /// </summary>

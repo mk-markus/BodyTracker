@@ -4,6 +4,7 @@ using BodyTracker.State;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Win32;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -92,23 +93,28 @@ namespace BodyTracker.ViewModels
         /// </remarks>
         public IAsyncRelayCommand CommandRefresh { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public IAsyncRelayCommand CommandExport { get; }
+
         #endregion
 
         /// <summary>
         /// Backing field for the general error message string.
         /// </summary>
-        private string generalErrorMessage = "";
+        private string generalInfoMessage = "";
 
         /// <summary>
         /// Gets or sets the general error message, sending a database error message via the messenger when the value changes.
         /// </summary>
-        public string GeneralErrorMessage
+        public string GeneralInfoMessage
         {
-            get => generalErrorMessage;
+            get => generalInfoMessage;
             set
             {
-                generalErrorMessage = value;
-                WeakReferenceMessenger.Default.Send(new DatabaseErrorMessage(generalErrorMessage));
+                generalInfoMessage = value;
+                WeakReferenceMessenger.Default.Send(new DatabaseErrorMessage(generalInfoMessage));
             }
         }
 
@@ -129,8 +135,11 @@ namespace BodyTracker.ViewModels
         public DBEntryBodyMeasurementViewModel(DatabaseService db)
         {
             databaseService = db;
+            
             CommandDelete = new AsyncRelayCommand(DeleteSelectedAsync, CanDelete);
             CommandRefresh = new AsyncRelayCommand(ReloadAsync);
+            CommandExport = new AsyncRelayCommand(ExportAsync);
+
             CommandRowEditEnding = new AsyncRelayCommand<DataGridRowEditEndingEventArgs>(MeasurementsGrid_RowEditEnding);
             UserName = AppState.SelectedPersonName;
         }
@@ -260,10 +269,49 @@ namespace BodyTracker.ViewModels
             }
             catch(Exception ex)
             {
-                GeneralErrorMessage = $"Delete Measurement error: {ex}";
+                GeneralInfoMessage = $"Delete Measurement error: {ex}";
             }
             
         }
+
+
+
+        private async Task ExportAsync()
+        {
+            try
+            {
+                var exportData = await databaseService.GetFullMeasurementDatasForExport(AppState.SelectedPersonId);
+
+                if (exportData != null)
+                {
+                    var dlg = new OpenFolderDialog { InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) };
+
+                    if (dlg.ShowDialog() == true)
+                    {
+                        string filePath = dlg.FolderName;
+
+                       var export =  await FullBodyMeasurementExporter.Export(filePath, exportData);
+                        if (export)
+                        {
+                            GeneralInfoMessage= $"Export successful to {filePath}";
+                        }
+                        else
+                        {
+                            GeneralInfoMessage = $"Export failed to {filePath}";
+                        }
+
+                    }
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                GeneralInfoMessage = $"Export Measurement error: {ex}";
+            }
+        }
+
+
 
         /// <summary>
         /// Asynchronously updates an existing bodyMeasurement record or inserts a new one into the database.
@@ -315,7 +363,7 @@ namespace BodyTracker.ViewModels
             }
             catch(Exception ex)
             {
-                GeneralErrorMessage = $"Error updating measurement: {ex.Message}";
+                GeneralInfoMessage = $"Error updating measurement: {ex.Message}";
             }
         }
 
@@ -338,7 +386,6 @@ namespace BodyTracker.ViewModels
             int personId = AppState.SelectedPersonId;
             await UpdateRowMeasurementAsync(personId, editedRow);
         }
-
 
 
         #region Disposal Pattern

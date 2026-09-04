@@ -10,10 +10,11 @@
       Title="ChartsStepDailyTrendPage">
 
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" 
-               Padding="0"
-               Margin="0,12,0,0">
-        <Grid>
+    <ScrollViewer VerticalScrollBarVisibility="Auto"  Padding="0"
+            HorizontalScrollBarVisibility="Auto"
+                Margin="0,10,0,0">
+        <Grid MaxWidth="1550"
+              Margin="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
@@ -212,7 +213,7 @@
 
 
                             <Button Content="🔄"
-                             ToolTip="Refresh Datas --> Reload all datas from Database"
+                             ToolTip="Refresh Datas: Reload all datas from Database"
                              Command="{Binding CommandRefreshAsync}"
                              Style="{DynamicResource IconStandardButton}" />
 

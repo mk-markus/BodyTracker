@@ -6,6 +6,7 @@ using LiveChartsCore.SkiaSharpView.Painting.Effects;
 using SkiaSharp;
 using System;
 using System.Linq;
+using System.Windows.Media.Animation;
 
 namespace BodyTracker.Services
 {
@@ -118,10 +119,6 @@ namespace BodyTracker.Services
             };
         }
 
-
-
-
-
         /// <summary>
         /// Generates a smoothed trend line using Local Regression (LOESS) and returns it as a smooth, dashed chart series.
         /// </summary>
@@ -140,12 +137,16 @@ namespace BodyTracker.Services
                                                                     int yAxisIndex,
                                                                     double fraction,
                                                                     bool isTrendLineLegendVisible,
+                                                                    bool isTrendLineHoverable,
                                                                     float strokeThickness,
-                                                                    float geometrySize)
+                                                                    float geometrySize,
+                                                                    float[]? LineStyle = null)
         {
             // Local Polynomial Regression operations require an input dataset size of at least three samples.
             if (sourcePoints.Length < 3)
                 return null;
+
+
 
             // Perform complex mathematical local polynomial smoothing operations over the coordinates.
             var smoothPoints = CalculateLoess(sourcePoints, fraction);
@@ -164,11 +165,11 @@ namespace BodyTracker.Services
                 ScalesYAt = yAxisIndex,
                 GeometrySize = geometrySize, // Suppress localized nodes to present a clean visual profile
                 IsVisibleAtLegend = isTrendLineLegendVisible,
-                IsHoverable = false, // Disable hover interactions for trend lines to focus user attention on actual data points
+                IsHoverable = isTrendLineHoverable, // Disable hover interactions for trend lines to focus user attention on actual data points
                 Stroke = new SolidColorPaint(color)
                 {
                     StrokeThickness = strokeThickness,
-                    PathEffect = new DashEffect(new float[] { 10, 6 }) // Match styling criteria across all trend representations
+                    PathEffect = new DashEffect(LineStyle ?? new float[] { 3, 3 })  // Match styling criteria across all trend representations
                 },
 
             };

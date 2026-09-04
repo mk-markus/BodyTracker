@@ -38,7 +38,7 @@
                                Margin="0,0,15,0"/>
 
                         <Button Content="🔄"
-                               ToolTip="Refresh Datas --> Reload all datas from Database"
+                               ToolTip="Refresh Datas: Reload all datas from Database"
                                Command="{Binding CommandRefresh}"
                                Style="{DynamicResource IconStandardButton}" />
 

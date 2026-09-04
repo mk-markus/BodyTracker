@@ -11,7 +11,7 @@ namespace BodyTracker.Views
     /// <summary>
     /// Interaktionslogik für NewEntryPage.xaml
     /// </summary>
-    public partial class NewDataEntryPage : Page
+    public partial class NewDataEntryView : Page
     {
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace BodyTracker.Views
         /// <see cref="DataEntryViewModel.InitializeAsync"/>, ensuring that all necessary 
         /// background data (e.g., lookup tables or user state) is ready before user interaction begins.
         /// </remarks>
-        public NewDataEntryPage(MainWindow shell, DatabaseService db)
+        public NewDataEntryView(MainWindow shell, DatabaseService db)
         {
             InitializeComponent();
             dataEntryViewModel = new NewDataEntryPageViewModel(db);

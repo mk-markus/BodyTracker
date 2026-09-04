@@ -1,9 +1,9 @@
 ﻿using BodyTracker.Models.SamsungHealth;
 using CsvHelper.Configuration;
 
-public sealed class SamsungOxygenSaturationMap : ClassMap<SamsungOxygenSaturationModel>
+public sealed class SamsungOxygenSaturationMapping : ClassMap<SamsungOxygenSaturationModel>
 {
-    public SamsungOxygenSaturationMap()
+    public SamsungOxygenSaturationMapping()
     {
         Map(m => m.IntegratedId).Name("integrated_id");
 

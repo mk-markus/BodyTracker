@@ -16,7 +16,7 @@ namespace BodyTracker.Services
     /// Represents an asynchronous extractor for parsing Hevy workout application CSV data files.
     /// </summary>
     /// <remarks>Reads CSV files line by line using CsvHelper configured with custom mappings, generates deterministic GUIDs for records based on timestamps, and reports extraction progress asynchronously.</remarks>
-    public class HeavyAppCSVExtractor
+    public class WorkoutLogCSVImporter
     {
         /// <summary>
         /// Asynchronously extracts, parses, and processes Hevy workout records from a specified CSV file.
@@ -26,7 +26,7 @@ namespace BodyTracker.Services
         /// <param name="progress">An optional progress reporter for tracking percentage completion. Defaults to null.</param>
         /// <param name="status">An optional progress reporter for tracking status messages. Defaults to null.</param>
         /// <returns>A task representing the asynchronous operation, containing a list of extracted <see cref="HeavyAppCSVModel"/> records.</returns>
-        public static async Task<List<HeavyAppCSVModel>> ExtractAsync(string filePath,
+        public static async Task<List<HeavyAppCSVModel>> ImportAsync(string filePath,
                                                                    IProgress<double>? progress = null,
                                                                    IProgress<string>? status = null)
         {

@@ -7,18 +7,13 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace BodyTracker.Services
 {
 
     public class AppWorkoutLoadAnalyzer
     {
-        /// <summary>
-        /// Gets or sets the path pointing from the execution directory up to the project root directory.
-        /// </summary>
-        /// <remarks>Navigates upwards from build output directories (such as bin\Debug\net8.0-windows) to locate source assets and configuration files.</remarks>
-        private readonly string ProjectRootPath = string.Empty;
-
         /// <summary>
         /// Gets or sets the absolute or relative file path pointing to the exercise configuration JSON file.
         /// </summary>
@@ -78,29 +73,26 @@ namespace BodyTracker.Services
         /// <param name="primaryMuscleFactor">The weighting factor applied to primary muscle volume calculations (defaults to 1.0).</param>
         /// <param name="secondaryMuscleFactor">The weighting factor applied to secondary muscle volume calculations (defaults to 0.5).</param>
         /// <exception cref="FileNotFoundException">Thrown when the target exercise definition JSON file cannot be found on disk.</exception>
-        public AppWorkoutLoadAnalyzer(string dictionaryJsonFilePath, List<HeavyAppCSVModel> appDatas, double primaryMuscleFactor = 1.0, double secondaryMuscleFactor = 0.5)
+        public AppWorkoutLoadAnalyzer(string? dictionaryJsonFilePath, List<HeavyAppCSVModel> appDatas, double primaryMuscleFactor = 1.0, double secondaryMuscleFactor = 0.5)
         {
+            string jsonPath;
 
-            if (string.IsNullOrEmpty(dictionaryJsonFilePath))
-            {
-                ProjectRootPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory));
-                JsonFilePath = Path.Combine(ProjectRootPath, "Ressources", "JsonFiles", "Database_Exercises.json");
+            if (string.IsNullOrWhiteSpace(dictionaryJsonFilePath)) jsonPath = Path.GetFullPath(JsonFilePath);
+            else jsonPath = dictionaryJsonFilePath;
 
-            }
+            if (!File.Exists(jsonPath)) throw new FileNotFoundException($"The JSON file was not found at '{jsonPath}'.");
 
-            if (!File.Exists(JsonFilePath)) throw new FileNotFoundException($"Die JSON-Datei wurde unter '{JsonFilePath}' nicht gefunden.");
-
-            ExerciseByName = LoadExerciseLookup(JsonFilePath);
+            ExerciseByName = LoadExerciseLookup(jsonPath);
 
             WorkoutEntries = ParseHeavyWorkouts(appDatas);
 
-            WorkoutVolume = GetVolume(WorkoutEntries, primaryMuscleFactor, secondaryMuscleFactor);
+            WorkoutVolume = GetVolume(
+                WorkoutEntries,
+                primaryMuscleFactor,
+                secondaryMuscleFactor);
 
             TopExercises = CalculateExerciseFrequency(WorkoutEntries);
-
-
         }
-
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AppWorkoutLoadAnalyzer"/> class with the specified configuration path, workout data, and weighting factors.
@@ -115,13 +107,12 @@ namespace BodyTracker.Services
         public AppWorkoutLoadAnalyzer(string dictionaryJsonFilePath, List<GymWorkoutEntryModel> appDatas, double primaryMuscleFactor = 1.0, double secondaryMuscleFactor = 0.5)
         {
 
-            if (string.IsNullOrEmpty(dictionaryJsonFilePath))
-            {
-                ProjectRootPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\"));
-                JsonFilePath = Path.Combine(ProjectRootPath, "Ressources", "JsonFiles", "Database_Exercises.json");
-            }
+            string jsonPath;
 
-            if (!File.Exists(JsonFilePath)) throw new FileNotFoundException($"Die JSON-Datei wurde unter '{JsonFilePath}' nicht gefunden.");
+            if (string.IsNullOrWhiteSpace(dictionaryJsonFilePath)) jsonPath = Path.GetFullPath(JsonFilePath);
+            else jsonPath = dictionaryJsonFilePath;
+
+            if (!File.Exists(jsonPath)) throw new FileNotFoundException($"The JSON file was not found at '{jsonPath}'.");
 
             ExerciseByName = LoadExerciseLookup(JsonFilePath);
 
@@ -173,7 +164,6 @@ namespace BodyTracker.Services
             int countExercises = 0;
 
             var lastDate = new DateTime(1500, 01, 01);
-            Debug.WriteLine("Totoal: " + countExercises);
 
             foreach (var entry in filteredLogs)
             {

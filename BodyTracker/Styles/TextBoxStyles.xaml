@@ -302,6 +302,39 @@
         </Style.Triggers>
     </Style>
 
+    <!-- Style for displaying read-only AI insight outputs within a clean, text-wrapped, and scrollable text box layout -->
+             <Style x:Key="TextBoxAiInsightsStyle" TargetType="TextBox">
+                <!-- Set transparent background and remove default borders -->
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
+
+                <!-- Bind text color to the system control text brush for theme consistency -->
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+                <Setter Property="Padding" Value="0"/>
+
+                <!-- Configure behavior for multi-line AI responses -->
+                <Setter Property="TextWrapping" Value="Wrap"/>
+                <Setter Property="AcceptsReturn" Value="True"/>
+                <Setter Property="IsReadOnly" Value="True"/>
+                <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+
+                <!-- Custom control template to structure the visual tree of the TextBox -->
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="TextBox">
+                            <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="0">
+                                <!-- Required content host for TextBox text rendering and scrolling functionality -->
+                                <ScrollViewer x:Name="PART_ContentHost" Focusable="False"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
 
 
 </ResourceDictionary>

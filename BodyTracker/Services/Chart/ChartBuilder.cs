@@ -48,8 +48,10 @@ public static class ChartSeriesBuilder
                                                             config.YAxisIndex,
                                                             loessFraction,
                                                             config.IsTrendLineVisible,
+                                                            config.IsTrendLineHoverable,
                                                             config.StrokeThickness,
-                                                            config.GeometrySize);
+                                                            config.GeometrySize,
+                                                            config.TrendLineStyle);
 
                 if (trend != null) result.Add(trend);
             }

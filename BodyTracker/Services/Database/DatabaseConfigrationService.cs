@@ -158,7 +158,7 @@ namespace BodyTracker.Services
                     $"Pwd={pwd};" +
                     $"SslMode=VerifyCA;" +
                     $"AllowLoadLocalInfile = true;" +
-                    $"SslCa={CertPath}";
+                    $"SslCa={CertPath};";
         }
 
         /// <summary>

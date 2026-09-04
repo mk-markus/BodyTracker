@@ -1,4 +1,4 @@
-﻿<Page x:Class="BodyTracker.Views.Pages.MultiImportPage"
+﻿<Page x:Class="BodyTracker.Views.Pages.MultiImportView"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -39,6 +39,19 @@
                                Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
                     
                 </RadioButton>
+
+                <!-- ================= SHOW IMPORT SAMSUNG FOOD INFO ================= -->
+                <RadioButton Style="{StaticResource NavButtonTabStyle}"
+                             Command="{Binding CommandShowFoodInfoImportView}"
+                             GroupName="ImportSelection"
+                             IsChecked="False"
+                             ToolTip="Samsung Food Info CSV Import">
+
+                    <TextBlock Text="🥗 Food Info"
+                               Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
+
+                </RadioButton>
+
 
                 <!-- ================= SHOW IMPORT SAMSUNG DAILY STEP ================= -->
                 <RadioButton Style="{StaticResource NavButtonTabStyle}" 

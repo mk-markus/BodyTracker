@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BodyTracker.Services.Calculation
+namespace BodyTracker.Models.Calculation
 {
     public static class BodyCalculationGenderModel
     {

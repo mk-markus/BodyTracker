@@ -53,6 +53,12 @@ namespace BodyTracker.ViewModels.Main
         public IAsyncRelayCommand CommandShowFoodIntakeEntryView { get; }
 
         /// <summary>
+        /// Gets the command responsible for navigating to the food intake import view.
+        /// </summary>
+        /// <remarks>Triggers an asynchronous page transition to display the nutritional and food info logging import interface.</remarks>
+        public IAsyncRelayCommand CommandShowFoodInfoEntryView { get; }
+
+        /// <summary>
         /// Gets the command responsible for navigating to the heavy app workout data import view.
         /// </summary>
         /// <remarks>Triggers an asynchronous page transition to display the heavy workout tracking data import interface.</remarks>
@@ -93,6 +99,13 @@ namespace BodyTracker.ViewModels.Main
         /// </summary>
         /// <remarks>Maintains a single instance in memory to preserve state and avoid redundant instantiation overhead during navigation.</remarks>
         private DBEntryFoodIntakeView dBEntryFoodIntakeView;
+
+
+        /// <summary>
+        /// A cached instance of the food info import page.
+        /// </summary>
+        /// <remarks>Maintains a single instance in memory to preserve state and avoid redundant instantiation overhead during navigation.</remarks>
+        private DBEntryFoodInfoView dBEntryFoodInfoView;
 
         /// <summary>
         /// A cached instance of the heavy app data import page.
@@ -139,6 +152,8 @@ namespace BodyTracker.ViewModels.Main
             CommandShowStepTrendEntryView = new AsyncRelayCommand(ShowDBEntryStepTrendViewAsync);
 
             CommandShowFoodIntakeEntryView = new AsyncRelayCommand(ShowDBEntryFoodIntakeViewAsync);
+
+            CommandShowFoodInfoEntryView = new AsyncRelayCommand(ShowDBEntryFoodInfoViewAsync);
 
             CommandShowHeavyAppEntryView = new AsyncRelayCommand(ShowDBEntryHeavyAppViewAsync);
 
@@ -190,6 +205,17 @@ namespace BodyTracker.ViewModels.Main
         }
 
         /// <summary>
+        /// Asynchronously navigates to the food intake import view.
+        /// </summary>
+        /// <remarks>Instantiates the food intake import page lazily if not already cached, and sets it as the active content page.</remarks>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        private async Task ShowDBEntryFoodInfoViewAsync()
+        {
+            if (dBEntryFoodInfoView == null) dBEntryFoodInfoView = new DBEntryFoodInfoView(databaseService);
+            CurrentPage = dBEntryFoodInfoView;
+        }
+
+        /// <summary>
         /// Asynchronously navigates to the exercise import view.
         /// </summary>
         /// <remarks>Instantiates the food intake import page lazily if not already cached, and sets it as the active content page.</remarks>
@@ -230,8 +256,8 @@ namespace BodyTracker.ViewModels.Main
         private async Task ShowDBEntryHeavyAppViewAsync()
         {
 
-            if (dBEntryWorkoutLogView == null) dBEntryWorkoutLogView = new DBEntryWorkoutLogView(databaseService);
-            CurrentPage = dBEntryWorkoutLogView;
+            //if (dBEntryWorkoutLogView == null) dBEntryWorkoutLogView = 
+            CurrentPage = new DBEntryWorkoutLogView(databaseService); ;
 
         }
 

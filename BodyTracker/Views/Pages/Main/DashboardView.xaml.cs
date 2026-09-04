@@ -5,9 +5,9 @@ using System.Windows.Controls;
 namespace BodyTracker.Views.Pages
 {
     /// <summary>
-    /// Interaktionslogik für DashboardPage.xaml
+    /// Interaktionslogik für DashboardView.xaml
     /// </summary>
-    public partial class DashboardPage : Page
+    public partial class DashboardView : Page
     {
 
         /// <summary>
@@ -44,11 +44,11 @@ namespace BodyTracker.Views.Pages
         private readonly DashboardPageViewModel dashBoardViewModel;
 
         /// <summary>
-        /// Initializes a new instance of the DashboardPage class, configuring component UI elements, establishing database and main window references, instantiating the dashboard view model, setting the data context, and subscribing to the loaded event to asynchronously initialize dashboard data.
+        /// Initializes a new instance of the DashboardView class, configuring component UI elements, establishing database and main window references, instantiating the dashboard view model, setting the data context, and subscribing to the loaded event to asynchronously initialize dashboard data.
         /// </summary>
         /// <param name="shell">The main window instance hosting the application navigation and layout.</param>
         /// <param name="db">The database service instance responsible for data access operations.</param>
-        public DashboardPage(MainWindow shell, DatabaseService db)
+        public DashboardView(MainWindow shell, DatabaseService db)
         {
             InitializeComponent();
 
@@ -56,8 +56,6 @@ namespace BodyTracker.Views.Pages
             mainWindow = shell;
             dashBoardViewModel = new DashboardPageViewModel(databaseService);
             DataContext = dashBoardViewModel;
-
-            Loaded += async (s, e) => await dashBoardViewModel.InitializeAsync();
 
             Unloaded += (s, e) => dashBoardViewModel.Dispose();
         }

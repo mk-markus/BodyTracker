@@ -1,8 +1,10 @@
 ﻿using BodyTracker.Models;
-using BodyTracker.Services.Calculation;
+using BodyTracker.Models.Calculation;
+using BodyTracker.Models.FullBodyMeasurement;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 
@@ -63,6 +65,72 @@ namespace BodyTracker.Services
             result.FFM_kg = GetFilteredAverage(ordered.Select(x => x.FFM_kg));
 
             return new ObservableCollection<FullBodyMeasurementDatasModel> { result };
+        }
+
+        /// <summary>
+        /// Calculates weekly average body metrics grouped by ISO calendar weeks within a specified date range.
+        /// </summary>
+        /// <param name="start">The start date of the filtering window (inclusive).</param>
+        /// <param name="end">The end date of the filtering window (inclusive).</param>
+        /// <param name="data">The collection of body metric records to analyze.</param>
+        /// <returns>
+        /// A list of <see cref="WeeklyAverageBodyMetricModel"/> objects containing aggregated weekly averages 
+        /// and date bounds, ordered chronologically by ISO year and week.
+        /// </returns>
+        public static List<WeeklyAverageBodyMetricModel> GetWeeklyAverageValues(
+            DateTime start,
+            DateTime end,
+            List<BodyMetricModel> data)
+        {
+            if (start > end || data == null) return new List<WeeklyAverageBodyMetricModel>();
+
+            var filtered = data
+                .Where(d => d.MeasurementDate >= start &&
+                            d.MeasurementDate <= end)
+                .ToList();
+
+            if (!filtered.Any()) return new List<WeeklyAverageBodyMetricModel>();
+
+            var weeklyResults = filtered
+                .GroupBy(x => new
+                {
+                    Year = ISOWeek.GetYear(x.MeasurementDate),
+                    Week = ISOWeek.GetWeekOfYear(x.MeasurementDate)
+                })
+                .OrderBy(x => x.Key.Year)
+                .ThenBy(x => x.Key.Week)
+                .Select(group =>
+                {
+                    var measurements = group.ToList();
+
+                    var firstDate = measurements.Min(x => x.MeasurementDate);
+
+                    return new WeeklyAverageBodyMetricModel
+                    {
+                        CalendarWeek = group.Key.Week,
+
+                        WeekStartDate = measurements.Min(x => x.MeasurementDate),
+
+                        WeekEndDate = measurements.Max(x => x.MeasurementDate),
+
+                        AverageValues = new BodyMetricModel
+                        {
+                            MeasurementDate = firstDate,
+
+                            BodyWeight = GetFilteredAverage(measurements.Select(x => x.BodyWeight)),
+
+                            BMI = GetFilteredAverage(measurements.Select(x => x.BMI)),
+
+                            BodyFatPercentage = GetFilteredAverage(measurements.Select(x => x.BodyFatPercentage)),
+
+                            BodyMusclePercentage = GetFilteredAverage(measurements.Select(x => x.BodyMusclePercentage)),
+
+                            BodyWaterPercentage = GetFilteredAverage(measurements.Select(x => x.BodyWaterPercentage))
+                        }
+                    };
+                });
+
+            return new List<WeeklyAverageBodyMetricModel>(weeklyResults);
         }
 
         /// <summary>
@@ -157,27 +225,28 @@ namespace BodyTracker.Services
         /// <summary>
         /// Evaluates the FFMI value against gender-specific thresholds to return a descriptive classification.
         /// </summary>
-        /// <param name="ffm_index">The calculated Fat-Free Mass Index (FFMI) value.</param>
+        /// <param name="iFFM_Index">The calculated Fat-Free Mass Index (FFMI) value.</param>
         /// <param name="gender">The gender model used to apply gender-specific classification thresholds.</param>
         /// <returns>A descriptive string classification of the FFMI value, or an empty string if no condition matches.</returns>
-        public static string GetFFMIndexDescribing(float ffm_index, BodyCalculationGenderModel.Gender gender)
+        public static string GetFFMIndexDescribing(float iFFM_Index, BodyCalculationGenderModel.Gender gender)
         {
+
             if (gender == BodyCalculationGenderModel.Gender.Male)
             {
-                if (ffm_index < 18) return "Untrained";
-                else if (ffm_index >= 18 && ffm_index <= 19) return "Average";
-                else if (ffm_index >= 20 && ffm_index <= 21) return "Well-trained";
-                else if (ffm_index >= 22 && ffm_index <= 24) return "Athletic / Advanced";
-                else if (ffm_index >= 25) return "Natural Limit";
+                if (iFFM_Index < 18) return "Untrained";
+                else if (iFFM_Index >= 18 && iFFM_Index <= 20) return "Average";
+                else if (iFFM_Index > 20 && iFFM_Index <= 21) return "Well-trained";
+                else if (iFFM_Index > 21 && iFFM_Index <= 23) return "Athletic / Advanced";
+                else if (iFFM_Index > 23) return "Natural Limit";
             }
 
             if (gender == BodyCalculationGenderModel.Gender.Female)
             {
-                if (ffm_index < 15) return "Untrained";
-                else if (ffm_index >= 15 && ffm_index <= 16) return "Average";
-                else if (ffm_index >= 17 && ffm_index <= 19) return "Well-trained";
-                else if (ffm_index >= 20 && ffm_index <= 22) return "Very Muscular (Elite)";
-                else if (ffm_index > 22) return "Limit / Enhanced";
+                if (iFFM_Index < 15) return "Untrained";
+                else if (iFFM_Index >= 15 && iFFM_Index <= 16) return "Average";
+                else if (iFFM_Index > 16 && iFFM_Index <= 19) return "Well-trained";
+                else if (iFFM_Index > 19 && iFFM_Index <= 21) return "Very Muscular (Elite)";
+                else if (iFFM_Index > 21) return "Limit / Enhanced";
             }
 
             return string.Empty;

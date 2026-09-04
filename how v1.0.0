@@ -1,0 +1,10 @@
+[33md0a4e87[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;33mtag: [m[1;33mv1.1.1[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/features/new_features_designs[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mfeatures/new_features_designs[m[33m)[m I have improved the imports regarding faster insertion into the tables and adjusted and improved the multi-stitch type including the respective chart such as measures, step trend, workout insight, etc.
+[33md937663[m # I've adjusted the design of the multi-import view to improve its visual appearance.
+[33m73cca5b[m[33m ([m[1;33mtag: [m[1;33mV1.1.0[m[33m)[m Finished Merging --> Project works now fine
+[33maf09bd4[m Merged BodyTracker_RepoA (NEWEST AND LATEST REPO) WITH BodyTracker_RepoB (OLDEST REPO WAS THE STARTING REPO)
+[33m24af2c6[m Change Launcher Window; Add some Database connection tests --> if connection to server aviable or not; Integrate som Dispose() funtionality; Changed some UI Views;...
+[33m676dd30[m Create a Class to read the CSV File from Heavy App and upload it to the SQL Database. Create a Database Service Upload Methode. Changed the Designe of the Gui.
+[33m4357714[m Add Samsung HEalth CSV Extractor for daliy step trend und food intake. also intecrated database upload
+[33m5ee3eae[m did some grid style changes
+[33m4695b27[m I added the 7-point caliper measurement method to the new data entry view model. I also adjusted the BMI calculation in the Measurement View so that it is calculated automatically. It can no longer be changed manually there. A double-click option for selecting a user has also been added when launching the program, so that the main window opens automatically.
+[33m48186bd[m Projektdateien hinzufügen.
