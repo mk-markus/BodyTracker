@@ -19,21 +19,69 @@
     "id": "push_up_plus"
   },
   {
-    "name": "Einarmig Fliegende Reverse (Kabel)",
+    "name": "Einarmig Reverse Fliegend (Maschine)",
+    "force": "pull",
+    "level": "beginner",
+    "mechanic": "isolation",
+    "equipment": "machine",
+    "primaryMuscles": [ "Shoulders" ],
+    "secondaryMuscles": [ "Middle back" ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "einarmig_reverse_fliegend_maschine"
+  },
+  {
+    "name": "Einarmig Schulterheben Seitlich (Maschine)",
+    "force": "pull",
+    "level": "beginner",
+    "mechanic": "isolation",
+    "equipment": "machine",
+    "primaryMuscles": [ "Shoulders" ],
+    "secondaryMuscles": [],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "einarmig_schulterheben_seitlich_maschine"
+  },
+  {
+    "name": "Einarmig Gym80 Brustmaschine 3014",
+    "force": "push",
+    "level": "beginner",
+    "mechanic": "compound",
+    "equipment": "machine",
+    "primaryMuscles": [ "Chest" ],
+    "secondaryMuscles": [ "Triceps", "Shoulders" ],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "einarmig_gym80_brustmaschine_3014"
+  },
+  {
+    "name": "Einarmiger Bizepscurl (Kabelzug)",
     "force": "pull",
     "level": "beginner",
     "mechanic": "isolation",
     "equipment": "cable",
-    "primaryMuscles": [
-      "Shoulders"
-    ],
-    "secondaryMuscles": [
-      "Middle back"
-    ],
+    "primaryMuscles": [ "Biceps" ],
+    "secondaryMuscles": [ "Forearms" ],
     "instructions": [],
     "category": "strength",
     "images": [],
-    "id": "einarmig_fliegende_reverse_kabel"
+    "id": "einarmiger_bizepscurl_kabelzug"
+  },
+  {
+    "name": "Trizeps-Pushdown (Kabelzug)",
+    "force": "push",
+    "level": "beginner",
+    "mechanic": "isolation",
+    "equipment": "cable",
+    "primaryMuscles": [ "Triceps" ],
+    "secondaryMuscles": [],
+    "instructions": [],
+    "category": "strength",
+    "images": [],
+    "id": "trizeps_pushdown_kabelzug"
   },
   {
     "name": "Laufband",

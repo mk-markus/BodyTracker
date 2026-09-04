@@ -1,0 +1,429 @@
+﻿<Page x:Class="BodyTracker.Views.Pages.Main.FoodInfoChartView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"     
+      xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:BodyTracker.Views"
+      mc:Ignorable="d" 
+      d:DesignHeight="1200" d:DesignWidth="1000"
+      Title="FoodInfoChartView">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0"
+                  HorizontalScrollBarVisibility="Auto"
+                  Margin="0,10,0,0">
+        <Grid MaxWidth="1550" Margin="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="300"/>
+                <RowDefinition Height="300"/>
+                <RowDefinition Height="300"/>
+                <RowDefinition Height="300"/>
+                <RowDefinition Height="300"/>
+                <RowDefinition Height="300"/>
+                <RowDefinition Height="300"/>
+                <RowDefinition Height="300"/>
+                <RowDefinition Height="300"/>
+                <RowDefinition Height="300"/>
+                <RowDefinition Height="300"/>
+            </Grid.RowDefinitions>
+
+
+            <!-- ================= CONTROLS & FILTERS HEADER ================= -->
+            <Grid Grid.Column="0" Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*  "/>
+                </Grid.ColumnDefinitions>
+
+                <!-- ================= TIMESPAN SECTION ================= -->
+                <Border Style="{StaticResource BorderDashboardCardStyle}"
+                        Grid.Column="0"
+                        Padding="10"
+                        Margin="0,0,10,0">
+                    <StackPanel>
+                        <TextBlock Text="📅 Timespan" 
+                                   Style="{DynamicResource TextBlockDashBoardTitle}" 
+                                   Margin="0,0,0,10"/>
+
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="From:" VerticalAlignment="Center" Margin="0,0,10,0" Style="{DynamicResource TextBlockDescribing}"/>
+                            <DatePicker SelectedDate="{Binding StartDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Style="{DynamicResource ModernFlatDatePicker}"/>
+
+                            <TextBlock Text="To:" VerticalAlignment="Center" Margin="10,0,10,0" Style="{DynamicResource TextBlockDescribing}"/>
+                            <DatePicker SelectedDate="{Binding EndDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                        Style="{DynamicResource ModernFlatDatePicker}"/>
+
+                            <ToggleButton x:Name="DateShortCuts"
+                                          Style="{DynamicResource ModernStandardToggleButton}"
+                                          Content="📅 Quick Ranges ▼ "
+                                          Margin="10,0,0,0"          
+                                          ToolTip="Filters the chart to show data exclusively for the selected range."/>
+
+                            <Popup PlacementTarget="{Binding ElementName=DateShortCuts}"
+                                   Placement="Bottom"
+                                   StaysOpen="False"
+                                   IsOpen="{Binding IsChecked, ElementName=DateShortCuts}" 
+                                   AllowsTransparency="True">
+                                <Border Style="{DynamicResource BorderPopupDownCardStyle}"
+                                        Width="{Binding ActualWidth, ElementName=DateShortCuts}">
+                                    <StackPanel>
+                                        <Button Content="📅 Year" Style="{StaticResource ModernStandardButton}" Command="{Binding CommandSetActualYear}" Margin="0,0,0,0"/>
+                                        <Button Content="📆 Week" Style="{StaticResource ModernStandardButton}" Command="{Binding CommandSetActualWeek}" Margin="0,5,0,0"/>
+                                        <Button Content="🗓️ Month" Style="{StaticResource ModernStandardButton}" Command="{Binding CommandSetActualMonth}" Margin="0,5,0,0"/>
+                                        <Button Content="🌍 All Time" Style="{StaticResource ModernStandardButton}" Command="{Binding CommandShowAllData}" Margin="0,5,0,0"/>
+                                    </StackPanel>
+                                </Border>
+                            </Popup>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- ================= REFRESH SECTION ================= -->
+                <Border Style="{StaticResource BorderDashboardCardStyle}"
+                        Grid.Column="1"
+                        Padding="10">
+                    
+                    
+                    
+                    
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="📊 Actions" 
+                                   VerticalAlignment="Center"
+                                   Style="{DynamicResource TextBlockDashBoardTitle}" 
+                                   Margin="0,0,0,10"/>
+                        <StackPanel Orientation="Horizontal">
+
+
+
+                            <!-- ================= TOGGLE BUTTON SERIES MEASUREMENT DATAS ================= -->
+                            <ToggleButton x:Name="SeriesButton"
+                                        Style="{DynamicResource ModernStandardToggleButton}"
+                                        Content="📈 Show Measurement ▼ "
+                                        ToolTip="Select or clear the trend check boxes to show or hide in the following diagrams."/>
+
+                            <!-- ================= POPUP SERIES CHECKBOXES RANGES ================= -->
+                            <Popup PlacementTarget="{Binding ElementName=SeriesButton}"
+                                   Placement="Bottom"
+                                   StaysOpen="False"
+                                   IsOpen="{Binding IsChecked, ElementName=SeriesButton}"
+                                   AllowsTransparency="True">
+
+                                <Border Background="White"
+                                        Style="{DynamicResource BorderPopupDownCardStyle}"
+                                         Width="{Binding ActualWidth, ElementName=SeriesButton}">
+
+                                    <StackPanel Margin="8">
+
+                                        <CheckBox Content="🔥 Calories" 
+                                                  IsChecked="{Binding ShowCalories}"
+                                                  Command="{Binding CommandReloadChartsAsync}" 
+                                                  Style="{StaticResource StandardCheckBox}" 
+                                                  Margin="0,0,0,8"/>
+
+                                        <CheckBox Content="🥩 Protein" 
+                                                  IsChecked="{Binding ShowProtein}"
+                                                  Command="{Binding CommandReloadChartsAsync}" 
+                                                  Style="{StaticResource StandardCheckBox}" 
+                                                  Margin="0,0,0,8"/>
+
+                                        <CheckBox Content="🌾 Carbs" 
+                                                  IsChecked="{Binding ShowCarbs}" 
+                                                  Command="{Binding CommandReloadChartsAsync}" 
+                                                  Style="{StaticResource StandardCheckBox}" 
+                                                  Margin="0,0,0,8"/>
+
+                                        <CheckBox Content="🥑 Fat" 
+                                                  IsChecked="{Binding ShowFat}" 
+                                                  Command="{Binding CommandReloadChartsAsync}" 
+                                                  Style="{StaticResource StandardCheckBox}"
+                                                  Margin="0,0,0,8"/>
+
+                                        <CheckBox Content="🍊 Vitamin A" 
+                                                  IsChecked="{Binding ShowVitaminA}" 
+                                                  Command="{Binding CommandReloadChartsAsync}" 
+                                                  Style="{StaticResource StandardCheckBox}"
+                                                  Margin="0,0,0,8"/>
+
+                                        <CheckBox Content="🍋 Vitamin C" 
+                                                  IsChecked="{Binding ShowVitaminC}" 
+                                                  Command="{Binding CommandReloadChartsAsync}" 
+                                                  Style="{StaticResource StandardCheckBox}"
+                                                  Margin="0,0,0,8"/>
+
+                                        <CheckBox Content="☀️ Vitamin D" 
+                                                  IsChecked="{Binding ShowVitaminD}" 
+                                                  Command="{Binding CommandReloadChartsAsync}" 
+                                                  Style="{StaticResource StandardCheckBox}"
+                                                  Margin="0,0,0,8"/>
+
+                                        <CheckBox Content="🔩 Iron" 
+                                                  IsChecked="{Binding ShowIron}" 
+                                                  Command="{Binding CommandReloadChartsAsync}" 
+                                                  Style="{StaticResource StandardCheckBox}"
+                                                  Margin="0,0,0,8"/>
+
+                                        <CheckBox Content="🥛 Calcium" 
+                                                  IsChecked="{Binding ShowCalcium}" 
+                                                  Command="{Binding CommandReloadChartsAsync}" 
+                                                  Style="{StaticResource StandardCheckBox}"
+                                                  Margin="0,0,0,8"/>
+
+                                        <CheckBox Content="🧂 Ntrium" 
+                                                  IsChecked="{Binding ShowNatrium}" 
+                                                  Command="{Binding CommandReloadChartsAsync}" 
+                                                  Style="{StaticResource StandardCheckBox}"
+                                                  Margin="0,0,0,8"/>
+
+                                        <CheckBox Content="🍌 Kalium" 
+                                                  IsChecked="{Binding ShowKalium}" 
+                                                  Command="{Binding CommandReloadChartsAsync}" 
+                                                  Style="{StaticResource StandardCheckBox}"
+                                                  Margin="0,0,0,0"/>
+                                    </StackPanel>
+
+                                </Border>
+                            </Popup>
+
+
+
+
+                            <!-- ================= TOGGLE BUTTON TREND SERIES MEASUREMENT DATAS ================= -->
+                            <ToggleButton x:Name="TrendSeriesButton"
+                                        Style="{DynamicResource ModernStandardToggleButton}"
+                                        Content="📈 Show Trends ▼ "
+                                        ToolTip="Select or clear the trend check boxes to show or hide in the following diagrams."
+                                          MinWidth="170"/>
+
+                            <!-- ================= POPUP TREND SERIES CHECKBOXES RANGES ================= -->
+                            <Popup PlacementTarget="{Binding ElementName=TrendSeriesButton}"
+                                   Placement="Bottom"
+                                   StaysOpen="False"
+                                   IsOpen="{Binding IsChecked, ElementName=TrendSeriesButton}"
+                                   AllowsTransparency="True">
+
+                                <Border Background="White"
+                                        Style="{DynamicResource BorderPopupDownCardStyle}"
+                                         Width="{Binding ActualWidth, ElementName=TrendSeriesButton}">
+
+                                    <StackPanel Margin="8">
+                                        
+                                        <CheckBox Content="🔥 Calories" 
+                                                  IsChecked="{Binding ShowCaloriesTrend}"
+                                                  Command="{Binding CommandReloadChartsAsync}" 
+                                                  Style="{StaticResource StandardCheckBox}" 
+                                                  Margin="0,0,0,8"/>
+
+                                        <CheckBox Content="🥩 Protein" 
+                                                  IsChecked="{Binding ShowProteinTrend}"
+                                                  Command="{Binding CommandReloadChartsAsync}" 
+                                                  Style="{StaticResource StandardCheckBox}" 
+                                                  Margin="0,0,0,8"/>
+
+                                        <CheckBox Content="🌾 Carbs" 
+                                                  IsChecked="{Binding ShowCarbsTrend}" 
+                                                  Command="{Binding CommandReloadChartsAsync}" 
+                                                  Style="{StaticResource StandardCheckBox}" 
+                                                  Margin="0,0,0,8"/>
+
+                                        <CheckBox Content="🥑 Fat" 
+                                                  IsChecked="{Binding ShowFatTrend}" 
+                                                  Command="{Binding CommandReloadChartsAsync}" 
+                                                  Style="{StaticResource StandardCheckBox}"
+                                                  Margin="0,0,0,8"/>
+
+                                        <CheckBox Content="🍊 Vitamin A" 
+                                                  IsChecked="{Binding ShowVitaminATrend}" 
+                                                  Command="{Binding CommandReloadChartsAsync}" 
+                                                  Style="{StaticResource StandardCheckBox}"
+                                                  Margin="0,0,0,8"/>
+
+                                        <CheckBox Content="🍋 Vitamin C" 
+                                                  IsChecked="{Binding ShowVitaminCTrend}" 
+                                                  Command="{Binding CommandReloadChartsAsync}" 
+                                                  Style="{StaticResource StandardCheckBox}"
+                                                  Margin="0,0,0,8"/>
+
+                                        <CheckBox Content="☀️ Vitamin D" 
+                                                  IsChecked="{Binding ShowVitaminDTrend}" 
+                                                  Command="{Binding CommandReloadChartsAsync}" 
+                                                  Style="{StaticResource StandardCheckBox}"
+                                                  Margin="0,0,0,8"/>
+
+                                        <CheckBox Content="🔩 Iron" 
+                                                  IsChecked="{Binding ShowIronTrend}" 
+                                                  Command="{Binding CommandReloadChartsAsync}" 
+                                                  Style="{StaticResource StandardCheckBox}"
+                                                  Margin="0,0,0,8"/>
+
+                                        <CheckBox Content="🥛 Calcium" 
+                                                  IsChecked="{Binding ShowCalciumTrend}" 
+                                                  Command="{Binding CommandReloadChartsAsync}" 
+                                                  Style="{StaticResource StandardCheckBox}"
+                                                  Margin="0,0,0,8"/>
+
+                                        <CheckBox Content="🧂 Sodium" 
+                                                  IsChecked="{Binding ShowNatriumTrend}" 
+                                                  Command="{Binding CommandReloadChartsAsync}" 
+                                                  Style="{StaticResource StandardCheckBox}"
+                                                  Margin="0,0,0,8"/>
+
+                                        <CheckBox Content="🍌 Kalium" 
+                                                  IsChecked="{Binding ShowKaliumTrend}" 
+                                                  Command="{Binding CommandReloadChartsAsync}" 
+                                                  Style="{StaticResource StandardCheckBox}"
+                                                  Margin="0,0,0,0"/>
+                                    </StackPanel>
+
+                                </Border>
+                            </Popup>
+
+                            <Button Content="🔄"
+                                   ToolTip="Refresh Data: Reload all data from Database"
+                                   Command="{Binding CommandRefreshAsync}"
+                                   Style="{DynamicResource IconStandardButton}" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- ================= CALORIES CHART ================= -->
+            <Border Style="{StaticResource BorderDashboardCardStyle}" Grid.Column="0" Grid.Row="1" Margin="0,12,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="🔥 Calories (kcal)" Style="{DynamicResource TextBlockDashBoardTitle}" Grid.Row="0" Margin="0,0,0,12"/>
+                    <lvc:CartesianChart Series="{Binding SeriesCalories}" XAxes="{Binding XAxesCalories}" YAxes="{Binding YAxesCalories}" LegendPosition="Hidden" Background="Transparent" Grid.Row="1"/>
+                </Grid>
+            </Border>
+
+            <!-- ================= PROTEIN CHART ================= -->
+            <Border Style="{StaticResource BorderDashboardCardStyle}" Grid.Column="0" Grid.Row="2" Margin="0,12,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="🥩 Protein (g)" Style="{DynamicResource TextBlockDashBoardTitle}" Grid.Row="0" Margin="0,0,0,12"/>
+                    <lvc:CartesianChart Series="{Binding SeriesProtein}" XAxes="{Binding XAxesProtein}" YAxes="{Binding YAxesProtein}" LegendPosition="Hidden" Background="Transparent" Grid.Row="1"/>
+                </Grid>
+            </Border>
+
+            <!-- ================= CARBS CHART ================= -->
+            <Border Style="{StaticResource BorderDashboardCardStyle}" Grid.Column="0" Grid.Row="3" Margin="0,12,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="🍞 Carbohydrates (g)" Style="{DynamicResource TextBlockDashBoardTitle}" Grid.Row="0" Margin="0,0,0,12"/>
+                    <lvc:CartesianChart Series="{Binding SeriesCarbs}" XAxes="{Binding XAxesCarbs}" YAxes="{Binding YAxesCarbs}" LegendPosition="Hidden" Background="Transparent" Grid.Row="1"/>
+                </Grid>
+            </Border>
+
+            <!-- ================= FAT CHART ================= -->
+            <Border Style="{StaticResource BorderDashboardCardStyle}" Grid.Column="0" Grid.Row="4" Margin="0,12,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="🥑 Fat (g)" Style="{DynamicResource TextBlockDashBoardTitle}" Grid.Row="0" Margin="0,0,0,12"/>
+                    <lvc:CartesianChart Series="{Binding SeriesFat}" XAxes="{Binding XAxesFat}" YAxes="{Binding YAxesFat}" LegendPosition="Hidden" Background="Transparent" Grid.Row="1"/>
+                </Grid>
+            </Border>
+
+            <!-- ================= VITAMIN A CHART ================= -->
+            <Border Style="{StaticResource BorderDashboardCardStyle}" Grid.Column="0" Grid.Row="5" Margin="0,12,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="🍊 Vitamin A" Style="{DynamicResource TextBlockDashBoardTitle}" Grid.Row="0" Margin="0,0,0,12"/>
+                    <lvc:CartesianChart Series="{Binding SeriesVitaminA}" XAxes="{Binding XAxesVitaminA}" YAxes="{Binding YAxesVitaminA}" LegendPosition="Hidden" Background="Transparent" Grid.Row="1"/>
+                </Grid>
+            </Border>
+
+            <!-- ================= VITAMIN C CHART ================= -->
+            <Border Style="{StaticResource BorderDashboardCardStyle}" Grid.Column="0" Grid.Row="6" Margin="0,12,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="🍋 Vitamin C" Style="{DynamicResource TextBlockDashBoardTitle}" Grid.Row="0" Margin="0,0,0,12"/>
+                    <lvc:CartesianChart Series="{Binding SeriesVitaminC}" XAxes="{Binding XAxesVitaminC}" YAxes="{Binding YAxesVitaminC}" LegendPosition="Hidden" Background="Transparent" Grid.Row="1"/>
+                </Grid>
+            </Border>
+
+            <!-- ================= VITAMIN D CHART ================= -->
+            <Border Style="{StaticResource BorderDashboardCardStyle}" Grid.Column="0" Grid.Row="7" Margin="0,12,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="☀️ Vitamin D" Style="{DynamicResource TextBlockDashBoardTitle}" Grid.Row="0" Margin="0,0,0,12"/>
+                    <lvc:CartesianChart Series="{Binding SeriesVitaminD}" XAxes="{Binding XAxesVitaminD}" YAxes="{Binding YAxesVitaminD}" LegendPosition="Hidden" Background="Transparent" Grid.Row="1"/>
+                </Grid>
+            </Border>
+
+            <!-- ================= IRON CHART ================= -->
+            <Border Style="{StaticResource BorderDashboardCardStyle}" Grid.Column="0" Grid.Row="8" Margin="0,12,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="⚙️ Iron (Eisen)" Style="{DynamicResource TextBlockDashBoardTitle}" Grid.Row="0" Margin="0,0,0,12"/>
+                    <lvc:CartesianChart Series="{Binding SeriesIron}" XAxes="{Binding XAxesIron}" YAxes="{Binding YAxesIron}" LegendPosition="Hidden" Background="Transparent" Grid.Row="1"/>
+                </Grid>
+            </Border>
+
+            <!-- ================= CALCIUM CHART ================= -->
+            <Border Style="{StaticResource BorderDashboardCardStyle}" Grid.Column="0" Grid.Row="9" Margin="0,12,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="🥛 Calcium" Style="{DynamicResource TextBlockDashBoardTitle}" Grid.Row="0" Margin="0,0,0,12"/>
+                    <lvc:CartesianChart Series="{Binding SeriesCalcium}" XAxes="{Binding XAxesCalcium}" YAxes="{Binding YAxesCalcium}" LegendPosition="Hidden" Background="Transparent" Grid.Row="1"/>
+                </Grid>
+            </Border>
+
+            <!-- ================= MAGNESIUM CHART ================= -->
+            <Border Style="{StaticResource BorderDashboardCardStyle}" Grid.Column="0" Grid.Row="10" Margin="0,12,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="🥜 Natrium" Style="{DynamicResource TextBlockDashBoardTitle}" Grid.Row="0" Margin="0,0,0,12"/>
+                    <lvc:CartesianChart Series="{Binding SeriesNatrium}" XAxes="{Binding XAxesNatrium}" YAxes="{Binding YAxesNatrium}" LegendPosition="Hidden" Background="Transparent" Grid.Row="1"/>
+                </Grid>
+            </Border>
+
+            <!-- ================= KALIUM CHART ================= -->
+            <Border Style="{StaticResource BorderDashboardCardStyle}" Grid.Column="0" Grid.Row="11" Margin="0,12,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="🍌 Kalium" Style="{DynamicResource TextBlockDashBoardTitle}" Grid.Row="0" Margin="0,0,0,12"/>
+                    <lvc:CartesianChart Series="{Binding SeriesPotassium}" XAxes="{Binding XAxesPotassium}" YAxes="{Binding YAxesPotassium}" LegendPosition="Hidden" Background="Transparent" Grid.Row="1"/>
+                </Grid>
+            </Border>
+
+        </Grid>
+    </ScrollViewer>
+</Page>

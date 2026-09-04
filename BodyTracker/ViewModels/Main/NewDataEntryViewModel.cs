@@ -217,18 +217,18 @@ namespace BodyTracker.ViewModels
         /// <summary>
         /// Backing field for the general error message string.
         /// </summary>
-        private string generalErrorMessage = "";
+        private string generalInfoMessage = "";
 
         /// <summary>
         /// Gets or sets the general error message, sending a database error message via the messenger when the value changes.
         /// </summary>
-        public string GeneralErrorMessage
+        public string GeneralInfoMessage
         {
-            get => generalErrorMessage;
+            get => generalInfoMessage;
             set
             {
-                generalErrorMessage = value;
-                WeakReferenceMessenger.Default.Send(new DatabaseErrorMessage(generalErrorMessage));
+                generalInfoMessage = value;
+                WeakReferenceMessenger.Default.Send(new DatabaseErrorMessage(generalInfoMessage));
             }
         }
 
@@ -686,7 +686,7 @@ namespace BodyTracker.ViewModels
           
             catch(Exception ex)
             {
-                GeneralErrorMessage = "An error occurred while initializing the data entry form: " + ex.Message;
+                GeneralInfoMessage = "An error occurred while initializing the data entry form: " + ex.Message;
             }
         }
 
@@ -767,7 +767,7 @@ namespace BodyTracker.ViewModels
 
                     if (measurementAlreadyExists)
                     {
-                        GeneralErrorMessage= $"A bodyMeasurement for the date {bodyMetric.MeasurementDate.ToString("d")} already exists. Please choose a different date.";
+                        GeneralInfoMessage= $"A bodyMeasurement for the date {bodyMetric.MeasurementDate.ToString("d")} already exists. Please choose a different date.";
                     }
 
                     else
@@ -787,7 +787,7 @@ namespace BodyTracker.ViewModels
             }
             catch (Exception ex)
             {
-                GeneralErrorMessage = "An error occurred while saving the data: " + ex.Message;
+                GeneralInfoMessage = "An error occurred while saving the data: " + ex.Message;
             }
 
             return false;

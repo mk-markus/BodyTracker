@@ -117,19 +117,19 @@ namespace BodyTracker.ViewModels
         /// <summary>
         /// Backing field for the general error message string.
         /// </summary>
-        private string generalErrorMessage = "";
+        private string generalInfoMessage = "";
 
         /// <summary>
         /// Gets or sets the general error message, sending a database error message via the messenger when the value changes.
         /// </summary>
-        public string GeneralErrorMessage
+        public string GeneralInfoMessage
         {
-            get => generalErrorMessage;
+            get => generalInfoMessage;
             set
             {
-                if (SetProperty(ref generalErrorMessage, value))
+                if (SetProperty(ref generalInfoMessage, value))
                 {
-                    WeakReferenceMessenger.Default.Send(new DatabaseErrorMessage(generalErrorMessage));
+                    WeakReferenceMessenger.Default.Send(new DatabaseErrorMessage(generalInfoMessage));
                 }
             }
         }
@@ -214,7 +214,7 @@ namespace BodyTracker.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    GeneralErrorMessage = $"Initialization error: {ex}";
+                    GeneralInfoMessage = $"Initialization error: {ex}";
                     ActualConnectionState = "Not Connected";
                     return false;
                 }
@@ -289,7 +289,7 @@ namespace BodyTracker.ViewModels
         {
             if (AppState.SelectedPersonId <= 0)
             {
-                GeneralErrorMessage = "No user has been selected. Please select a user!";
+                GeneralInfoMessage = "No user has been selected. Please select a user!";
                 return;
             }
 

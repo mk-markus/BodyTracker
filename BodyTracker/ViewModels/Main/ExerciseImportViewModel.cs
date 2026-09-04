@@ -91,18 +91,18 @@ namespace BodyTracker.ViewModels.Main
         /// <summary>
         /// Backing field for the general error message string.
         /// </summary>
-        private string generalErrorMessage = "";
+        private string generalInfoMessage = "";
 
         /// <summary>
         /// Gets or sets the general error message, sending a database error message via the messenger when the value changes.
         /// </summary>
-        public string GeneralErrorMessage
+        public string GeneralInfoMessage
         {
-            get => generalErrorMessage;
+            get => generalInfoMessage;
             set
             {
-                generalErrorMessage = value;
-                WeakReferenceMessenger.Default.Send(new DatabaseErrorMessage(generalErrorMessage));
+                generalInfoMessage = value;
+                WeakReferenceMessenger.Default.Send(new DatabaseErrorMessage(generalInfoMessage));
             }
         }
 
@@ -132,7 +132,7 @@ namespace BodyTracker.ViewModels.Main
         {
             if (ExerciseDatas == null || ExerciseDatas.Count == 0)
             {
-                GeneralErrorMessage = "No uploading data available.";
+                GeneralInfoMessage = "No uploading data available.";
                 return;
             }
 
@@ -168,7 +168,7 @@ namespace BodyTracker.ViewModels.Main
             }
             catch (Exception ex)
             {
-                GeneralErrorMessage = $"Error during upload: {ex.Message}";
+                GeneralInfoMessage = $"Error during upload: {ex.Message}";
             }
             finally
             {
@@ -218,7 +218,7 @@ namespace BodyTracker.ViewModels.Main
             }
             catch (Exception ex)
             {
-                GeneralErrorMessage = $"Error - use the correct file: {ex.Message}";
+                GeneralInfoMessage = $"Error - use the correct file: {ex.Message}";
             }
             finally
             {
@@ -246,13 +246,13 @@ namespace BodyTracker.ViewModels.Main
 
                 if (!path.Any())
                 {
-                    GeneralErrorMessage = "No Files were found";
+                    GeneralInfoMessage = "No Files were found";
                     return;
                 }
 
                 if (path.Count() > 1)
                 {
-                    GeneralErrorMessage = "Several files were found. Please select one of the dialog files.";
+                    GeneralInfoMessage = "Several files were found. Please select one of the dialog files.";
                     _ = OpenAsync();
                     return;
                 }
@@ -280,7 +280,7 @@ namespace BodyTracker.ViewModels.Main
             }
             catch (Exception ex)
             {
-                GeneralErrorMessage = $"Error - use the correct file: {ex.Message}";
+                GeneralInfoMessage = $"Error - use the correct file: {ex.Message}";
             }
             finally
             {

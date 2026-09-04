@@ -35,6 +35,21 @@ namespace BodyTracker.ViewModels
         /// </remarks>
         private readonly DatabaseService databaseService;
 
+
+        private DashboardView? dashboardView;
+
+        private MultiChartsView? multiChartsView;
+
+        private MultiDatabaseView? multiDatabaseView;
+
+        private NewDataEntryView? newDataEntryView;
+
+        private MultiImportView? multiImportView;
+
+        private InfoView? infoView;
+
+
+
         /// <summary>
         /// Gets or sets the name of the person currently being viewed.
         /// Used for display purposes in headers or titles.
@@ -204,7 +219,7 @@ namespace BodyTracker.ViewModels
             CommandMultiImportPageAsync = new AsyncRelayCommand(ShowMultiDBEntryViewAsync);
             CommandInfoPageAsync = new AsyncRelayCommand(ShowInfoPageAsync);
 
-            WeakReferenceMessenger.Default.Register<GeneralErrorMessage>(this, (r, m) =>
+            WeakReferenceMessenger.Default.Register<GeneralInfoMessage>(this, (r, m) =>
             {
                 var value = m.Value ?? string.Empty;
                 var version = Interlocked.Increment(ref generalFailureMessageVersion);
@@ -399,7 +414,10 @@ namespace BodyTracker.ViewModels
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task ShowImportPageAsync()
         {
-            CurrentPage = new MultiImportPage(mainWindow, databaseService);
+            
+            if(multiImportView == null) multiImportView = new MultiImportView(mainWindow, databaseService);
+
+            CurrentPage = multiImportView;
 
             suppressSelectionAction = true;
             IsDashboardSelected = false;
@@ -418,8 +436,13 @@ namespace BodyTracker.ViewModels
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task ShowDashboardPageAsync()
         {
-            var page = new DashboardPage(mainWindow, databaseService);
-            CurrentPage = page;
+            if (dashboardView == null)
+            {
+                dashboardView = new DashboardView(mainWindow, databaseService);
+                Debug.WriteLine("Dashboard View was null");
+            }
+
+            CurrentPage = dashboardView;
 
             suppressSelectionAction = true;
             IsDashboardSelected = true;
@@ -438,8 +461,8 @@ namespace BodyTracker.ViewModels
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task ShowChartsPageAsync()
         {
-            var page = new MultiChartsPage(mainWindow, databaseService);
-            CurrentPage = page;
+            if(multiChartsView == null) multiChartsView = new MultiChartsView(mainWindow, databaseService);
+            CurrentPage = multiChartsView;
 
             suppressSelectionAction = true;
             IsDashboardSelected = false;
@@ -457,8 +480,8 @@ namespace BodyTracker.ViewModels
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task ShowMultiDBEntryViewAsync()
         {
-            var page = new MultiDatabaseView(databaseService);
-            CurrentPage = page;
+            if(multiDatabaseView == null) multiDatabaseView = new MultiDatabaseView(databaseService);
+            CurrentPage = multiDatabaseView;
 
             suppressSelectionAction = true;
             IsDashboardSelected = false;
@@ -477,8 +500,8 @@ namespace BodyTracker.ViewModels
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task ShowNewDatabaseEntryPageAsync()
         {
-            var page = new NewDataEntryPage(mainWindow, databaseService);
-            CurrentPage = page;
+            if(newDataEntryView == null) newDataEntryView = new NewDataEntryView(mainWindow, databaseService);
+            CurrentPage = newDataEntryView;
 
             suppressSelectionAction = true;
             IsDashboardSelected = false;
@@ -496,8 +519,8 @@ namespace BodyTracker.ViewModels
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task ShowInfoPageAsync()
         {
-            var page = new InfoPage();
-            CurrentPage = page;
+            if(infoView == null) infoView = new InfoView();
+            CurrentPage = infoView;
 
             suppressSelectionAction = true;
             IsDashboardSelected = false;

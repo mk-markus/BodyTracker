@@ -7,22 +7,15 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using LiveChartsCore;
 using LiveChartsCore.Kernel.Sketches;
-using LiveChartsCore.Measure;
-using LiveChartsCore.SkiaSharpView;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using static SkiaSharp.HarfBuzz.SKShaper;
+using System.Windows;
 
 namespace BodyTracker.ViewModels
 {
@@ -44,7 +37,7 @@ namespace BodyTracker.ViewModels
         /// Gets the command responsible for refreshing the bodyMeasurement history from the database.
         /// Triggers an asynchronous reload of the <see cref="Measurement"/> collection.
         /// </summary>
-        public IAsyncRelayCommand ReloadCommand { get; }
+        public IAsyncRelayCommand CommandRefresh { get; }
 
         /// <summary>
         /// Gets the command responsible for navigating to the page for adding a new database entry.
@@ -71,18 +64,18 @@ namespace BodyTracker.ViewModels
         /// <summary>
         /// Backing field for the general error message string.
         /// </summary>
-        private string generalErrorMessage = "";
+        private string generalInfoMessage = "";
 
         /// <summary>
         /// Gets or sets the general error message, sending a database error message via the messenger when the value changes.
         /// </summary>
-        public string GeneralErrorMessage
+        public string GeneralInfoMessage
         {
-            get => generalErrorMessage;
+            get => generalInfoMessage;
             set
             {
-                generalErrorMessage = value;
-                WeakReferenceMessenger.Default.Send(new DatabaseErrorMessage(generalErrorMessage));
+                generalInfoMessage = value;
+                WeakReferenceMessenger.Default.Send(new DatabaseErrorMessage(generalInfoMessage));
             }
         }
 
@@ -389,15 +382,16 @@ namespace BodyTracker.ViewModels
         /// <remarks>Assigns service dependencies and initiates the initial asynchronous data load upon view activation.</remarks>
         /// <param name="shell">The reference to the primary application window instance.</param>
         /// <param name="db">The database service instance used for data retrieval operations.</param>
-        public WorkoutInsightsViewModel(MainWindow shell, DatabaseService db)
+        public WorkoutInsightsViewModel(DatabaseService db)
         {
             databaseService = db;
             
-            ReloadCommand = new AsyncRelayCommand(ReloadAsync);
+            CommandRefresh = new AsyncRelayCommand(ReloadAsync);
             CommandSetActualYear = new RelayCommand(SetActualYear);
             CommandSetActualMonth = new RelayCommand(SetActualMonth);
             CommandSetActualWeek = new RelayCommand(SetActualWeek);
 
+            _ = InitializeAsync();
         }
 
         /// <summary>
@@ -411,22 +405,31 @@ namespace BodyTracker.ViewModels
         /// </remarks>
         public async Task InitializeAsync()
         {
-            if (analyzer == null || firstLoad)
+            try
             {
-                suppressReload = true;
-                var list = await databaseService.GetHeavyAppWorkoutsAsync(AppState.SelectedPersonId);
-                analyzer = new AppWorkoutLoadAnalyzer("", list, 1, 0.5);
-            
-                suppressReload = false;
-            }
 
-            if (StartDate == default || EndDate == default)
-            {
-                SetActualYear();
+                suppressReload = true;
+
+                var list = await databaseService.GetHeavyAppWorkoutsAsync(AppState.SelectedPersonId);
+
+
+                analyzer = new AppWorkoutLoadAnalyzer("", list, 1, 0.5);
+
+
+                suppressReload = false;
+
+                if (StartDate == default || EndDate == default)
+                {
+                    SetActualYear();
+                }
+                else
+                {
+                    await RefreshChartAsync();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                await RefreshChartAsync();
+                GeneralInfoMessage = $"Error initializing Gym dashboard: {ex.Message}";
             }
         }
 
@@ -457,11 +460,17 @@ namespace BodyTracker.ViewModels
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public async Task RefreshChartAsync()
         {
-            if (suppressReload) return;
-            if (AppState.SelectedPersonId <= 0) return;
-            if (analyzer == null) return;
-            if (!await reloadLock.WaitAsync(0)) return;
 
+            if (suppressReload) return;
+
+
+            if (AppState.SelectedPersonId <= 0) return;
+
+
+            if (analyzer == null) return;
+
+
+            if (!await reloadLock.WaitAsync(0)) return;
             try
             {
                 await Task.WhenAll(
@@ -469,11 +478,12 @@ namespace BodyTracker.ViewModels
                     GetChartMuscleDistributionSpiderChart(analyzer, StartDate, EndDate),
                     GetChartMonthlyTraningsVolumeAsync(analyzer, StartDate, EndDate),
                     GetWorkoutProgressChart(analyzer, StartDate, EndDate)
-                );
+               );
             }
             catch (Exception ex)
             {
-                GeneralErrorMessage = $"Error refreshing dashboard: {ex.Message}";
+                GeneralInfoMessage = $"Error refreshing dashboard: {ex.Message}";
+                MessageBox.Show(ex.Message);
             }
             finally
             {
@@ -497,7 +507,7 @@ namespace BodyTracker.ViewModels
             var previousMuscleDistribution = analyzer.CalculateMuscleSplit(analyzer.WorkoutEntries, startDate: prevStart, endDate: prevEnd);
             string currlabel = "";
             string prevlabel = "";
-            if (!previousMuscleDistribution.Any()) { currlabel = "all datas"; prevlabel = ""; }
+            if (!previousMuscleDistribution.Any()) { prevlabel = ""; }
             else { currlabel = labelChartCurr; prevlabel = labelChartPrev; }
 
 
@@ -575,14 +585,6 @@ namespace BodyTracker.ViewModels
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task GetAppDashboardValuesAsync(AppWorkoutLoadAnalyzer analyzer, DateTime startDate, DateTime endDate)
         {
-            if (AppState.SelectedPersonId < 0)
-            {
-                GeneralErrorMessage = "The Person ID is <0";
-                return;
-            }
-
-            //var adjustedStartDate = startDate.AddMonths(-1);
-
             var totalWorkoutVolume = analyzer.GetVolume(analyzer.WorkoutEntries, startDate: startDate, endDate: endDate);
 
             TotalWorkoutsVolume = totalWorkoutVolume.TotalVolume.ToString("N0", new System.Globalization.CultureInfo("de-DE")) + " kg";
@@ -621,7 +623,19 @@ namespace BodyTracker.ViewModels
         private void SetActualYear()
         {
             DateTime today = DateTime.Today;
-            SetDateRange(new DateTime(today.Year, 1, 1), new DateTime(today.Year, 12, 31), "Actual Year", "Previous Year");
+
+            // Current year range
+            StartDate = new DateTime(today.Year, 1, 1);
+            EndDate = new DateTime(today.Year, 12, 31);
+
+            // Previous year range (shifted back by 1 year)
+            PrevStartDate = StartDate.AddYears(-1);
+            PrevEndDate = EndDate.AddYears(-1);
+
+            // Labels (e.g., "2026" and "2025" or custom format depending on your preference)
+            labelChartCurr = StartDate.ToString("yyyy", CultureInfo.InvariantCulture);
+            labelChartPrev = PrevStartDate.ToString("yyyy", CultureInfo.InvariantCulture);
+            _ = RefreshChartAsync();
         }
 
         /// <summary>
@@ -630,9 +644,19 @@ namespace BodyTracker.ViewModels
         private void SetActualMonth()
         {
             DateTime today = DateTime.Today;
-            var start = new DateTime(today.Year, today.Month, 1);
-            var end = start.AddMonths(1).AddDays(-1);
-            SetDateRange(start, end, "Actual Month", "Previous Month");
+
+            // Current month range
+            StartDate = new DateTime(today.Year, today.Month, 1);
+            EndDate = StartDate.AddMonths(1).AddDays(-1);
+
+            // Previous month range (shifted back by 1 month)
+            PrevStartDate = StartDate.AddMonths(-1);
+            PrevEndDate = EndDate.AddMonths(-1);
+
+            // Labels formatted without dots (e.g., "August 2026" and "July 2026")
+            labelChartCurr = StartDate.ToString("MMMM yyyy", CultureInfo.InvariantCulture);
+            labelChartPrev = PrevStartDate.ToString("MMMM yyyy", CultureInfo.InvariantCulture);
+            _ = RefreshChartAsync();
         }
 
         /// <summary>
@@ -642,8 +666,19 @@ namespace BodyTracker.ViewModels
         {
             DateTime today = DateTime.Today;
             int diff = (7 + (today.DayOfWeek - DayOfWeek.Monday)) % 7;
-            DateTime startOfWeek = today.AddDays(-1 * diff);
-            SetDateRange(startOfWeek, startOfWeek.AddDays(6), "Actual Week", "Previous Week");
+
+            // Current week range (Monday to Sunday)
+            StartDate = today.AddDays(-1 * diff);
+            EndDate = StartDate.AddDays(6);
+
+            // Previous week range (shifted back by 7 days)
+            PrevStartDate = StartDate.AddDays(-7);
+            PrevEndDate = EndDate.AddDays(-7);
+
+            // Labels showing the date span or custom week representation
+            labelChartCurr = $"{StartDate:dd MMM} - {EndDate:dd MMM yyyy}";
+            labelChartPrev = $"{PrevStartDate:dd MMM} - {PrevEndDate:dd MMM yyyy}";
+            _ = RefreshChartAsync();
         }
 
         /// <summary>

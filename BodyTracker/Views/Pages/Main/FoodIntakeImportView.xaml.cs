@@ -28,7 +28,7 @@ namespace BodyTracker.Views.Pages
         private readonly string searchPath = string.Empty;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FoodIntakeImportView"/> class.
+        /// Initializes a new instance of the <see cref="FoodInfoImportView"/> class.
         /// </summary>
         /// <param name="db">The database service instance used for data persistence.</param>
         /// <param name="path">The file path used to initialize the import view model.</param>

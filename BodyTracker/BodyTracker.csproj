@@ -40,7 +40,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="License\License.txt">
-      <Generator>MSBuild:Compile</Generator>
+      <Generator></Generator>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Ressources\Icon\ProgramIcon_GymDumbbell.ico">
@@ -50,21 +50,21 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Ressources\Images\Caliper-Male-Female.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Ressources\Images\icons8-pulse-oximeter-100.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Ressources\Images\ProgramIcon_GeminiGenerated.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Ressources\JsonFiles\Database_Exercises.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Ressources\Images\Caliper-Male-Female_old.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Ressources\JsonFiles\exercises.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -81,6 +81,12 @@
     <PackageReference Include="Portkit.ComponentModel" Version="1.1.2" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Views\Pages\Main\DBEntryFoodInfoView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Pages\Main\FoodInfoImportView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\Pages\Main\MultiImportView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -98,5 +104,8 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\TimeStructureModels\" />
   </ItemGroup>
 </Project>

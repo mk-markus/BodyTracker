@@ -1,5 +1,7 @@
 using BodyTracker.Models;
 using BodyTracker.Models.Chart;
+using BodyTracker.Models.Export;
+using BodyTracker.Models.FullBodyMeasurement;
 using BodyTracker.Models.SamsungHealth;
 using BodyTracker.Services.SamsungHealth;
 using BodyTracker.Services.SamsungHelath;
@@ -14,6 +16,8 @@ using System.Linq;
 using System.Security.Policy;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Documents;
 
 
 namespace BodyTracker.Services
@@ -219,7 +223,7 @@ namespace BodyTracker.Services
             {
                 reconnectInProgress = true;
                 await OpenConnectionAsync();
-                Debug.WriteLine("isConnected Status: " + IsConnected);
+
                 if (!IsConnected) return;
 
             }
@@ -559,6 +563,67 @@ namespace BodyTracker.Services
         }
 
         /// <summary>
+        /// Asynchronously retrieves a list of body metric records for a specific person, 
+        /// filtered within a specified timeframe leading up to the provided end date.
+        /// </summary>
+        /// <param name="personId">The unique identifier of the person whose metrics are being retrieved.</param>
+        /// <param name="endDate">The reference end date used to define the upper bound of the retrieval window.</param>
+        /// <param name="HowManyMonthsBefore">The number of months prior to the end date to include in the retrieval period.</param>
+        /// <returns>
+        /// A task that represents the asynchronous operation. 
+        /// The task result contains a list of <see cref="BodyMetricModel"/> records found within the range.
+        /// </returns>
+        /// <remarks>
+        /// This method handles nullable database fields for Weight, BMI, Fat, and Muscle percentages 
+        /// by converting DBNull values to C# nullable types (float? or int?).
+        /// </remarks>
+        public async Task<List<BodyMetricModel>> GetBodyMetricForAIAsync(int personId, DateTime startDate, DateTime endDate)
+        {
+            await using var sqlServerConnection = await OpenConnectionAsync();
+
+
+
+            var list = new List<BodyMetricModel>();
+
+            if (!IsConnected) return list;
+
+            try
+            {
+                await using var SqlCommand = new MySqlCommand(DatabaseCommands.GetLastPersonMetricsForAISql(), sqlServerConnection);
+                SqlCommand.Parameters.AddWithValue("@pid", personId);
+                SqlCommand.Parameters.AddWithValue("@end", endDate.Date);
+                SqlCommand.Parameters.AddWithValue("@start", startDate.Date);
+                await using var SqlDataReader = await SqlCommand.ExecuteReaderAsync();
+                while (await SqlDataReader.ReadAsync())
+                {
+                    list.Add(new BodyMetricModel
+                    {
+                        MetricID = SqlDataReader.GetInt32(0),
+                        PersonID = SqlDataReader.GetInt32(1),
+                        MeasurementDate = SqlDataReader.GetDateTime(2),
+                        BodyWeight = SqlDataReader.IsDBNull(3) ? (float?)null : SqlDataReader.GetFloat(3),
+                        BMI = SqlDataReader.IsDBNull(4) ? (float?)null : SqlDataReader.GetFloat(4),
+                        BodyFatPercentage = SqlDataReader.IsDBNull(5) ? (float?)null : SqlDataReader.GetFloat(5),
+                        BodyFatPercentageTop = SqlDataReader.IsDBNull(6) ? (float?)null : SqlDataReader.GetFloat(6),
+                        BodyFatPercentageBottom = SqlDataReader.IsDBNull(7) ? (float?)null : SqlDataReader.GetFloat(7),
+                        BodyMusclePercentage = SqlDataReader.IsDBNull(8) ? (float?)null : SqlDataReader.GetFloat(8),
+                        BodyMusclePercentageTop = SqlDataReader.IsDBNull(9) ? (float?)null : SqlDataReader.GetFloat(9),
+                        BodyMusclePercentageBottom = SqlDataReader.IsDBNull(10) ? (float?)null : SqlDataReader.GetFloat(10),
+                        BodyWaterPercentage = SqlDataReader.IsDBNull(12) ? (float?)null : SqlDataReader.GetFloat(12),
+                        BodyBoneMass = SqlDataReader.IsDBNull(11) ? (float?)null : SqlDataReader.GetFloat(11),
+                        BodyVisceralFat = SqlDataReader.IsDBNull(13) ? (int?)null : SqlDataReader.GetInt32(13)
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"Error Get Body Metrics for AI: {ex.Message}";
+            }
+
+            return list;
+        }
+
+        /// <summary>
         /// Asynchronously retrieves the most recent physical body dimensions (e.g., chest, waist, hips) 
         /// for a specific person, filtered by a reference date.
         /// </summary>
@@ -609,11 +674,162 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error Get Body Demensions: {ex.Message}";
+                ErrorMessage = $"Error Get Body Dimensions: {ex.Message}";
             }
 
             return new BodyDimensionsModel();
         }
+
+        /// <summary>
+        /// Asynchronously retrieves the most recent physical body dimensions (e.g., chest, waist, hips) 
+        /// for a specific person, filtered by a reference date.
+        /// </summary>
+        /// <param name="personId">The unique identifier of the person whose dimensions are being retrieved.</param>
+        /// <param name="today">The reference date used to identify the relevant bodyMeasurement record.</param>
+        /// <returns>
+        /// A task that represents the asynchronous operation. 
+        /// The task result contains a <see cref="BodyDimensionsModel"/> if a record exists; otherwise, null.
+        /// </returns>
+        /// <remarks>
+        /// This method safely handles optional circumference values by checking for <see cref="DBNull"/> 
+        /// and mapping them to nullable float properties. It utilizes a self-contained sqlServerConnection 
+        /// management to ensure resources are released immediately after execution.
+        /// </remarks>
+        public async Task<FullBodyMeasurementExportModel> GetFullMeasurementDatasForExport(int personId)
+        {
+            await using var sqlServerConnection = await OpenConnectionAsync();
+
+            List<BodyMetricsExportModel> bodyMetric = new List<BodyMetricsExportModel>();
+
+            List<BodyDimensionsExportModel> bodyDimension = new List<BodyDimensionsExportModel>();
+
+
+            if (!IsConnected) return new FullBodyMeasurementExportModel();
+
+            try
+            {
+                // Body Dimensions
+                await using (var sqlCommand = new MySqlCommand(
+                    "SELECT * FROM tbl_BodyDimensions WHERE person_id = @pid",
+                    sqlServerConnection))
+                {
+                    sqlCommand.Parameters.AddWithValue("@pid", personId);
+
+                    await using var dimensionReader = await sqlCommand.ExecuteReaderAsync();
+
+                    while (await dimensionReader.ReadAsync())
+                    {
+                        bodyDimension.Add(new BodyDimensionsExportModel
+                        {
+                            Id = dimensionReader.GetInt32(0),
+
+                            CreateTime = dimensionReader.GetDateTime(2),
+                            UpdateTime = dimensionReader.GetDateTime(3),
+
+                            CurrentChestCircumference = dimensionReader.IsDBNull(4) ? null : dimensionReader.GetFloat(4),
+                            InitialChestCircumference = dimensionReader.IsDBNull(5) ? null : dimensionReader.GetFloat(5),
+
+                            CurrentWaistCircumference = dimensionReader.IsDBNull(6) ? null : dimensionReader.GetFloat(6),
+                            InitialWaistCircumference = dimensionReader.IsDBNull(7) ? null : dimensionReader.GetFloat(7),
+
+                            CurrentHipsCircumference = dimensionReader.IsDBNull(8) ? null : dimensionReader.GetFloat(8),
+                            InitialHipsCircumference = dimensionReader.IsDBNull(9) ? null : dimensionReader.GetFloat(9),
+
+                            CurrentFatTongBreastCrease = dimensionReader.IsDBNull(10) ? null : dimensionReader.GetFloat(10),
+                            InitialFatTongBreastCrease = dimensionReader.IsDBNull(11) ? null : dimensionReader.GetFloat(11),
+
+                            CurrentFatTongArmpitCrease = dimensionReader.IsDBNull(12) ? null : dimensionReader.GetFloat(12),
+                            InitialFatTongArmpitCrease = dimensionReader.IsDBNull(13) ? null : dimensionReader.GetFloat(13),
+
+                            CurrentFatTongAbdominalCrease = dimensionReader.IsDBNull(14) ? null : dimensionReader.GetFloat(14),
+                            InitialFatTongAbdominalCrease = dimensionReader.IsDBNull(15) ? null : dimensionReader.GetFloat(15),
+
+                            CurrentFatTongHipCrease = dimensionReader.IsDBNull(16) ? null : dimensionReader.GetFloat(16),
+                            InitialFatTongHipCrease = dimensionReader.IsDBNull(17) ? null : dimensionReader.GetFloat(17),
+
+                            CurrentFatTongThighCrease = dimensionReader.IsDBNull(18) ? null : dimensionReader.GetFloat(18),
+                            InitialFatTongThighCrease = dimensionReader.IsDBNull(19) ? null : dimensionReader.GetFloat(19),
+
+                            CurrentFatTongBackCrease = dimensionReader.IsDBNull(20) ? null : dimensionReader.GetFloat(20),
+                            InitialFatTongBackCrease = dimensionReader.IsDBNull(21) ? null : dimensionReader.GetFloat(21),
+
+                            CurrentFatTongTricepsCrease = dimensionReader.IsDBNull(22) ? null : dimensionReader.GetFloat(22),
+                            InitialFatTongTricepsCrease = dimensionReader.IsDBNull(23) ? null : dimensionReader.GetFloat(23)
+                        });
+                    }
+                }
+
+                // Body Metrics
+                await using (var sqlCommand = new MySqlCommand(
+                    "SELECT * FROM tbl_BodyMetrics WHERE person_id = @pid",
+                    sqlServerConnection))
+                {
+                    sqlCommand.Parameters.AddWithValue("@pid", personId);
+
+                    await using var metricReader = await sqlCommand.ExecuteReaderAsync();
+
+
+                    while (await metricReader.ReadAsync())
+                    {
+                        bodyMetric.Add(new BodyMetricsExportModel
+                        {
+                            Id = metricReader.GetInt32(0),
+
+                            CurrentTime = metricReader.GetDateTime(2),
+                            UpdateTime = metricReader.GetDateTime(3),
+
+                            CurrentBodyWeight = metricReader.IsDBNull(4) ? null : metricReader.GetFloat(4),
+                            CurrentBMI = metricReader.IsDBNull(5) ? null : metricReader.GetFloat(5),
+
+                            CurrentBodyFatPercentage = metricReader.IsDBNull(6) ? null : metricReader.GetFloat(6),
+                            CurrentBodyFatPercentageTop = metricReader.IsDBNull(7) ? null : metricReader.GetFloat(7),
+                            CurrentBodyFatPercentageBottom = metricReader.IsDBNull(8) ? null : metricReader.GetFloat(8),
+
+                            CurrentBodyMusclePercentage = metricReader.IsDBNull(9) ? null : metricReader.GetFloat(9),
+                            CurrentBodyMusclePercentageTop = metricReader.IsDBNull(10) ? null : metricReader.GetFloat(10),
+                            CurrentBodyMusclePercentageBottom = metricReader.IsDBNull(11) ? null : metricReader.GetFloat(11),
+
+                            CurrentBodyWaterPercentage = metricReader.IsDBNull(12) ? null : metricReader.GetFloat(12),
+
+                            CurrentBodyBoneMass = metricReader.IsDBNull(13) ? null : metricReader.GetFloat(13),
+
+                            CurrentBodyVisceralFat = metricReader.IsDBNull(14) ? null : metricReader.GetInt32(14),
+
+                            InitialBodyWeight = metricReader.IsDBNull(15) ? null : metricReader.GetFloat(15),
+                            InitialBMI = metricReader.IsDBNull(16) ? null : metricReader.GetFloat(16),
+
+                            InitialBodyFatPercentage = metricReader.IsDBNull(17) ? null : metricReader.GetFloat(17),
+                            InitialBodyFatPercentageTop = metricReader.IsDBNull(18) ? null : metricReader.GetFloat(18),
+                            InitialBodyFatPercentageBottom = metricReader.IsDBNull(19) ? null : metricReader.GetFloat(19),
+
+                            InitialBodyMusclePercentage = metricReader.IsDBNull(20) ? null : metricReader.GetFloat(20),
+                            InitialBodyMusclePercentageTop = metricReader.IsDBNull(21) ? null : metricReader.GetFloat(21),
+                            InitialBodyMusclePercentageBottom = metricReader.IsDBNull(22) ? null : metricReader.GetFloat(22),
+
+                            InitialBodyWaterPercentage = metricReader.IsDBNull(23) ? null : metricReader.GetFloat(23),
+
+                            InitialBodyBoneMass = metricReader.IsDBNull(24) ? null : metricReader.GetFloat(24),
+
+                            InitialBodyVisceralFat = metricReader.IsDBNull(25) ? null : metricReader.GetInt32(25)
+                        });
+                    }
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"Error Get Body Dimensions: {ex.Message}";
+            }
+
+
+            return new FullBodyMeasurementExportModel
+            {
+                BodyDimensions = bodyDimension,
+                BodyMetrics = bodyMetric
+            };
+        }
+
 
         /// <summary>
         /// Asynchronously retrieves a comprehensive list of all measurements for a specific person, 
@@ -1191,6 +1407,326 @@ namespace BodyTracker.Services
             catch (Exception ex)
             {
                 ErrorMessage = $"Error Delete Food Intake Async: {ex.Message}";
+            }
+        }
+
+        #endregion
+
+        #region Samsung Food Info
+
+        /// <summary>
+        /// Asynchronously synchronizes a collection of Samsung Health food intake records for a specific person into the database, 
+        /// performing bulk insertions for new entries and transactional updates for existing records based on unique data identifiers and update timestamps.
+        /// </summary>
+        /// <param name="PersonId">The unique identifier of the person to whom the data belongs.</param>
+        /// <param name="foodInfoList">A collection of <see cref="SamsungFoodIntakeModel"/> objects containing the nutritional data to be stored.</param>
+        /// <param name="progress">An optional progress indicator that reports the percentage of the insertion process.</param>
+        /// <returns>Returns 'true' if the operation completes successfully.</returns>
+        public async Task<bool> UpsertFoodInfoSqlAsync(int personId, ICollection<SamsungFoodInfoModel> foodInfoList,
+                                                  IProgress<(double value, string prgressText)>? progress = null)
+        {
+            await using var sqlServerConnection = await OpenConnectionAsync();
+
+            if (!IsConnected) return false;
+            try
+            {
+
+                var existingEntries = new Dictionary<string, DateTime?>();
+
+                // Get the data_uuid and update_time from the exisiting food intake in the databasse tbl_FoodIntake 
+                await using var cmd = new MySqlCommand(DatabaseCommands.GetFoodInfoExistenceCheckSql(),
+                                                        sqlServerConnection);
+
+                cmd.Parameters.AddWithValue("@PersonId", personId);
+
+                await using (var reader = await cmd.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        existingEntries.Add(reader.GetString("data_uuid"),
+                                            reader.IsDBNull("update_at")
+                                                ? null
+                                                : reader.GetDateTime("update_at"));
+                    }
+                }
+
+                var inserts = new List<SamsungFoodInfoModel>();
+                var updates = new List<SamsungFoodInfoModel>();
+
+                // Compare the Exercise List with the existitng values in the database tbl_FoodIntake.
+                // If the value exist then we update the entries. Is the value new then we insert
+                // it in the table with bulk inserting.
+                foreach (var item in foodInfoList)
+                {
+                    if (string.IsNullOrWhiteSpace(item.DataUuid)) continue;
+
+                    if (!existingEntries.TryGetValue(item.DataUuid, out var dbUpdateTime))
+                    {
+                        inserts.Add(item);
+                        continue;
+                    }
+
+                    if (item.UpdateTime.HasValue && (!dbUpdateTime.HasValue || item.UpdateTime > dbUpdateTime))
+                    {
+                        updates.Add(item);
+                    }
+                }
+
+
+                await using var transactionInsert = await sqlServerConnection.BeginTransactionAsync();
+
+                if (inserts.Count > 0)
+                {
+
+                    var table = SamsungFoodInfoDataTable.CreateFoodInfoDataTable(personId, inserts);
+
+                    await using var commandInsert = new MySqlCommand(DatabaseCommands.GetSamsungFoodInfoInsertSql(),
+                                                            sqlServerConnection, (MySqlTransaction)transactionInsert);
+
+                    // 1. Add parameters dynamically once based on the DataTable columns
+                    foreach (DataColumn column in table.Columns)
+                    {
+                        // Prefix with '@' to match your SQL placeholders (e.g., "@potassium")
+                        commandInsert.Parameters.Add(new MySqlParameter("@" + column.ColumnName, null));
+                    }
+
+                    // Optional for performance: Prepare the command execution plan
+                    commandInsert.Prepare();
+
+                    int count = 0;
+
+                    // 2. Loop through each row (DataRow) of the DataTable
+                    foreach (DataRow row in table.Rows)
+                    {
+                        // 3. Assign values dynamically for the current row
+                        foreach (DataColumn column in table.Columns)
+                        {
+                            commandInsert.Parameters["@" + column.ColumnName].Value = row[column] ?? DBNull.Value;
+                        }
+
+                        // 4. Execute the SQL command for this row
+                        await commandInsert.ExecuteNonQueryAsync();
+
+                        count++;
+                        if (count % 100 == 0)
+                        {
+                            double percentage = (double)count / inserts.Count * 100;
+                            progress?.Report((percentage, "Inserted: "));
+                        }
+                    }
+                }
+                await transactionInsert.CommitAsync();
+
+                int current = 0;
+
+                int total = updates.Count();
+                await using var transactionUpdate = await sqlServerConnection.BeginTransactionAsync();
+
+                // Update the exisiting datas in tbl_HeartRate
+                foreach (var item in updates)
+                {
+
+                    await using var command = new MySqlCommand(DatabaseCommands.GetSamsungHealthFoodInfoUpdateSql(),
+                                                            sqlServerConnection, (MySqlTransaction)transactionUpdate);
+
+                    command.Parameters.AddWithValue("@Potassium", (object?)item.Potassium ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@VitaminA", (object?)item.VitaminA ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@VitaminC", (object?)item.VitaminC ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@VitaminD", (object?)item.VitaminD ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@Cholesterol", (object?)item.Cholesterol ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@Description", (object?)item.Description ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Custom", (object?)item.Custom ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@ProviderFoodId", (object?)item.ProviderFoodId ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@MetricServingAmount", (object?)item.MetricServingAmount ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@MetricServingUnit", (object?)item.MetricServingUnit ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@Sodium", (object?)item.Sodium ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@DietaryFiber", (object?)item.DietaryFiber ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@TotalFat", (object?)item.TotalFat ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@MonosaturatedFat", (object?)item.MonosaturatedFat ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@PolysaturatedFat", (object?)item.PolysaturatedFat ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@SaturatedFat", (object?)item.SaturatedFat ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@TransFat", (object?)item.TransFat ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@Protein", (object?)item.Protein ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Iron", (object?)item.Iron ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@Sugar", (object?)item.Sugar ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@AddedSugar", (object?)item.AddedSugar ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@Calcium", (object?)item.Calcium ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Calorie", (object?)item.Calorie ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@ServingDescription", (object?)item.ServingDescription ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@InfoProvider", (object?)item.InfoProvider ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@Name", (object?)item.Name ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@Carbohydrate", (object?)item.Carbohydrate ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@UnitCountPerCalorie", (object?)item.UnitCountPerCalorie ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@DefaultNumberOfServingUnit", (object?)item.DefaultNumberOfServingUnit ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@DeviceUuid", (object?)item.DeviceUuid ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@PkgName", (object?)item.PkgName ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@UpdateTime", (object?)item.UpdateTime ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@CreateTime", (object?)item.CreateTime ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@DataUuid", item.DataUuid);
+                    command.Parameters.AddWithValue("@PersonID_FK", personId);
+
+                    await command.ExecuteNonQueryAsync();
+
+                    current++;
+
+                    if (current % 100 == 0)
+                    {
+                        double percentage = (double)current / total * 100;
+
+                        progress?.Report((percentage, "Updated: "));
+                    }
+                }
+
+                await transactionUpdate.CommitAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                //await transaction.RollbackAsync();
+
+                // Holt die tiefste InnerException oder baut eine Nachricht zusammen
+                string detailedMessage = ex.Message;
+                Exception inner = ex.InnerException;
+
+                while (inner != null)
+                {
+                    detailedMessage += " -> " + inner.Message;
+                    inner = inner.InnerException;
+                }
+
+                ErrorMessage = detailedMessage;
+
+                // Optional für Debugging-Zwecke im Ausgabefenster:
+                System.Diagnostics.Debug.WriteLine("Inner Exception: " + ex.ToString());
+
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Asynchronously retrieves and returns Samsung food info records for a specified person.
+        /// </summary>
+        /// <param name="personId">The unique identifier of the person whose food info records are being requested.</param>
+        /// <returns>A task representing the asynchronous operation, containing a list of <see cref="SamsungFoodInfoModel"/> objects.</returns>
+        public async Task<List<SamsungFoodInfoModel>> GetSamsungFoodInfoSqlAsync(int personId)
+        {
+            var result = new List<SamsungFoodInfoModel>();
+
+            await using var sqlServerConnection = await OpenConnectionAsync();
+
+            if (!IsConnected)
+                return result;
+
+            try
+            {
+                var sqlCommand = new MySqlCommand(
+                    DatabaseCommands.GetSamsungFoodInfoSql(), // Oder der entsprechende Select-Befehl
+                    sqlServerConnection);
+
+                sqlCommand.Parameters.AddWithValue("@PersonId", personId);
+
+                await using var reader = await sqlCommand.ExecuteReaderAsync();
+                result.Clear();
+                while (await reader.ReadAsync())
+                {
+                    result.Add(new SamsungFoodInfoModel
+                    {
+                        FoodInfoID = reader.GetInt32("food_info_id"),
+                        Potassium = reader.IsDBNull("potassium") ? (double?)null : reader.GetDouble("potassium"),
+                        VitaminA = reader.IsDBNull("vitamin_a") ? (double?)null : reader.GetDouble("vitamin_a"),
+                        VitaminC = reader.IsDBNull("vitamin_c") ? (double?)null : reader.GetDouble("vitamin_c"),
+                        VitaminD = reader.IsDBNull("vitamin_d") ? (double?)null : reader.GetDouble("vitamin_d"),
+                        Cholesterol = reader.IsDBNull("cholesterol") ? (double?)null : reader.GetDouble("cholesterol"),
+                        Description = reader.IsDBNull("description") ? null : reader.GetString("description"),
+                        Custom = reader.IsDBNull("custom") ? null : reader.GetString("custom"),
+                        ProviderFoodId = reader.IsDBNull("provider_food_id") ? null : reader.GetString("provider_food_id"),
+                        MetricServingAmount = reader.IsDBNull("metric_serving_amount") ? (double?)null : reader.GetDouble("metric_serving_amount"),
+                        MetricServingUnit = reader.IsDBNull("metric_serving_unit") ? null : reader.GetString("metric_serving_unit"),
+                        Sodium = reader.IsDBNull("sodium") ? (double?)null : reader.GetDouble("sodium"),
+                        DietaryFiber = reader.IsDBNull("dietary_fiber") ? (double?)null : reader.GetDouble("dietary_fiber"),
+                        TotalFat = reader.IsDBNull("total_fat") ? (double?)null : reader.GetDouble("total_fat"),
+                        MonosaturatedFat = reader.IsDBNull("monosaturated_fat") ? (double?)null : reader.GetDouble("monosaturated_fat"),
+                        PolysaturatedFat = reader.IsDBNull("polysaturated_fat") ? (double?)null : reader.GetDouble("polysaturated_fat"),
+                        SaturatedFat = reader.IsDBNull("saturated_fat") ? (double?)null : reader.GetDouble("saturated_fat"),
+                        TransFat = reader.IsDBNull("trans_fat") ? null : reader.GetDouble("trans_fat"),
+                        Protein = reader.IsDBNull("protein") ? (double?)null : reader.GetDouble("protein"),
+                        Iron = reader.IsDBNull("iron") ? (double?)null : reader.GetDouble("iron"),
+                        Sugar = reader.IsDBNull("sugar") ? (double?)null : reader.GetDouble("sugar"),
+                        AddedSugar = reader.IsDBNull("added_sugar") ? (double?)null : reader.GetDouble("added_sugar"),
+                        Calcium = reader.IsDBNull("calcium") ? (double?)null : reader.GetDouble("calcium"),
+                        Calorie = reader.IsDBNull("calorie") ? (double?)null : reader.GetDouble("calorie"),
+                        ServingDescription = reader.IsDBNull("serving_description") ? null : reader.GetString("serving_description"),
+                        InfoProvider = reader.IsDBNull("info_provider") ? null : reader.GetString("info_provider"),
+                        Name = reader.IsDBNull("name") ? null : reader.GetString("name"),
+                        Carbohydrate = reader.IsDBNull("carbohydrate") ? (double?)null : reader.GetDouble("carbohydrate"),
+                        UnitCountPerCalorie = reader.IsDBNull("unit_count_per_calorie") ? (double?)null : reader.GetDouble("unit_count_per_calorie"),
+                        DefaultNumberOfServingUnit = reader.IsDBNull("default_number_of_serving_unit") ? (double?)null : reader.GetDouble("default_number_of_serving_unit"),
+                        DeviceUuid = reader.IsDBNull("device_uuid") ? null : reader.GetString("device_uuid"),
+                        PkgName = reader.IsDBNull("pkg_name") ? null : reader.GetString("pkg_name"),
+                        DataUuid = reader.IsDBNull("data_uuid") ? null : reader.GetString("data_uuid"),
+                        UpdateTime = reader.GetDateTime("update_at"),
+                        CreateTime = reader.GetDateTime("create_at")
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                string detailedMessage = ex.Message;
+                Exception inner = ex.InnerException;
+                while (inner != null)
+                {
+                    detailedMessage += " -> " + inner.Message;
+                    inner = inner.InnerException;
+                }
+                ErrorMessage = $"Error Get Food Info Async: {detailedMessage}";
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Asynchronously deletes a specific food info record from the database using its unique identifier.
+        /// </summary>
+        /// <param name="foodInfoId">The primary key (ID) of the food info record to be removed.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task GetFoodInfoDeleteSqlAsync(int foodInfoId)
+        {
+            await using var sqlServerConnection = await OpenConnectionAsync();
+
+            if (!IsConnected) return;
+
+            try
+            {
+                var sqlCommand = new MySqlCommand(DatabaseCommands.GetFoodInfoDeleteSql(), sqlServerConnection);
+                sqlCommand.Parameters.AddWithValue("@id", foodInfoId);
+                await sqlCommand.ExecuteNonQueryAsync();
+            }
+            catch (Exception ex)
+            {
+                string detailedMessage = ex.Message;
+                Exception inner = ex.InnerException;
+                while (inner != null)
+                {
+                    detailedMessage += " -> " + inner.Message;
+                    inner = inner.InnerException;
+                }
+                ErrorMessage = $"Error Delete Food Info Async: {detailedMessage}";
             }
         }
 
@@ -3264,6 +3800,7 @@ namespace BodyTracker.Services
         #endregion
 
 
+
         #region Workout Log
 
         /// <summary>
@@ -3280,7 +3817,7 @@ namespace BodyTracker.Services
             await using var sqlServerConnection = await OpenConnectionAsync();
 
             if (!IsConnected) return false;
-       
+
 
             try
             {
@@ -3328,7 +3865,7 @@ namespace BodyTracker.Services
                     var workout = csvItem.Value;
 
                     if (dbEntries.ContainsKey(hash)) continue;
-                    
+
                     var sameStartDate = dbEntries.Values
                         .FirstOrDefault(x => x.StartTime == workout.StartTime);
 
@@ -3364,7 +3901,7 @@ namespace BodyTracker.Services
                 int total = insertList.Count + updateList.Count + deleteList.Count;
                 int current = 0;
                 double percentage = 0;
-                
+
                 await using var tx = await sqlServerConnection.BeginTransactionAsync();
 
                 foreach (var workout in insertList)
@@ -3395,11 +3932,11 @@ namespace BodyTracker.Services
                     await sqlCommand.ExecuteNonQueryAsync();
 
                     current++;
-                   
+
                     percentage = (double)current / total * 100;
 
                     progress?.Report((percentage, "Inserted: "));
-                   
+
                 }
 
                 foreach (var item in updateList)
@@ -3437,7 +3974,7 @@ namespace BodyTracker.Services
                     progress?.Report((percentage, "Updated: "));
                 }
 
-                
+
 
                 foreach (var workoutId in deleteList)
                 {
@@ -3603,28 +4140,28 @@ namespace BodyTracker.Services
                 var deleteList = new List<int>();
 
 
-                    // Retrieve entries for updating and inserting
-                    foreach (var csvItem in csvEntries)
+                // Retrieve entries for updating and inserting
+                foreach (var csvItem in csvEntries)
+                {
+                    var hash = csvItem.Key;
+                    var workout = csvItem.Value;
+
+                    if (dbEntries.ContainsKey(hash)) continue;
+
+                    var sameStartDate = dbEntries.Values
+                        .FirstOrDefault(x => x.StartTime == workout.StartTime);
+
+                    insertList.Add(workout);
+                }
+
+                // Retrieve entries for deleting
+                foreach (var dbEntry in dbEntries.Values)
+                {
+                    if (!csvEntries.ContainsKey(dbEntry.Hash))
                     {
-                        var hash = csvItem.Key;
-                        var workout = csvItem.Value;
-
-                        if (dbEntries.ContainsKey(hash)) continue;
-
-                        var sameStartDate = dbEntries.Values
-                            .FirstOrDefault(x => x.StartTime == workout.StartTime);
-
-                            insertList.Add(workout);
+                        deleteList.Add(dbEntry.WorkoutId);
                     }
-
-                    // Retrieve entries for deleting
-                    foreach (var dbEntry in dbEntries.Values)
-                    {
-                        if (!csvEntries.ContainsKey(dbEntry.Hash))
-                        {
-                            deleteList.Add(dbEntry.WorkoutId);
-                        }
-                    }
+                }
 
                 int total = insertList.Count + updateList.Count + deleteList.Count;
                 int current = 0;
@@ -3750,9 +4287,9 @@ namespace BodyTracker.Services
             catch (Exception ex)
             {
                 //await transaction.RollbackAsync();
-                if(ex.InnerException != null) ErrorMessage = ex.InnerException.Message;
+                if (ex.InnerException != null) ErrorMessage = ex.InnerException.Message;
                 ErrorMessage = ex.Message;
-                    return false;
+                return false;
             }
         }
 

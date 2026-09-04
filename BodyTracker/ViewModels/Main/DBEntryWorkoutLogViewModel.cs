@@ -83,18 +83,18 @@ namespace BodyTracker.ViewModels.Main
         /// <summary>
         /// Backing field for the general error message string.
         /// </summary>
-        private string generalErrorMessage = "";
+        private string generalInfoMessage = "";
 
         /// <summary>
         /// Gets or sets the general error message, sending a database error message via the messenger when the value changes.
         /// </summary>
-        public string GeneralErrorMessage
+        public string GeneralInfoMessage
         {
-            get => generalErrorMessage;
+            get => GeneralInfoMessage;
             set
             {
-                generalErrorMessage = value;
-                WeakReferenceMessenger.Default.Send(new DatabaseErrorMessage(generalErrorMessage));
+                generalInfoMessage = value;
+                WeakReferenceMessenger.Default.Send(new DatabaseErrorMessage(generalInfoMessage));
             }
         }
 
@@ -237,7 +237,7 @@ namespace BodyTracker.ViewModels.Main
             }
             catch (Exception ex)
             {
-                GeneralErrorMessage = $"Delete error: {ex}";
+                GeneralInfoMessage = $"Delete error: {ex}";
             }
 
         }

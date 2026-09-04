@@ -5,9 +5,9 @@ using System.Windows.Controls;
 namespace BodyTracker.Views.Pages
 {
     /// <summary>
-    /// Interaktionslogik für MultiImportPage.xaml
+    /// Interaktionslogik für MultiImportView.xaml
     /// </summary>
-    public partial class MultiChartsPage : Page
+    public partial class MultiChartsView : Page
     {
         /// <summary>
         /// Reference to the main application window, acting as the primary host (Shell) 
@@ -28,11 +28,11 @@ namespace BodyTracker.Views.Pages
         private readonly MultiChartViewModel multiChartViewModel;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MultiChartsPage"/> class, assigning the main window and database service references, setting data contexts, initializing the multi-chart view model, and registering the unload disposal handler.
+        /// Initializes a new instance of the <see cref="MultiChartsView"/> class, assigning the main window and database service references, setting data contexts, initializing the multi-chart view model, and registering the unload disposal handler.
         /// </summary>
         /// <param name="shell">The parent main window reference.</param>
         /// <param name="db">The database service instance used for querying chart data.</param>
-        public MultiChartsPage(MainWindow shell, DatabaseService db)
+        public MultiChartsView(MainWindow shell, DatabaseService db)
         {
             InitializeComponent();
             mainWindow = shell;

@@ -42,6 +42,12 @@ public class ChartSeriesModel<T>
     public bool IsTrendLineVisible { get; set; }
 
     /// <summary>
+    /// Gets or sets a value indicating whether the trend line is hoverable.
+    /// </summary>
+    /// <remarks>Controls whether the trend line responds to mouse hover interactions and tooltips.</remarks>
+    public bool IsTrendLineHoverable { get; set; }
+
+    /// <summary>
     /// Gets or sets a value indicating whether a trend should be calculated.
     /// </summary>
     /// <remarks>Determines if algorithmic trend evaluation and plotting should be performed for this series.</remarks>
@@ -71,6 +77,10 @@ public class ChartSeriesModel<T>
     /// <remarks>A delegate used to map elements of type <typeparamref name="T"/> to their corresponding nullable numerical bodyMeasurement values for vertical axis plotting.</remarks>
     public Func<T, double?> ValueSelector { get; set; } = default!;
 
+    /// <summary>
+    /// Gets or sets the optional dash pattern array applied to the trend line stroke for custom styling.
+    /// </summary>
+    public float[]? TrendLineStyle { get; set; } = null;
 
 
 }

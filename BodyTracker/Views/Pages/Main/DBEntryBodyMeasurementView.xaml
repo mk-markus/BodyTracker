@@ -37,8 +37,14 @@
                                 Margin="0,0,15,0"/>
 
                         <Button Content="🔄"
-                                ToolTip="Refresh Datas --> Reload all datas from Database"
+                                ToolTip="Refresh Datas: Reload all datas from Database"
                                 Command="{Binding CommandRefresh}"
+                                Style="{DynamicResource IconStandardButton}" 
+                                Margin="0,0,15,0"/>
+
+                        <Button Content="📤"
+                                ToolTip="Export Datas: Export all datas to a csv file"
+                                Command="{Binding CommandExport}"
                                 Style="{DynamicResource IconStandardButton}" />
 
                     </StackPanel>

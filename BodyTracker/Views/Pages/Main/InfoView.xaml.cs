@@ -26,11 +26,11 @@ namespace BodyTracker.Views
 
 
     /// <summary>
-    /// Interaktionslogik für InfoPage.xaml
+    /// Interaktionslogik für InfoView.xaml
     /// </summary>
-    public partial class InfoPage : Page
+    public partial class InfoView : Page
     {
-        public InfoPage()
+        public InfoView()
         {
             InitializeComponent();
             

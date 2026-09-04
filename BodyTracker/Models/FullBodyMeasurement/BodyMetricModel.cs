@@ -76,5 +76,6 @@ namespace BodyTracker.Models
         /// Contains the perons body visceral fat
         /// </summary>
         public int? BodyVisceralFat { get; set; }
+
     }
 }

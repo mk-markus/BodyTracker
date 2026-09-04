@@ -1,5 +1,7 @@
-﻿using BodyTracker.ViewModels;
-using BodyTracker.Services;
+﻿using BodyTracker.Services;
+using BodyTracker.ViewModels;
+using System;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace BodyTracker.Views.Pages
@@ -35,10 +37,11 @@ namespace BodyTracker.Views.Pages
 
             mainWindow.DataContext = this;
 
-            personalWorkoutInsightsPageViewModel = new WorkoutInsightsViewModel(shell, db);
+            personalWorkoutInsightsPageViewModel = new WorkoutInsightsViewModel(db);
 
             DataContext = personalWorkoutInsightsPageViewModel;
-            Loaded += async (s, e) => await personalWorkoutInsightsPageViewModel.InitializeAsync();
+            //Loaded += async (s, e) => await personalWorkoutInsightsPageViewModel.InitializeAsync();
+
 
             Unloaded += (s, e) => personalWorkoutInsightsPageViewModel.Dispose();
 

@@ -220,7 +220,7 @@ namespace BodyTracker.Services
 
             using var csv = new CsvReader(reader, config);
 
-            csv.Context.RegisterClassMap<SamsungOxygenSaturationMap>();
+            csv.Context.RegisterClassMap<SamsungOxygenSaturationMapping>();
 
             await foreach (var record in csv.GetRecordsAsync<SamsungOxygenSaturationModel>())
             {
@@ -234,6 +234,51 @@ namespace BodyTracker.Services
 
             return result;
         }
+
+        /// <summary>
+        /// Asynchronously extracts and parses oxygen saturation records from a specified CSV file.
+        /// </summary>
+        /// <param name="progress">An optional progress reporter for tracking percentage completion. Defaults to null.</param>
+        /// <param name="status">An optional progress reporter for tracking status messages. Defaults to null.</param>
+        /// <returns>A task representing the asynchronous operation, containing a list of extracted <see cref="SamsungFoodInfoModel"/> records.</returns>
+        public static async Task<List<SamsungFoodInfoModel>> ParseFoodInfoAsync(string filePath,
+            IProgress<double>? progress = null,
+            IProgress<string>? status = null)
+        {
+            var result = new List<SamsungFoodInfoModel>();
+
+            var totalLines = File.ReadLines(filePath).Count() - 2;
+
+            var currentLine = 0;
+
+            using var reader = new StreamReader(filePath);
+
+            // The first line in the csv file can ingnore because it is just a description of the file.
+            // The second line is the header line, which will be used by CsvHelper to map the columns to the properties of the model.
+            await reader.ReadLineAsync();
+
+            var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                HasHeaderRecord = true
+            };
+
+            using var csv = new CsvReader(reader, config);
+
+            csv.Context.RegisterClassMap<SamsungFoodInfoCSVMapping>();
+
+            await foreach (var record in csv.GetRecordsAsync<SamsungFoodInfoModel>())
+            {
+                result.Add(record);
+
+                currentLine++;
+
+                progress?.Report(currentLine * 100.0 / totalLines);
+
+            }
+
+            return result;
+        }
+
 
     }
 }

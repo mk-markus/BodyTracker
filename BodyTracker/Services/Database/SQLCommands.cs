@@ -1,4 +1,6 @@
-﻿namespace BodyTracker.Services
+﻿using System.Web;
+
+namespace BodyTracker.Services
 {
     public class SqlCommandProvider
     {
@@ -152,6 +154,35 @@
               AND DATE(create_at) <= @today
             ORDER BY create_at DESC
             LIMIT 1";
+        }
+
+        /// <summary>
+        /// Generates the SQL query string to retrieve the most recent body metric record for a specific person up to a given date.
+        /// </summary>
+        /// <remarks>Constructs a SELECT statement targeting the <c>tbl_BodyMetrics</c> table, filtering by person ID and date boundary, ordered descending by bodyMeasurement date with a limit of one.</remarks>
+        /// <returns>A string containing the parameterized SQL query for retrieving the last person metric record.</returns>
+        public string GetLastPersonMetricsForAISql()
+        {
+            return @"SELECT
+                        metric_id,
+                        person_id,
+                        create_at,
+                        weight_current,
+                        bmi_current,
+                        body_fat_percentage_current,
+                        upper_body_fat_percentage_current,
+                        lower_body_fat_percentage_current,
+                        muscle_mass_percentage_current,
+                        upper_body_muscle_mass_percentage_current,
+                        lower_body_muscle_mass_percentage_current,
+                        bone_mass_current,
+                        body_water_percentage_current,
+                        visceral_fat_current
+                    FROM tbl_BodyMetrics
+                    WHERE person_id = 1
+                      AND create_at >= @start
+                      AND create_at < @end
+                    ORDER BY create_at DESC";
         }
 
         /// <summary>
@@ -1772,7 +1803,318 @@
 
         #endregion
 
-        #region Heavy App SQL Commands
+
+        #region Samsung Health Food Info SQL Commands
+
+        public string GetFoodInfoExistenceCheckSql()
+        {
+            return @"SELECT
+                data_uuid,
+                update_at
+             FROM tbl_FoodInfo
+             WHERE person_id = @PersonId;";
+        }
+
+        public string GetSamsungHealthFoodInfoUpdateSql()
+        {
+            return @"UPDATE tbl_FoodInfo
+             SET
+                potassium = @Potassium,
+                vitamin_a = @VitaminA,
+                vitamin_c = @VitaminC,
+                vitamin_d = @VitaminD,
+                cholesterol = @Cholesterol,
+
+                description = @Description,
+                custom = @Custom,
+                provider_food_id = @ProviderFoodId,
+
+                metric_serving_amount = @MetricServingAmount,
+                metric_serving_unit = @MetricServingUnit,
+
+                sodium = @Sodium,
+                dietary_fiber = @DietaryFiber,
+
+                total_fat = @TotalFat,
+                monosaturated_fat = @MonosaturatedFat,
+                polysaturated_fat = @PolysaturatedFat,
+                saturated_fat = @SaturatedFat,
+                trans_fat = @TransFat,
+
+                protein = @Protein,
+                iron = @Iron,
+
+                sugar = @Sugar,
+                added_sugar = @AddedSugar,
+
+                calcium = @Calcium,
+                calorie = @Calorie,
+
+                serving_description = @ServingDescription,
+                info_provider = @InfoProvider,
+
+                metric_serving_unit = @MetricServingUnit,
+
+                carbohydrate = @Carbohydrate,
+                unit_count_per_calorie = @UnitCountPerCalorie,
+                default_number_of_serving_unit = @DefaultNumberOfServingUnit,
+
+                name = @Name,
+                device_uuid = @DeviceUuid,
+                pkg_name = @PkgName,
+
+                update_at = @UpdateTime,
+                create_at = @CreateTime
+
+             WHERE data_uuid = @DataUuid
+               AND person_id = @PersonID_FK;";
+        }
+
+        public string GetSamsungFoodInfoUpsertSql()
+        {
+            return @"INSERT INTO tbl_FoodInfo
+             (
+                person_id,
+
+                potassium,
+                vitamin_a,
+                vitamin_c,
+                vitamin_d,
+                cholesterol,
+
+                description,
+                custom,
+                provider_food_id,
+
+                metric_serving_amount,
+                metric_serving_unit,
+
+                sodium,
+                dietary_fiber,
+
+                total_fat,
+                monosaturated_fat,
+                polysaturated_fat,
+                saturated_fat,
+                trans_fat,
+
+                protein,
+                iron,
+
+                sugar,
+                added_sugar,
+
+                calcium,
+                calorie,
+
+                serving_description,
+                info_provider,
+
+                name,
+
+                carbohydrate,
+
+                unit_count_per_calorie,
+                default_number_of_serving_unit,
+
+                device_uuid,
+                pkg_name,
+
+                data_uuid,
+
+                update_at,
+                create_at
+             )
+             VALUES
+             (
+                @PersonID_FK,
+
+                @Potassium,
+                @VitaminA,
+                @VitaminC,
+                @VitaminD,
+                @Cholesterol,
+
+                @Description,
+                @Custom,
+                @ProviderFoodId,
+
+                @MetricServingAmount,
+                @MetricServingUnit,
+
+                @Sodium,
+                @DietaryFiber,
+
+                @TotalFat,
+                @MonosaturatedFat,
+                @PolysaturatedFat,
+                @SaturatedFat,
+                @TransFat,
+
+                @Protein,
+                @Iron,
+
+                @Sugar,
+                @AddedSugar,
+
+                @Calcium,
+                @Calorie,
+
+                @ServingDescription,
+                @InfoProvider,
+
+                @Name,
+
+                @Carbohydrate,
+
+                @UnitCountPerCalorie,
+                @DefaultNumberOfServingUnit,
+
+                @DeviceUuid,
+                @PkgName,
+
+                @DataUuid,
+
+                @UpdateTime,
+                @CreateTime
+             )
+
+             ON DUPLICATE KEY UPDATE
+
+                potassium = VALUES(potassium),
+                vitamin_a = VALUES(vitamin_a),
+                vitamin_c = VALUES(vitamin_c),
+                vitamin_d = VALUES(vitamin_d),
+
+                cholesterol = VALUES(cholesterol),
+
+                description = VALUES(description),
+                custom = VALUES(custom),
+                provider_food_id = VALUES(provider_food_id),
+
+                metric_serving_amount = VALUES(metric_serving_amount),
+                metric_serving_unit = VALUES(metric_serving_unit),
+
+                sodium = VALUES(sodium),
+                dietary_fiber = VALUES(dietary_fiber),
+
+                total_fat = VALUES(total_fat),
+                monosaturated_fat = VALUES(monosaturated_fat),
+                polysaturated_fat = VALUES(polysaturated_fat),
+                saturated_fat = VALUES(saturated_fat),
+                trans_fat = VALUES(trans_fat),
+
+                protein = VALUES(protein),
+                iron = VALUES(iron),
+
+                sugar = VALUES(sugar),
+                added_sugar = VALUES(added_sugar),
+
+                calcium = VALUES(calcium),
+                calorie = VALUES(calorie),
+
+                serving_description = VALUES(serving_description),
+                info_provider = VALUES(info_provider),
+
+                name = VALUES(name),
+
+                carbohydrate = VALUES(carbohydrate),
+
+                unit_count_per_calorie = VALUES(unit_count_per_calorie),
+                default_number_of_serving_unit = VALUES(default_number_of_serving_unit),
+
+                device_uuid = VALUES(device_uuid),
+                pkg_name = VALUES(pkg_name),
+
+                update_at = CURRENT_TIMESTAMP;";
+        }
+
+        /// <summary>
+        /// Retrieves the SQL query string used to fetch all Samsung food info records for a specific person, ordered by name.
+        /// </summary>
+        /// <returns>A SQL select query string targeting the <c>tbl_FoodInfo</c> table.</returns>
+        public string GetSamsungFoodInfoSql()
+        {
+            return @"SELECT
+                food_info_id,
+                person_id,
+                potassium,
+                vitamin_a,
+                vitamin_c,
+                vitamin_d,
+                cholesterol,
+                description,
+                custom,
+                provider_food_id,
+                metric_serving_amount,
+                metric_serving_unit,
+                sodium,
+                dietary_fiber,
+                total_fat,
+                monosaturated_fat,
+                polysaturated_fat,
+                saturated_fat,
+                trans_fat,
+                protein,
+                iron,
+                sugar,
+                added_sugar,
+                calcium,
+                calorie,
+                serving_description,
+                info_provider,
+                name,
+                carbohydrate,
+                unit_count_per_calorie,
+                default_number_of_serving_unit,
+                device_uuid,
+                pkg_name,
+                data_uuid,
+                update_at,
+                create_at
+          FROM tbl_FoodInfo
+          WHERE person_id = @PersonId
+          ORDER BY name ASC;";
+        }
+
+        /// <summary>
+        /// Retrieves the SQL command string used to delete a specific food info record from the database by its unique identifier.
+        /// </summary>
+        /// <returns>A SQL delete command string targeting the <c>tbl_FoodInfo</c> table.</returns>
+        public string GetFoodInfoDeleteSql()
+        {
+            return @"DELETE FROM tbl_FoodInfo WHERE food_info_id = @id;";
+        }
+
+
+        public string GetSamsungFoodInfoInsertSql()
+        {
+            return @"INSERT INTO tbl_FoodInfo (
+                    person_id, potassium, vitamin_a, vitamin_c, vitamin_d, cholesterol, 
+                    description, custom, provider_food_id, metric_serving_amount, metric_serving_unit, 
+                    sodium, dietary_fiber, total_fat, monosaturated_fat, polysaturated_fat, 
+                    saturated_fat, trans_fat, protein, iron, sugar, added_sugar, calcium, 
+                    calorie, serving_description, info_provider, name, carbohydrate, 
+                    unit_count_per_calorie, default_number_of_serving_unit, device_uuid, 
+                    pkg_name, data_uuid, update_at, create_at
+                ) VALUES (
+                    @person_id, @potassium, @vitamin_a, @vitamin_c, @vitamin_d, @cholesterol, 
+                    @description, @custom, @provider_food_id, @metric_serving_amount, @metric_serving_unit, 
+                    @sodium, @dietary_fiber, @total_fat, @monosaturated_fat, @polysaturated_fat, 
+                    @saturated_fat, @trans_fat, @protein, @iron, @sugar, @added_sugar, @calcium, 
+                    @calorie, @serving_description, info_provider, @name, @carbohydrate, 
+                    @unit_count_per_calorie, @default_number_of_serving_unit, @device_uuid, 
+                    @pkg_name, @data_uuid, @update_at, @create_at
+                );";
+        }
+
+
+        #endregion
+
+
+
+
+        #region WorkoutLog SQL Commands
 
         /// <summary>
         /// Generates the SQL query string to retrieve workout log identifiers, UUIDs, and start times for a specific person.

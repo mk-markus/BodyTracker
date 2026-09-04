@@ -44,14 +44,14 @@ namespace BodyTracker.Services
         /// <param name="showBodyWaterTrend">A value indicating whether the body water trend line is displayed.</param>
         /// <returns>A tuple containing the generated array of chart series, X-axes, and Y-axes.</returns>
         public static ChartResult CreateBodyMeasurementChart(DateTime startDate,
-                                                                                                   DateTime endDate,
-                                                                                                   List<FullBodyMeasurementDatasModel> data,
-                                                                                                   bool isTrendLineLegendVisible,
-                                                                                                   float strokeThickness, float geometrySize, double loessFraction,
-                                                                                                   bool showBodyWeight, bool showBodyWeightTrend,
-                                                                                                   bool showBodyFat, bool showBodyFatTrend,
-                                                                                                   bool showBodyMuscle, bool showBodyMuscleTrend,
-                                                                                                   bool showBodyWater, bool showBodyWaterTrend)
+            DateTime endDate,
+            List<FullBodyMeasurementDatasModel> data,
+            bool isTrendLineLegendVisible, bool isTrendLineHoverable,
+            float strokeThickness, float geometrySize, double loessFraction,
+            bool showBodyWeight, bool showBodyWeightTrend,
+            bool showBodyFat, bool showBodyFatTrend,
+            bool showBodyMuscle, bool showBodyMuscleTrend,
+            bool showBodyWater, bool showBodyWaterTrend)
         {
 
             var ordered = data
@@ -90,12 +90,15 @@ namespace BodyTracker.Services
                 IsVisible = showBodyWeight,
                 ShowTrend = showBodyWeightTrend,
                 IsTrendLineVisible = isTrendLineLegendVisible,
+                IsTrendLineHoverable = isTrendLineHoverable,
 
                 StrokeThickness = strokeThickness,
                 GeometrySize = geometrySize,
 
                 DateSelector = x => x.MeasurementDate,
-                ValueSelector = x => (double?)x.BodyWeight
+                ValueSelector = x => (double?)x.BodyWeight,
+
+                TrendLineStyle = new float[] { 0, 0 }
             },
 
             new ChartSeriesModel<FullBodyMeasurementDatasModel>
@@ -108,12 +111,16 @@ namespace BodyTracker.Services
                 IsVisible = showBodyWater,
                 ShowTrend = showBodyWaterTrend,
                 IsTrendLineVisible = isTrendLineLegendVisible,
+                IsTrendLineHoverable = isTrendLineHoverable,
 
                 StrokeThickness = strokeThickness,
                 GeometrySize = geometrySize,
 
                 DateSelector = x => x.MeasurementDate,
-                ValueSelector = x => (double?)x.BodyWaterPercentage
+                ValueSelector = x => (double?)x.BodyWaterPercentage,
+
+                TrendLineStyle = new float[] { 0, 0 }
+
             },
 
             new ChartSeriesModel<FullBodyMeasurementDatasModel>
@@ -126,12 +133,16 @@ namespace BodyTracker.Services
                 IsVisible = showBodyMuscle,
                 ShowTrend = showBodyMuscleTrend,
                 IsTrendLineVisible = isTrendLineLegendVisible,
+                IsTrendLineHoverable = isTrendLineHoverable,
 
                 StrokeThickness = strokeThickness,
                 GeometrySize = geometrySize,
 
                 DateSelector = x => x.MeasurementDate,
-                ValueSelector = x => (double?)x.BodyMusclePercentage
+                ValueSelector = x => (double?)x.BodyMusclePercentage,
+                
+                TrendLineStyle = new float[] { 0, 0 }
+
             },
 
             new ChartSeriesModel<FullBodyMeasurementDatasModel>
@@ -144,6 +155,7 @@ namespace BodyTracker.Services
                 IsVisible = showBodyFat,
                 ShowTrend = showBodyFatTrend,
                 IsTrendLineVisible = isTrendLineLegendVisible,
+                IsTrendLineHoverable = isTrendLineHoverable,
 
                 StrokeThickness = strokeThickness,
                 GeometrySize = geometrySize,
@@ -151,6 +163,7 @@ namespace BodyTracker.Services
                 DateSelector = x => x.MeasurementDate,
                 ValueSelector = x => (double?)x.BodyFatPercentage,
 
+                TrendLineStyle = new float[] { 0, 0 }
             }
         };
 
@@ -1565,6 +1578,384 @@ namespace BodyTracker.Services
 
         #endregion
 
+        #region Samsung Food Info Chart Templates
+
+        public static ChartResult CreateFoodCaloriesChart(
+                    DateTime startDate, DateTime endDate, List<SamsungFoodInfoModel> data,
+                    bool isTrendLineLegendVisible, float strokeThickness, float geometrySize,
+                    double loessFraction, bool showCalories, bool showCaloriesTrend)
+        {
+            double max = data.Any() ? data.Max(x => x.Calorie ?? 0) : 100;
+            double min = data.Any() ? data.Min(x => x.Calorie ?? 0) : 0;
+            max += max * 0.05;
+
+            var chartDefinitions = new[]
+            {
+            new ChartSeriesModel<SamsungFoodInfoModel>
+            {
+                Name = "Calories",
+                TrendName = "Calories Trend",
+                Color = SKColors.OrangeRed,
+                YAxisIndex = 0,
+                IsVisible = showCalories,
+                ShowTrend = showCaloriesTrend,
+                IsTrendLineVisible = isTrendLineLegendVisible,
+                StrokeThickness = strokeThickness,
+                GeometrySize = geometrySize,
+                DateSelector = x => x.CreateTime,
+                ValueSelector = x => x.Calorie
+            }
+        };
+
+            var series = ChartSeriesBuilder.CreateSeries(data, chartDefinitions, loessFraction).ToArray();
+            var xAxis = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yy")) };
+            var yAxes = new[] { ChartAxisBuilder.Create(new ChartYAxisModel { Name = "kcal", MinLimit = min, MaxLimit = max }) };
+
+            return new ChartResult { Series = series, XAxis = xAxis, YAxis = yAxes };
+        }
+
+        public static ChartResult CreateFoodProteinChart(
+            DateTime startDate, DateTime endDate, List<SamsungFoodInfoModel> data,
+            bool isTrendLineLegendVisible, float strokeThickness, float geometrySize,
+            double loessFraction, bool showProtein, bool showProteinTrend)
+        {
+            double max = data.Any() ? data.Max(x => x.Protein ?? 0) : 100;
+            double min = data.Any() ? data.Min(x => x.Protein ?? 0) : 0;
+            max += max * 0.05;
+
+            var chartDefinitions = new[]
+            {
+            new ChartSeriesModel<SamsungFoodInfoModel>
+            {
+                Name = "Protein",
+                TrendName = "Protein Trend",
+                Color = SKColors.Crimson,
+                YAxisIndex = 0,
+                IsVisible = showProtein,
+                ShowTrend = showProteinTrend,
+                IsTrendLineVisible = isTrendLineLegendVisible,
+                StrokeThickness = strokeThickness,
+                GeometrySize = geometrySize,
+                DateSelector = x => x.CreateTime,
+                ValueSelector = x => x.Protein
+            }
+        };
+
+            var series = ChartSeriesBuilder.CreateSeries(data, chartDefinitions, loessFraction).ToArray();
+            var xAxis = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yy")) };
+            var yAxes = new[] { ChartAxisBuilder.Create(new ChartYAxisModel { Name = "g", MinLimit = min, MaxLimit = max }) };
+
+            return new ChartResult { Series = series, XAxis = xAxis, YAxis = yAxes };
+        }
+
+        public static ChartResult CreateFoodCarbsChart(
+            DateTime startDate, DateTime endDate, List<SamsungFoodInfoModel> data,
+            bool isTrendLineLegendVisible, float strokeThickness, float geometrySize,
+            double loessFraction, bool showCarbs, bool showCarbsTrend)
+        {
+            double max = data.Any() ? data.Max(x => x.Carbohydrate ?? 0) : 100;
+            double min = data.Any() ? data.Min(x => x.Carbohydrate ?? 0) : 0;
+            max += max * 0.05;
+
+            var chartDefinitions = new[]
+            {
+            new ChartSeriesModel<SamsungFoodInfoModel>
+            {
+                Name = "Carbohydrates",
+                TrendName = "Carbs Trend",
+                Color = SKColors.Goldenrod,
+                YAxisIndex = 0,
+                IsVisible = showCarbs,
+                ShowTrend = showCarbsTrend,
+                IsTrendLineVisible = isTrendLineLegendVisible,
+                StrokeThickness = strokeThickness,
+                GeometrySize = geometrySize,
+                DateSelector = x => x.CreateTime,
+                ValueSelector = x => x.Carbohydrate
+            }
+        };
+
+            var series = ChartSeriesBuilder.CreateSeries(data, chartDefinitions, loessFraction).ToArray();
+            var xAxis = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yy")) };
+            var yAxes = new[] { ChartAxisBuilder.Create(new ChartYAxisModel { Name = "g", MinLimit = min, MaxLimit = max }) };
+
+            return new ChartResult { Series = series, XAxis = xAxis, YAxis = yAxes };
+        }
+
+        public static ChartResult CreateFoodFatChart(
+            DateTime startDate, DateTime endDate, List<SamsungFoodInfoModel> data,
+            bool isTrendLineLegendVisible, float strokeThickness, float geometrySize,
+            double loessFraction, bool showFat, bool showFatTrend)
+        {
+            double max = data.Any() ? data.Max(x => x.TotalFat ?? 0) : 100;
+            double min = data.Any() ? data.Min(x => x.TotalFat ?? 0) : 0;
+            max += max * 0.05;
+
+            var chartDefinitions = new[]
+            {
+            new ChartSeriesModel<SamsungFoodInfoModel>
+            {
+                Name = "Fat",
+                TrendName = "Fat Trend",
+                Color = SKColors.ForestGreen,
+                YAxisIndex = 0,
+                IsVisible = showFat,
+                ShowTrend = showFatTrend,
+                IsTrendLineVisible = isTrendLineLegendVisible,
+                StrokeThickness = strokeThickness,
+                GeometrySize = geometrySize,
+                DateSelector = x => x.CreateTime,
+                ValueSelector = x => x.TotalFat
+            }
+        };
+
+            var series = ChartSeriesBuilder.CreateSeries(data, chartDefinitions, loessFraction).ToArray();
+            var xAxis = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yy")) };
+            var yAxes = new[] { ChartAxisBuilder.Create(new ChartYAxisModel { Name = "g", MinLimit = min, MaxLimit = max }) };
+
+            return new ChartResult { Series = series, XAxis = xAxis, YAxis = yAxes };
+        }
+
+        public static ChartResult CreateFoodVitaminAChart(
+            DateTime startDate, DateTime endDate, List<SamsungFoodInfoModel> data,
+            bool isTrendLineLegendVisible, float strokeThickness, float geometrySize, double loessFraction,
+            bool showVitaminA, bool showVitaminATrend)
+        {
+            double max = data.Any() ? data.Max(x => x.VitaminA ?? 0) : 100;
+            double min = data.Any() ? data.Min(x => x.VitaminA ?? 0) : 0;
+            max += max * 0.05;
+
+            var chartDefinitions = new[]
+            {
+            new ChartSeriesModel<SamsungFoodInfoModel>
+            {
+                Name = "Vitamin A",
+                TrendName = "Vitamin A Trend",
+                Color = SKColors.DarkOrange,
+                YAxisIndex = 0,
+                IsVisible = showVitaminA,
+                ShowTrend = showVitaminATrend,
+                IsTrendLineVisible = isTrendLineLegendVisible,
+                StrokeThickness = strokeThickness,
+                GeometrySize = geometrySize,
+                DateSelector = x => x.CreateTime,
+                ValueSelector = x => x.VitaminA
+            }
+        };
+
+            var series = ChartSeriesBuilder.CreateSeries(data, chartDefinitions, loessFraction).ToArray();
+            var xAxis = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yy")) };
+            var yAxes = new[] { ChartAxisBuilder.Create(new ChartYAxisModel { Name = "µg", MinLimit = min, MaxLimit = max }) };
+
+            return new ChartResult { Series = series, XAxis = xAxis, YAxis = yAxes };
+        }
+
+        public static ChartResult CreateFoodVitaminCChart(
+            DateTime startDate, DateTime endDate, List<SamsungFoodInfoModel> data,
+            bool isTrendLineLegendVisible, float strokeThickness, float geometrySize, double loessFraction,
+            bool showVitaminC, bool showVitaminCTrend)
+        {
+            double max = data.Any() ? data.Max(x => x.VitaminC ?? 0) : 100;
+            double min = data.Any() ? data.Min(x => x.VitaminC ?? 0) : 0;
+            max += max * 0.05;
+
+            var chartDefinitions = new[]
+            {
+            new ChartSeriesModel<SamsungFoodInfoModel>
+            {
+                Name = "Vitamin C",
+                TrendName = "Vitamin C Trend",
+                Color = SKColors.Gold,
+                YAxisIndex = 0,
+                IsVisible = showVitaminC,
+                ShowTrend = showVitaminCTrend,
+                IsTrendLineVisible = isTrendLineLegendVisible,
+                StrokeThickness = strokeThickness,
+                GeometrySize = geometrySize,
+                DateSelector = x => x.CreateTime,
+                ValueSelector = x => x.VitaminC
+            }
+        };
+
+            var series = ChartSeriesBuilder.CreateSeries(data, chartDefinitions, loessFraction).ToArray();
+            var xAxis = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yy")) };
+            var yAxes = new[] { ChartAxisBuilder.Create(new ChartYAxisModel { Name = "mg", MinLimit = min, MaxLimit = max }) };
+
+            return new ChartResult { Series = series, XAxis = xAxis, YAxis = yAxes };
+        }
+
+        public static ChartResult CreateFoodVitaminDChart(
+            DateTime startDate, DateTime endDate, List<SamsungFoodInfoModel> data,
+            bool isTrendLineLegendVisible, float strokeThickness, float geometrySize, double loessFraction,
+            bool showVitaminD, bool showVitaminDTrend)
+        {
+            double max = data.Any() ? data.Max(x => x.VitaminD ?? 0) : 100;
+            double min = data.Any() ? data.Min(x => x.VitaminD ?? 0) : 0;
+            max += max * 0.05;
+
+            var chartDefinitions = new[]
+            {
+            new ChartSeriesModel<SamsungFoodInfoModel>
+            {
+                Name = "Vitamin D",
+                TrendName = "Vitamin D Trend",
+                Color = SKColors.Orange,
+                YAxisIndex = 0,
+                IsVisible = showVitaminD,
+                ShowTrend = showVitaminDTrend,
+                IsTrendLineVisible = isTrendLineLegendVisible,
+                StrokeThickness = strokeThickness,
+                GeometrySize = geometrySize,
+                DateSelector = x => x.CreateTime,
+                ValueSelector = x => x.VitaminD
+            }
+        };
+
+            var series = ChartSeriesBuilder.CreateSeries(data, chartDefinitions, loessFraction).ToArray();
+            var xAxis = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yy")) };
+            var yAxes = new[] { ChartAxisBuilder.Create(new ChartYAxisModel { Name = "µg", MinLimit = min, MaxLimit = max }) };
+
+            return new ChartResult { Series = series, XAxis = xAxis, YAxis = yAxes };
+        }
+
+        public static ChartResult CreateFoodIronChart(
+            DateTime startDate, DateTime endDate, List<SamsungFoodInfoModel> data,
+            bool isTrendLineLegendVisible, float strokeThickness, float geometrySize, double loessFraction,
+            bool showIron, bool showIronTrend)
+        {
+            double max = data.Any() ? data.Max(x => x.Iron ?? 0) : 100;
+            double min = data.Any() ? data.Min(x => x.Iron ?? 0) : 0;
+            max += max * 0.05;
+
+            var chartDefinitions = new[]
+            {
+            new ChartSeriesModel<SamsungFoodInfoModel>
+            {
+                Name = "Iron",
+                TrendName = "Iron Trend",
+                Color = SKColors.SaddleBrown,
+                YAxisIndex = 0,
+                IsVisible = showIron,
+                ShowTrend = showIronTrend,
+                IsTrendLineVisible = isTrendLineLegendVisible,
+                StrokeThickness = strokeThickness,
+                GeometrySize = geometrySize,
+                DateSelector = x => x.CreateTime,
+                ValueSelector = x => x.Iron
+            }
+        };
+
+            var series = ChartSeriesBuilder.CreateSeries(data, chartDefinitions, loessFraction).ToArray();
+            var xAxis = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yy")) };
+            var yAxes = new[] { ChartAxisBuilder.Create(new ChartYAxisModel { Name = "mg", MinLimit = min, MaxLimit = max }) };
+
+            return new ChartResult { Series = series, XAxis = xAxis, YAxis = yAxes };
+        }
+
+        public static ChartResult CreateFoodCalciumChart(
+            DateTime startDate, DateTime endDate, List<SamsungFoodInfoModel> data,
+            bool isTrendLineLegendVisible, float strokeThickness, float geometrySize, double loessFraction,
+            bool showCalcium, bool showCalciumTrend)
+        {
+            double max = data.Any() ? data.Max(x => x.Calcium ?? 0) : 100;
+            double min = data.Any() ? data.Min(x => x.Calcium ?? 0) : 0;
+            max += max * 0.05;
+
+            var chartDefinitions = new[]
+            {
+            new ChartSeriesModel<SamsungFoodInfoModel>
+            {
+                Name = "Calcium",
+                TrendName = "Calcium Trend",
+                Color = SKColors.SteelBlue,
+                YAxisIndex = 0,
+                IsVisible = showCalcium,
+                ShowTrend = showCalciumTrend,
+                IsTrendLineVisible = isTrendLineLegendVisible,
+                StrokeThickness = strokeThickness,
+                GeometrySize = geometrySize,
+                DateSelector = x => x.CreateTime,
+                ValueSelector = x => x.Calcium
+            }
+        };
+
+            var series = ChartSeriesBuilder.CreateSeries(data, chartDefinitions, loessFraction).ToArray();
+            var xAxis = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yy.yy")) };
+            var yAxes = new[] { ChartAxisBuilder.Create(new ChartYAxisModel { Name = "mg", MinLimit = min, MaxLimit = max }) };
+
+            return new ChartResult { Series = series, XAxis = xAxis, YAxis = yAxes };
+        }
+
+        public static ChartResult CreateFoodNatriumChart(
+            DateTime startDate, DateTime endDate, List<SamsungFoodInfoModel> data,
+            bool isTrendLineLegendVisible, float strokeThickness, float geometrySize, double loessFraction,
+            bool showNatrium, bool showNatriumTrend)
+        {
+            double max = data.Any() ? data.Max(x => x.Cholesterol ?? 0) : 100;
+            double min = data.Any() ? data.Min(x => x.Cholesterol ?? 0) : 0;
+            max += max * 0.05;
+
+            var chartDefinitions = new[]
+            {
+            new ChartSeriesModel<SamsungFoodInfoModel>
+            {
+                Name = "Sodium ",
+                TrendName = "Sodium Trend",
+                Color = SKColors.MediumPurple,
+                YAxisIndex = 0,
+                IsVisible = showNatrium,
+                ShowTrend = showNatriumTrend,
+                IsTrendLineVisible = isTrendLineLegendVisible,
+                StrokeThickness = strokeThickness,
+                GeometrySize = geometrySize,
+                DateSelector = x => x.CreateTime,
+                ValueSelector = x => x.Sodium
+            }
+        };
+
+            var series = ChartSeriesBuilder.CreateSeries(data, chartDefinitions, loessFraction).ToArray();
+            var xAxis = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yy")) };
+            var yAxes = new[] { ChartAxisBuilder.Create(new ChartYAxisModel { Name = "mg", MinLimit = min, MaxLimit = max }) };
+
+            return new ChartResult { Series = series, XAxis = xAxis, YAxis = yAxes };
+        }
+
+        public static ChartResult CreateFoodKaliumChart(
+            DateTime startDate, DateTime endDate, List<SamsungFoodInfoModel> data,
+            bool isTrendLineLegendVisible, float strokeThickness, float geometrySize, double loessFraction,
+            bool showPotassium, bool showPotassiumTrend)
+        {
+            double max = data.Any() ? data.Max(x => x.Potassium ?? 0) : 100;
+            double min = data.Any() ? data.Min(x => x.Potassium ?? 0) : 0;
+            max += max * 0.05;
+
+            var chartDefinitions = new[]
+            {
+            new ChartSeriesModel<SamsungFoodInfoModel>
+            {
+                Name = "Kalium",
+                TrendName = "Kalium Trend",
+                Color = SKColors.Teal,
+                YAxisIndex = 0,
+                IsVisible = showPotassium,
+                ShowTrend = showPotassiumTrend,
+                IsTrendLineVisible = isTrendLineLegendVisible,
+                StrokeThickness = strokeThickness,
+                GeometrySize = geometrySize,
+                DateSelector = x => x.CreateTime,
+                ValueSelector = x => x.Potassium
+            }
+        };
+
+            var series = ChartSeriesBuilder.CreateSeries(data, chartDefinitions, loessFraction).ToArray();
+            var xAxis = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yy")) };
+            var yAxes = new[] { ChartAxisBuilder.Create(new ChartYAxisModel { Name = "mg", MinLimit = min, MaxLimit = max }) };
+
+            return new ChartResult { Series = series, XAxis = xAxis, YAxis = yAxes };
+        }
+
+        #endregion
+
         #region Samsung Oxygen Saturaton Chart Tempplates
 
         /// <summary>
@@ -2177,30 +2568,32 @@ namespace BodyTracker.Services
 
             IPolarAxis[] radiusAxis = Array.Empty<IPolarAxis>();
 
+
+            var actMuscleDistributionSpiderChartValues = new List<double>();
+            var actMuscleDistributionSpiderChartAxisName = new List<string>();
+            var prevMuscleDistributionSpiderChartValues = new List<double>();
+
             if (actResults.Any())
             {
-                var actMuscleDistributionSpiderChartValues = new List<double>();
-                var actMuscleDistributionSpiderChartAxisName = new List<string>();
-                var prevMuscleDistributionSpiderChartValues = new List<double>();
-
-
                 foreach (var value in actResults)
                 {
                     if (value == null) break;
                     actMuscleDistributionSpiderChartValues.Add(value.PercentageShare);
                     actMuscleDistributionSpiderChartAxisName.Add(value.MuscleGroup);
                 }
-                if (prevResults.Any())
-                { 
-                    foreach (var value in prevResults)
-                    {
-                        if (value == null) break;
-                        prevMuscleDistributionSpiderChartValues.Add(value.PercentageShare);
-                    }
-                }
-
-                seriesValues = new ISeries[]
+            }
+            if (prevResults.Any())
+            {
+                foreach (var value in prevResults)
                 {
+                    if (value == null) break;
+                    prevMuscleDistributionSpiderChartValues.Add(value.PercentageShare);
+                    if(!actResults.Any()) actMuscleDistributionSpiderChartAxisName.Add(value.MuscleGroup);
+                }
+            }
+
+            seriesValues = new ISeries[]
+            {
                     new PolarLineSeries<double>
                     {
                     Name=actSereiesName,
@@ -2218,20 +2611,20 @@ namespace BodyTracker.Services
                     GeometrySize = geometrySize,
                     MiniatureStrokeThickness = strokeThickness
                     }
-                };
+            };
 
-                angleAxis = new IPolarAxis[]
-                {
+            angleAxis = new IPolarAxis[]
+            {
                 new PolarAxis
                 {
                     Labels = actMuscleDistributionSpiderChartAxisName.ToArray(),
                     LabelsRotation = labelRotation,
                     TextSize= textSize
                 }
-                };
+            };
 
-                radiusAxis = new IPolarAxis[]
-                {
+            radiusAxis = new IPolarAxis[]
+            {
                 new PolarAxis
                 {
                     MinLimit= 0,
@@ -2239,8 +2632,8 @@ namespace BodyTracker.Services
                     MinStep= minStep,
                     Labeler = _ => string.Empty
                 }
-                };
-            }
+            };
+
 
             return (seriesValues, angleAxis, radiusAxis);
         }
@@ -2267,7 +2660,7 @@ namespace BodyTracker.Services
             List<WorkoutExerciseProgressModel> data,
             bool isTrendLineLegendVisible,
             float strokeThickness,
-            float geometrySize, 
+            float geometrySize,
             string label,
             int labelRotation = 0)
         {
@@ -2292,7 +2685,7 @@ namespace BodyTracker.Services
 
                     DateSelector = x => x.Date,
                     ValueSelector = x => x.PeakWeight,
-                    
+
                 },
             };
 
@@ -2482,7 +2875,7 @@ namespace BodyTracker.Services
                     DateSelector = x => x.Date,
                     ValueSelector = x => x.MaxOneRepMax
                 },
-               
+
             };
 
             var series = ChartSeriesBuilder

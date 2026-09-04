@@ -160,7 +160,7 @@ namespace BodyTracker.ViewModels
         /// </summary>
         private void InitializeWeakReferenceMessenger()
         {
-            WeakReferenceMessenger.Default.Register<GeneralErrorMessage>(this, (r, m) =>
+            WeakReferenceMessenger.Default.Register<GeneralInfoMessage>(this, (r, m) =>
             {
                 var value = m.Value ?? string.Empty;
                 var version = Interlocked.Increment(ref generalFailureMessageVersion);

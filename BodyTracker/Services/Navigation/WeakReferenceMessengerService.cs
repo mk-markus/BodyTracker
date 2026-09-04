@@ -20,7 +20,7 @@ public sealed class MessengerStatusService
 
     #region Properties
 
-    public string GeneralErrorMessage { get; private set; } = string.Empty;
+    public string GeneralInfoMessage { get; private set; } = string.Empty;
     public string DatabaseErrorMessage { get; private set; } = string.Empty;
 
     public bool DatabaseConnected { get; private set; }
@@ -34,7 +34,7 @@ public sealed class MessengerStatusService
 
     public string ActualDatabase { get; private set; } = string.Empty;
 
-    public int GeneralErrorMessageVersion => _generalFailureVersion;
+    public int GeneralInfoMessageVersion => _generalFailureVersion;
 
     public int DatabaseErrorMessageVersion => _databaseErrorVersion;
 
@@ -42,9 +42,9 @@ public sealed class MessengerStatusService
 
     private void RegisterMessages()
     {
-        WeakReferenceMessenger.Default.Register<GeneralErrorMessage>(this, (r, m) =>
+        WeakReferenceMessenger.Default.Register<GeneralInfoMessage>(this, (r, m) =>
         {
-            GeneralErrorMessage = m.Value ?? string.Empty;
+            GeneralInfoMessage = m.Value ?? string.Empty;
             Interlocked.Increment(ref _generalFailureVersion);
         });
 

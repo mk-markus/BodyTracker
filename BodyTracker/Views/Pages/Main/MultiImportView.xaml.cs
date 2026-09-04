@@ -5,9 +5,9 @@ using System.Windows.Controls;
 namespace BodyTracker.Views.Pages
 {
     /// <summary>
-    /// Interaktionslogik für MultiImportPage.xaml
+    /// Interaktionslogik für MultiImportView.xaml
     /// </summary>
-    public partial class MultiImportPage : Page
+    public partial class MultiImportView : Page
     {
         /// <summary>
         /// Reference to the main application window, acting as the primary host (Shell) 
@@ -28,7 +28,7 @@ namespace BodyTracker.Views.Pages
         private readonly MultiImportViewModel multiImportPageViewModel;
 
 
-        public MultiImportPage(MainWindow shell, DatabaseService db)
+        public MultiImportView(MainWindow shell, DatabaseService db)
         {
             InitializeComponent();
             mainWindow = shell;
