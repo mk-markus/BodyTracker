@@ -30,6 +30,6 @@
         /// Gets or sets the percentage share of the total volume attributed to this specific muscle group.
         /// </summary>
         /// <remarks>Represents the proportional workload distribution value used for pie chart visualization and statistical summaries.</remarks>
-        public double PercentageShare { get; set; }
+        public double? PercentageShare { get; set; }
     }
 }

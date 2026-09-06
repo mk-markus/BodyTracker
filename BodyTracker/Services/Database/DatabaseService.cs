@@ -30,6 +30,7 @@ namespace BodyTracker.Services
     public partial class DatabaseService : ObservableObject, IDisposable
     {
         #region Members
+
         /// <summary>
         /// Provides the sqlServerConnection string used to establish communication with the MySQL database server.
         /// </summary>
@@ -60,24 +61,6 @@ namespace BodyTracker.Services
         }
 
         /// <summary>
-        /// Backing field for the SQL server failure message string.
-        /// </summary>
-        private string errorMessage = "";
-
-        /// <summary>
-        /// Gets or sets the SQL server failure message, sending a database error message via the messenger when the value changes.
-        /// </summary>
-        public string ErrorMessage
-        {
-            get => errorMessage;
-            set
-            {
-                errorMessage = value;
-                WeakReferenceMessenger.Default.Send(new DatabaseErrorMessage(errorMessage));
-            }
-        }
-
-        /// <summary>
         /// Represents a cancellation token source used to safely signal and stop the background sqlServerConnection monitoring task.
         /// </summary>
         private readonly CancellationTokenSource connectionMonitorCts = new();
@@ -97,8 +80,14 @@ namespace BodyTracker.Services
         /// </summary>
         private readonly TimeSpan monitorInterval = TimeSpan.FromSeconds(10);
 
+        /// <summary>
+        /// Gets the name of the database being utilized by the current service instance.
+        /// </summary>
         public string DatabaseName { private set; get; } = string.Empty;
 
+        /// <summary>
+        /// Gets the database user name or credentials identifier used for authentication and connection purposes.
+        /// </summary>
         public string DatabaseUser { private set; get; } = string.Empty;
 
         #endregion
@@ -150,8 +139,6 @@ namespace BodyTracker.Services
 
             if (disposing)
             {
-                Debug.WriteLine($"DatabaseService Disposing managed resources {GetHashCode()}");
-
                 try
                 {
                     connectionMonitorCts.Cancel();
@@ -167,8 +154,8 @@ namespace BodyTracker.Services
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"Error during sqlServerConnection monitor shutdown: {ex.Message}");
-                    Debug.WriteLine($"DatabaseService Disposal Error: {ex.Message}");
+                    throw new Exception($"Error SQL Dispose: {ex.Message}", ex);
+
                 }
                 finally
                 {
@@ -197,7 +184,6 @@ namespace BodyTracker.Services
 
             await using var SqlCommand = new MySqlCommand(DatabaseCommands.CmdCreateTableIfNotExist(), SqlServerConnection);
             await SqlCommand.ExecuteNonQueryAsync();
-            ErrorMessage = string.Empty;
         }
 
         /// <summary>
@@ -229,7 +215,7 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error during sqlServerConnection check/reconnect: {ex.Message}";
+                throw new Exception($"Error during sqlServerConnection check/reconnect: {ex.Message}", ex);
             }
             finally
             {
@@ -253,9 +239,9 @@ namespace BodyTracker.Services
                     await Task.Delay(monitorInterval, token);
                 }
             }
-            catch (TaskCanceledException)
+            catch (TaskCanceledException ex)
             {
-                ErrorMessage = "Connection monitoring task was canceled.";
+                throw new Exception("Connection monitoring task was canceled.", ex);
             }
         }
 
@@ -291,15 +277,12 @@ namespace BodyTracker.Services
                 }
 
                 IsConnected = sqlServerConnection.State == ConnectionState.Open;
-                ErrorMessage = string.Empty;
             }
             catch (Exception ex)
             {
-
-                ErrorMessage = $"Database sqlServerConnection error: {ex.Message}";
                 IsConnected = false;
-
                 sqlServerConnection.Dispose();
+                throw new Exception($"Database sqlServerConnection error: {ex.Message}", ex);
             }
 
             if (previousState != IsConnected)
@@ -339,11 +322,10 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error Update Person Async: {ex.Message}";
                 await tx.CommitAsync();
+                throw new Exception($"Error Update Person Async: {ex.Message}", ex);
             }
         }
-
 
         /// <summary>
         /// Asynchronously creates a new person record in the database and returns the newly generated unique identifier.
@@ -373,13 +355,11 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error creating person: {ex.Message}";
-
+                throw new Exception($"Error creating person: {ex.Message}", ex);
             }
 
             return 0;
         }
-
 
         #endregion
 
@@ -422,8 +402,7 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error Checking Measurement Existing: {ex.Message}";
-
+                throw new Exception($"Error Checking Measurement Existing: {ex.Message}", ex);
             }
 
             return false;
@@ -464,8 +443,7 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error insert Body Metric: {ex.Message}";
-
+                throw new Exception($"Error insert Body Metric: {ex.Message}", ex);
             }
         }
 
@@ -503,7 +481,7 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error Insert Body Dimension: {ex.Message}";
+                throw new Exception($"Error Insert Body Dimension: {ex.Message}", ex);
             }
         }
 
@@ -556,7 +534,7 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error Get Last Body Metrics: {ex.Message}";
+                throw new Exception($"Error Get Last Body Metrics: {ex.Message}", ex);
             }
 
             return new BodyMetricModel();
@@ -617,7 +595,7 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error Get Body Metrics for AI: {ex.Message}";
+                throw new Exception($"Error Get Body Metrics for AI: {ex.Message}", ex);
             }
 
             return list;
@@ -674,7 +652,7 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error Get Body Dimensions: {ex.Message}";
+                throw new Exception($"Error Get Body Dimensions: {ex.Message}", ex);
             }
 
             return new BodyDimensionsModel();
@@ -819,7 +797,7 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error Get Body Dimensions: {ex.Message}";
+                throw new Exception($"Error Get Body Dimensions : {ex.Message}", ex);
             }
 
 
@@ -829,7 +807,6 @@ namespace BodyTracker.Services
                 BodyMetrics = bodyMetric
             };
         }
-
 
         /// <summary>
         /// Asynchronously retrieves a comprehensive list of all measurements for a specific person, 
@@ -894,7 +871,7 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error Get Body Measurement Async: {ex.Message}";
+                throw new Exception($"Error Get Body Measurement Async: {ex.Message}", ex);
             }
 
             return list;
@@ -919,7 +896,7 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error Delete Body Metric Async: {ex.Message}";
+                throw new Exception($"Error Delete Body Metric Async: {ex.Message}", ex);
             }
         }
 
@@ -942,7 +919,7 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error Delete Body Dimension Async: {ex.Message}";
+                throw new Exception($"Error Delete Body Dimension Async: {ex.Message}", ex);
             }
         }
 
@@ -999,24 +976,6 @@ namespace BodyTracker.Services
                     cmdUpdateMetric.Parameters.AddWithValue("@vf", (object?)visceralFat ?? DBNull.Value);
                     await cmdUpdateMetric.ExecuteNonQueryAsync();
                 }
-                //else
-                //{
-                //    await using var cmdInsertMetric = new MySqlCommand(DatabaseCommands.GetPersonMetricInsertSql(), conn, (MySqlTransaction)tx);
-                //    cmdInsertMetric.Parameters.Add("@dt", (DbType)SqlDbType.DateTime2).Value = finalDate;
-                //    cmdInsertMetric.Parameters.AddWithValue("@mid", metricId.Value);
-                //    cmdInsertMetric.Parameters.AddWithValue("@gw", (object?)bodyWeight ?? DBNull.Value);
-                //    cmdInsertMetric.Parameters.AddWithValue("@bmi", (object?)bmi ?? DBNull.Value);
-                //    cmdInsertMetric.Parameters.AddWithValue("@kf", (object?)fat ?? DBNull.Value);
-                //    cmdInsertMetric.Parameters.AddWithValue("@kfo", (object?)fato ?? DBNull.Value);
-                //    cmdInsertMetric.Parameters.AddWithValue("@kfu", (object?)fatu ?? DBNull.Value);
-                //    cmdInsertMetric.Parameters.AddWithValue("@mm", (object?)muscle ?? DBNull.Value);
-                //    cmdInsertMetric.Parameters.AddWithValue("@mmo", (object?)muscleo ?? DBNull.Value);
-                //    cmdInsertMetric.Parameters.AddWithValue("@mmu", (object?)muscleu ?? DBNull.Value);
-                //    cmdInsertMetric.Parameters.AddWithValue("@kw", (object?)bodyw ?? DBNull.Value);
-                //    cmdInsertMetric.Parameters.AddWithValue("@kk", (object?)bodyb ?? DBNull.Value);
-                //    cmdInsertMetric.Parameters.AddWithValue("@vf", (object?)visceralFat ?? DBNull.Value);
-                //    await cmdInsertMetric.ExecuteNonQueryAsync();
-                //}
 
                 if (dimensionId.HasValue)
                 {
@@ -1034,33 +993,14 @@ namespace BodyTracker.Services
                     cmdUpdateDim.Parameters.AddWithValue("@fztricep", (object?)fatTongTricepsCrease ?? DBNull.Value);
                     await cmdUpdateDim.ExecuteNonQueryAsync();
                 }
-                //else
-                //{
-                //    await using var cmdInsertDim = new MySqlCommand(DatabaseCommands.GetPersonDimensionInsertSql(), conn, (MySqlTransaction)tx);
-                //    cmdInsertDim.Parameters.AddWithValue("@pid", personId);
-                //    cmdInsertDim.Parameters.Add("@dt", (DbType)SqlDbType.DateTime2).Value = finalDate;
-                //    cmdInsertDim.Parameters.AddWithValue("@br", (object?)chest ?? DBNull.Value);
-                //    cmdInsertDim.Parameters.AddWithValue("@ba", (object?)waist ?? DBNull.Value);
-                //    cmdInsertDim.Parameters.AddWithValue("@hu", (object?)hips ?? DBNull.Value);
-                //    cmdInsertDim.Parameters.AddWithValue("@fzbrust", (object?)fatTongBreastCrease ?? DBNull.Value);
-                //    cmdInsertDim.Parameters.AddWithValue("@fzarmpit", (object?)fatTongArmpitCrease ?? DBNull.Value);
-                //    cmdInsertDim.Parameters.AddWithValue("@fzabdomen", (object?)fatTongAbdominalCrease ?? DBNull.Value);
-                //    cmdInsertDim.Parameters.AddWithValue("@fzhip", (object?)fatTongHipCrease ?? DBNull.Value);
-                //    cmdInsertDim.Parameters.AddWithValue("@fzthigh", (object?)fatTongThighCrease ?? DBNull.Value);
-                //    cmdInsertDim.Parameters.AddWithValue("@fzback", (object?)fatTongBackCrease ?? DBNull.Value);
-                //    cmdInsertDim.Parameters.AddWithValue("@fztriceps", (object?)fatTongTricepsCrease ?? DBNull.Value);
-                //    await cmdInsertDim.ExecuteNonQueryAsync();
-                //}
-
+           
                 await tx.CommitAsync();
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error Update Measurement Async: {ex.Message}";
-                await tx.RollbackAsync();
+                throw new Exception($"Error Update Measurement Async: {ex.Message}", ex);
             }
         }
-
 
         #endregion
 
@@ -1125,15 +1065,11 @@ namespace BodyTracker.Services
                 progress?.Report(100);
 
                 return true;
-
-
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error inserting Samsung Health food intake: {ex.Message}";
-                await tx.RollbackAsync();
-            }
-            return false;
+                throw new Exception($"Error Insert Food Intake: {ex.Message}", ex);
+            };
         }
 
         /// <summary>
@@ -1309,12 +1245,9 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                //await transaction.RollbackAsync();
-                ErrorMessage = ex.Message;
-                return false;
+                throw new Exception($"Error Insert Food Intake Datas: {ex.Message}", ex);
             }
         }
-
         /// <summary>
         /// Asynchronously retrieves and returns Samsung food intake records for a specified person.
         /// </summary>
@@ -1381,7 +1314,8 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error Get Food Intake Async: {ex.Message}";
+                throw new Exception($"Error Get Food Intake Async: {ex.Message}", ex);
+                
             }
 
             return result;
@@ -1406,7 +1340,7 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error Delete Food Intake Async: {ex.Message}";
+                throw new Exception($"Error Delete Food Intake Async: {ex.Message}", ex);
             }
         }
 
@@ -1598,24 +1532,7 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                //await transaction.RollbackAsync();
-
-                // Holt die tiefste InnerException oder baut eine Nachricht zusammen
-                string detailedMessage = ex.Message;
-                Exception inner = ex.InnerException;
-
-                while (inner != null)
-                {
-                    detailedMessage += " -> " + inner.Message;
-                    inner = inner.InnerException;
-                }
-
-                ErrorMessage = detailedMessage;
-
-                // Optional für Debugging-Zwecke im Ausgabefenster:
-                System.Diagnostics.Debug.WriteLine("Inner Exception: " + ex.ToString());
-
-                return false;
+                throw new Exception($"Error Insert Food Indo Async", ex);
             }
         }
 
@@ -1687,14 +1604,7 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                string detailedMessage = ex.Message;
-                Exception inner = ex.InnerException;
-                while (inner != null)
-                {
-                    detailedMessage += " -> " + inner.Message;
-                    inner = inner.InnerException;
-                }
-                ErrorMessage = $"Error Get Food Info Async: {detailedMessage}";
+                throw new Exception($"Error Get Food Indo Async", ex);
             }
 
             return result;
@@ -1719,14 +1629,8 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                string detailedMessage = ex.Message;
-                Exception inner = ex.InnerException;
-                while (inner != null)
-                {
-                    detailedMessage += " -> " + inner.Message;
-                    inner = inner.InnerException;
-                }
-                ErrorMessage = $"Error Delete Food Info Async: {detailedMessage}";
+             
+                throw new Exception($"Error Delete Food Info Async: {ex.Message}", ex);
             }
         }
 
@@ -1871,10 +1775,9 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error inserting Samsung Exercises: {ex.Message}";
                 await tx.RollbackAsync();
+                throw new Exception($"Error Insert Exercises: {ex.Message}", ex);
             }
-            return false;
         }
 
         /// <summary>
@@ -2158,9 +2061,7 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                //await transaction.RollbackAsync();
-                ErrorMessage = ex.Message;
-                return false;
+                throw new Exception($"Error Insert Samsung Exercises: {ex.Message}", ex);
             }
         }
 
@@ -2237,7 +2138,7 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error Get Exercise Async: {ex.Message}";
+                throw new Exception($"Error Get Exercise Async: {ex.Message}", ex);
             }
 
             return result;
@@ -2354,7 +2255,7 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error Get Samsung Exercise Async: {ex.Message}";
+                throw new Exception($"Error Get Samsung Exercise Async: {ex.Message}", ex);
             }
 
             return result;
@@ -2379,14 +2280,13 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error Delete Exercise Async: {ex.Message}";
+                throw new Exception($"Error Delete Exercise Async: {ex.Message}", ex);
             }
         }
 
         #endregion
 
         #region Samsung Health Heart Rate
-
 
         /// <summary>
         /// Inserts a collection of Samsung Health heart rate records for a specific person.
@@ -2534,10 +2434,11 @@ namespace BodyTracker.Services
 
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
                 await tx.RollbackAsync();
-                throw;
+                throw new Exception($"Error Insert Heart Rates: {ex.Message}", ex);
+
             }
         }
 
@@ -2702,12 +2603,9 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                //await transaction.RollbackAsync();
-                ErrorMessage = ex.Message;
-                return false;
+                throw new Exception($"Error inserting Samsung Heart Rates: {ex.Message}", ex);   
             }
         }
-
 
         /// <summary>
         /// Asynchronously retrieves a list of Samsung Health heart rate records for the specified person from the database.
@@ -2821,7 +2719,7 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error Get Samsung Heart Rate Async: {ex.Message}";
+                throw new Exception($"Error Get Samsung Heart Rate Async: {ex.Message}", ex);
             }
 
             return result;
@@ -2876,7 +2774,7 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error Get Exercise Async: {ex.Message}";
+                throw new Exception($"Error Get Exercise Async: {ex.Message}", ex);
             }
 
             return result;
@@ -2901,7 +2799,7 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error Delete Heart Rate Async: {ex.Message}";
+                throw new Exception($"Error Delete Heart Rate Async: {ex.Message}", ex);
             }
         }
 
@@ -2968,11 +2866,8 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error inserting Samsung Health Daily Steps Trend: {ex.Message}";
-                await tx.RollbackAsync();
+                throw new Exception($"Error inserting Samsung Health Daily Steps Trend: {ex.Message}", ex);
             }
-
-            return false;
         }
 
         /// <summary>
@@ -3128,9 +3023,8 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                //await transaction.RollbackAsync();
-                ErrorMessage = ex.Message;
-                return false;
+                throw new Exception($"Error Insert Step Trend Datas: {ex.Message}", ex);
+
             }
         }
 
@@ -3209,7 +3103,7 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error Get Step Trend Async: {ex.Message}";
+                throw new Exception($"Error Get Step Trend Async: {ex.Message}", ex);
             }
 
             return result;
@@ -3251,7 +3145,7 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error Get Step Daily Trend Async: {ex.Message}";
+                throw new Exception($"Error Get Step Daily Trend Async: {ex.Message}", ex);
             }
 
             return result;
@@ -3276,7 +3170,7 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error Delete Step Trend Async: {ex.Message}";
+                throw new Exception($"Error Delete Step Trend Async: {ex.Message}", ex);
             }
         }
 
@@ -3369,11 +3263,9 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error inserting Samsung Datas: {ex.Message}";
                 await tx.RollbackAsync();
+                throw new Exception($"Error Insert SpO2 Datas: {ex.Message}", ex);
             }
-
-            return false;
         }
 
         /// <summary>
@@ -3569,9 +3461,7 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                //await transaction.RollbackAsync();
-                ErrorMessage = ex.Message;
-                return false;
+                throw new Exception($"Error Insert SpO2 Datas: {ex.Message}", ex);
             }
         }
 
@@ -3705,7 +3595,7 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error Get Samsung Oxygen Saturation Async: {ex.Message}";
+                throw new Exception($"Error Get SpO2 Datas: {ex.Message}", ex);
             }
 
             return result;
@@ -3768,7 +3658,7 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error Get SpO2 Async: {ex.Message}";
+                throw new Exception($"Error Get SpO2 Async: {ex.Message}", ex);
             }
 
             return result;
@@ -3793,13 +3683,11 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error Delete SpO2 Async: {ex.Message}";
+                throw new Exception($"Error Delete SpO2 Async: {ex.Message}", ex);
             }
         }
 
         #endregion
-
-
 
         #region Workout Log
 
@@ -4003,15 +3891,9 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error inserting Hevy App workout data: {ex.Message}";
-                //await tx.RollbackAsync();
-
+                throw new Exception($"Error Workout Log Datas: {ex.Message}", ex);
             }
-
-            return false;
         }
-
-
 
         /// <summary>
         /// Inserts Hevy App workout data into the database.
@@ -4075,14 +3957,9 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error inserting Hevy App workout data: {ex.Message}";
-                await tx.RollbackAsync();
-
+                throw new Exception($"Error Insert Workout Log Datas: {ex.Message}", ex);
             }
-
-            return false;
         }
-
 
         /// <summary>
         /// Asynchronously synchronizes a collection of Samsung workout records for a specific person into the database, 
@@ -4167,17 +4044,10 @@ namespace BodyTracker.Services
                 int current = 0;
                 double percentage = 0;
 
-
-                Debug.WriteLine("================");
-                Debug.WriteLine($"Insert Table: {insertList.Count} | Update Table: {updateList.Count} | Delete Tabel: {deleteList.Count}");
-                Debug.WriteLine("================");
-
-
                 if (insertList.Count > 0)
                 {
                     var table = HevyAppDataTable.CreateHevyAppDataTable(personId, insertList);
 
-                    if (table.Rows.Count <= 0) Debug.WriteLine("table entries");
                     var bulkCopy = new MySqlBulkCopy(sqlServerConnection)
                     {
                         DestinationTableName = "tbl_WorkoutLog",
@@ -4286,10 +4156,7 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                //await transaction.RollbackAsync();
-                if (ex.InnerException != null) ErrorMessage = ex.InnerException.Message;
-                ErrorMessage = ex.Message;
-                return false;
+                throw new Exception($"Error Insert Workload Datas: {ex.Message}", ex);
             }
         }
 
@@ -4352,128 +4219,11 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error Get Get Hevy App Workout Entries Async: {ex.Message}";
+                throw new Exception($"Error Get Hevy App Workout Entries Async: {ex.Message}", ex);
             }
 
             return list;
         }
-
-        ///// <summary>
-        ///// Asynchronously retrieves and returns Samsung step trend records for a specified person.
-        ///// </summary>
-        ///// <remarks>Establishes a database connection, executes the step trend command retrieved from <see cref="DatabaseCommands.GetSamsungStepTrendSql"/> with the given person identifier parameter, and reads the result set into a list of <see cref="SamsungStepTrendModel"/> instances.</remarks>
-        ///// <param name="personId">The unique identifier of the person whose step trends are being requested.</param>
-        ///// <returns>A task representing the asynchronous operation, containing a list of <see cref="SamsungStepTrendModel"/> objects.</returns>
-        //public async Task<List<SamsungExerciseModel>> GetSamsungExerciseAsync(int personId)
-        //{
-        //    var result = new List<SamsungExerciseModel>();
-
-        //    await using var sqlServerConnection = await OpenConnectionAsync();
-
-        //    if (!IsConnected)
-        //        return result;
-
-        //    try
-        //    {
-        //        var sqlCommand = new MySqlCommand(
-        //            DatabaseCommands.GetSamsungExerciseSql(),
-        //            sqlServerConnection);
-
-        //        sqlCommand.Parameters.AddWithValue("@PersonID", personId);
-
-        //        await using var reader = await sqlCommand.ExecuteReaderAsync();
-
-        //        while (await reader.ReadAsync())
-        //        {
-        //            result.Add(new SamsungExerciseModel
-        //            {
-        //                ExerciseID = reader.IsDBNull("exercise_id") ? null : reader.GetInt32("exercise_id"),
-        //                LiveDataInternal = reader.IsDBNull("live_data_internal") ? null : reader.GetString("live_data_internal"),
-        //                MissionValue = reader.IsDBNull("mission_value") ? null : reader.GetString("mission_value"),
-        //                RaceTarget = reader.IsDBNull("race_target") ? null : reader.GetString("race_target"),
-        //                SubsetData = reader.IsDBNull("subset_data") ? null : reader.GetString("subset_data"),
-        //                StartLongitude = reader.IsDBNull("start_longitude") ? null : reader.GetDouble("start_longitude"),
-        //                RoutineDataUuid = reader.IsDBNull("routine_data_uuid") ? null : reader.GetString("routine_data_uuid"),
-        //                TotalCalorie = reader.IsDBNull("total_calorie") ? null : reader.GetDouble("total_calorie"),
-        //                CompletionStatus = reader.IsDBNull("completion_status") ? null : reader.GetInt32("completion_status"),
-        //                PaceInfoId = reader.IsDBNull("pace_info_id") ? null : reader.GetInt64("pace_info_id"),
-        //                ActivityType = reader.IsDBNull("activity_type") ? null : reader.GetInt32("activity_type"),
-        //                PaceLiveData = reader.IsDBNull("pace_live_data") ? null : reader.GetString("pace_live_data"),
-        //                SensingStatus = reader.IsDBNull("sensing_status") ? null : reader.GetString("sensing_status"),
-        //                SourceType = reader.IsDBNull("source_type") ? null : reader.GetInt32("source_type"),
-        //                MissionType = reader.IsDBNull("mission_type") ? null : reader.GetInt32("mission_type"),
-        //                Ftp = reader.IsDBNull("ftp") ? null : reader.GetDouble("ftp"),
-        //                TrackingStatus = reader.IsDBNull("tracking_status") ? null : reader.GetInt32("tracking_status"),
-        //                ProgramId = reader.IsDBNull("program_id") ? null : reader.GetInt64("program_id"),
-        //                Title = reader.IsDBNull("title") ? null : reader.GetString("title"),
-        //                RewardStatus = reader.IsDBNull("reward_status") ? null : reader.GetInt32("reward_status"),
-        //                HeartRateSampleCount = reader.IsDBNull("heart_rate_sample_count") ? null : reader.GetInt32("heart_rate_sample_count"),
-        //                StartLatitude = reader.IsDBNull("start_latitude") ? null : reader.GetDouble("start_latitude"),
-        //                MissionExtraValue = reader.IsDBNull("mission_extra_value") ? null : reader.GetString("mission_extra_value"),
-        //                ProgramScheduleId = reader.IsDBNull("program_schedule_id") ? null : reader.GetInt64("program_schedule_id"),
-        //                HeartRateDeviceUuid = reader.IsDBNull("heart_rate_device_uuid") ? null : reader.GetString("heart_rate_device_uuid"),
-        //                LocationDataInternal = reader.IsDBNull("location_data_internal") ? null : reader.GetString("location_data_internal"),
-        //                CustomId = reader.IsDBNull("custom_id") ? null : reader.GetString("custom_id"),
-        //                AdditionalInternal = reader.IsDBNull("additional_internal") ? null : reader.GetString("additional_internal"),
-
-        //                Duration = reader.IsDBNull("duration") ? null : reader.GetInt64("duration"),
-        //                Additional = reader.IsDBNull("additional") ? null : reader.GetString("additional"),
-        //                CreateShVer = reader.IsDBNull("create_sync_version") ? null : reader.GetString("create_sync_version"),
-        //                MeanCaloricBurnRate = reader.IsDBNull("mean_caloric_burn_rate") ? null : reader.GetDouble("mean_caloric_burn_rate"),
-        //                LocationData = reader.IsDBNull("location_data") ? null : reader.GetString("location_data"),
-        //                StartTime = reader.IsDBNull("start_time") ? null : reader.GetDateTime("start_time"),
-        //                ExerciseType = reader.IsDBNull("exercise_type") ? null : reader.GetInt32("exercise_type"),
-        //                Custom = reader.IsDBNull("custom_text") ? null : reader.GetString("custom_text"),
-        //                MaxAltitude = reader.IsDBNull("max_altitude") ? null : reader.GetDouble("max_altitude"),
-        //                InclineDistance = reader.IsDBNull("incline_distance") ? null : reader.GetDouble("incline_distance"),
-        //                MeanHeartRate = reader.IsDBNull("mean_heart_rate") ? null : reader.GetDouble("mean_heart_rate"),
-        //                CountType = reader.IsDBNull("count_type") ? null : reader.GetInt32("count_type"),
-        //                MeanRpm = reader.IsDBNull("mean_rpm") ? null : reader.GetDouble("mean_rpm"),
-        //                MinAltitude = reader.IsDBNull("min_altitude") ? null : reader.GetDouble("min_altitude"),
-        //                ModifyShVer = reader.IsDBNull("modify_sync_version") ? null : reader.GetString("modify_sync_version"),
-        //                MaxHeartRate = reader.IsDBNull("max_heart_rate") ? null : reader.GetDouble("max_heart_rate"),
-
-        //                UpdateTime = reader.IsDBNull("update_at") ? null : reader.GetDateTime("update_at"),
-        //                CreateTime = reader.IsDBNull("create_at") ? null : reader.GetDateTime("create_at"),
-
-        //                ClientDataId = reader.IsDBNull("client_data_id") ? null : reader.GetString("client_data_id"),
-        //                MaxPower = reader.IsDBNull("max_power") ? null : reader.GetDouble("max_power"),
-        //                MaxSpeed = reader.IsDBNull("max_speed") ? null : reader.GetDouble("max_speed"),
-        //                MeanCadence = reader.IsDBNull("mean_cadence") ? null : reader.GetDouble("mean_cadence"),
-        //                MinHeartRate = reader.IsDBNull("min_heart_rate") ? null : reader.GetDouble("min_heart_rate"),
-        //                ClientDataVer = reader.IsDBNull("client_data_version") ? null : reader.GetString("client_data_version"),
-        //                Count = reader.IsDBNull("count_value") ? null : reader.GetInt32("count_value"),
-        //                Distance = reader.IsDBNull("distance") ? null : reader.GetDouble("distance"),
-        //                MaxCaloricBurnRate = reader.IsDBNull("max_caloric_burn_rate") ? null : reader.GetDouble("max_caloric_burn_rate"),
-        //                Calorie = reader.IsDBNull("calorie") ? null : reader.GetDouble("calorie"),
-        //                MaxCadence = reader.IsDBNull("max_cadence") ? null : reader.GetDouble("max_cadence"),
-        //                DeclineDistance = reader.IsDBNull("decline_distance") ? null : reader.GetDouble("decline_distance"),
-        //                Vo2Max = reader.IsDBNull("vo2_max") ? null : reader.GetDouble("vo2_max"),
-        //                TimeOffset = reader.IsDBNull("time_offset") ? null : reader.GetString("time_offset"),
-        //                DeviceUuid = reader.IsDBNull("device_uuid") ? null : reader.GetString("device_uuid"),
-        //                MaxRpm = reader.IsDBNull("max_rpm") ? null : reader.GetDouble("max_rpm"),
-        //                Comment = reader.IsDBNull("comment_text") ? null : reader.GetString("comment_text"),
-        //                LiveData = reader.IsDBNull("live_data") ? null : reader.GetString("live_data"),
-        //                MeanPower = reader.IsDBNull("mean_power") ? null : reader.GetDouble("mean_power"),
-        //                MeanSpeed = reader.IsDBNull("mean_speed") ? null : reader.GetDouble("mean_speed"),
-        //                PkgName = reader.IsDBNull("package_name") ? null : reader.GetString("package_name"),
-        //                AltitudeGain = reader.IsDBNull("altitude_gain") ? null : reader.GetDouble("altitude_gain"),
-        //                AltitudeLoss = reader.IsDBNull("altitude_loss") ? null : reader.GetDouble("altitude_loss"),
-        //                ExerciseCustomType = reader.IsDBNull("exercise_custom_type") ? null : reader.GetInt32("exercise_custom_type"),
-        //                AuxiliaryDevices = reader.IsDBNull("auxiliary_devices") ? null : reader.GetString("auxiliary_devices"),
-        //                EndTime = reader.IsDBNull("end_time") ? null : reader.GetDateTime("end_time"),
-        //                DataUuid = reader.IsDBNull("data_uuid") ? null : reader.GetString("data_uuid"),
-        //                SweatLoss = reader.IsDBNull("sweat_loss") ? null : reader.GetDouble("sweat_loss")
-        //            });
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        ErrorMessage = $"Error Get Samsung Exercise Async: {ex.Message}";
-        //    }
-
-        //    return result;
-        //}
 
         /// <summary>
         /// Asynchronously deletes a specific heart rate record from the database using its unique data identifier.
@@ -4494,7 +4244,7 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error Delete Heart Rate Async: {ex.Message}";
+                throw new Exception($"Error Delete Hevy App Async: {ex.Message}", ex);
             }
         }
 
@@ -4588,7 +4338,7 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error Get HevyApp Async: {ex.Message}";
+                throw new Exception($"Error Get HevyApp Async: {ex.Message}", ex);
             }
 
             return result;
@@ -4638,7 +4388,7 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error Get Person: {ex.Message}";
+                throw new Exception($"Error Get Person: {ex.Message}", ex);
             }
 
             return list;
@@ -4677,11 +4427,8 @@ namespace BodyTracker.Services
 
             catch (Exception ex)
             {
-                ErrorMessage = $"Error Get Person StepCount: {ex.Message}";
+                throw new Exception($"Error Get Person StepCount: {ex.Message}", ex);
             }
-
-            return -1;
-
         }
 
         #endregion

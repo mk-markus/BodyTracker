@@ -350,7 +350,7 @@ namespace BodyTracker.ViewModels
 
         private async Task ShowHevyAppSettingsViewAsnyc()
         {
-            CurrentPage = new LauncherHevyAppAPISettingsView();
+            CurrentPage = new LauncherSettingsView();
 
             suppressSelectionAction = true;
             IsHomeSelected = false;

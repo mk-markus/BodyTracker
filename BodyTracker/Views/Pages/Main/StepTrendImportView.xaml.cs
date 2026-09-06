@@ -21,25 +21,19 @@ namespace BodyTracker.Views.Pages
         /// </summary>
         private readonly StepTrendImportViewModel stepTrendImportVM;
 
-        /// <summary>
-        /// A private, read-only string representing the default file searching path used when importing Hevy app data.
-        /// </summary>
-        private readonly string searchPath = string.Empty;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="StepTrendImportView"/> class.
         /// </summary>
         /// <param name="db">The database service instance used for data persistence.</param>
         /// <param name="path">The file path used to initialize the import view model.</param>
-        public StepTrendImportView(DatabaseService db, string path)
+        public StepTrendImportView(DatabaseService db)
         {
             InitializeComponent();
             
             databaseService = db;
 
-            searchPath = path;
-
-            stepTrendImportVM = new StepTrendImportViewModel(db, searchPath);
+            stepTrendImportVM = new StepTrendImportViewModel(db);
 
             DataContext = stepTrendImportVM;
 

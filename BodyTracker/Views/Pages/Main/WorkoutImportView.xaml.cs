@@ -24,24 +24,17 @@ namespace BodyTracker.Views.Pages
         private readonly WorkoutImportViewModel workoutImportVM;
 
         /// <summary>
-        /// A private, read-only string representing the default file searching path used when importing Hevy app data.
-        /// </summary>
-        private readonly string searchPath = string.Empty;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="WorkoutImportView"/> class, assigning the database service and file path references, initializing the workout import view model, setting the data context, and registering the unload disposal handler.
         /// </summary>
         /// <param name="db">The database service instance used for data persistence.</param>
         /// <param name="path">The file path used to initialize the import view model.</param>
-        public WorkoutImportView(DatabaseService db, string path)
+        public WorkoutImportView(DatabaseService db)
         {
             InitializeComponent();
 
             databaseService = db;
 
-            searchPath = path;
-
-            workoutImportVM = new WorkoutImportViewModel(databaseService, searchPath);
+            workoutImportVM = new WorkoutImportViewModel(databaseService);
 
             DataContext = workoutImportVM;
 

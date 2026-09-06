@@ -20,19 +20,13 @@ namespace BodyTracker.ViewModels.Main
         /// </summary>
         private readonly OxygenSaturationImportViewModel oxygenSaturationImportVM;
 
-        /// <summary>
-        /// A private, read-only string representing the default file searching path used when importing Hevy app data.
-        /// </summary>
-        private readonly string searchPath = string.Empty;
 
-        public OxygenSaturationView(DatabaseService db, string path)
+        public OxygenSaturationView(DatabaseService db)
         {
             InitializeComponent();
             databaseService = db;
 
-            searchPath = path;
-
-            oxygenSaturationImportVM = new OxygenSaturationImportViewModel(databaseService, searchPath);
+            oxygenSaturationImportVM = new OxygenSaturationImportViewModel(databaseService);
 
             DataContext = oxygenSaturationImportVM;
 

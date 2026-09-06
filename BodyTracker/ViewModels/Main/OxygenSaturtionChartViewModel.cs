@@ -1,5 +1,4 @@
-﻿using BodyTracker.Models.Chart;
-using BodyTracker.Models.SamsungHealth;
+﻿using BodyTracker.Models.SamsungHealth;
 using BodyTracker.Services;
 using BodyTracker.State;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -11,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -302,8 +300,16 @@ namespace BodyTracker.ViewModels.Main
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task RefreshChartDataAsync()
         {
-            data = await databaseService.GetSpO2DashboardSqlAsync(AppState.SelectedPersonId);
-            await ReloadChartAsync();
+            try
+            {
+                data = await databaseService.GetSpO2DashboardSqlAsync(AppState.SelectedPersonId);
+                await ReloadChartAsync();
+            }
+            catch(Exception ex)
+            {
+                GeneralInfoMessage = ex.Message;
+            }
+     
         }
 
         /// <summary>
@@ -337,12 +343,6 @@ namespace BodyTracker.ViewModels.Main
         public async Task ReloadChartAsync()
         {
             if (!await reloadLock.WaitAsync(0)) return;
-
-            if (AppState.SelectedPersonId <= 0)
-            {
-                GeneralInfoMessage = "No person selected. Please select a person to view their oxygen saturation data.";
-                return;
-            }
 
             try
             {

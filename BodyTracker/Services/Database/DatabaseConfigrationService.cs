@@ -66,7 +66,7 @@ namespace BodyTracker.Services
         public DatabaseConfigrationService()
         { 
             // Check if path is empty than use an default path. 
-            (PathOK, this.AppSettingsPath) = ConfigFileAvialable(DefautlPath, "appsettings.json");
+            (PathOK, this.AppSettingsPath) = ConfigFileAvialable(DefautlPath, "DatabaseSettings.json");
             CertPath = GetFullFilePath(DefautlPath, "ca.pem");
          
             if(!PathOK) throw new ArgumentException("The app setting file does not exist at: " + AppSettingsPath);

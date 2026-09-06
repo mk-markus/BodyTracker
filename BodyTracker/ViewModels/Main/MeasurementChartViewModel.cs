@@ -7,17 +7,12 @@ using CommunityToolkit.Mvvm.Messaging;
 using LiveChartsCore;
 using LiveChartsCore.Kernel.Sketches;
 using LiveChartsCore.SkiaSharpView;
-using LiveChartsCore.SkiaSharpView.Painting;
-using SkiaSharp;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Media;
-using static SkiaSharp.HarfBuzz.SKShaper;
 
 namespace BodyTracker.ViewModels
 {
@@ -284,8 +279,16 @@ namespace BodyTracker.ViewModels
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task RefreshChartDataAsync()
         {
-            data = await databaseService.GetBodyMeasurementAsync(AppState.SelectedPersonId, databaseService.DatabaseCommands.GetPersonMeasurementsSql());
-            await ReloadChartAsync();
+            try
+            {
+                data = await databaseService.GetBodyMeasurementAsync(AppState.SelectedPersonId, databaseService.DatabaseCommands.GetPersonMeasurementsSql());
+                await ReloadChartAsync();
+            }
+            catch(Exception ex)
+            {
+                GeneralInfoMessage = ex.Message;
+            }
+      
         }
 
         /// <summary>
@@ -330,12 +333,6 @@ namespace BodyTracker.ViewModels
         public async Task ReloadChartAsync()
         {
             if (!await reloadLock.WaitAsync(0)) return;
-
-            if (AppState.SelectedPersonId <= 0)
-            {
-                GeneralInfoMessage = "No person selected. Please select a person to view their body measurements.";
-                return;
-            }
 
             try
             {

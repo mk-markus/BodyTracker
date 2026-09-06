@@ -123,15 +123,6 @@ namespace BodyTracker.ViewModels
         /// <remarks>Maintains a single instance in memory to preserve state and avoid redundant instantiation overhead during navigation.</remarks>
         private OxygenSaturationView oxygenSaturationView;
 
-
-        /// <summary>
-        /// Default Searching Path for the import files
-        /// </summary>
-        private string searchPath = "\\\\192.168.178.9\\Handy\\Documents\\BodyTracker_Interface";
-
-
-
-
         /// <summary>
         /// Initializes a new instance of the <see cref="MultiImportViewModel"/> class with the specified main window shell and database service.
         /// </summary>
@@ -140,8 +131,6 @@ namespace BodyTracker.ViewModels
         /// <param name="db">The database service instance used for data import and persistence operations.</param>
         public MultiImportViewModel(MainWindow shell, DatabaseService db)
         {
-
-
             mainWindow = shell;
             databaseService = db;
 
@@ -170,7 +159,7 @@ namespace BodyTracker.ViewModels
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task ShowStepDailyTrendImportPage()
         {
-            if (stepDailyTrendImportView == null) stepDailyTrendImportView = new StepTrendImportView(databaseService, searchPath);
+            if (stepDailyTrendImportView == null) stepDailyTrendImportView = new StepTrendImportView(databaseService);;
 
 
             CurrentPage = stepDailyTrendImportView;
@@ -183,7 +172,7 @@ namespace BodyTracker.ViewModels
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task ShowFoodIntakeImportPage()
         {
-            if (foodIntakeImportView == null) foodIntakeImportView = new FoodIntakeImportView(databaseService, searchPath);
+            if (foodIntakeImportView == null) foodIntakeImportView = new FoodIntakeImportView(databaseService);
             CurrentPage = foodIntakeImportView;
         }
 
@@ -194,7 +183,7 @@ namespace BodyTracker.ViewModels
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task ShowFoodInfoImportPage()
         {
-            if (foodInfoImportView == null) foodInfoImportView = new FoodInfoImportView(databaseService, searchPath);
+            if (foodInfoImportView == null) foodInfoImportView = new FoodInfoImportView(databaseService);
             CurrentPage = foodInfoImportView;
         }
 
@@ -205,7 +194,7 @@ namespace BodyTracker.ViewModels
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task ShowExerciseImportPage()
         {
-            if (exerciseImportView == null) exerciseImportView = new ExerciseImportView(databaseService, searchPath);
+            if (exerciseImportView == null) exerciseImportView = new ExerciseImportView(databaseService);
             CurrentPage = exerciseImportView;
         }
 
@@ -216,7 +205,7 @@ namespace BodyTracker.ViewModels
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task ShowHeartRateImportView()
         {
-            if (heartRateImportView == null) heartRateImportView = new HeartRateImportView(databaseService, searchPath);
+            if (heartRateImportView == null) heartRateImportView = new HeartRateImportView(databaseService);
             CurrentPage = heartRateImportView;
         }
 
@@ -227,7 +216,7 @@ namespace BodyTracker.ViewModels
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task ShowOxygenSaturationImportView()
         {
-            if (oxygenSaturationView == null) oxygenSaturationView = new OxygenSaturationView(databaseService, searchPath);
+            if (oxygenSaturationView == null) oxygenSaturationView = new OxygenSaturationView(databaseService);
             CurrentPage = oxygenSaturationView;
         }
 
@@ -239,7 +228,7 @@ namespace BodyTracker.ViewModels
         private async Task ShowHevyAppDatasAsync()
         {
 
-            if (HevyAppImportView == null) HevyAppImportView = new WorkoutImportView(databaseService, searchPath);
+            if (HevyAppImportView == null) HevyAppImportView = new WorkoutImportView(databaseService);
             CurrentPage = HevyAppImportView;
 
         }

@@ -14,6 +14,7 @@
         <Setter Property="Margin" Value="3"/>
     </Style>
 
+    
     <!-- Compact information text block style defining smaller typography, width limits, and margins for data displays. -->
     <Style x:Key="StandardTextBlockInfo" TargetType="TextBlock">
         <Setter Property="Background" Value="Transparent"/>

@@ -475,7 +475,7 @@ namespace BodyTracker.ViewModels
             {
                 await Task.WhenAll(
                     GetAppDashboardValuesAsync(analyzer, StartDate, EndDate),
-                    GetChartMuscleDistributionSpiderChart(analyzer, StartDate, EndDate),
+                    GetChartMuscleDistributionSpiderChart(analyzer),
                     GetChartMonthlyTraningsVolumeAsync(analyzer, StartDate, EndDate),
                     GetWorkoutProgressChart(analyzer, StartDate, EndDate)
                );
@@ -498,13 +498,13 @@ namespace BodyTracker.ViewModels
         /// <param name="_startDate">The start date for the current distribution period.</param>
         /// <param name="_endDate">The end date for the current distribution period.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task GetChartMuscleDistributionSpiderChart(AppWorkoutLoadAnalyzer analyzer, DateTime _startDate, DateTime _endDate)
+        public async Task GetChartMuscleDistributionSpiderChart(AppWorkoutLoadAnalyzer analyzer)
         {
-            var prevStart = _startDate.AddMonths(-1);
-            var prevEnd = prevStart.AddMonths(1).AddDays(-1);
+            //var prevStart = _startDate.AddMonths(-1);
+            //var prevEnd = prevStart.AddMonths(1).AddDays(-1);
 
-            var actualMuscleDistribution = analyzer.CalculateMuscleSplit(analyzer.WorkoutEntries, startDate: _startDate, endDate: _endDate);
-            var previousMuscleDistribution = analyzer.CalculateMuscleSplit(analyzer.WorkoutEntries, startDate: prevStart, endDate: prevEnd);
+            var actualMuscleDistribution = analyzer.CalculateMuscleSplit(analyzer.WorkoutEntries, startDate: StartDate, endDate: EndDate);
+            var previousMuscleDistribution = analyzer.CalculateMuscleSplit(analyzer.WorkoutEntries, startDate: PrevStartDate, endDate: PrevEndDate);
             string currlabel = "";
             string prevlabel = "";
             if (!previousMuscleDistribution.Any()) { prevlabel = ""; }

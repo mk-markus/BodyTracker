@@ -157,33 +157,22 @@ namespace BodyTracker.ViewModels.Main
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task GetCurrentStepTrend(int pid)
         {
-            var all = await databaseService.GetStepTrendSqlAsync(pid);
-
-            StepTrendDatas.Clear();
-            foreach (var m in all)
+            try
             {
-                StepTrendDatas.Add(m);
+
+                var all = await databaseService.GetStepTrendSqlAsync(pid);
+
+                StepTrendDatas.Clear();
+                foreach (var m in all)
+                {
+                    StepTrendDatas.Add(m);
+                }
+                OnPropertyChanged(nameof(StepTrendDatas));
             }
-            OnPropertyChanged(nameof(StepTrendDatas));
-        }
-
-        /// <summary>
-        /// Asynchronously retrieves the initial step trend records for the specified person identifier from the database and updates the observable collection.
-        /// </summary>
-        /// <param name="pid">The unique person identifier used to query initial step trend entries.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        private async Task GetInitialFoodIntakes(int pid)
-        {
-            return;
-
-            //var all = await databaseService.GetStepTrendSqlAsync(pid);
-
-            //InitialStepTrendDatas.Clear();
-            //foreach (var m in all)
-            //{
-            //    InitialStepTrendDatas.Add(m);
-            //}
-            //OnPropertyChanged(nameof(InitialStepTrendDatas));
+            catch (Exception ex)
+            {
+                GeneralInfoMessage = ex.Message;
+            }
         }
 
         /// <summary>
@@ -270,14 +259,21 @@ namespace BodyTracker.ViewModels.Main
         /// <param name="e">Event data containing the edit action and the row being edited.</param>
         private async Task DataGrid_RowEditEnding(DataGridRowEditEndingEventArgs e)
         {
-            if (e == null) return;
+            try
+            {
+                if (e == null) return;
 
-            if (e.EditAction != DataGridEditAction.Commit) return;
+                if (e.EditAction != DataGridEditAction.Commit) return;
 
-            if (e.Row.Item is not SamsungStepTrendModel editedRow) return;
+                if (e.Row.Item is not SamsungStepTrendModel editedRow) return;
 
-            int personId = AppState.SelectedPersonId;
-            await UpdateRowDataAsync(personId, editedRow);
+                int personId = AppState.SelectedPersonId;
+                await UpdateRowDataAsync(personId, editedRow);
+            }
+            catch (Exception ex)
+            {
+                GeneralInfoMessage = ex.Message;
+            }
         }
 
 

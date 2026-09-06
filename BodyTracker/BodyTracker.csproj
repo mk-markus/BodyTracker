@@ -81,7 +81,7 @@
     <PackageReference Include="Portkit.ComponentModel" Version="1.1.2" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Views\Pages\Launcher\LauncherHevyAppAPISettingsView.xaml.cs">
+    <Compile Update="Views\Pages\Launcher\LauncherSettingsView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Views\Pages\Main\DBEntryFoodInfoView.xaml.cs">

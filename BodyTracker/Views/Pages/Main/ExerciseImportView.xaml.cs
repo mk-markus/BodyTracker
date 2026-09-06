@@ -22,10 +22,6 @@ namespace BodyTracker.Views.Pages.Main
         /// </summary>
         private readonly ExerciseImportViewModel exerciseImportVM;
 
-        /// <summary>
-        /// A private, read-only string representing the default file searching path used when importing Hevy app data.
-        /// </summary>
-        private readonly string searchPath = string.Empty;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExerciseImportView"/> class, assigning the database service and file path references, 
@@ -33,13 +29,12 @@ namespace BodyTracker.Views.Pages.Main
         /// </summary>
         /// <param name="db">The database service instance used for data persistence.</param>
         /// <param name="path">The file path used to initialize the import view model.</param>
-        public ExerciseImportView(DatabaseService db, string path)
-        {
+        public ExerciseImportView(DatabaseService db)
+        { 
             InitializeComponent();
-            searchPath = path;
             databaseService = db;
 
-            exerciseImportVM = new ExerciseImportViewModel(databaseService, searchPath);
+            exerciseImportVM = new ExerciseImportViewModel(databaseService);
 
             DataContext = exerciseImportVM;
 

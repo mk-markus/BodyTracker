@@ -1,5 +1,6 @@
 ﻿using BodyTracker.Models;
 using BodyTracker.Services;
+using BodyTracker.Services.WorkoutLog;
 using BodyTracker.State;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -12,6 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Threading;
 
 namespace BodyTracker.ViewModels
@@ -35,6 +37,11 @@ namespace BodyTracker.ViewModels
         /// </summary>
         [ObservableProperty] private ObservableCollection<HevyAppCSVModel> hevyAppDatas;
 
+        /// <summary>
+        /// Service responsible for loading, managing, and persisting general application settings configurations.
+        /// </summary>
+        private AppSettingsService appSettingsService = new AppSettingsService();
+        
         /// <summary>
         /// Gets the command that triggers the file auto-load mechanism.
         /// </summary>
@@ -76,12 +83,7 @@ namespace BodyTracker.ViewModels
         /// </summary>
         [ObservableProperty] private string timeElapse = string.Empty;
 
-        /// <summary>
-        /// A private string representing the root directory path being searched for data files.
-        /// </summary>
-        private string searchPath = string.Empty;
-
-        /// <summary>
+            /// <summary>
         /// A private string specifying the keyword or pattern used to filter file names during the search.
         /// </summary>
         private string searchTerm = "workout_data";
@@ -90,7 +92,6 @@ namespace BodyTracker.ViewModels
         /// A private string representing the resolved target file path found during the search process.
         /// </summary>
         private string filePath = string.Empty;
-
 
         /// <summary>
         /// Backing field for the general error message string.
@@ -117,10 +118,9 @@ namespace BodyTracker.ViewModels
         /// </summary>
         /// <param name="db">The database service instance used for data persistence.</param>
         /// <param name="path">The file path or directory used for searching workout data files.</param>
-        public WorkoutImportViewModel(DatabaseService db, string path)
+        public WorkoutImportViewModel(DatabaseService db)
         {
             databaseService = db;
-            searchPath = path;
 
             CommandRefresh = new AsyncRelayCommand(RefreshAsync);
             CommandDownload = new AsyncRelayCommand(DownloadFromHevyAppAsync);
@@ -192,19 +192,24 @@ namespace BodyTracker.ViewModels
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task OpenAsync()
         {
-            var dlg = new OpenFileDialog
-            {
-                Filter = $"Specific Files (*{searchTerm}*.csv)|*{searchTerm}*.csv"
-            };
-
-
-            if (dlg.ShowDialog() != true)
-                return;
-            filePath = dlg.FileName;
+           
             try
             {
+                var settings = appSettingsService.LoadConfigurationFile();
 
-                
+                var dlg = new OpenFileDialog
+                {
+                    Filter = $"Specific Files (*{searchTerm}.csv)|*{searchTerm}.csv",
+                    InitialDirectory = settings.DefaultImportFolder
+
+                };
+
+
+                if (dlg.ShowDialog() != true)
+                    return;
+
+                filePath = dlg.FileName;
+
                 IsLoading = true;
                 ProgressValue = 0;
 
@@ -241,13 +246,15 @@ namespace BodyTracker.ViewModels
         {
             try
             {
+                var settings = appSettingsService.LoadConfigurationFile();
+
                 var path = await Task.Run(() =>
                 {
-                    if (!Directory.Exists(searchPath))
+                    if (!Directory.Exists(settings.DefaultImportFolder))
                     {
-                        throw new Exception($"The folder '{searchPath}' could not be reached.");
+                        throw new Exception($"The folder '{settings.DefaultImportFolder}' could not be reached.");
                     }
-                    return Directory.GetFiles(searchPath, $"*{searchTerm}*");
+                    return Directory.GetFiles(settings.DefaultImportFolder, $"*{searchTerm}*");
                 });
 
                 if (!path.Any())
@@ -258,14 +265,11 @@ namespace BodyTracker.ViewModels
 
                 if (path.Count() > 1)
                 {
-                    GeneralInfoMessage = "Several files were found. Please select one of the dialog files.";
+                    GeneralInfoMessage = "Several were found. Please select one of the dialog files.";
                     _ = OpenAsync();
                     return;
                 }
-                else
-                {
-                    filePath = path[0];
-                }
+                else filePath = path[0];
 
                 IsLoading = true;
                 ProgressValue = 0;
@@ -334,9 +338,12 @@ namespace BodyTracker.ViewModels
             }
             catch (Exception ex)
             {
-                if (ex.InnerException != null) GeneralInfoMessage = $"Error - use the correct file: {ex.InnerException.Message}";
-                else GeneralInfoMessage = $"Error - use the correct file: {ex.Message}";
-                throw;
+                //Debug.WriteLine("Error fetching workouts: " + ex.Message);
+                //MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                if (ex.InnerException != null) GeneralInfoMessage = $"{ex.Source} | {ex.InnerException.Message}";
+                else GeneralInfoMessage = $"{ex.TargetSite?.Name} | {ex.Message}";
+
             }
             finally
             {

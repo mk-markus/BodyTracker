@@ -157,14 +157,22 @@ namespace BodyTracker.ViewModels.Main
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task GetCurrentHevyApp(int pid)
         {
-            var all = await databaseService.GetHevyAppAsync(pid);
-
-            HevyAppDatas.Clear();
-            foreach (var m in all)
+            try
             {
-                HevyAppDatas.Add(m);
+                var all = await databaseService.GetHevyAppAsync(pid);
+
+                HevyAppDatas.Clear();
+                foreach (var m in all)
+                {
+                    HevyAppDatas.Add(m);
+                }
+                OnPropertyChanged(nameof(HevyAppDatas));
             }
-            OnPropertyChanged(nameof(HevyAppDatas));
+            catch (Exception ex)
+            {
+                GeneralInfoMessage = ex.Message;
+            }
+        
         }
 
         /// <summary>
@@ -268,14 +276,21 @@ namespace BodyTracker.ViewModels.Main
         /// <param name="e">Event data containing the edit action and the row being edited.</param>
         private async Task DataGrid_RowEditEnding(DataGridRowEditEndingEventArgs e)
         {
-            if (e == null) return;
+            try
+            {
+                if (e == null) return;
 
-            if (e.EditAction != DataGridEditAction.Commit) return;
+                if (e.EditAction != DataGridEditAction.Commit) return;
 
-            if (e.Row.Item is not HevyAppCSVModel editedRow) return;
+                if (e.Row.Item is not HevyAppCSVModel editedRow) return;
 
-            int personId = AppState.SelectedPersonId;
-            await UpdateRowDataAsync(personId, editedRow);
+                int personId = AppState.SelectedPersonId;
+                await UpdateRowDataAsync(personId, editedRow);
+            }
+            catch (Exception ex)
+            {
+                GeneralInfoMessage = ex.Message;
+            }
         }
 
 

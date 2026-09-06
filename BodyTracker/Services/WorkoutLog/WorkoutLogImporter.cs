@@ -130,6 +130,7 @@ namespace BodyTracker.Services
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error fetching workouts: {ex.Message}");
+                throw;
             }
 
             return result;

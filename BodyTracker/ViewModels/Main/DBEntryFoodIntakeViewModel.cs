@@ -154,31 +154,21 @@ namespace BodyTracker.ViewModels.Main
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task GetCurrentFoodIntakes(int pid)
         {
-            var all = await databaseService.GetSamsungFoodIntakeSqlAsync(pid);
-
-            FoodIntakeDatas.Clear();
-            foreach (var m in all)
+            try
             {
-                FoodIntakeDatas.Add(m);
+                var all = await databaseService.GetSamsungFoodIntakeSqlAsync(pid);
+
+                FoodIntakeDatas.Clear();
+                foreach (var m in all)
+                {
+                    FoodIntakeDatas.Add(m);
+                }
+                OnPropertyChanged(nameof(FoodIntakeDatas));
             }
-            OnPropertyChanged(nameof(FoodIntakeDatas));
-        }
-
-        /// <summary>
-        /// Asynchronously retrieves the initial food intake records for the specified person identifier from the database and updates the observable collection.
-        /// </summary>
-        /// <param name="pid">The unique person identifier used to query initial food intake entries.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        private async Task GetInitialFoodIntakes(int pid)
-        {
-            //var all = await databaseService.GetSamsungFoodIntakeSqlAsync(pid);
-
-            //InitialFoodIntakeDatas.Clear();
-            //foreach (var m in all)
-            //{
-            //    InitialFoodIntakeDatas.Add(m);
-            //}
-            //OnPropertyChanged(nameof(InitialFoodIntakeDatas));
+            catch (Exception ex)
+            {
+                GeneralInfoMessage = ex.Message;
+            }
         }
 
         /// <summary>
@@ -265,14 +255,21 @@ namespace BodyTracker.ViewModels.Main
         /// <param name="e">Event data containing the edit action and the row being edited.</param>
         private async Task DataGrid_RowEditEnding(DataGridRowEditEndingEventArgs e)
         {
-            if (e == null) return;
+            try
+            {
+                if (e == null) return;
 
-            if (e.EditAction != DataGridEditAction.Commit) return;
+                if (e.EditAction != DataGridEditAction.Commit) return;
 
-            if (e.Row.Item is not SamsungFoodIntakeModel editedRow) return;
+                if (e.Row.Item is not SamsungFoodIntakeModel editedRow) return;
 
-            int personId = AppState.SelectedPersonId;
-            await UpdateRowDataAsync(personId, editedRow);
+                int personId = AppState.SelectedPersonId;
+                await UpdateRowDataAsync(personId, editedRow);
+            }
+            catch (Exception ex)
+            {
+                GeneralInfoMessage = ex.Message;
+            }
         }
 
 

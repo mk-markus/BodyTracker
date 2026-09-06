@@ -23,24 +23,17 @@ namespace BodyTracker.Views.Pages
         private readonly FoodIntakeImportViewModel foodIntakeVM;
 
         /// <summary>
-        /// A private, read-only string representing the default file searching path used when importing Hevy app data.
-        /// </summary>
-        private readonly string searchPath = string.Empty;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="FoodInfoImportView"/> class.
         /// </summary>
         /// <param name="db">The database service instance used for data persistence.</param>
         /// <param name="path">The file path used to initialize the import view model.</param>
-        public FoodIntakeImportView(DatabaseService db, string path)
+        public FoodIntakeImportView(DatabaseService db)
         {
             InitializeComponent();
 
-            searchPath = path;
-
             databaseService = db;
 
-            foodIntakeVM = new FoodIntakeImportViewModel(databaseService, searchPath);
+            foodIntakeVM = new FoodIntakeImportViewModel(databaseService);
 
             DataContext = foodIntakeVM;
 

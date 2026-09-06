@@ -188,14 +188,21 @@ namespace BodyTracker.ViewModels
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task GetCurrentBodyMeaurements(int pid)
         {
-            var all = await databaseService.GetBodyMeasurementAsync(pid, databaseService.DatabaseCommands.GetPersonMeasurementsSql());
-
-            BodyMeasurement.Clear();
-            foreach (var m in all)
+            try
             {
-                BodyMeasurement.Add(m);
+                var all = await databaseService.GetBodyMeasurementAsync(pid, databaseService.DatabaseCommands.GetPersonMeasurementsSql());
+
+                BodyMeasurement.Clear();
+                foreach (var m in all)
+                {
+                    BodyMeasurement.Add(m);
+                }
+                OnPropertyChanged(nameof(BodyMeasurement));
             }
-            OnPropertyChanged(nameof(BodyMeasurement));
+            catch (Exception ex)
+            {
+                GeneralInfoMessage = ex.Message;
+            }
         }
 
         /// <summary>
@@ -205,14 +212,21 @@ namespace BodyTracker.ViewModels
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task GetInitialBodyMeaurements(int pid)
         {
-            var all = await databaseService.GetBodyMeasurementAsync(pid, databaseService.DatabaseCommands.GetInitialPersonMeasurementsSql());
-
-            InitialBodyMeasurement.Clear();
-            foreach (var m in all)
+            try
             {
-                InitialBodyMeasurement.Add(m);
+                var all = await databaseService.GetBodyMeasurementAsync(pid, databaseService.DatabaseCommands.GetInitialPersonMeasurementsSql());
+
+                InitialBodyMeasurement.Clear();
+                foreach (var m in all)
+                {
+                    InitialBodyMeasurement.Add(m);
+                }
+                OnPropertyChanged(nameof(InitialBodyMeasurement));
             }
-            OnPropertyChanged(nameof(InitialBodyMeasurement));
+            catch (Exception ex)
+            {
+                GeneralInfoMessage = ex.Message;
+            }
         }
 
         /// <summary>
@@ -274,8 +288,14 @@ namespace BodyTracker.ViewModels
             
         }
 
-
-
+        /// <summary>
+        /// Asynchronously exports comprehensive body measurement data for the selected person to a user-selected directory.
+        /// </summary>
+        /// <remarks>
+        /// Prompts the user to select a destination folder via an open folder dialog, retrieves the full measurement data 
+        /// from the database, and invokes the exporter service to save the files.
+        /// </remarks>
+        /// <returns>A task representing the asynchronous export operation.</returns>
         private async Task ExportAsync()
         {
             try
@@ -290,10 +310,10 @@ namespace BodyTracker.ViewModels
                     {
                         string filePath = dlg.FolderName;
 
-                       var export =  await FullBodyMeasurementExporter.Export(filePath, exportData);
+                        var export = await FullBodyMeasurementExporter.Export(filePath, exportData);
                         if (export)
                         {
-                            GeneralInfoMessage= $"Export successful to {filePath}";
+                            GeneralInfoMessage = $"Export successful to {filePath}";
                         }
                         else
                         {
@@ -310,8 +330,6 @@ namespace BodyTracker.ViewModels
                 GeneralInfoMessage = $"Export Measurement error: {ex}";
             }
         }
-
-
 
         /// <summary>
         /// Asynchronously updates an existing bodyMeasurement record or inserts a new one into the database.
@@ -367,7 +385,6 @@ namespace BodyTracker.ViewModels
             }
         }
 
-
         /// <summary>
         /// Handles the <see cref="DataGrid.RowEditEnding"/> event to persist modified bodyMeasurement data to the database.
         /// This method ensures that only committed changes are processed and utilizes the Dispatcher 
@@ -377,14 +394,22 @@ namespace BodyTracker.ViewModels
         /// <param name="e">Event data containing the edit action and the row being edited.</param>
         private async Task MeasurementsGrid_RowEditEnding(DataGridRowEditEndingEventArgs e)
         {
-            if(e == null) return;
+            try
+            {
+                if (e == null) return;
 
-            if (e.EditAction != DataGridEditAction.Commit) return;
+                if (e.EditAction != DataGridEditAction.Commit) return;
 
-            if (e.Row.Item is not FullBodyMeasurementDatasModel editedRow) return;
+                if (e.Row.Item is not FullBodyMeasurementDatasModel editedRow) return;
 
-            int personId = AppState.SelectedPersonId;
-            await UpdateRowMeasurementAsync(personId, editedRow);
+                int personId = AppState.SelectedPersonId;
+                await UpdateRowMeasurementAsync(personId, editedRow);
+            }
+            catch (Exception ex)
+            {
+                GeneralInfoMessage = ex.Message;
+            }
+
         }
 
 

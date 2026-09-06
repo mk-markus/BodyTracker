@@ -1,4 +1,5 @@
-﻿using BodyTracker.Models.WorkoutLog;
+﻿using BodyTracker.Models;
+using BodyTracker.Models.WorkoutLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,7 +13,7 @@ namespace BodyTracker.Services.WorkoutLog
     /// Manages communication with the Hevy REST API, handles paginated workout data retrieval, 
     /// and controls local configuration file storage and API key encryption.
     /// </summary>
-    public class HevyAppAPIService
+    public class AppSettingsService
     {
         /// <summary>
         /// Gets the absolute path to the configuration settings file. 
@@ -24,20 +25,7 @@ namespace BodyTracker.Services.WorkoutLog
         /// </summary>
         private string DefautlPath = @"%Userprofile%\AppData\Local\BodyTracker";
 
-        /// <summary>
-        /// The base uniform resource identifier for the Hevy web service.
-        /// </summary>
-        private string baseAdress = "https://api.hevyapp.com";
 
-        /// <summary>
-        /// The API endpoint path designated for retrieving workout sessions.
-        /// </summary>
-        private string workoutsEndpoint = "/v1/workouts";
-
-        /// <summary>
-        /// The HTTP client instance utilized for executing network requests.
-        /// </summary>
-        private HttpClient _httpClient;
 
         /// <summary>
         /// Gets a value indicating whether the configuration file and directory path were successfully validated or created.
@@ -47,77 +35,12 @@ namespace BodyTracker.Services.WorkoutLog
         /// <summary>
         /// Initializes a new instance of the <see cref="HevyAppAPIService"/> class and verifies the availability of the configuration file.
         /// </summary>
-        public HevyAppAPIService()
+        public AppSettingsService()
         {
-            (PathOK, AppSettingsPath) = ConfigFileAvialable(DefautlPath, "HeavyAppSettings.json");
+            (PathOK, AppSettingsPath) = ConfigFileAvialable(DefautlPath, "Paths.json");
         }
 
-        /// <summary>
-        /// Asynchronously fetches and aggregates all workout entries from the Hevy API, automatically handling multi-page pagination.
-        /// </summary>
-        /// <param name="apiKey">Optional API key string. If omitted, credentials are loaded and decrypted from the local configuration file.</param>
-        /// <returns>A task representing the asynchronous operation, containing a list of deserialized <see cref="HevyAppWorkoutJsonModel"/> objects.</returns>
-        public async Task<List<HevyAppWorkoutJsonModel>> FetchAndProcessWorkoutsAsync(string apiKey = null)
-        {
-            var _workouts = new List<HevyAppWorkoutJsonModel>();
-
-            try
-            {
-                if (string.IsNullOrEmpty(apiKey))
-                {
-                    var cfgApiKey = LoadConfigurationFile();
-                    apiKey = CryptoHelper.Unprotect(cfgApiKey.ApiKey);
-                    if (string.IsNullOrEmpty(apiKey)) throw new Exception("API Key is not set in the configuration.");
-                }
-
-                _httpClient = new HttpClient();
-                _httpClient.BaseAddress = new Uri(baseAdress);
-                _httpClient.DefaultRequestHeaders.Add("api-key", apiKey);
-
-                HttpResponseMessage response = await _httpClient.GetAsync(workoutsEndpoint);
-                if (response.IsSuccessStatusCode)
-                {
-                    string jsonResponse = await response.Content.ReadAsStringAsync();
-                    var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-
-                    var firstResponse = JsonSerializer.Deserialize<HevyAppWorkoutResponseJsonModel>(jsonResponse, options);
-
-                    if (firstResponse != null)
-                    {
-                        _workouts.AddRange(firstResponse.Workouts);
-
-                        for (int i = firstResponse.Page + 1; i <= firstResponse.PageCount; i++)
-                        {
-                            HttpResponseMessage nextPageResponse = await _httpClient.GetAsync($"{workoutsEndpoint}?page={i}");
-                            if (nextPageResponse.IsSuccessStatusCode)
-                            {
-                                string pageJsonResponse = await nextPageResponse.Content.ReadAsStringAsync();
-                                var pageExercises = JsonSerializer.Deserialize<HevyAppWorkoutResponseJsonModel>(pageJsonResponse, options);
-                                if (pageExercises != null && pageExercises.Workouts != null)
-                                {
-                                    _workouts.AddRange(pageExercises.Workouts);
-                                }
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    throw new Exception("Hevy App API Error: " + response.StatusCode.ToString());
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Hevy App API Error: {ex.Message}", ex);
-            }
-            finally
-            {
-                _httpClient?.Dispose();
-            }
-
-            return _workouts;
-        }
-
+       
         /// <summary>
         /// Loads the Hevy API configuration from the JSON settings file. 
         /// If the file is empty or deserialization fails, a new instance of <see cref="HevyAppAPIConfigurationModel"/> is returned.
@@ -128,9 +51,9 @@ namespace BodyTracker.Services.WorkoutLog
         /// <remarks>
         /// This method reads the entire text content from the path specified in <see cref="AppSettingsPath"/>.
         /// </remarks>
-        public HevyAppAPIConfigurationModel LoadConfigurationFile()
+        public AppSettingsModel LoadConfigurationFile()
         {
-            return JsonSerializer.Deserialize<HevyAppAPIConfigurationModel>(File.ReadAllText(AppSettingsPath)) ?? new HevyAppAPIConfigurationModel();
+            return JsonSerializer.Deserialize<AppSettingsModel>(File.ReadAllText(AppSettingsPath)) ?? new AppSettingsModel();
         }
 
         /// <summary>
@@ -140,7 +63,7 @@ namespace BodyTracker.Services.WorkoutLog
         /// <remarks>
         /// The object is serialized into an indented, human-readable JSON format, overwriting existing file content at <see cref="AppSettingsPath"/>.
         /// </remarks>
-        public void Save(HevyAppAPIConfigurationModel cfg)
+        public void Save(AppSettingsModel cfg)
         {
             var json = JsonSerializer.Serialize(cfg, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(AppSettingsPath, json);
@@ -151,11 +74,10 @@ namespace BodyTracker.Services.WorkoutLog
         /// It loads the existing configuration, protects and encrypts the sensitive API key via <see cref="CryptoHelper"/>, and saves the updated state.
         /// </summary>
         /// <param name="newConfig">The <see cref="HevyAppAPIConfigurationModel"/> instance containing the new unencrypted settings to be stored.</param>
-        public void SaveCredentials(HevyAppAPIConfigurationModel newConfig)
+        public void SaveCredentials(AppSettingsModel newConfig)
         {
             var cfg = LoadConfigurationFile();
-
-            cfg.ApiKey = CryptoHelper.Protect(newConfig.ApiKey);
+            cfg.DefaultImportFolder = newConfig.DefaultImportFolder;
             Save(cfg);
         }
 
@@ -181,7 +103,7 @@ namespace BodyTracker.Services.WorkoutLog
             if (File.Exists(filePath)) return (true, filePath);
             else
             {
-                CreateAPISettingsFile(filePath);
+                CreatAppSettingsFile(filePath);
                 if (File.Exists(filePath)) return (true, filePath);
                 else return (false, string.Empty);
             }
@@ -213,7 +135,7 @@ namespace BodyTracker.Services.WorkoutLog
         /// <remarks>
         /// Initializes a <see cref="HevyAppAPIConfigurationModel"/> with default parameters and writes an indented JSON structure to disk.
         /// </remarks>
-        public void CreateAPISettingsFile(string filePath)
+        public void CreatAppSettingsFile(string filePath)
         {
             var config = new HevyAppAPIConfigurationModel();
 
@@ -225,19 +147,5 @@ namespace BodyTracker.Services.WorkoutLog
             string jsonString = JsonSerializer.Serialize(config, options);
             File.WriteAllText(filePath, jsonString);
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="apiKey"></param>
-        /// <returns></returns>
-        public static string GetMaskApiKey(string apiKey)
-        {
-            string[] parts = apiKey.Split('-');
-
-            return $"{parts[0]}-****-****-****-{parts[4]}";
-        }
-
-
     }
 }

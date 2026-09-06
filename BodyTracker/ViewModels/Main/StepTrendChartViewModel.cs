@@ -276,8 +276,15 @@ namespace BodyTracker.ViewModels
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task RefreshChartDataAsync()
         {
-            data = await databaseService.GetStepTrendDashboardSqlAsync(AppState.SelectedPersonId);
-            await ReloadChartAsync();
+            try
+            {
+                data = await databaseService.GetStepTrendDashboardSqlAsync(AppState.SelectedPersonId);
+                await ReloadChartAsync();
+            }
+            catch (Exception ex)
+            {
+                GeneralInfoMessage = ex.Message;
+            }
         }
 
         /// <summary>
@@ -322,12 +329,6 @@ namespace BodyTracker.ViewModels
         public async Task ReloadChartAsync()
         {
             if (!await reloadLock.WaitAsync(0)) return;
-
-            if (AppState.SelectedPersonId <= 0)
-            {
-                GeneralInfoMessage = "No person selected. Please select a person to view their step trend data.";
-                return;
-            }
 
             try
             {

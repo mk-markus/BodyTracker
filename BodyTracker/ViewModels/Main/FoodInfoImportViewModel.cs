@@ -1,5 +1,6 @@
 ﻿using BodyTracker.Models;
 using BodyTracker.Services;
+using BodyTracker.Services.WorkoutLog;
 using BodyTracker.State;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -34,6 +35,11 @@ namespace BodyTracker.ViewModels
         /// Gets or sets the collection of <see cref="SamsungStepTrendModel"/> objects currently loaded in the view.
         /// </summary>
         [ObservableProperty] private ObservableCollection<SamsungFoodInfoModel> foodInfoDatas;
+
+        /// <summary>
+        /// Service responsible for loading, managing, and persisting general application settings configurations.
+        /// </summary>
+        private AppSettingsService appSettingsService = new AppSettingsService();
 
         /// <summary>
         /// Gets the command that triggers the file auto-load mechanism.
@@ -72,14 +78,9 @@ namespace BodyTracker.ViewModels
         [ObservableProperty] private string timeElapse = string.Empty;
 
         /// <summary>
-        /// A private string representing the root directory path being searched for data files.
-        /// </summary>
-        private string searchPath = string.Empty;
-
-        /// <summary>
         /// A private string specifying the keyword or pattern used to filter file names during the search.
         /// </summary>
-        private string searchTerm = "health.food_info";
+        private string searchTerm = ".health.food_info.??????????????";
 
         /// <summary>
         /// A private string representing the resolved target file path found during the search process.
@@ -111,10 +112,9 @@ namespace BodyTracker.ViewModels
         /// </summary>
         /// <param name="db">The database service instance used for data persistence.</param>
         /// <param name="path">The file path or directory used for searching workout data files.</param>
-        public FoodInfoImportViewModel(DatabaseService db, string path)
+        public FoodInfoImportViewModel(DatabaseService db)
         {
             databaseService = db;
-            searchPath = path;
 
             CommandOpen = new AsyncRelayCommand(OpenAsync);
             CommandRefresh = new AsyncRelayCommand(RefreshAsync);
@@ -128,18 +128,24 @@ namespace BodyTracker.ViewModels
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task OpenAsync()
         {
-            var dlg = new OpenFileDialog
-            {
-                Filter = $"Specific Files (*{searchTerm}*.csv)|*{searchTerm}*.csv"
-            };
-
-            if (dlg.ShowDialog() != true)
-                return;
-
-            filePath = dlg.FileName;
 
             try
             {
+                var settings = appSettingsService.LoadConfigurationFile();
+
+                var dlg = new OpenFileDialog
+                {
+                    Filter = $"Specific Files (*{searchTerm}.csv)|*{searchTerm}.csv",
+                    InitialDirectory = settings.DefaultImportFolder
+
+                };
+
+
+                if (dlg.ShowDialog() != true)
+                    return;
+
+                filePath = dlg.FileName;
+
                 IsLoading = true;
                 ProgressValue = 0;
 
@@ -157,11 +163,11 @@ namespace BodyTracker.ViewModels
                 FoodInfoDatas = new ObservableCollection<SamsungFoodInfoModel>(list);
 
                 ProgressText = $"Imported {list.Count} Datas";
-              
+
             }
             catch (Exception ex)
             {
-               GeneralInfoMessage = $"Error during import: {ex.Message}";
+                GeneralInfoMessage = $"Error during import: {ex.Message}";
 
             }
             finally
@@ -176,59 +182,63 @@ namespace BodyTracker.ViewModels
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task RefreshAsync()
         {
-            var path = await Task.Run(() =>
+
+
+            try
             {
-                if (!Directory.Exists(searchPath))
+                var settings = appSettingsService.LoadConfigurationFile();
+
+                var path = await Task.Run(() =>
                 {
-                    throw new Exception($"The folder '{searchPath}' could not be reached.");
-                }
-                return Directory.GetFiles(searchPath, $"*{searchTerm}*");
-            });
-
-            if (!path.Any())
-            {
-                GeneralInfoMessage = "No Files were found";
-                return;
-            }
-
-            if (path.Count() > 1)
-            {
-                GeneralInfoMessage = "Several were found. Please select one of the dialog files.";
-                _ = OpenAsync();
-                return;
-            }
-            else filePath = path[0];
-
-                try
-                {
-                    IsLoading = true;
-                    ProgressValue = 0;
-
-                    var progress = new Progress<double>(value =>
+                    if (!Directory.Exists(settings.DefaultImportFolder))
                     {
-                        ProgressValue = value * 100;
-                        ProgressText = $"Imported: {value:F0}%";
-                    });
+                        throw new Exception($"The folder '{settings.DefaultImportFolder}' could not be reached.");
+                    }
+                    return Directory.GetFiles(settings.DefaultImportFolder, $"*{searchTerm}*");
+                });
 
-                    var list = await SamsungDataCsvExtractor.ParseFoodInfoAsync(
-                        filePath,
-                        progress,
-                        new Progress<string>(text => ProgressText = text));
-
-                    FoodInfoDatas = new ObservableCollection<SamsungFoodInfoModel>(list);
-
-                    ProgressText = $"Imported {list.Count} Datas";
-
-                }
-                catch (Exception ex)
+                if (!path.Any())
                 {
-                    GeneralInfoMessage = $"Error during import: {ex.Message}";
+                    GeneralInfoMessage = "No Files were found";
+                    return;
+                }
 
-                }
-                finally
+                if (path.Count() > 1)
                 {
-                    IsLoading = false;
+                    GeneralInfoMessage = "Several were found. Please select one of the dialog files.";
+                    _ = OpenAsync();
+                    return;
                 }
+                else filePath = path[0];
+
+                IsLoading = true;
+                ProgressValue = 0;
+
+                var progress = new Progress<double>(value =>
+                {
+                    ProgressValue = value * 100;
+                    ProgressText = $"Imported: {value:F0}%";
+                });
+
+                var list = await SamsungDataCsvExtractor.ParseFoodInfoAsync(
+                    filePath,
+                    progress,
+                    new Progress<string>(text => ProgressText = text));
+
+                FoodInfoDatas = new ObservableCollection<SamsungFoodInfoModel>(list);
+
+                ProgressText = $"Imported {list.Count} Datas";
+
+            }
+            catch (Exception ex)
+            {
+                GeneralInfoMessage = $"Error during import: {ex.Message}";
+
+            }
+            finally
+            {
+                IsLoading = false;
+            }
         }
 
         /// <summary>
@@ -273,7 +283,7 @@ namespace BodyTracker.ViewModels
                 await databaseService.UpsertFoodInfoSqlAsync(pid, FoodInfoDatas, progress);
 
                 ProgressText = $"Uploaded {FoodInfoDatas.Count} Datas";
-            
+
             }
             catch (Exception ex)
             {

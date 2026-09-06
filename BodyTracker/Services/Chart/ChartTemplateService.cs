@@ -1580,6 +1580,19 @@ namespace BodyTracker.Services
 
         #region Samsung Food Info Chart Templates
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <param name="data"></param>
+        /// <param name="isTrendLineLegendVisible"></param>
+        /// <param name="strokeThickness"></param>
+        /// <param name="geometrySize"></param>
+        /// <param name="loessFraction"></param>
+        /// <param name="showCalories"></param>
+        /// <param name="showCaloriesTrend"></param>
+        /// <returns></returns>
         public static ChartResult CreateFoodCaloriesChart(
                     DateTime startDate, DateTime endDate, List<SamsungFoodInfoModel> data,
                     bool isTrendLineLegendVisible, float strokeThickness, float geometrySize,
@@ -2495,6 +2508,14 @@ namespace BodyTracker.Services
 
             IPolarAxis[] radiusAxis = Array.Empty<IPolarAxis>();
 
+            var max = results
+              .Where(d => d.PercentageShare.HasValue)
+              .Max(d => d.PercentageShare) ?? 0;
+
+
+           
+
+
             if (results.Any())
             {
                 var muscleDistributionValues = new List<double>();
@@ -2502,7 +2523,7 @@ namespace BodyTracker.Services
                 foreach (var value in results)
                 {
                     if (value == null) break;
-                    muscleDistributionValues.Add(value.PercentageShare);
+                    muscleDistributionValues.Add(value.PercentageShare ?? 0);
                     muscleDistributionSpiderChartAxisName.Add(value.MuscleGroup);
                 }
 
@@ -2534,7 +2555,7 @@ namespace BodyTracker.Services
                 new PolarAxis
                 {
                     MinLimit= 0,
-                    MaxLimit = 20,
+                    MaxLimit = max,
                     MinStep= minStep,
                     Labeler = _ => string.Empty
                 }
@@ -2568,6 +2589,15 @@ namespace BodyTracker.Services
 
             IPolarAxis[] radiusAxis = Array.Empty<IPolarAxis>();
 
+            var maxPercentageActResults = actResults
+                .Where(d => d.PercentageShare.HasValue)
+                .Max(d => d.PercentageShare) ?? 0;
+
+            var maxPercentagePrevResults = prevResults
+                .Where(d => d.PercentageShare.HasValue)
+                .Max(d => d.PercentageShare) ?? 0;
+
+            double max = Math.Max(maxPercentageActResults, maxPercentagePrevResults);
 
             var actMuscleDistributionSpiderChartValues = new List<double>();
             var actMuscleDistributionSpiderChartAxisName = new List<string>();
@@ -2578,7 +2608,7 @@ namespace BodyTracker.Services
                 foreach (var value in actResults)
                 {
                     if (value == null) break;
-                    actMuscleDistributionSpiderChartValues.Add(value.PercentageShare);
+                    actMuscleDistributionSpiderChartValues.Add(value.PercentageShare ?? 0);
                     actMuscleDistributionSpiderChartAxisName.Add(value.MuscleGroup);
                 }
             }
@@ -2587,7 +2617,7 @@ namespace BodyTracker.Services
                 foreach (var value in prevResults)
                 {
                     if (value == null) break;
-                    prevMuscleDistributionSpiderChartValues.Add(value.PercentageShare);
+                    prevMuscleDistributionSpiderChartValues.Add(value.PercentageShare ?? 0);
                     if(!actResults.Any()) actMuscleDistributionSpiderChartAxisName.Add(value.MuscleGroup);
                 }
             }
@@ -2628,7 +2658,7 @@ namespace BodyTracker.Services
                 new PolarAxis
                 {
                     MinLimit= 0,
-                    MaxLimit = 20,
+                    MaxLimit = max,
                     MinStep= minStep,
                     Labeler = _ => string.Empty
                 }
