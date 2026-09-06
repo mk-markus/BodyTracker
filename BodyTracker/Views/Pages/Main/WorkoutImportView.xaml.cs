@@ -19,7 +19,7 @@ namespace BodyTracker.Views.Pages
         private readonly DatabaseService databaseService;
 
         /// <summary>
-        /// The view model instance managing the data and logic for the heavy app view.
+        /// The view model instance managing the data and logic for the Hevy app view.
         /// </summary>
         private readonly WorkoutImportViewModel workoutImportVM;
 

@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace BodyTracker.Models
 {
-    public class JsonGymExerciseModel
+    public class HevyAppExerciseCsvJsonModel
     {
         /// <summary>
         /// Gets or sets the name of the exercise.

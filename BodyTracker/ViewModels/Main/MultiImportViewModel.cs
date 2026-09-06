@@ -58,27 +58,27 @@ namespace BodyTracker.ViewModels
         public IAsyncRelayCommand CommandShowFoodInfoImportView { get; }
 
         /// <summary>
-        /// Gets the command responsible for navigating to the heavy app workout data import view.
+        /// Gets the command responsible for navigating to the Hevy app workout data import view.
         /// </summary>
-        /// <remarks>Triggers an asynchronous page transition to display the heavy workout tracking data import interface.</remarks>
-        public IAsyncRelayCommand CommandShowHeavyAppImportView { get; }
+        /// <remarks>Triggers an asynchronous page transition to display the Hevy workout tracking data import interface.</remarks>
+        public IAsyncRelayCommand CommandShowHevyAppImportView { get; }
 
         /// <summary>
         /// Gets the command responsible for navigating to the exercise data import view.
         /// </summary>
-        /// <remarks>Triggers an asynchronous page transition to display the heavy workout tracking data import interface.</remarks>
+        /// <remarks>Triggers an asynchronous page transition to display the Hevy workout tracking data import interface.</remarks>
         public IAsyncRelayCommand CommandShowExerciseImportView { get; }
 
         /// <summary>
         /// Gets the command responsible for navigating to the heart rate data import view.
         /// </summary>
-        /// <remarks>Triggers an asynchronous page transition to display the heavy workout tracking data import interface.</remarks>
+        /// <remarks>Triggers an asynchronous page transition to display the Hevy workout tracking data import interface.</remarks>
         public IAsyncRelayCommand CommandShowHeartRateImportView { get; }
 
         /// <summary>
         /// Gets the command responsible for navigating to the oxygen saturation data import view.
         /// </summary>
-        /// <remarks>Triggers an asynchronous page transition to display the heavy workout tracking data import interface.</remarks>
+        /// <remarks>Triggers an asynchronous page transition to display the Hevy workout tracking data import interface.</remarks>
         public IAsyncRelayCommand CommandOxygenSaturationImportView { get; }
 
         /// <summary>
@@ -100,10 +100,10 @@ namespace BodyTracker.ViewModels
         private FoodInfoImportView foodInfoImportView;
 
         /// <summary>
-        /// A cached instance of the heavy app data import page.
+        /// A cached instance of the Hevy app data import page.
         /// </summary>
         /// <remarks>Maintains a single instance in memory to preserve state and avoid redundant instantiation overhead during navigation.</remarks>
-        private WorkoutImportView heavyAppImportView;
+        private WorkoutImportView HevyAppImportView;
 
         /// <summary>
         /// A cached instance of the exercise data import page.
@@ -151,7 +151,7 @@ namespace BodyTracker.ViewModels
 
             CommandShowFoodInfoImportView = new AsyncRelayCommand(ShowFoodInfoImportPage);
 
-            CommandShowHeavyAppImportView = new AsyncRelayCommand(ShowHeavyAppDatasAsync);
+            CommandShowHevyAppImportView = new AsyncRelayCommand(ShowHevyAppDatasAsync);
 
             CommandShowHeartRateImportView = new AsyncRelayCommand(ShowHeartRateImportView);
 
@@ -232,15 +232,15 @@ namespace BodyTracker.ViewModels
         }
 
         /// <summary>
-        /// Asynchronously navigates to the heavy app workout data import view.
+        /// Asynchronously navigates to the Hevy app workout data import view.
         /// </summary>
-        /// <remarks>Instantiates the heavy app import page lazily if not already cached, and sets it as the active content page.</remarks>
+        /// <remarks>Instantiates the Hevy app import page lazily if not already cached, and sets it as the active content page.</remarks>
         /// <returns>A task representing the asynchronous operation.</returns>
-        private async Task ShowHeavyAppDatasAsync()
+        private async Task ShowHevyAppDatasAsync()
         {
 
-            if (heavyAppImportView == null) heavyAppImportView = new WorkoutImportView(databaseService, searchPath);
-            CurrentPage = heavyAppImportView;
+            if (HevyAppImportView == null) HevyAppImportView = new WorkoutImportView(databaseService, searchPath);
+            CurrentPage = HevyAppImportView;
 
         }
 

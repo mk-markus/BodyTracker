@@ -59,27 +59,27 @@ namespace BodyTracker.ViewModels.Main
         public IAsyncRelayCommand CommandShowFoodInfoEntryView { get; }
 
         /// <summary>
-        /// Gets the command responsible for navigating to the heavy app workout data import view.
+        /// Gets the command responsible for navigating to the Hevy app workout data import view.
         /// </summary>
-        /// <remarks>Triggers an asynchronous page transition to display the heavy workout tracking data import interface.</remarks>
-        public IAsyncRelayCommand CommandShowHeavyAppEntryView { get; }
+        /// <remarks>Triggers an asynchronous page transition to display the Hevy workout tracking data import interface.</remarks>
+        public IAsyncRelayCommand CommandShowHevyAppEntryView { get; }
 
         /// <summary>
         /// Gets the command responsible for navigating to the exercise data import view.
         /// </summary>
-        /// <remarks>Triggers an asynchronous page transition to display the heavy workout tracking data import interface.</remarks>
+        /// <remarks>Triggers an asynchronous page transition to display the Hevy workout tracking data import interface.</remarks>
         public IAsyncRelayCommand CommandShowExerciseEntryView { get; }
 
         /// <summary>
         /// Gets the command responsible for navigating to the heart rate data import view.
         /// </summary>
-        /// <remarks>Triggers an asynchronous page transition to display the heavy workout tracking data import interface.</remarks>
+        /// <remarks>Triggers an asynchronous page transition to display the Hevy workout tracking data import interface.</remarks>
         public IAsyncRelayCommand CommandShowHeartRateEntryView { get; }
 
         /// <summary>
         /// Gets the command responsible for navigating to the oxygen saturation data import view.
         /// </summary>
-        /// <remarks>Triggers an asynchronous page transition to display the heavy workout tracking data import interface.</remarks>
+        /// <remarks>Triggers an asynchronous page transition to display the Hevy workout tracking data import interface.</remarks>
         public IAsyncRelayCommand CommandOxygenSaturationEntryView { get; }
        
         /// <summary>
@@ -108,7 +108,7 @@ namespace BodyTracker.ViewModels.Main
         private DBEntryFoodInfoView dBEntryFoodInfoView;
 
         /// <summary>
-        /// A cached instance of the heavy app data import page.
+        /// A cached instance of the Hevy app data import page.
         /// </summary>
         /// <remarks>Maintains a single instance in memory to preserve state and avoid redundant instantiation overhead during navigation.</remarks>
         private DBEntryWorkoutLogView dBEntryWorkoutLogView;
@@ -155,7 +155,7 @@ namespace BodyTracker.ViewModels.Main
 
             CommandShowFoodInfoEntryView = new AsyncRelayCommand(ShowDBEntryFoodInfoViewAsync);
 
-            CommandShowHeavyAppEntryView = new AsyncRelayCommand(ShowDBEntryHeavyAppViewAsync);
+            CommandShowHevyAppEntryView = new AsyncRelayCommand(ShowDBEntryHevyAppViewAsync);
 
             CommandShowHeartRateEntryView = new AsyncRelayCommand(ShowDBEntryHeartRateViewAsync);
 
@@ -249,11 +249,11 @@ namespace BodyTracker.ViewModels.Main
         }
 
         /// <summary>
-        /// Asynchronously navigates to the heavy app workout data import view.
+        /// Asynchronously navigates to the Hevy app workout data import view.
         /// </summary>
-        /// <remarks>Instantiates the heavy app import page lazily if not already cached, and sets it as the active content page.</remarks>
+        /// <remarks>Instantiates the Hevy app import page lazily if not already cached, and sets it as the active content page.</remarks>
         /// <returns>A task representing the asynchronous operation.</returns>
-        private async Task ShowDBEntryHeavyAppViewAsync()
+        private async Task ShowDBEntryHevyAppViewAsync()
         {
 
             //if (dBEntryWorkoutLogView == null) dBEntryWorkoutLogView = 

@@ -101,7 +101,7 @@ namespace BodyTracker.Views
         /// <remarks>
         /// This UX enhancement reduces the number of required clicks or keystrokes for the user, 
         /// as it eliminates the need to manually clear the field before entering a new value. 
-        /// It is particularly useful in data-heavy forms like bodyMeasurement entries.
+        /// It is particularly useful in data-Hevy forms like bodyMeasurement entries.
         /// </remarks>
         private void SelectAllOnFocus(object sender, KeyboardFocusChangedEventArgs e)
         {

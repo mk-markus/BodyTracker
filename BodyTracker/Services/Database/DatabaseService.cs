@@ -3804,15 +3804,15 @@ namespace BodyTracker.Services
         #region Workout Log
 
         /// <summary>
-        /// Inserts Heavy App workout data into the database.
+        /// Inserts Hevy App workout data into the database.
         /// Existing records are skipped based on DataUuid.
         /// </summary>
         /// <param name="personId">ID of the selected person.</param>
-        /// <param name="wokoutDatas">Heavy App workout data.</param>
+        /// <param name="wokoutDatas">Hevy App workout data.</param>
         /// <param name="progress">Optional progress reporting.</param>
         /// <returns>True if successful.</returns>
         public async Task<bool> UpsertWorkoutLogAsync(int personId,
-            IEnumerable<HeavyAppCSVModel> wokoutDatas, IProgress<(double value, string prgressText)>? progress = null)
+            IEnumerable<HevyAppCSVModel> wokoutDatas, IProgress<(double value, string prgressText)>? progress = null)
         {
             await using var sqlServerConnection = await OpenConnectionAsync();
 
@@ -3828,7 +3828,7 @@ namespace BodyTracker.Services
                         string Hash,
                         DateTime StartTime
                     )>();
-                var csvEntries = new Dictionary<string, HeavyAppCSVModel>();
+                var csvEntries = new Dictionary<string, HevyAppCSVModel>();
 
                 // Create a dictionary for the CSV file using the data GUID
                 foreach (var workout in wokoutDatas)
@@ -3853,8 +3853,8 @@ namespace BodyTracker.Services
                     }
                 }
 
-                var insertList = new List<HeavyAppCSVModel>();
-                var updateList = new List<(int WorkoutId, string Hash, HeavyAppCSVModel Workout)>();
+                var insertList = new List<HevyAppCSVModel>();
+                var updateList = new List<(int WorkoutId, string Hash, HevyAppCSVModel Workout)>();
                 var deleteList = new List<int>();
 
 
@@ -4003,7 +4003,7 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error inserting Heavy App workout data: {ex.Message}";
+                ErrorMessage = $"Error inserting Hevy App workout data: {ex.Message}";
                 //await tx.RollbackAsync();
 
             }
@@ -4014,15 +4014,15 @@ namespace BodyTracker.Services
 
 
         /// <summary>
-        /// Inserts Heavy App workout data into the database.
+        /// Inserts Hevy App workout data into the database.
         /// Existing records are skipped based on DataUuid.
         /// </summary>
         /// <param name="personId">ID of the selected person.</param>
-        /// <param name="heavyAppData">Heavy App workout data.</param>
+        /// <param name="hevyAppData">Hevy App workout data.</param>
         /// <param name="progress">Optional progress reporting.</param>
         /// <returns>True if successful.</returns>
         public async Task<bool> AddWorkoutLogAsync(int personId,
-                                                   IEnumerable<HeavyAppCSVModel> heavyAppData,
+                                                   IEnumerable<HevyAppCSVModel> hevyAppData,
                                                    IProgress<double>? progress = null)
         {
             await using var sqlServerConnection = await OpenConnectionAsync();
@@ -4033,7 +4033,7 @@ namespace BodyTracker.Services
 
             try
             {
-                var workouts = heavyAppData.ToList();
+                var workouts = hevyAppData.ToList();
 
                 int total = workouts.Count;
                 int current = 0;
@@ -4075,7 +4075,7 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error inserting Heavy App workout data: {ex.Message}";
+                ErrorMessage = $"Error inserting Hevy App workout data: {ex.Message}";
                 await tx.RollbackAsync();
 
             }
@@ -4089,10 +4089,10 @@ namespace BodyTracker.Services
         /// performing bulk insertions for new entries and transactional updates for existing records based on unique data identifiers and update timestamps.
         /// </summary>
         /// <param name="personId">ID of the selected person.</param>
-        /// <param name="heavyAppData">Heavy App workout data.</param>
+        /// <param name="wokoutDatas">Hevy App workout data.</param>
         /// <param name="progress">Optional progress reporting.</param>
         /// <returns>True if successful.</returns>
-        public async Task<bool> SyncWorkoutLogAsync(int personId, ICollection<HeavyAppCSVModel> wokoutDatas,
+        public async Task<bool> SyncWorkoutLogAsync(int personId, ICollection<HevyAppCSVModel> wokoutDatas,
                                                     IProgress<(double value, string prgressText)>? progress = null)
         {
             await using var sqlServerConnection = await OpenConnectionAsync();
@@ -4108,7 +4108,7 @@ namespace BodyTracker.Services
                          string Hash,
                          DateTime StartTime
                      )>();
-                var csvEntries = new Dictionary<string, HeavyAppCSVModel>();
+                var csvEntries = new Dictionary<string, HevyAppCSVModel>();
 
                 // Create a dictionary for the CSV file using the data GUID
                 foreach (var workout in wokoutDatas)
@@ -4135,8 +4135,8 @@ namespace BodyTracker.Services
 
 
 
-                var insertList = new List<HeavyAppCSVModel>();
-                var updateList = new List<(int WorkoutId, string Hash, HeavyAppCSVModel Workout)>();
+                var insertList = new List<HevyAppCSVModel>();
+                var updateList = new List<(int WorkoutId, string Hash, HevyAppCSVModel Workout)>();
                 var deleteList = new List<int>();
 
 
@@ -4175,7 +4175,7 @@ namespace BodyTracker.Services
 
                 if (insertList.Count > 0)
                 {
-                    var table = HeavyAppDataTable.CreateHeavyAppDataTable(personId, insertList);
+                    var table = HevyAppDataTable.CreateHevyAppDataTable(personId, insertList);
 
                     if (table.Rows.Count <= 0) Debug.WriteLine("table entries");
                     var bulkCopy = new MySqlBulkCopy(sqlServerConnection)
@@ -4302,7 +4302,7 @@ namespace BodyTracker.Services
         /// <returns>
         /// A collection of <see cref="GymWorkoutEntryModel"/> objects.
         /// </returns>
-        public async Task<List<GymWorkoutEntryModel>> GetHeavyAppWorkoutsAsync(int personId)
+        public async Task<List<GymWorkoutEntryModel>> GetHevyAppWorkoutsAsync(int personId)
         {
             var list = new List<GymWorkoutEntryModel>();
 
@@ -4352,7 +4352,7 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error Get Get Heavy App Workout Entries Async: {ex.Message}";
+                ErrorMessage = $"Error Get Get Hevy App Workout Entries Async: {ex.Message}";
             }
 
             return list;
@@ -4480,7 +4480,7 @@ namespace BodyTracker.Services
         /// </summary>
         /// <param name="heartRateDataUuid">The unique data identifier (UUID) of the heart rate record to be removed.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task DeleteHeavyAppAsync(int heavyAppID)
+        public async Task DeleteHevyAppAsync(int hevyAppID)
         {
             await using var sqlServerConnection = await OpenConnectionAsync();
 
@@ -4489,7 +4489,7 @@ namespace BodyTracker.Services
             try
             {
                 var sqlCommand = new MySqlCommand(DatabaseCommands.GetWorkoutLogDeleteByWorkoutIdSql(), sqlServerConnection);
-                sqlCommand.Parameters.AddWithValue("@id", heavyAppID);
+                sqlCommand.Parameters.AddWithValue("@id", hevyAppID);
                 await sqlCommand.ExecuteNonQueryAsync();
             }
             catch (Exception ex)
@@ -4499,13 +4499,13 @@ namespace BodyTracker.Services
         }
 
         /// <summary>
-        /// Lädt HeavyApp Trainingsdaten für eine Person.
+        /// Lädt HevyApp Trainingsdaten für eine Person.
         /// </summary>
         /// <param name="personId">Personen-ID.</param>
         /// <returns>Liste der Trainingseinträge.</returns>
-        public async Task<List<HeavyAppCSVModel>> GetHeavyAppAsync(int personId)
+        public async Task<List<HevyAppCSVModel>> GetHevyAppAsync(int personId)
         {
-            var result = new List<HeavyAppCSVModel>();
+            var result = new List<HevyAppCSVModel>();
 
             await using var sqlServerConnection = await OpenConnectionAsync();
 
@@ -4524,7 +4524,7 @@ namespace BodyTracker.Services
 
                 while (await reader.ReadAsync())
                 {
-                    result.Add(new HeavyAppCSVModel
+                    result.Add(new HevyAppCSVModel
                     {
                         ExerciseLogID = reader.GetInt32("exercise_log_id"),
 
@@ -4588,7 +4588,7 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error Get HeavyApp Async: {ex.Message}";
+                ErrorMessage = $"Error Get HevyApp Async: {ex.Message}";
             }
 
             return result;

@@ -31,14 +31,19 @@ namespace BodyTracker.ViewModels
         private readonly DatabaseService databaseService;
 
         /// <summary>
-        /// Gets or sets the collection of <see cref="HeavyAppCSVModel"/> objects currently loaded in the view.
+        /// Gets or sets the collection of <see cref="HevyAppCSVModel"/> objects currently loaded in the view.
         /// </summary>
-        [ObservableProperty] private ObservableCollection<HeavyAppCSVModel> heavyAppDatas;
+        [ObservableProperty] private ObservableCollection<HevyAppCSVModel> hevyAppDatas;
 
         /// <summary>
         /// Gets the command that triggers the file auto-load mechanism.
         /// </summary>
         public IAsyncRelayCommand CommandRefresh { get; }
+
+        /// <summary>
+        /// Gets the command that triggers the download from the heva app server.
+        /// </summary>
+        public IAsyncRelayCommand CommandDownload { get; }
 
         /// <summary>
         /// Gets the command that triggers the file selection dialog.
@@ -118,19 +123,20 @@ namespace BodyTracker.ViewModels
             searchPath = path;
 
             CommandRefresh = new AsyncRelayCommand(RefreshAsync);
+            CommandDownload = new AsyncRelayCommand(DownloadFromHevyAppAsync);
             CommandOpen = new AsyncRelayCommand(OpenAsync);
             CommandInsert = new AsyncRelayCommand(InsertAsync);
 
         }
 
         /// <summary>
-        /// Asynchronously uploads the loaded <see cref="HeavyAppCSVModel"/> entries 
+        /// Asynchronously uploads the loaded <see cref="HevyAppCSVModel"/> entries 
         /// to the database for the currently selected person, reporting progress along the way.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task InsertAsync()
         {
-            if (HeavyAppDatas == null || HeavyAppDatas.Count == 0)
+            if (HevyAppDatas == null || HevyAppDatas.Count == 0)
             {
                 GeneralInfoMessage = "No uploading data available.";
                 return;
@@ -162,9 +168,9 @@ namespace BodyTracker.ViewModels
                     ProgressText = $"{value.Text} {value.value:F0}%";
                 });
 
-                await databaseService.SyncWorkoutLogAsync(pid, HeavyAppDatas, progress);
+                await databaseService.SyncWorkoutLogAsync(pid, HevyAppDatas, progress);
 
-                ProgressText = $"Uploaded {HeavyAppDatas.Count} Datas";
+                ProgressText = $"Uploaded {HevyAppDatas.Count} Datas";
             }
             catch (Exception ex)
             {
@@ -208,11 +214,11 @@ namespace BodyTracker.ViewModels
                     ProgressText = $"Imported: {value:F0}%";
                 });
 
-                var list = await WorkoutLogCSVImporter.ImportAsync(filePath,
+                var list = await WorkoutLogImporter.ImportCSVAsync(filePath,
                     progress,
                     new Progress<string>(text => ProgressText = text));
 
-                HeavyAppDatas = new ObservableCollection<HeavyAppCSVModel>(list);
+                HevyAppDatas = new ObservableCollection<HevyAppCSVModel>(list);
 
                 ProgressText = $"Imported {list.Count} Datas)";
             }
@@ -227,14 +233,14 @@ namespace BodyTracker.ViewModels
         }
 
         /// <summary>
-        /// Asynchronously auto load a CSV export file, then parses and imports the data entries while updating progress indicators.
+        /// Asynchronously searches for local CSV export files within the designated directory, validates file counts, 
+        /// and triggers the CSV import process while updating UI progress indicators and data collections.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task RefreshAsync()
         {
             try
             {
-
                 var path = await Task.Run(() =>
                 {
                     if (!Directory.Exists(searchPath))
@@ -256,11 +262,12 @@ namespace BodyTracker.ViewModels
                     _ = OpenAsync();
                     return;
                 }
+                else
+                {
+                    filePath = path[0];
+                }
 
-                else filePath = path[0];
-
-
-                    IsLoading = true;
+                IsLoading = true;
                 ProgressValue = 0;
 
                 var progress = new Progress<double>(value =>
@@ -269,21 +276,74 @@ namespace BodyTracker.ViewModels
                     ProgressText = $"Imported: {value:F0}%";
                 });
 
-                var list = await WorkoutLogCSVImporter.ImportAsync(filePath,
+                var list = await WorkoutLogImporter.ImportCSVAsync(filePath,
                     progress,
                     new Progress<string>(text => ProgressText = text));
 
-                HeavyAppDatas = new ObservableCollection<HeavyAppCSVModel>(list);
+                HevyAppDatas = new ObservableCollection<HevyAppCSVModel>(list);
 
                 ProgressText = $"Imported ({list.Count} Data entries)";
             }
             catch (Exception ex)
             {
-                GeneralInfoMessage = $"Error - use the correct file: {ex.Message}";
+                if (ex.InnerException != null) GeneralInfoMessage = $"Error - use the correct file: {ex.InnerException.Message}";
+                else GeneralInfoMessage = $"Error - use the correct file: {ex.Message}";
+                throw;
             }
             finally
             {
                 IsLoading = false;
+            }
+        }
+
+        /// <summary>
+        /// Asynchronously downloads workout logs directly from the online Hevy API, processes and flattens the records, 
+        /// and updates the UI data bindings and progress indicators.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        private async Task DownloadFromHevyAppAsync()
+        {
+            Stopwatch watch = Stopwatch.StartNew();
+
+            using var cts = new CancellationTokenSource();
+
+            var dispatcher = new DispatcherTimer();
+
+            dispatcher.Interval = TimeSpan.FromSeconds(1);
+
+            dispatcher.Tick += (s, e) => TimeElapse = $"Time Elapse: {watch.Elapsed.ToString(@"mm\:ss")}";
+
+            dispatcher.Start();
+
+            try
+            {
+                IsLoading = true;
+                ProgressValue = 0;
+
+                var progress = new Progress<(double value, string? ProgressText)>(value =>
+                {
+                    ProgressValue = value.value;
+                    ProgressText = $"Downloaded: {ProgressValue:F0}%";
+                });
+
+                var list = await Task.Run(() => WorkoutLogImporter.ImportOnlineAsync(progress));
+
+                HevyAppDatas = new ObservableCollection<HevyAppCSVModel>(list);
+
+                ProgressText = $"Imported ({list.Count} Data entries)";
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null) GeneralInfoMessage = $"Error - use the correct file: {ex.InnerException.Message}";
+                else GeneralInfoMessage = $"Error - use the correct file: {ex.Message}";
+                throw;
+            }
+            finally
+            {
+                IsLoading = false;
+                dispatcher.Stop();
+                watch.Stop();
+                TimeElapse = $"Total Upload Time: {watch.Elapsed.ToString(@"mm\:ss")}";
             }
         }
 

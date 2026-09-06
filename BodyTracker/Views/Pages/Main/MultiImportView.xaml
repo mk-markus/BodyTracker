@@ -109,11 +109,11 @@
 
                 </RadioButton>
 
-                <!-- ================= SHOW IMPOR HEAVY APP ================= -->
+                <!-- ================= SHOW IMPOR Hevy APP ================= -->
                 <RadioButton Style="{StaticResource NavButtonTabStyle}" 
-                             Command="{Binding CommandShowHeavyAppImportView}"
+                             Command="{Binding CommandShowHevyAppImportView}"
                              GroupName="ImportSelection"
-                             ToolTip="Heavy App CSV Import">
+                             ToolTip="Hevy App CSV Import">
 
                     <TextBlock Text="🏋️ Gym"
                                Style="{DynamicResource TextBlockNavButtonTabTitle}"/>

@@ -24,7 +24,7 @@ namespace BodyTracker.Services
         /// Gets the dictionary mapping exercise names to their corresponding JSON configuration models.
         /// </summary>
         /// <remarks>Provides case-insensitive O(1) lookups for exercise details, primary muscles, and secondary muscle groups.</remarks>
-        public Dictionary<string, JsonGymExerciseModel> ExerciseByName { get; private set; }
+        public Dictionary<string, HevyAppExerciseCsvJsonModel> ExerciseByName { get; private set; }
 
         /// <summary>
         /// Contains already the Converted to GymWorkoutEntryModel Datas form the App Data CSV
@@ -73,7 +73,7 @@ namespace BodyTracker.Services
         /// <param name="primaryMuscleFactor">The weighting factor applied to primary muscle volume calculations (defaults to 1.0).</param>
         /// <param name="secondaryMuscleFactor">The weighting factor applied to secondary muscle volume calculations (defaults to 0.5).</param>
         /// <exception cref="FileNotFoundException">Thrown when the target exercise definition JSON file cannot be found on disk.</exception>
-        public AppWorkoutLoadAnalyzer(string? dictionaryJsonFilePath, List<HeavyAppCSVModel> appDatas, double primaryMuscleFactor = 1.0, double secondaryMuscleFactor = 0.5)
+        public AppWorkoutLoadAnalyzer(string? dictionaryJsonFilePath, List<HevyAppCSVModel> appDatas, double primaryMuscleFactor = 1.0, double secondaryMuscleFactor = 0.5)
         {
             string jsonPath;
 
@@ -84,7 +84,7 @@ namespace BodyTracker.Services
 
             ExerciseByName = LoadExerciseLookup(jsonPath);
 
-            WorkoutEntries = ParseHeavyWorkouts(appDatas);
+            WorkoutEntries = ParseHevyWorkouts(appDatas);
 
             WorkoutVolume = GetVolume(
                 WorkoutEntries,
@@ -407,7 +407,7 @@ namespace BodyTracker.Services
         /// <remarks>Safely maps CSV properties, handles null values with fallback defaults, and structures the records into domain-compliant workout entries.</remarks>
         /// <param name="csvModels">The collection of raw CSV import records.</param>
         /// <returns>A list of standardized <see cref="GymWorkoutEntryModel"/> instances.</returns>
-        public List<GymWorkoutEntryModel> ParseHeavyWorkouts(IEnumerable<HeavyAppCSVModel> csvModels)
+        public List<GymWorkoutEntryModel> ParseHevyWorkouts(IEnumerable<HevyAppCSVModel> csvModels)
         {
             if (csvModels == null)
             {
@@ -441,9 +441,9 @@ namespace BodyTracker.Services
         /// </summary>
         /// <remarks>Validates file existence, reads content text, deserializes JSON data with case-insensitive property matching, and builds a dictionary keyed by exercise name.</remarks>
         /// <param name="filePath">The absolute or relative path to the target JSON file.</param>
-        /// <returns>A dictionary mapping exercise names to their corresponding <see cref="JsonGymExerciseModel"/> definitions.</returns>
+        /// <returns>A dictionary mapping exercise names to their corresponding <see cref="HevyAppExerciseCsvJsonModel"/> definitions.</returns>
         /// <exception cref="FileNotFoundException">Thrown when the specified JSON file cannot be located.</exception>
-        public Dictionary<string, JsonGymExerciseModel> LoadExerciseLookup(string filePath)
+        public Dictionary<string, HevyAppExerciseCsvJsonModel> LoadExerciseLookup(string filePath)
         {
             if (!File.Exists(filePath))
             {
@@ -453,8 +453,8 @@ namespace BodyTracker.Services
             string jsonContent = File.ReadAllText(filePath);
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
-            var exercises = JsonSerializer.Deserialize<List<JsonGymExerciseModel>>(jsonContent, options)
-                            ?? new List<JsonGymExerciseModel>();
+            var exercises = JsonSerializer.Deserialize<List<HevyAppExerciseCsvJsonModel>>(jsonContent, options)
+                            ?? new List<HevyAppExerciseCsvJsonModel>();
 
             return exercises.GroupBy(e => e.Name, StringComparer.OrdinalIgnoreCase)
                             .ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase);

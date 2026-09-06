@@ -3,11 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 
-public static class HeavyAppDataTable
+public static class HevyAppDataTable
 {
-    public static DataTable CreateHeavyAppDataTable(
+    public static DataTable CreateHevyAppDataTable(
         int personId,
-        IEnumerable<HeavyAppCSVModel> workouts)
+        IEnumerable<HevyAppCSVModel> workouts)
     {
         var table = new DataTable();
 

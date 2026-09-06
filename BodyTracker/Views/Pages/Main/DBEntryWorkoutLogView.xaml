@@ -87,8 +87,8 @@
 
                        </TextBlock>-->
 
-                        <DataGrid x:Name="HeavyAppGrid"
-                                  ItemsSource="{Binding HeavyAppDatas}"
+                        <DataGrid x:Name="HevyAppGrid"
+                                  ItemsSource="{Binding HevyAppDatas}"
                                   SelectedItem="{Binding SelectedData, Mode=TwoWay}"
                                   AutoGenerateColumns="False"
                                   CanUserAddRows="False"

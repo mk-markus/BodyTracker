@@ -37,13 +37,13 @@ namespace BodyTracker.ViewModels.Main
         /// Uses <see cref="ObservableCollection{T}"/> to automatically notify the UI 
         /// of additions, removals, or list clears.
         /// </summary>
-        [ObservableProperty] private ObservableCollection<HeavyAppCSVModel> heavyAppDatas = new();
+        [ObservableProperty] private ObservableCollection<HevyAppCSVModel> hevyAppDatas = new();
 
         /// <summary>
         /// Gets or sets the currently selected workload log record from the list.
         /// Nullable, as no record may be selected.
         /// </summary>
-        [ObservableProperty] private HeavyAppCSVModel? selectedData;
+        [ObservableProperty] private HevyAppCSVModel? selectedData;
 
         /// <summary>
         /// Gets or sets the name of the person currently being viewed.
@@ -147,7 +147,7 @@ namespace BodyTracker.ViewModels.Main
         {
             var pid = AppState.SelectedPersonId;
 
-            await GetCurrentHeavyApp(pid);
+            await GetCurrentHevyApp(pid);
         }
 
         /// <summary>
@@ -155,16 +155,16 @@ namespace BodyTracker.ViewModels.Main
         /// </summary>
         /// <param name="pid">The unique person identifier used to query current workload log entries.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        private async Task GetCurrentHeavyApp(int pid)
+        private async Task GetCurrentHevyApp(int pid)
         {
-            var all = await databaseService.GetHeavyAppAsync(pid);
+            var all = await databaseService.GetHevyAppAsync(pid);
 
-            HeavyAppDatas.Clear();
+            HevyAppDatas.Clear();
             foreach (var m in all)
             {
-                HeavyAppDatas.Add(m);
+                HevyAppDatas.Add(m);
             }
-            OnPropertyChanged(nameof(HeavyAppDatas));
+            OnPropertyChanged(nameof(HevyAppDatas));
         }
 
         /// <summary>
@@ -172,7 +172,7 @@ namespace BodyTracker.ViewModels.Main
         /// </summary>
         /// <param name="pid">The unique person identifier used to query initial workload log entries.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        private async Task GetInitialHeavyApp(int pid)
+        private async Task GetInitialHevyApp(int pid)
         {
             //var all = await databaseService.GetSamsungFoodIntakeSqlAsync(pid);
 
@@ -210,7 +210,7 @@ namespace BodyTracker.ViewModels.Main
         /// to re-evaluate its execution logic (<see cref="CanDelete"/>). 
         /// It utilizes a safe cast to <see cref="AsyncRelayCommand"/> to trigger the notification.
         /// </remarks>
-        partial void OnSelectedDataChanged(HeavyAppCSVModel? value)
+        partial void OnSelectedDataChanged(HevyAppCSVModel? value)
         {
             (CommandDelete as AsyncRelayCommand)?.NotifyCanExecuteChanged();
         }
@@ -232,7 +232,7 @@ namespace BodyTracker.ViewModels.Main
                 var result = MessageBox.Show("Are you sure you want to delete the selected data?", "Confirm Deletion", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 if (result != MessageBoxResult.Yes) return;
                 if (SelectedData == null) return;
-                if (SelectedData.ExerciseLogID.HasValue) await databaseService.DeleteHeavyAppAsync(SelectedData.ExerciseLogID.Value);
+                if (SelectedData.ExerciseLogID.HasValue) await databaseService.DeleteHevyAppAsync(SelectedData.ExerciseLogID.Value);
                 await ReloadAsync();
             }
             catch (Exception ex)
@@ -256,7 +256,7 @@ namespace BodyTracker.ViewModels.Main
         /// to ensure the local collection remains consistent with the database state, 
         /// including any server-generated identifiers.
         /// </remarks>
-        public async Task UpdateRowDataAsync(int personId, HeavyAppCSVModel row)
+        public async Task UpdateRowDataAsync(int personId, HevyAppCSVModel row)
         {
             return;
         }
@@ -272,7 +272,7 @@ namespace BodyTracker.ViewModels.Main
 
             if (e.EditAction != DataGridEditAction.Commit) return;
 
-            if (e.Row.Item is not HeavyAppCSVModel editedRow) return;
+            if (e.Row.Item is not HevyAppCSVModel editedRow) return;
 
             int personId = AppState.SelectedPersonId;
             await UpdateRowDataAsync(personId, editedRow);

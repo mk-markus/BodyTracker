@@ -51,6 +51,14 @@
                     <TextBlock Text="🗄️" FontSize="16"/>
                 </RadioButton>
 
+                <!-- ================= NEW Hevy APP Settings ================= -->
+                <RadioButton Style="{StaticResource NavButtonStyle}" 
+                         ToolTip="Settings"
+                         IsChecked="{Binding IsHevyAppSettingsSelected, Mode=TwoWay}">
+                    <TextBlock Text="⚙️" FontSize="16"/>
+                </RadioButton>
+
+
             </StackPanel>
         </Border>
 

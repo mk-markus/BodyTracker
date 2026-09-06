@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace BodyTracker.Views.Pages.Main
 {
     /// <summary>
-    /// Interaktionslogik für DBEntryHeavyAppView.xaml
+    /// Interaktionslogik für DBEntryHevyAppView.xaml
     /// </summary>
-    public partial class DBEntryHeavyAppView : Page
+    public partial class DBEntryHevyAppView : Page
     {
-        public DBEntryHeavyAppView()
+        public DBEntryHevyAppView()
         {
             InitializeComponent();
         }

@@ -121,11 +121,11 @@
 
                 </RadioButton>
 
-                <!-- ================= SHOW DATABASE ENTRIES HEAVY APP ================= -->
+                <!-- ================= SHOW DATABASE ENTRIES Hevy APP ================= -->
                 <RadioButton Style="{StaticResource NavButtonTabStyle}" 
-                          Command="{Binding CommandShowHeavyAppEntryView}"
+                          Command="{Binding CommandShowHevyAppEntryView}"
                           GroupName="ImportSelection"
-                          ToolTip="Heavy App Database Entries">
+                          ToolTip="Hevy App Database Entries">
 
                     <TextBlock Text="🏋️ Gym"
                             Style="{DynamicResource TextBlockNavButtonTabTitle}"/>

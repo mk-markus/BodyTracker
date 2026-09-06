@@ -3,6 +3,7 @@ using BodyTracker.Models.Calculation;
 using BodyTracker.Services;
 using BodyTracker.Services.AI;
 using BodyTracker.Services.Calculation;
+using BodyTracker.Services.WorkoutLog;
 using BodyTracker.State;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -581,6 +582,9 @@ namespace BodyTracker.ViewModels
             CommandSetActualMonthMeanValue = new RelayCommand(SetActualMonthMeanValue);
             CommandSetActualWeekMeanValue = new RelayCommand(SetActualWeekMeanValue);
 
+          
+
+
             _ = InitializeAsync();
         }
 
@@ -615,7 +619,7 @@ namespace BodyTracker.ViewModels
         {
             var pid = AppState.SelectedPersonId;
             var all = await databaseService.GetBodyMeasurementAsync(pid, databaseService.DatabaseCommands.GetPersonMeasurementsSql());
-
+           
             BodyMeasurement.Clear();
             foreach (var m in all)
             {
@@ -675,7 +679,7 @@ namespace BodyTracker.ViewModels
 
             try
             {
-                var list = await databaseService.GetHeavyAppAsync(AppState.SelectedPersonId);
+                var list = await databaseService.GetHevyAppAsync(AppState.SelectedPersonId);
                 var analyzer = new AppWorkoutLoadAnalyzer("", list, 1, 0.5);
 
                 var today = DateTime.Today;

@@ -3,13 +3,13 @@ using CsvHelper.Configuration;
 
 namespace BodyTracker.Services
 {
-    public sealed class HeavyAppCSCMap : ClassMap<HeavyAppCSVModel>
+    public sealed class HevyAppCSCMap : ClassMap<HevyAppCSVModel>
     {
         /// <summary>
         /// Initializes a new instance of the class map, mapping model properties to CSV columns for workout application records.
         /// </summary>
         /// <remarks>Configures CsvHelper property mappings for workout titles, flexible datetime converters for start and end times, description, exercise details, supersets, set indices, set types, and flexible double converters for weight, reps, distance, and RPE.</remarks>
-        public HeavyAppCSCMap()
+        public HevyAppCSCMap()
         {
             Map(m => m.Title).Name("title");
 

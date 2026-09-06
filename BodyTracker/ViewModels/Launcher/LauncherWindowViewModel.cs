@@ -18,14 +18,8 @@ namespace BodyTracker.ViewModels
     {
         /// <summary>
         /// A private, read-only reference to the <see cref="DatabaseService"/>.
-        /// This service acts as the primary data gateway for all persistence 
-        /// operations initiated by the ViewModel.
+        /// This service acts as the primary data gateway for all persistence operations initiated by the ViewModel.
         /// </summary>
-        /// <remarks>
-        /// Marked as <c>readonly</c> to ensure that the service reference remains 
-        /// immutable throughout the lifetime of the ViewModel instance, preventing 
-        /// accidental reassignment and ensuring architectural stability.
-        /// </remarks>
         private readonly DatabaseService databaseService;
 
         /// <summary>
@@ -36,13 +30,11 @@ namespace BodyTracker.ViewModels
         /// <summary>
         /// Gets or sets the currently active view or page displayed within the navigation container.
         /// </summary>
-        /// <remarks>Bound to the UI content presenter to dynamically switch views based on user navigation commands.</remarks>
         [ObservableProperty]
         private object? currentPage;
 
         /// <summary>
         /// Gets the command responsible for refreshing the measurement history from the database.
-        /// Triggers an asynchronous reload of the measurement collection.
         /// </summary>
         public IAsyncRelayCommand ReloadCommand { get; }
 
@@ -62,40 +54,48 @@ namespace BodyTracker.ViewModels
         public IRelayCommand CommandShowDashboardLancherPageAsnyc { get; }
 
         /// <summary>
+        /// Gets the command responsible for showing the Hevy API settings view asynchronously.
+        /// </summary>
+        public IRelayCommand CommandShowHevyAppSettingsLancherViewAsnyc { get; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the dashboard navigation option is currently selected.
         /// </summary>
-        /// <remarks>Used by UI navigation controls to highlight active menu items and manage visual states.</remarks>
         [ObservableProperty]
         private bool isHomeSelected;
 
         /// <summary>
-        /// Gets or sets a value indicating whether the charts analytics navigation option is currently selected.
+        /// Gets or sets a value indicating whether the database person navigation option is currently selected.
         /// </summary>
-        /// <remarks>Used by UI navigation controls to highlight active menu items and manage visual states.</remarks>
         [ObservableProperty]
         private bool isNewDatabasePersonSelected;
 
         /// <summary>
+        /// Gets or sets a value indicating whether the Hevy app settings navigation option is currently selected.
+        /// </summary>
+        [ObservableProperty]
+        private bool isHevyAppSettingsSelected;
+
+        /// <summary>
         /// Gets or sets a value indicating whether the database connection navigation option is currently selected.
         /// </summary>
-        /// <remarks>Used by UI navigation controls to highlight active menu items and manage visual states.</remarks>
         [ObservableProperty]
         private bool isNewDatabaseConnectionSelected;
 
         /// <summary>
-        /// Backing field and generated property for the general failure message string, utilizing the CommunityToolkit.Mvvm ObservableProperty attribute for change notification.
+        /// Backing field and generated property for the general failure message string.
         /// </summary>
         [ObservableProperty]
         private string generalFailureMessage = "";
 
         /// <summary>
-        /// Backing field and generated property for the database failure message string, utilizing the CommunityToolkit.Mvvm ObservableProperty attribute for change notification.
+        /// Backing field and generated property for the database failure message string.
         /// </summary>
         [ObservableProperty]
         private string databaseFailureMessage = "";
 
         /// <summary>
-        /// Backing field and generated property for the SQL connection status message string, utilizing the CommunityToolkit.Mvvm ObservableProperty attribute for change notification.
+        /// Backing field and generated property for the SQL connection status message string.
         /// </summary>
         [ObservableProperty]
         private string sqlConnectionStatusMessage = "";
@@ -106,7 +106,7 @@ namespace BodyTracker.ViewModels
         private bool connectionStateSqlServer = false;
 
         /// <summary>
-        /// Backing field and generated property for additional SQL connection status messages, utilizing the CommunityToolkit.Mvvm ObservableProperty attribute for change notification.
+        /// Backing field and generated property for additional SQL connection status messages.
         /// </summary>
         [ObservableProperty]
         private string sqlAddtionalConnectionStatusMessage = "";
@@ -136,11 +136,10 @@ namespace BodyTracker.ViewModels
         /// <summary>
         /// A flag indicating whether programmatic selection actions should suppress event handling routines.
         /// </summary>
-        /// <remarks>Prevents recursive loops or unwanted side effects during automated state synchronization of navigation toggles.</remarks>
         private bool suppressSelectionAction = false;
 
         /// <summary>
-        /// Initializes a new instance of the LauncherWindowViewModel class, assigning the shell reference, instantiating navigation commands, registering messenger listeners, and loading the default home page.
+        /// Initializes a new instance of the <see cref="LauncherWindowViewModel"/> class.
         /// </summary>
         /// <param name="shell">The parent launcher window reference.</param>
         public LauncherWindowViewModel(LauncherWindow shell)
@@ -149,6 +148,7 @@ namespace BodyTracker.ViewModels
             CommandShowDashboardLancherPageAsnyc = new AsyncRelayCommand(ShowHomePageAsync);
             CommandShowNewDatabaseConnectionPageAsnyc = new AsyncRelayCommand(ShowNewDatabaseConnectionPageAsync);
             CommandShowNewDatabasePersonPageAsnyc = new AsyncRelayCommand(ShowNewDatabasePersonPageAsync);
+            CommandShowHevyAppSettingsLancherViewAsnyc = new AsyncRelayCommand(ShowHevyAppSettingsViewAsnyc);
 
             InitializeWeakReferenceMessenger();
 
@@ -156,7 +156,7 @@ namespace BodyTracker.ViewModels
         }
 
         /// <summary>
-        /// Registers all WeakReferenceMessenger subscriptions for handling error messages, connection state changes, logged-in user info, active database updates, and navigation requests.
+        /// Registers all WeakReferenceMessenger subscriptions for handling error messages, connection state changes, and navigation requests.
         /// </summary>
         private void InitializeWeakReferenceMessenger()
         {
@@ -182,7 +182,6 @@ namespace BodyTracker.ViewModels
                 System.Windows.Application.Current.Dispatcher.BeginInvoke(
                     new Action(() => SqlConnectionStatusMessage = isConnected ? "OK" : "NOK"
                     ));
-
             });
 
             WeakReferenceMessenger.Default.Register<AdditionalDatabaseConnectionMessage>(this, (r, m) =>
@@ -231,13 +230,8 @@ namespace BodyTracker.ViewModels
         }
 
         /// <summary>
-        /// Asynchronously handles the display and automatic clearing of database error messages on the UI thread, 
-        /// incorporating a version check to prevent race conditions and waiting until the database server connection is restored before clearing the message.
+        /// Asynchronously handles the display and automatic clearing of database error messages on the UI thread.
         /// </summary>
-        /// <param name="message">The database error message to display.</param>
-        /// <param name="targetVersion">The expected version number of the database error message state to ensure validity.</param>
-        /// <param name="delay">The initial time delay before checking the server connection status.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
         private async Task HandleDatabaseErrorMessageWithConnectionCheckAsync(string message, long targetVersion, TimeSpan delay)
         {
             await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
@@ -269,13 +263,8 @@ namespace BodyTracker.ViewModels
         }
 
         /// <summary>
-        /// Asynchronously handles the display and timed clearing of general error messages on the UI thread, 
-        /// utilizing a version check to prevent race conditions and automatically resetting the message after a specified delay.
+        /// Asynchronously handles the display and timed clearing of general error messages on the UI thread.
         /// </summary>
-        /// <param name="message">The general error message to display.</param>
-        /// <param name="targetVersion">The expected version number of the general failure message state to ensure validity.</param>
-        /// <param name="delay">The duration for which the error message remains visible before being cleared.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
         private async Task HandleGenralErrorMessageWithTimeoutAsync(string message, long targetVersion, TimeSpan delay)
         {
             await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
@@ -299,43 +288,30 @@ namespace BodyTracker.ViewModels
             });
         }
 
-        /// <summary>
-        /// Handles the change event for the home selection property, triggering navigation when selected.
-        /// </summary>
-        /// <remarks>Ignores unselection events or changes suppressed during programmatic state updates.</remarks>
-        /// <param name="value">The new boolean selection state.</param>
         partial void OnIsHomeSelectedChanged(bool value)
         {
             if (!value || suppressSelectionAction) return;
             _ = ShowHomePageAsync();
         }
 
-        /// <summary>
-        /// Handles the change event for the new database person selection property, triggering navigation when selected.
-        /// </summary>
-        /// <remarks>Ignores unselection events or changes suppressed during programmatic state updates.</remarks>
-        /// <param name="value">The new boolean selection state.</param>
         partial void OnIsNewDatabasePersonSelectedChanged(bool value)
         {
             if (!value || suppressSelectionAction) return;
             _ = ShowNewDatabasePersonPageAsync();
         }
 
-        /// <summary>
-        /// Handles the change event for the new database connection selection property, triggering navigation when selected.
-        /// </summary>
-        /// <remarks>Ignores unselection events or changes suppressed during programmatic state updates.</remarks>
-        /// <param name="value">The new boolean selection state.</param>
         partial void OnIsNewDatabaseConnectionSelectedChanged(bool value)
         {
             if (!value || suppressSelectionAction) return;
             _ = ShowNewDatabaseConnectionPageAsync();
         }
 
-        /// <summary>
-        /// Asynchronously navigates to the home page view and updates the navigation toggle states.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
+        partial void OnIsHevyAppSettingsSelectedChanged(bool value)
+        {
+            if (!value || suppressSelectionAction) return;
+            _ = ShowHevyAppSettingsViewAsnyc();
+        }
+
         private async Task ShowHomePageAsync()
         {
             CurrentPage = new LauncherHomePage(launcherWindow);
@@ -344,13 +320,10 @@ namespace BodyTracker.ViewModels
             IsHomeSelected = true;
             IsNewDatabaseConnectionSelected = false;
             IsNewDatabasePersonSelected = false;
+            IsHevyAppSettingsSelected = false; 
             suppressSelectionAction = false;
         }
 
-        /// <summary>
-        /// Asynchronously navigates to the new database connection page view and updates the navigation toggle states.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
         private async Task ShowNewDatabaseConnectionPageAsync()
         {
             CurrentPage = new LauncherNewDatabaseConnectionPage();
@@ -359,13 +332,10 @@ namespace BodyTracker.ViewModels
             IsHomeSelected = false;
             IsNewDatabaseConnectionSelected = true;
             IsNewDatabasePersonSelected = false;
+            IsHevyAppSettingsSelected = false;
             suppressSelectionAction = false;
         }
 
-        /// <summary>
-        /// Asynchronously navigates to the new database person page view and updates the navigation toggle states.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
         private async Task ShowNewDatabasePersonPageAsync()
         {
             CurrentPage = new LauncherNewDatabasePersonPage();
@@ -374,29 +344,32 @@ namespace BodyTracker.ViewModels
             IsHomeSelected = false;
             IsNewDatabaseConnectionSelected = false;
             IsNewDatabasePersonSelected = true;
+            IsHevyAppSettingsSelected = false;
+            suppressSelectionAction = false;
+        }
+
+        private async Task ShowHevyAppSettingsViewAsnyc()
+        {
+            CurrentPage = new LauncherHevyAppAPISettingsView();
+
+            suppressSelectionAction = true;
+            IsHomeSelected = false;
+            IsNewDatabaseConnectionSelected = false;
+            IsNewDatabasePersonSelected = false;
+            IsHevyAppSettingsSelected = true;
             suppressSelectionAction = false;
         }
 
         #region Disposal Pattern
 
-        /// <summary>
-        /// Tracks whether the object has been disposed to prevent double disposal.
-        /// </summary>
         private bool disposed = false;
 
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources, suppressing finalization.
-        /// </summary>
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        /// <summary>
-        /// Protected implementation of the Dispose pattern, releasing managed resources such as the database service and unregistering messenger listeners when disposing is true.
-        /// </summary>
-        /// <param name="disposing">A value indicating whether managed resources should be released.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (disposed) return;

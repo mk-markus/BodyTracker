@@ -2,7 +2,7 @@
 
 namespace BodyTracker.Models
 {
-    public class HeavyAppCSVModel
+    public class HevyAppCSVModel
     {
         /// <summary>
         /// Gets or sets the ID for the workout or data entry record.
@@ -107,10 +107,9 @@ namespace BodyTracker.Models
         public double? Rpe { get; set; }
 
         /// <summary>
-        /// 
+        /// Gets or sets the unique hash identifier (Data UUID) used for record deduplication and tracking of individual workout sets.
         /// </summary>
         public string DataUuid { get; set; }
-
 
     }
 }

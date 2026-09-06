@@ -410,7 +410,7 @@ namespace BodyTracker.ViewModels
 
                 suppressReload = true;
 
-                var list = await databaseService.GetHeavyAppWorkoutsAsync(AppState.SelectedPersonId);
+                var list = await databaseService.GetHevyAppWorkoutsAsync(AppState.SelectedPersonId);
 
 
                 analyzer = new AppWorkoutLoadAnalyzer("", list, 1, 0.5);
