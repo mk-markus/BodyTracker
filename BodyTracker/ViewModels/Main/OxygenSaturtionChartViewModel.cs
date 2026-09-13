@@ -53,7 +53,7 @@ namespace BodyTracker.ViewModels.Main
 
         /// <summary>
         /// Gets or sets the X-axes configuration for the SpO2 Cartesian chart.
-        /// This property defines the horizontal scale, including labels (e.g., dates), 
+        /// This property defines the horizontal scale, including Lbls (e.g., dates), 
         /// unit spacing, and title formatting.
         /// </summary>
         [ObservableProperty]
@@ -69,7 +69,7 @@ namespace BodyTracker.ViewModels.Main
 
         /// <summary>
         /// Gets or sets the X-axes configuration for the low SpO2 duration Cartesian chart.
-        /// This property defines the horizontal scale, including labels (e.g., dates), 
+        /// This property defines the horizontal scale, including Lbls (e.g., dates), 
         /// unit spacing, and title formatting.
         /// </summary>
         [ObservableProperty]
@@ -93,7 +93,7 @@ namespace BodyTracker.ViewModels.Main
 
         /// <summary>
         /// Gets or sets the X-axes configuration for the SpO2 coverage rate Cartesian chart.
-        /// This property defines the horizontal scale, including labels (e.g., dates), 
+        /// This property defines the horizontal scale, including Lbls (e.g., dates), 
         /// unit spacing, and title formatting.
         /// </summary>
         [ObservableProperty]

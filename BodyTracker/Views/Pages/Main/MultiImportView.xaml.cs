@@ -1,5 +1,7 @@
 ﻿using BodyTracker.Services;
 using BodyTracker.ViewModels;
+using System.Diagnostics;
+using System.Globalization;
 using System.Windows.Controls;
 
 namespace BodyTracker.Views.Pages
@@ -33,7 +35,6 @@ namespace BodyTracker.Views.Pages
             InitializeComponent();
             mainWindow = shell;
             databaseService = db;
-            
             mainWindow.DataContext = this;
 
             multiImportPageViewModel = new MultiImportViewModel(mainWindow, databaseService);

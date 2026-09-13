@@ -4,10 +4,11 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:BodyTracker.Views.Pages.Main"
+      xmlns:loc="clr-namespace:BodyTracker.Services.Localization"
       mc:Ignorable="d" 
       xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="DBEntryFoodIntakeView">
+      Title="{loc:Translate TitleDBEntryWorkoutLogView}">
 
     <Grid>
         <Grid>
@@ -27,19 +28,19 @@
                    Grid.Row="0">
                 <StackPanel Orientation="Vertical">
 
-                    <TextBlock Text="🛠️ Actions"
+                    <TextBlock Text="{loc:Translate TitleActions}"
                               Style="{DynamicResource TextBlockDashBoardTitle}"/>
 
                     <StackPanel Orientation="Horizontal">
 
                         <Button Content="🗑"
-                               ToolTip="Delete Selected Entry"
+                               ToolTip="{loc:Translate ToolTipDeleteSelectedEntry}"
                                Command="{Binding CommandDelete}"
                                Style="{DynamicResource IconStandardButton}" 
                                Margin="0,0,15,0"/>
 
                         <Button Content="🔄"
-                               ToolTip="Refresh Datas: Reload all datas from Database"
+                               ToolTip="{loc:Translate ToolTipRefreshDatabaseDatas}"
                                Command="{Binding CommandRefresh}"
                                Style="{DynamicResource IconStandardButton}" />
 
@@ -72,20 +73,7 @@
 
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
-                            <!--<RowDefinition Height="*"/>-->
                         </Grid.RowDefinitions>
-
-                        <!--<TextBlock Grid.Column="0"
-                                  Grid.Row="0">
-                           
-                       <Run Text="Measurements from " 
-                            FontWeight="SemiBold"
-                            FontSize="12"/>
-                       <Run Text="{Binding UserName}" 
-                            FontWeight="Bold"
-                            FontSize="15"/>
-
-                       </TextBlock>-->
 
                         <DataGrid x:Name="HevyAppGrid"
                                   ItemsSource="{Binding HevyAppDatas}"
@@ -114,73 +102,23 @@
 
                             <DataGrid.Columns>
 
-                                <DataGridTextColumn Header="DB ID"
-                                                    Binding="{Binding ExerciseLogID}"
-                                                    IsReadOnly="True"/>
-
-                                <DataGridTextColumn Header="Workout"
-                            Binding="{Binding Title}"
-                            IsReadOnly="True"/>
-
-                                <DataGridTextColumn Header="Exercise"
-                            Binding="{Binding ExerciseTitle}"
-                            IsReadOnly="True"/>
-
-                                <DataGridTextColumn Header="Start Time"
-                            Binding="{Binding StartTime, StringFormat=dd.MM.yyyy HH:mm:ss}"
-                            IsReadOnly="True"/>
-
-                                <DataGridTextColumn Header="End Time"
-                            Binding="{Binding EndTime, StringFormat=dd.MM.yyyy HH:mm:ss}"
-                            IsReadOnly="True"/>
-
-                                <DataGridTextColumn Header="Update Time"
-                            Binding="{Binding UpdateTime, StringFormat=dd.MM.yyyy HH:mm:ss}"
-                            IsReadOnly="True"/>
-
-                                <DataGridTextColumn Header="Description"
-                            Binding="{Binding Description}"
-                            IsReadOnly="True"/>
-
-                                <DataGridTextColumn Header="Superset ID"
-                            Binding="{Binding SupersetId}"
-                            IsReadOnly="True"/>
-
-                                <DataGridTextColumn Header="Exercise Notes"
-                            Binding="{Binding ExerciseNotes}"
-                            IsReadOnly="True"/>
-
-                                <DataGridTextColumn Header="Set Index"
-                            Binding="{Binding SetIndex}"
-                            IsReadOnly="True"/>
-
-                                <DataGridTextColumn Header="Set Type"
-                            Binding="{Binding SetType}"
-                            IsReadOnly="True"/>
-
-                                <DataGridTextColumn Header="Weight (kg)"
-                            Binding="{Binding WeightKg, StringFormat=N2}"
-                            IsReadOnly="True"/>
-
-                                <DataGridTextColumn Header="Reps"
-                            Binding="{Binding Reps, StringFormat=N0}"
-                            IsReadOnly="True"/>
-
-                                <DataGridTextColumn Header="Distance (km)"
-                            Binding="{Binding DistanceKm, StringFormat=N2}"
-                            IsReadOnly="True"/>
-
-                                <DataGridTextColumn Header="Duration (sec)"
-                            Binding="{Binding DurationSeconds}"
-                            IsReadOnly="True"/>
-
-                                <DataGridTextColumn Header="RPE"
-                                                    Binding="{Binding Rpe, StringFormat=N1}"
-                                                    IsReadOnly="True"/>
-
-                                <DataGridTextColumn Header="Data UUID"
-                                            Binding="{Binding DataUuid}"
-                                            IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColDbId}" Binding="{Binding ExerciseLogID}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColWorkout}" Binding="{Binding Title}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColExercise}" Binding="{Binding ExerciseTitle}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColStartTime}" Binding="{Binding StartTime, StringFormat=dd.MM.yyyy HH:mm:ss}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColEndTime}" Binding="{Binding EndTime, StringFormat=dd.MM.yyyy HH:mm:ss}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColUpdateTime}" Binding="{Binding UpdateTime, StringFormat=dd.MM.yyyy HH:mm:ss}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColDescription}" Binding="{Binding Description}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColSupersetId}" Binding="{Binding SupersetId}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColExerciseNotes}" Binding="{Binding ExerciseNotes}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColSetIndex}" Binding="{Binding SetIndex}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColSetType}" Binding="{Binding SetType}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColWeightKg}" Binding="{Binding WeightKg, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColReps}" Binding="{Binding Reps, StringFormat=N0}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColDistanceKm}" Binding="{Binding DistanceKm, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColDurationSec}" Binding="{Binding DurationSeconds}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColRpe}" Binding="{Binding Rpe, StringFormat=N1}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColDataUuid}" Binding="{Binding DataUuid}" IsReadOnly="True"/>
 
                             </DataGrid.Columns>
 

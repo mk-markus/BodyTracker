@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:BodyTracker.Views.Pages"
+      xmlns:loc="clr-namespace:BodyTracker.Services.Localization"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="MultiChartPage">
@@ -19,15 +20,13 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-       
         <Border Grid.Column="0"
                 Grid.Row="0"
                 Style="{DynamicResource BorderDashboardCardStyle}">
-            
+
             <StackPanel VerticalAlignment="Top"
                         HorizontalAlignment="Left"
                         Orientation="Horizontal">
-
 
                 <!-- ================= SHOW PAGE MEASUREMENT CHARTS ================= -->
                 <RadioButton Style="{StaticResource NavButtonTabStyle}"
@@ -35,18 +34,17 @@
                              GroupName="ChartSelection"
                              IsChecked="True">
 
-                    <TextBlock Text="📋 Body Measurement"
+                    <TextBlock Text="{loc:Translate NavBodyMeasurement}"
                                Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
 
                 </RadioButton>
-
 
                 <!-- ================= SHOW FOOD INFO CHART ================= -->
                 <RadioButton Style="{StaticResource NavButtonTabStyle}" 
                              Command="{Binding CommandShowFoodInfo}"
                              GroupName="ChartSelection">
 
-                    <TextBlock Text="🥗 Food Info"
+                    <TextBlock Text="{loc:Translate NavFoodInfo}"
                                Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
 
                 </RadioButton>
@@ -56,7 +54,7 @@
                              Command="{Binding CommandShowDailyStep}"
                              GroupName="ChartSelection">
 
-                    <TextBlock Text="📊 Movement | Energy"
+                    <TextBlock Text="{loc:Translate NavMovementEnergy}"
                                Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
 
                 </RadioButton>
@@ -66,7 +64,7 @@
                              Command="{Binding CommandShowExercise}"
                              GroupName="ChartSelection">
 
-                    <TextBlock Text="🏃 Exercise"
+                    <TextBlock Text="{loc:Translate NavExercise}"
                                Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
 
                 </RadioButton>
@@ -76,49 +74,35 @@
                              Command="{Binding CommandShowHeartRate}"
                              GroupName="ChartSelection">
 
-                    <TextBlock Text="💓 Heart Rate"
+                    <TextBlock Text="{loc:Translate NavHeartRate}"
                                Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
 
                 </RadioButton>
 
-                <!-- ================= SHOW HEART RATE CHARTS ================= -->
+                <!-- ================= SHOW SPO2 CHARTS ================= -->
                 <RadioButton Style="{StaticResource NavButtonTabStyle}" 
                              Command="{Binding CommandShowSpO2}"
                              GroupName="ChartSelection">
 
-                    <TextBlock Style="{DynamicResource TextBlockNavButtonTabTitle}">
-
-                    <InlineUIContainer>
-                        <Image Source="/Ressources/Images/icons8-pulse-oximeter-100.png" 
-                                Width="22" 
-                                Height="22" 
-                                Margin="0"/>
-                    </InlineUIContainer>
-    
-                    <Run Text=" SpO₂"/>
-                    </TextBlock>
+                    <TextBlock  Text="{loc:Translate NavSpO2}"
+                                Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
 
                 </RadioButton>
-
 
                 <!-- ================= SHOW WORKOUT CHARTS & EXERCISES ================= -->
                 <RadioButton Style="{StaticResource NavButtonTabStyle}" 
                              Command="{Binding CommandShowWorkouts}"
                              GroupName="ChartSelection">
 
-                    <TextBlock Text="🏋️ Gym"
+                    <TextBlock Text="{loc:Translate NavGym}"
                                Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
 
                 </RadioButton>
 
-
-
-
             </StackPanel>
         </Border>
 
-        
-        <!-- Hauptinhalt (Beispielhaft für New Entry Kachel mit den neuen Styles) -->
+        <!-- Hauptinhalt -->
         <Grid Grid.Row="1">
             <Frame x:Name="MainChartContent" 
                    Content="{Binding CurrentPage}"

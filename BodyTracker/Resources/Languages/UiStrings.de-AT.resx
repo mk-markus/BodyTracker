@@ -1,0 +1,476 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" />
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>1.3</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+
+	<!-- ================= LAUNCHER WINDOW / NAVIGATION ================= -->
+	<data name="LauncherWindowTitle" xml:space="preserve"><value>Anmeldefenster</value></data>
+	<data name="NavHomeToolTip" xml:space="preserve"><value>Startseite</value></data>
+	<data name="NavNewPersonToolTip" xml:space="preserve"><value>Neue Datenbank-Person</value></data>
+	<data name="NavNewDatabaseToolTip" xml:space="preserve"><value>Neue Datenbankverbindung</value></data>
+	<data name="NavGeneralSettingsToolTip" xml:space="preserve"><value>Einstellungen</value></data>
+
+	<!-- ================= LAUNCHER HOME PAGE ================= -->
+	<data name="LauncherHomePageTitle" xml:space="preserve"><value>Startseite</value></data>
+	<data name="GridHeaderPersonId" xml:space="preserve"><value>ID</value></data>
+	<data name="GridHeaderFirstName" xml:space="preserve"><value>Vorname</value></data>
+	<data name="GridHeaderLastName" xml:space="preserve"><value>Nachname</value></data>
+	<data name="GridHeaderBirthdate" xml:space="preserve"><value>Geburtsdatum</value></data>
+	<data name="GridHeaderHeight" xml:space="preserve"><value>Größe</value></data>
+	<data name="BtnLoadBodyData" xml:space="preserve"><value>Körperdaten laden</value></data>
+
+	<!-- ================= LAUNCHER SETTINGS VIEW ================= -->
+	<data name="LauncherSettingsViewTitle" xml:space="preserve"><value>Einstellungen</value></data>
+	<data name="TxtApiKey" xml:space="preserve"><value>API-Schlüssel:</value></data>
+	<data name="TxtLanguage" xml:space="preserve"><value>Programmsprache:</value></data>
+	<data name="BtnSaveApiKeyToolTip" xml:space="preserve"><value>API-Schlüssel speichern</value></data>
+	<data name="TxtDefaultImportFolder" xml:space="preserve"><value>Standard-Importordner:</value></data>
+	<data name="BtnOpenDefaultFolderToolTip" xml:space="preserve"><value>Standardordner auswählen</value></data>
+
+	<!-- ================= LAUNCHER NEW DATABASE CONNECTION VIEW ================= -->
+	<data name="NewDatabaseConnectionPageTitle" xml:space="preserve"><value>Seite für neue Datenbankverbindung</value></data>
+	<data name="TxtDatabaseUser" xml:space="preserve"><value>Benutzer:</value></data>
+	<data name="TxtDatabasePassword" xml:space="preserve"><value>Passwort:</value></data>
+	<data name="TxtDatabaseNameLbl" xml:space="preserve"><value>Datenbank:</value></data>
+	<data name="TxtSqlServerIp" xml:space="preserve"><value>SQL-Server-IP:</value></data>
+	<data name="TxtSqlServerPort" xml:space="preserve"><value>SQL-Server-Port:</value></data>
+
+	<!-- ================= LAUNCHER NEW DATABASE PERSON VIEW ================= -->
+	<data name="NewDatabasePersonPageTitle" xml:space="preserve"><value>Seite für neue Datenbank-Person</value></data>
+	<data name="TxtFirstName" xml:space="preserve"><value>Vorname:</value></data>
+	<data name="TxtLastName" xml:space="preserve"><value>Nachname:</value></data>
+	<data name="TxtBirthDate" xml:space="preserve"><value>Geburtsdatum:</value></data>
+	<data name="TxtPersonHeight" xml:space="preserve"><value>Körpergröße [m]:</value></data>
+	<data name="BtnCreate" xml:space="preserve"><value>Erstellen</value></data>
+
+	<!-- ================= BODY TRACKER VIEW (MAIN LAYOUT) ================= -->
+	<data name="BodyTrackerViewTitle" xml:space="preserve"><value>BodyTracker</value></data>
+	<data name="NavToolTipDashboard" xml:space="preserve"><value>Dashboard</value></data>
+	<data name="NavToolTipNewEntry" xml:space="preserve"><value>Neuer Eintrag</value></data>
+	<data name="NavToolTipDatabase" xml:space="preserve"><value>Datenbank</value></data>
+	<data name="NavToolTipCharts" xml:space="preserve"><value>Diagramme</value></data>
+	<data name="NavToolTipImport" xml:space="preserve"><value>Daten importieren</value></data>
+	<data name="NavToolTipInfo" xml:space="preserve"><value>Info</value></data>
+
+	<!-- ================= DASHBOARD VIEW LOCALIZATION ================= -->
+	<data name="TxtActions" xml:space="preserve"><value>🛠️ Aktionen</value></data>
+	<data name="ToolTipRefreshDashboard" xml:space="preserve"><value>Dashboard ohne KI-Ergebnis aktualisieren</value></data>
+	<data name="TxtBodyProgress" xml:space="preserve"><value>📊 Körperfortschritt</value></data>
+	<data name="TxtWeightKg" xml:space="preserve"><value>Gewicht (kg)</value></data>
+	<data name="TxtBodyFatPct" xml:space="preserve"><value>Körperfett (%)</value></data>
+	<data name="TxtMuscleMassPct" xml:space="preserve"><value>Muskelmasse (%)</value></data>
+	<data name="TxtBodyWaterPct" xml:space="preserve"><value>Körperwasser (%)</value></data>
+	<data name="TxtAverageBodyMeasurements" xml:space="preserve"><value>📐 Durchschnittliche Körpermaße</value></data>
+	<data name="TxtFrom" xml:space="preserve"><value>Von:</value></data>
+	<data name="TxtTo" xml:space="preserve"><value>Bis:</value></data>
+	<data name="ToggleQuickRanges" xml:space="preserve"><value>📅 Schnellbereiche ▼</value></data>
+	<data name="ToolTipQuickRanges" xml:space="preserve"><value>Filtert das Diagramm so, dass ausschließlich Daten für das aktuelle Jahr angezeigt werden.</value></data>
+	<data name="BtnYear" xml:space="preserve"><value>📅 Jahr</value></data>
+	<data name="ToolTipYear" xml:space="preserve"><value>Diagrammdaten für das aktuelle Jahr filtern.</value></data>
+	<data name="BtnWeek" xml:space="preserve"><value>📆 Woche</value></data>
+	<data name="ToolTipWeek" xml:space="preserve"><value>Diagrammdaten für die aktuelle Woche filtern.</value></data>
+	<data name="BtnMonth" xml:space="preserve"><value>🗓️ Monat</value></data>
+	<data name="ToolTipMonth" xml:space="preserve"><value>Diagrammdaten für den aktuellen Monat filtern.</value></data>
+	<data name="TxtWeight" xml:space="preserve"><value>⚖️ Gewicht:</value></data>
+	<data name="TxtBmi" xml:space="preserve"><value>📐 BMI:</value></data>
+	<data name="TxtFfm" xml:space="preserve"><value>💪 FFM:</value></data>
+	<data name="TxtFfmi" xml:space="preserve"><value>💪 FFMI:</value></data>
+	<data name="TxtFat" xml:space="preserve"><value>💧 Fett:</value></data>
+	<data name="TxtCaliper" xml:space="preserve"><value>🗜️ Caliper:</value></data>
+	<data name="TxtMuscle" xml:space="preserve"><value>🧬 Muskeln:</value></data>
+	<data name="TxtWater" xml:space="preserve"><value>💧 Wasser:</value></data>
+	<data name="TxtChest" xml:space="preserve"><value>📏 Brust:</value></data>
+	<data name="TxtWaist" xml:space="preserve"><value>📏 Taille:</value></data>
+	<data name="TxtHip" xml:space="preserve"><value>📏 Hüfte:</value></data>
+	<data name="TxtAiInsights" xml:space="preserve"><value>🧠 KI-Einblicke</value></data>
+	<data name="ToolTipRefreshAi" xml:space="preserve"><value>KI-Ergebnis aktualisieren</value></data>
+	<data name="TxtWorkoutMuscleDistribution" xml:space="preserve"><value>💪 Trainings-Muskelverteilung</value></data>
+	<data name="ToolTipDeleteSelectedEntry" xml:space="preserve"><value>Ausgewählten Eintrag löschen</value></data>
+	<data name="ToolTipRefreshDatabaseDatas" xml:space="preserve"><value>Daten aktualisieren: Alle Daten aus der Datenbank neu laden</value></data>
+	<data name="InitialValues" xml:space="preserve"><value>Anfangswerte</value></data>
+	<data name="InitialMeasurementsFrom" xml:space="preserve"><value>Anfangsmessungen vom</value></data>
+	<data name="CharTitleBodyMeasurements" xml:space="preserve"><value>📈 Körper Messwerte</value></data>
+	<data name="CharTitleTrainingsVolume" xml:space="preserve"><value>📈 Trainingsvolumen </value></data>
+	<data name="CharTitleMostDoneExercises" xml:space="preserve"><value>📈 Häufigste Übungen</value></data>
+	<data name="TxtTotalVolume" xml:space="preserve"><value>📊 Gesamtvolumen</value></data>
+	<data name="TxtTotalWorkouts" xml:space="preserve"><value>🏋️ Gesamteinheiten</value></data>
+	
+	<!-- ================= COMMON COLUMN HEADERS ================= -->
+	<data name="ColDbId" xml:space="preserve"><value>DB-ID</value></data>
+	<data name="ColId" xml:space="preserve"><value>ID</value></data>
+	<data name="ColStartTime" xml:space="preserve"><value>Startzeit</value></data>
+	<data name="ColEndTime" xml:space="preserve"><value>Endzeit</value></data>
+	<data name="ColUpdateTime" xml:space="preserve"><value>Aktualisierungszeit</value></data>
+	<data name="ColCreateTime" xml:space="preserve"><value>Erstellungszeit</value></data>
+	<data name="ColDeviceUuid" xml:space="preserve"><value>Geräte-UUID</value></data>
+	<data name="ColDataUuid" xml:space="preserve"><value>Daten-UUID</value></data>
+	<data name="ColPackageName" xml:space="preserve"><value>Paketname</value></data>
+	<data name="ColLiveDataInternal" xml:space="preserve"><value>Live-Daten Intern</value></data>
+	<data name="ColMissionValue" xml:space="preserve"><value>Missionswert</value></data>
+	<data name="ColRaceTarget" xml:space="preserve"><value>Rennziel</value></data>
+	<data name="ColSubsetData" xml:space="preserve"><value>Teilmengendaten</value></data>
+	<data name="ColStartLongitude" xml:space="preserve"><value>Start-Längengrad</value></data>
+	<data name="ColRoutineDataUuid" xml:space="preserve"><value>Routinendaten-UUID</value></data>
+	<data name="ColTotalCalorie" xml:space="preserve"><value>Kalorien gesamt</value></data>
+	<data name="ColCompletionStatus" xml:space="preserve"><value>Abschlussstatus</value></data>
+	<data name="ColPaceInfoId" xml:space="preserve"><value>Pace-Info-ID</value></data>
+	<data name="ColActivityType" xml:space="preserve"><value>Aktivitätstyp</value></data>
+	<data name="ColPaceLiveData" xml:space="preserve"><value>Pace-Live-Daten</value></data>
+	<data name="ColSensingStatus" xml:space="preserve"><value>Erfassungsstatus</value></data>
+	<data name="ColSourceType" xml:space="preserve"><value>Quellentyp</value></data>
+	<data name="ColMissionType" xml:space="preserve"><value>Missionstyp</value></data>
+	<data name="ColFtp" xml:space="preserve"><value>FTP</value></data>
+	<data name="ColTrackingStatus" xml:space="preserve"><value>Tracking-Status</value></data>
+	<data name="ColProgramId" xml:space="preserve"><value>Programm-ID</value></data>
+	<data name="ColTitle" xml:space="preserve"><value>Titel</value></data>
+	<data name="ColRewardStatus" xml:space="preserve"><value>Belohnungsstatus</value></data>
+	<data name="ColHeartRateSampleCount" xml:space="preserve"><value>Anzahl Herfrequenz-Messpunkte</value></data>
+	<data name="ColStartLatitude" xml:space="preserve"><value>Start-Breitengrad</value></data>
+	<data name="ColMissionExtraValue" xml:space="preserve"><value>Missions-Extrawert</value></data>
+	<data name="ColProgramScheduleId" xml:space="preserve"><value>Programm-Zeitplan-ID</value></data>
+	<data name="ColHeartRateDeviceUuid" xml:space="preserve"><value>Herzfrequenz-Geräte-UUID</value></data>
+	<data name="ColLocationDataInternal" xml:space="preserve"><value>Standortdaten Intern</value></data>
+	<data name="ColCustomId" xml:space="preserve"><value>Benutzerdefinierte ID</value></data>
+	<data name="ColAdditionalInternal" xml:space="preserve"><value>Zusätzlich Intern</value></data>
+	<data name="ColDuration" xml:space="preserve"><value>Dauer</value></data>
+	<data name="ColAdditional" xml:space="preserve"><value>Zusätzlich</value></data>
+	<data name="ColCreateShVer" xml:space="preserve"><value>Erstellungs-SH-Version</value></data>
+	<data name="ColMeanCaloricBurnRate" xml:space="preserve"><value>Mittlere Kalorienverbrennungsrate</value></data>
+	<data name="ColLocationData" xml:space="preserve"><value>Standortdaten</value></data>
+	<data name="ColExerciseType" xml:space="preserve"><value>Übungstyp</value></data>
+	<data name="ColCustom" xml:space="preserve"><value>Benutzerdefiniert</value></data>
+	<data name="ColMaxAltitude" xml:space="preserve"><value>Max. Höhe</value></data>
+	<data name="ColInclineDistance" xml:space="preserve"><value>Distanz bergauf</value></data>
+	<data name="ColMeanHeartRate" xml:space="preserve"><value>Mittlere Herzfrequenz</value></data>
+	<data name="ColCountType" xml:space="preserve"><value>Zähltyp</value></data>
+	<data name="ColMeanRpm" xml:space="preserve"><value>Mittlere RPM</value></data>
+	<data name="ColMinAltitude" xml:space="preserve"><value>Min. Höhe</value></data>
+	<data name="ColModifyShVer" xml:space="preserve"><value>Änderungs-SH-Version</value></data>
+	<data name="ColMaxHeartRate" xml:space="preserve"><value>Max. Herzfrequenz</value></data>
+	<data name="ColClientDataId" xml:space="preserve"><value>Client-Daten-ID</value></data>
+	<data name="ColMaxPower" xml:space="preserve"><value>Max. Leistung</value></data>
+	<data name="ColMaxSpeed" xml:space="preserve"><value>Max. Geschwindigkeit</value></data>
+	<data name="ColMeanCadence" xml:space="preserve"><value>Mittlere Trittfrequenz</value></data>
+	<data name="ColMinHeartRate" xml:space="preserve"><value>Min. Herzfrequenz</value></data>
+	<data name="ColClientDataVer" xml:space="preserve"><value>Client-Daten-Version</value></data>
+	<data name="ColCount" xml:space="preserve"><value>Anzahl</value></data>
+	<data name="ColDistance" xml:space="preserve"><value>Distanz</value></data>
+	<data name="ColMaxCaloricBurnRate" xml:space="preserve"><value>Max. Kalorienverbrennungsrate</value></data>
+	<data name="ColCalorie" xml:space="preserve"><value>Kalorien</value></data>
+	<data name="ColMaxCadence" xml:space="preserve"><value>Max. Trittfrequenz</value></data>
+	<data name="ColDeclineDistance" xml:space="preserve"><value>Distanz bergab</value></data>
+	<data name="ColVo2Max" xml:space="preserve"><value>VO2 Max</value></data>
+	<data name="ColTimeOffset" xml:space="preserve"><value>Zeitversatz</value></data>
+	<data name="ColMaxRpm" xml:space="preserve"><value>Max. RPM</value></data>
+	<data name="ColComment" xml:space="preserve"><value>Kommentar</value></data>
+	<data name="ColLiveData" xml:space="preserve"><value>Live-Daten</value></data>
+	<data name="ColMeanPower" xml:space="preserve"><value>Mittlere Leistung</value></data>
+	<data name="ColMeanSpeed" xml:space="preserve"><value>Mittlere Geschwindigkeit</value></data>
+	<data name="ColPkgName" xml:space="preserve"><value>Paketname</value></data>
+	<data name="ColAltitudeGain" xml:space="preserve"><value>Höhengewinn</value></data>
+	<data name="ColAltitudeLoss" xml:space="preserve"><value>Höhenverlust</value></data>
+	<data name="ColExerciseCustomType" xml:space="preserve"><value>Benutzerdefinierter Übungstyp</value></data>
+	<data name="ColAuxiliaryDevices" xml:space="preserve"><value>Hilfsgeräte</value></data>
+	<data name="ColSweatLoss" xml:space="preserve"><value>Schweißverlust</value></data>
+
+	<!-- ================= BODY MEASUREMENT COLUMNS ================= -->
+	<data name="ColDate" xml:space="preserve"><value>Datum</value></data>
+	<data name="ColBodyWeight" xml:space="preserve"><value>Körpergewicht (kg)</value></data>
+	<data name="ColBmi" xml:space="preserve"><value>BMI</value></data>
+	<data name="ColBodyFatPercentage" xml:space="preserve"><value>Körperfett (%)</value></data>
+	<data name="ColBodyFatPercentageTop" xml:space="preserve"><value>Körperfett Oben (%)</value></data>
+	<data name="ColBodyFatPercentageBottom" xml:space="preserve"><value>Körperfett Unten (%)</value></data>
+	<data name="ColBodyMusclePercentage" xml:space="preserve"><value>Muskelmasse (%)</value></data>
+	<data name="ColBodyMusclePercentageTop" xml:space="preserve"><value>Muskelmasse Oben (%)</value></data>
+	<data name="ColBodyMusclePercentageBottom" xml:space="preserve"><value>Muskelmasse Unten (%)</value></data>
+	<data name="ColBodyWaterPercentage" xml:space="preserve"><value>Körperwasser (%)</value></data>
+	<data name="ColBodyBoneMass" xml:space="preserve"><value>Knochenmasse (kg)</value></data>
+	<data name="ColBodyVisceralFat" xml:space="preserve"><value>Viszerales Fett</value></data>
+	<data name="ColChestCircumference" xml:space="preserve"><value>Brustumfang (cm)</value></data>
+	<data name="ColWaistCircumference" xml:space="preserve"><value>Taillenumfang (cm)</value></data>
+	<data name="ColHipsCircumference" xml:space="preserve"><value>Hüftumfang (cm)</value></data>
+	<data name="ColFatTongBreastCrease" xml:space="preserve"><value>Hautfalte Brust (mm)</value></data>
+	<data name="ColFatTongArmpitCrease" xml:space="preserve"><value>Hautfalte Mitte Achselhöhle (mm)</value></data>
+	<data name="ColFatTongAbdominalCrease" xml:space="preserve"><value>Hautfalte Bauch (mm)</value></data>
+	<data name="ColFatTongHipCrease" xml:space="preserve"><value>Hautfalte Hüfte (mm)</value></data>
+	<data name="ColFatTongThighCrease" xml:space="preserve"><value>Hautfalte Oberschenkel (mm)</value></data>
+	<data name="ColFatTongBackCrease" xml:space="preserve"><value>Hautfalte Rücken (mm)</value></data>
+	<data name="ColFatTongTricepsCrease" xml:space="preserve"><value>Hautfalte Trizeps (mm)</value></data>
+
+	<!-- ================= FOOD & NUTRITION COLUMNS ================= -->
+	<data name="ColPersonId" xml:space="preserve"><value>Personen-ID</value></data>
+	<data name="ColName" xml:space="preserve"><value>Name</value></data>
+	<data name="ColDescription" xml:space="preserve"><value>Beschreibung</value></data>
+	<data name="ColServingDescription" xml:space="preserve"><value>Portionsbeschreibung</value></data>
+	<data name="ColMetricServingAmount" xml:space="preserve"><value>Metrische Portionsmenge</value></data>
+	<data name="ColMetricServingUnit" xml:space="preserve"><value>Metrische Portionseinheit</value></data>
+	<data name="ColDefaultServingUnit" xml:space="preserve"><value>Standard-Portionseinheit</value></data>
+	<data name="ColCalories" xml:space="preserve"><value>Kalorien</value></data>
+	<data name="ColCarbohydrates" xml:space="preserve"><value>Kohlenhydrate</value></data>
+	<data name="ColProtein" xml:space="preserve"><value>Protein</value></data>
+	<data name="ColTotalFat" xml:space="preserve"><value>Fett gesamt</value></data>
+	<data name="ColSaturatedFat" xml:space="preserve"><value>Gesättigte Fettsäuren</value></data>
+	<data name="ColMonosaturatedFat" xml:space="preserve"><value>Enfach ungesättigte Fettsäuren</value></data>
+	<data name="ColPolysaturatedFat" xml:space="preserve"><value>Mehrfach ungesättigte Fettsäuren</value></data>
+	<data name="ColTransFat" xml:space="preserve"><value>Transfette</value></data>
+	<data name="ColSugar" xml:space="preserve"><value>Zucker</value></data>
+	<data name="ColAddedSugar" xml:space="preserve"><value>Zugefügter Zucker</value></data>
+	<data name="ColDietaryFiber" xml:space="preserve"><value>Ballaststoffe</value></data>
+	<data name="ColSodium" xml:space="preserve"><value>Natrium</value></data>
+	<data name="ColPotassium" xml:space="preserve"><value>Kalium</value></data>
+	<data name="ColCalcium" xml:space="preserve"><value>Calcium</value></data>
+	<data name="ColIron" xml:space="preserve"><value>Eisen</value></data>
+	<data name="ColCholesterol" xml:space="preserve"><value>Cholesterin</value></data>
+	<data name="ColVitaminA" xml:space="preserve"><value>Vitamin A</value></data>
+	<data name="ColVitaminC" xml:space="preserve"><value>Vitamin C</value></data>
+	<data name="ColVitaminD" xml:space="preserve"><value>Vitamin D</value></data>
+	<data name="ColUnitCountPerCalorie" xml:space="preserve"><value>Einheitenanzahl / Kalorie</value></data>
+	<data name="ColProviderFoodId" xml:space="preserve"><value>Anbieter-Lebensmittel-ID</value></data>
+	<data name="ColInfoProvider" xml:space="preserve"><value>Informationsanbieter</value></data>
+	<data name="ColUpdateAt" xml:space="preserve"><value>Aktualisiert am</value></data>
+	<data name="ColCreateAt" xml:space="preserve"><value>Erstellt am</value></data>
+	<data name="ColMealType" xml:space="preserve"><value>Mahlzeitentyp</value></data>
+	<data name="ColFoodName" xml:space="preserve"><value>Lebensmittelname</value></data>
+	<data name="ColFoodInfoId" xml:space="preserve"><value>Lebensmittel-Info-ID</value></data>
+	<data name="ColAmount" xml:space="preserve"><value>Menge</value></data>
+	<data name="ColUnit" xml:space="preserve"><value>Einheit</value></data>
+
+	<!-- ================= HEART RATE & OXYGEN COLUMNS ================= -->
+	<data name="ColSource" xml:space="preserve"><value>Quelle</value></data>
+	<data name="ColTagId" xml:space="preserve"><value>Tag-ID</value></data>
+	<data name="ColBinningData" xml:space="preserve"><value>Klassifizierungsdaten (Binning)</value></data>
+	<data name="ColHeartRate" xml:space="preserve"><value>Herzfrequenz</value></data>
+	<data name="ColHeartRateMax" xml:space="preserve"><value>Herzfrequenz Max.</value></data>
+	<data name="ColHeartRateMin" xml:space="preserve"><value>Herzfrequenz Min.</value></data>
+	<data name="ColHeartBeatCount" xml:space="preserve"><value>Herzschlaganzahl</value></data>
+	<data name="ColIntegratedId" xml:space="preserve"><value>Integrierte ID</value></data>
+	<data name="ColSpO2" xml:space="preserve"><value>SpO₂</value></data>
+	<data name="ColSpO2Max" xml:space="preserve"><value>SpO₂ Max.</value></data>
+	<data name="ColSpO2Min" xml:space="preserve"><value>SpO₂ Min.</value></data>
+	<data name="ColLowSpO2Duration" xml:space="preserve"><value>Dauer niedriger SpO₂</value></data>
+	<data name="ColCoverageRate" xml:space="preserve"><value>Abdeckungsrate</value></data>
+	<data name="ColBinning" xml:space="preserve"><value>Binning</value></data>
+
+	<!-- ================= STEP TREND & WORKOUT COLUMNS ================= -->
+	<data name="ColSteps" xml:space="preserve"><value>Schritte</value></data>
+	<data name="ColDistanceM" xml:space="preserve"><value>Distanz (m)</value></data>
+	<data name="ColSpeed" xml:space="preserve"><value>Geschwindigkeit</value></data>
+	<data name="ColSourcePackage" xml:space="preserve"><value>Quellpaket</value></data>
+	<data name="ColCreated" xml:space="preserve"><value>Erstellt</value></data>
+	<data name="ColUpdated" xml:space="preserve"><value>Aktualisiert</value></data>
+	<data name="ColWorkout" xml:space="preserve"><value>Training</value></data>
+	<data name="ColExercise" xml:space="preserve"><value>Übung</value></data>
+	<data name="ColSupersetId" xml:space="preserve"><value>Superset-ID</value></data>
+	<data name="ColExerciseNotes" xml:space="preserve"><value>Übungsnotizen</value></data>
+	<data name="ColSetIndex" xml:space="preserve"><value>Satz-Index</value></data>
+	<data name="ColSetType" xml:space="preserve"><value>Satz-Typ</value></data>
+	<data name="ColWeightKg" xml:space="preserve"><value>Gewicht (kg)</value></data>
+	<data name="ColReps" xml:space="preserve"><value>Wiederholungen</value></data>
+	<data name="ColDistanceKm" xml:space="preserve"><value>Distanz (km)</value></data>
+	<data name="ColDurationSec" xml:space="preserve"><value>Dauer (Sek.)</value></data>
+	<data name="ColRpe" xml:space="preserve"><value>RPE</value></data>
+	<data name="ColDayTime" xml:space="preserve"><value>Tageszeit</value></data>
+	<data name="ColExerciseTitle" xml:space="preserve"><value>Übungstitel</value></data>
+	<data name="ColDurationSeconds" xml:space="preserve"><value>Dauer in Sekunden</value></data>
+	<data name="ColDataUuidCap" xml:space="preserve"><value>Daten-UUID</value></data>
+
+	<!-- ================= UI CHARTS & CONTROLS ================= -->
+	<data name="LblTimespan" xml:space="preserve"><value>📅 Zeitraum</value></data>
+	<data name="LblFrom" xml:space="preserve"><value>Von:</value></data>
+	<data name="LblTo" xml:space="preserve"><value>Bis:</value></data>
+	<data name="BtnQuickRanges" xml:space="preserve"><value>📅 Schnellbereiche ▼</value></data>
+	<data name="BtnYear" xml:space="preserve"><value>📅 Jahr</value></data>
+	<data name="BtnWeek" xml:space="preserve"><value>📆 Woche</value></data>
+	<data name="BtnMonth" xml:space="preserve"><value>🗓️ Monat</value></data>
+	<data name="BtnAllTime" xml:space="preserve"><value>🌍 Gesamter Zeitraum</value></data>
+	<data name="ToolTipAllTime" xml:space="preserve"><value>Vollständigen historischen Datensatz ohne zeitliche Einschränkungen anzeigen.</value></data>
+	<data name="LblSeriesVisibility" xml:space="preserve"><value>📊 Serien-Sichtbarkeit</value></data>
+	<data name="BtnShowMeasurements" xml:space="preserve"><value>📊 Messungen anzeigen ▼</value></data>
+	<data name="ToolTipShowMeasurements" xml:space="preserve"><value>Kontrollkästchen an- oder abwählen, um sie in Diagrammen ein- oder auszublenden.</value></data>
+	<data name="BtnShowTrends" xml:space="preserve"><value>📈 Trends anzeigen ▼</value></data>
+	<data name="ToolTipShowTrends" xml:space="preserve"><value>Trend-Kontrollkästchen an- oder abwählen, um sie in Diagrammen ein- oder auszublenden.</value></data>
+
+	<!-- Checkboxes & Titles -->
+	<data name="ChartTitleDuration" xml:space="preserve"><value>📈 Dauer</value></data>
+	<data name="ChartTitleCalories" xml:space="preserve"><value>🔥 Kalorien</value></data>
+	<data name="ChartTitleDistance" xml:space="preserve"><value>🏃 Distanz</value></data>
+	<data name="ChartTitleHeartRate" xml:space="preserve"><value>❤️ Herzfrequenz</value></data>
+	<data name="ChartTitleMinHeartRate" xml:space="preserve"><value>❤️ Min. Herzfrequenz</value></data>
+	<data name="ChartTitleMaxHeartRate" xml:space="preserve"><value>❤️ Max. Herzfrequenz</value></data>
+	<data name="ChartTitleSpeed" xml:space="preserve"><value>⚡ Geschwindigkeit</value></data>
+	<data name="ChartTitleSpeed" xml:space="preserve"><value>⚡ Ø Geschwindigkeit</value></data>
+	<data name="ToolTipRefresh" xml:space="preserve"><value>Aktualisieren</value></data>
+	<data name="ToolTipOpenFileDialog" xml:space="preserve"><value>Dateidialog öffnen</value></data>
+	<data name="ToolTipInsertDatabase" xml:space="preserve"><value>Daten in Datenbank einfügen</value></data>
+
+	<!-- Food & Nutrition Elements -->
+	<data name="BtnShowMeasurement" xml:space="preserve"><value>📈 Messung anzeigen ▼</value></data>
+	<data name="ChartTitleProtein" xml:space="preserve"><value>🥩 Protein</value></data>
+	<data name="ChartTitleCarbs" xml:space="preserve"><value>🌾 Kohlenhydrate</value></data>
+	<data name="ChartTitleFat" xml:space="preserve"><value>🥑 Fett</value></data>
+	<data name="ChartTitleVitaminA" xml:space="preserve"><value>🍊 Vitamin A</value></data>
+	<data name="ChartTitleVitaminC" xml:space="preserve"><value>🍋 Vitamin C</value></data>
+	<data name="ChartTitleVitaminD" xml:space="preserve"><value>☀️ Vitamin D</value></data>
+	<data name="ChartTitleIron" xml:space="preserve"><value>🔩 Eisen</value></data>
+	<data name="ChartTitleCalcium" xml:space="preserve"><value>🥛 Calcium</value></data>
+	<data name="ChartTitleNatrium" xml:space="preserve"><value>🧂 Natrium</value></data>
+	<data name="ChartTitleKalium" xml:space="preserve"><value>🍌 Kalium</value></data>
+	<data name="ChartTitleProtein" xml:space="preserve"><value>🥩 Protein (g)</value></data>
+	<data name="ChartTitleCarbs" xml:space="preserve"><value>🍞 Kohlenhydrate (g)</value></data>
+	<data name="ChartTitleFat" xml:space="preserve"><value>🥑 Fett (g)</value></data>
+	<data name="ChartTitleIron" xml:space="preserve"><value>⚙️ Eisen (Eisen)</value></data>
+	<data name="ChartTitleNatrium" xml:space="preserve"><value>🥜 Natrium</value></data>
+	<data name="ChartTitleKalium" xml:space="preserve"><value>🍌 Kalium</value></data>
+
+	<!-- Info & Navigation Views -->
+	<data name="TitleLicense" xml:space="preserve"><value>Lizenz</value></data>
+	<data name="TitleAdditionalLicense" xml:space="preserve"><value>Zusätzliche Lizenz</value></data>
+	<data name="ChartTitleBodyWeight" xml:space="preserve"><value>⚖️ Gewicht</value></data>
+	<data name="ChartTitleBodyMuscle" xml:space="preserve"><value>🧬 Muskeln</value></data>
+	<data name="ChartTitleBodyFat" xml:space="preserve"><value>💧 Fett</value></data>
+	<data name="ChartTitleBodyWater" xml:space="preserve"><value>💧 Wasser</value></data>
+	<data name="ChartTitleBodyWeight" xml:space="preserve"><value>⚖️ Körpergewichtsentwicklung</value></data>
+	<data name="ChartTitleBodyComposition" xml:space="preserve"><value>🧬 Körperzusammensetzung (Fett | Muskeln)</value></data>
+	<data name="ChartTitleBodyWater" xml:space="preserve"><value>💧 Körperwasseranalyse</value></data>
+
+	<data name="NavBodyMeasurement" xml:space="preserve"><value>📋 Körpermessung</value></data>
+	<data name="NavFoodInfo" xml:space="preserve"><value>🥗 Nährwertinfo</value></data>
+	<data name="NavFoodIntake" xml:space="preserve"><value>🥗 Nahrungsaufnahme</value></data>
+	<data name="NavMovementEnergy" xml:space="preserve"><value>📊 Bewegung | Energie</value></data>
+	<data name="NavExercise" xml:space="preserve"><value>🏃 Training</value></data>
+	<data name="NavDailyStep" xml:space="preserve"><value>👟 Tägliche Schritte</value></data>
+	<data name="NavHeartRate" xml:space="preserve"><value>💓 Herzfrequenz</value></data>
+	<data name="NavSpO2" xml:space="preserve"><value>🫁 SpO₂</value></data>
+	<data name="NavGym" xml:space="preserve"><value>🏋️ Fitnessstudio</value></data>
+
+	<!-- Multi DB & ToolTips -->
+	<data name="MultiDbMeasurementEntriesToolTip" xml:space="preserve"><value>Messungs-Datenbankeinträge</value></data>
+	<data name="MultiDbBodyMeasurements" xml:space="preserve"><value>📋 Körpermessungen</value></data>
+	<data name="MultiDbFoodIntakeEntriesToolTip" xml:space="preserve"><value>Samsung-Nahrungsaufnahme-Datenbankeinträge</value></data>
+	<data name="MultiDbFoodIntake" xml:space="preserve"><value>🥗 Nahrungsaufnahme</value></data>
+	<data name="MultiDbFoodInfoEntriesToolTip" xml:space="preserve"><value>Samsung-Nährwertinfo-Datenbankeinträge</value></data>
+	<data name="MultiDbFoodInfo" xml:space="preserve"><value>🥗 Nährwertinfo</value></data>
+	<data name="MultiDbStepTrendEntriesToolTip" xml:space="preserve"><value>Samsung-Schritttrend-Datenbankeinträge</value></data>
+	<data name="MultiDbDailySteps" xml:space="preserve"><value>🚶 Tägliche Schritte</value></data>
+	<data name="MultiDbExerciseEntriesToolTip" xml:space="preserve"><value>Samsung-Trainings-Datenbankeinträge</value></data>
+	<data name="MultiDbExercises" xml:space="preserve"><value>🏃‍♀️ Trainingseinheiten</value></data>
+	<data name="MultiDbHeartRateEntriesToolTip" xml:space="preserve"><value>Samsung-Herzfrequenz-Datenbankeinträge</value></data>
+	<data name="MultiDbOxygenSaturationEntriesToolTip" xml:space="preserve"><value>Samsung-Sauerstoffsättigungs-CSV-Import</value></data>
+	<data name="MultiDbHevyEntriesToolTip" xml:space="preserve"><value>Hevy-App-Datenbankeinträge</value></data>
+
+	<!-- Multi Import ToolTips -->
+	<data name="MultiImportFoodIntakeToolTip" xml:space="preserve"><value>Samsung-Nahrungsaufnahme-CSV-Import</value></data>
+	<data name="MultiImportFoodInfoToolTip" xml:space="preserve"><value>Samsung-Nährwertinfo-CSV-Import</value></data>
+	<data name="MultiImportStepTrendToolTip" xml:space="preserve"><value>Samsung-Schritttrend-CSV-Import</value></data>
+	<data name="MultiImportExerciseToolTip" xml:space="preserve"><value>Samsung-Trainings-CSV-Import</value></data>
+	<data name="MultiImportHeartRateToolTip" xml:space="preserve"><value>Samsung-Herzfrequenz-CSV-Import</value></data>
+	<data name="MultiImportOxygenSaturationToolTip" xml:space="preserve"><value>Samsung-Sauerstoffsättigungs-CSV-Import</value></data>
+	<data name="MultiImportHevyToolTip" xml:space="preserve"><value>Hevy-App-CSV-Import</value></data>
+
+	<!-- New Data Entry View -->
+	<data name="TitleGeneralInformation" xml:space="preserve"><value>📋 Allgemeine Informationen</value></data>
+	<data name="LblDate" xml:space="preserve"><value>📅 Datum:</value></data>
+	<data name="LblWeight" xml:space="preserve"><value>⚖️ Gewicht:</value></data>
+	<data name="LblBmi" xml:space="preserve"><value>📐 BMI:</value></data>
+	<data name="LblFat" xml:space="preserve"><value>💧 Fett:</value></data>
+	<data name="LblWater" xml:space="preserve"><value>💧 Wasser:</value></data>
+	<data name="LblMuscle" xml:space="preserve"><value>🧬 Muskeln:</value></data>
+	<data name="LblBoneMass" xml:space="preserve"><value>🦴 Knochenmasse:</value></data>
+	<data name="TitleDetailedDistribution" xml:space="preserve"><value>📈 Detaillierte Verteilung</value></data>
+	<data name="LblFatTop" xml:space="preserve"><value>💧 Fett Oben:</value></data>
+	<data name="LblFatBottom" xml:space="preserve"><value>💧 Fett Unten:</value></data>
+	<data name="LblMuscleTop" xml:space="preserve"><value>🧬 Muskeln Oben:</value></data>
+	<data name="LblMuscleBottom" xml:space="preserve"><value>🧬 Muskeln Unten:</value></data>
+	<data name="LblVisceralFat" xml:space="preserve"><value>💧 Viszerales Fett:</value></data>
+	<data name="TitleBodyDimensions" xml:space="preserve"><value>📐 Körpermaße</value></data>
+	<data name="LblChest" xml:space="preserve"><value>📏 Brust:</value></data>
+	<data name="LblWaist" xml:space="preserve"><value>📏 Taille:</value></data>
+	<data name="LblHips" xml:space="preserve"><value>📏 Hüfte:</value></data>
+	<data name="TitleSkinfoldMeasurement" xml:space="preserve"><value>🤏 Hautfaltenmessung</value></data>
+	<data name="LblCreaseBreast" xml:space="preserve"><value>🤏 Brust:</value></data>
+	<data name="LblCreaseMidaxillary" xml:space="preserve"><value>🤏 Achselbereich:</value></data>
+	<data name="LblCreaseAbdominal" xml:space="preserve"><value>🤏 Bauch:</value></data>
+	<data name="LblCreaseHip" xml:space="preserve"><value>🤏 Hüfte:</value></data>
+	<data name="LblCreaseThigh" xml:space="preserve"><value>🤏 Oberschenkel:</value></data>
+	<data name="LblCreaseBack" xml:space="preserve"><value>🤏 Rücken:</value></data>
+	<data name="LblCreaseTriceps" xml:space="preserve"><value>🤏 Trizeps:</value></data>
+	<data name="BtnSave" xml:space="preserve"><value>Speichern</value></data>
+
+	<!-- Oxygen Saturation & Step Trend Specific Chart Elements -->
+	<data name="ChartTitleSpO2" xml:space="preserve"><value>📈 SpO₂</value></data>
+	<data name="ChartTitleMaxSpO2" xml:space="preserve"><value>📈 max. SpO₂</value></data>
+	<data name="ChartTitleMinSpO2" xml:space="preserve"><value>📈 min. SpO₂</value></data>
+	<data name="ChartTitleLowSpO2Duration" xml:space="preserve"><value>⏳ Dauer niedriger SpO₂</value></data>
+	<data name="ChartTitleSpO2CoverageRate" xml:space="preserve"><value>📊 SpO₂-Abdeckungsrate</value></data>
+	<data name="CheckBoxSteps" xml:space="preserve"><value>👟 Schritte</value></data>
+	<data name="CheckBoxCalories" xml:space="preserve"><value>🔥 Kalorien</value></data>
+	<data name="CheckBoxDistance" xml:space="preserve"><value>📍 Distanz</value></data>
+	<data name="ChartTitleSteps" xml:space="preserve"><value>👟 Schritte</value></data>
+	<data name="ChartTitleCalories" xml:space="preserve"><value>🔥 Kalorien</value></data>
+	<data name="ChartTitleDistanceOverview" xml:space="preserve"><value>📍 Distanzübersicht</value></data>
+	<data name="ToolTipDownloadHevy" xml:space="preserve"><value>Daten vom Hevy-App-Server herunterladen</value></data>
+	<data name="ToolTipOpenHevyCsv" xml:space="preserve"><value>Dateidialog zum Importieren einer lokalen CSV-Datei öffnen</value></data>
+
+	<!-- Workout Insights View -->
+	<data name="LblExerciseProgressSelection" xml:space="preserve"><value>🎯 Übungsfortschritt-Auswahl</value></data>
+	<data name="LblWorkouts" xml:space="preserve"><value>🏋️ Trainingseinheiten</value></data>
+	<data name="LblTotalVolume" xml:space="preserve"><value>📊 Gesamtvolumen</value></data>
+	<data name="LblMostDoneExercises" xml:space="preserve"><value>🔥 Am häufigsten ausgeführte Übungen</value></data>
+	<data name="LblMuscleDistribution" xml:space="preserve"><value>💪 Trainings-Muskelverteilung (MoM)</value></data>
+	<data name="LblPeakWeightProgress" xml:space="preserve"><value>📈 Spitzen-Gewichtsfortschritt</value></data>
+	<data name="LblTotalVolumeProgress" xml:space="preserve"><value>📈 Gesamtvolumen-Fortschritt</value></data>
+	<data name="LblMaxRepsProgress" xml:space="preserve"><value>📈 Max. Wiederholungs-Fortschritt</value></data>
+
+	<!-- General System ToolTips -->
+	<data name="TxtConnectionStatusToolTip" xml:space="preserve"><value>Verbindungsstatus</value></data>
+	<data name="TxtAcutalLoggedInUserToolTip" xml:space="preserve"><value>Angemeldeter Benutzer</value></data>
+	<data name="TxtActualUsedDatabaseToolTip" xml:space="preserve"><value>Aktuell verwendete Datenbank</value></data>
+	<data name="TxtErrorMessageToolTip" xml:space="preserve"><value>Fehlermeldung</value></data>
+	<data name="TxtInfoMessageToolTip" xml:space="preserve"><value>Fehler- / Infomeldung</value></data>
+	<data name="BtnConnect" xml:space="preserve"><value>Verbinden</value></data>
+	<data name="ImgCaliperMeasurement" xml:space="preserve"><value>pack://application:,,,/Resources/Images/Caliper_Female_Male_de.png</value></data>
+
+	<!-- General Message Box Values -->
+	<data name="RestartPromptMessage" xml:space="preserve"><value>Die Anwendung muss neu gestartet werden, damit die Änderungen wirksam werden. Möchten Sie den Neustart jetzt durchführen?</value></data>
+	<data name="RestartRequiredMessage" xml:space="preserve"><value>Die vorgenommenen Änderungen werden erst nach einem Neustart der Anwendung wirksam.</value></data>
+	<data name="RestartPromptTitle" xml:space="preserve"><value>Warnung</value></data>
+	<data name="InformationTitle" xml:space="preserve"><value>Information</value></data>
+
+</root>

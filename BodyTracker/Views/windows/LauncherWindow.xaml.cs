@@ -1,5 +1,6 @@
 ﻿using BodyTracker.Models;
 using BodyTracker.Services;
+using BodyTracker.Services.Localization;
 using BodyTracker.ViewModels;
 using System.Windows;
 
@@ -39,7 +40,6 @@ namespace BodyTracker.Views.windows
         public LauncherWindow()
         {
             InitializeComponent();
-
             launcherWindowViewModel = new LauncherWindowViewModel(this);
             DataContext = launcherWindowViewModel;
 

@@ -35,8 +35,8 @@
     <!-- Modern standard button style configuring adaptive sizing, Segoe UI typography, border colors, padding, and comprehensive interactive triggers for modern UI layouts. -->
     <Style x:Key="ModernStandardToggleButton" TargetType="ToggleButton">
         <Setter Property="Margin" Value="0,0,4,0"/>
-        <Setter Property="MinWidth" Value="80"/>
-        <Setter Property="MaxWidth" Value="200"/>
+        <Setter Property="MinWidth" Value="210"/>
+        <Setter Property="MaxWidth" Value="1000"/>
         <Setter Property="Width" Value="Auto"/>
         <Setter Property="MinHeight" Value="32"/>
         <Setter Property="MaxHeight" Value="48"/>

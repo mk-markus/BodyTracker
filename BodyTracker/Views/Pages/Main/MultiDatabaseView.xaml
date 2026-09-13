@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:BodyTracker.Views.Pages.Main"
+      xmlns:loc="clr-namespace:BodyTracker.Services.Localization"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="MultiDatabaseView">
@@ -29,38 +30,36 @@
 
                 <!-- ================= SHOW DATABASE ENTRIES MEASUREMENT ================= -->
                 <RadioButton Style="{StaticResource NavButtonTabStyle}"
-             Command="{Binding CommandShowBodyMeasurementEntryView}"
-             GroupName="ImportSelection"
-             IsChecked="True"
-             ToolTip="Measurement Database Entries">
+                             Command="{Binding CommandShowBodyMeasurementEntryView}"
+                             GroupName="ImportSelection"
+                             IsChecked="True"
+                             ToolTip="{loc:Translate ToolTipMeasurementDatabaseEntries}">
 
-                    <TextBlock Text="📋 Body Measurements"
+                    <TextBlock Text="{loc:Translate NavBodyMeasurement}"
                Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
 
                 </RadioButton>
-
 
                 <!-- ================= SHOW DATABASE ENTRIES SAMSUNG FOOD INTAKE ================= -->
                 <RadioButton Style="{StaticResource NavButtonTabStyle}"
                           Command="{Binding CommandShowFoodIntakeEntryView}"
                           GroupName="ImportSelection"
                           IsChecked="False"
-                          ToolTip="Samsung Food Intake Database Entries">
+                          ToolTip="{loc:Translate ToolTipFoodIntakeEntries}">
 
-                    <TextBlock Text="🥗 Food Intake"
+                    <TextBlock Text="{loc:Translate NavFoodIntake}"
                             Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
 
                 </RadioButton>
-
 
                 <!-- ================= SHOW DATABASE ENTRIES SAMSUNG FOOD INFO ================= -->
                 <RadioButton Style="{StaticResource NavButtonTabStyle}"
                           Command="{Binding CommandShowFoodInfoEntryView}"
                           GroupName="ImportSelection"
                           IsChecked="False"
-                          ToolTip="Samsung Food Info Database Entries">
+                          ToolTip="{loc:Translate ToolTipFoodInfoEntries}">
 
-                    <TextBlock Text="🥗 Food Info"
+                    <TextBlock Text="{loc:Translate NavFoodInfo}"
                             Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
 
                 </RadioButton>
@@ -69,9 +68,9 @@
                 <RadioButton Style="{StaticResource NavButtonTabStyle}" 
                           Command="{Binding CommandShowStepTrendEntryView}"
                           GroupName="ImportSelection"
-                          ToolTip="Samsung Daily Step Trend Database Entries">
+                          ToolTip="{loc:Translate ToolTipDailyStepsEntries}">
 
-                    <TextBlock Text="🚶 Daily Steps"
+                    <TextBlock Text="{loc:Translate NavDailyStep}"
                             Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
 
                 </RadioButton>
@@ -80,9 +79,9 @@
                 <RadioButton Style="{StaticResource NavButtonTabStyle}" 
                           Command="{Binding CommandShowExerciseEntryView}"
                           GroupName="ImportSelection"
-                          ToolTip="Samsung Exercise Database Entries">
+                          ToolTip="{loc:Translate ToolTipExerciseEntries}">
 
-                    <TextBlock Text="🏃‍♀️ Exercises"
+                    <TextBlock Text="{loc:Translate NavExercise}"
                             Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
 
                 </RadioButton>
@@ -91,9 +90,9 @@
                 <RadioButton Style="{StaticResource NavButtonTabStyle}" 
                           Command="{Binding CommandShowHeartRateEntryView}"
                           GroupName="ImportSelection"
-                          ToolTip="Samsung Heart Rate Database Entries">
+                          ToolTip="{loc:Translate ToolTipHeartRateEntries}">
 
-                    <TextBlock Text="💓 Heart Rate"
+                    <TextBlock Text="{loc:Translate NavHeartRate}"
                             Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
 
                 </RadioButton>
@@ -102,22 +101,10 @@
                 <RadioButton Style="{StaticResource NavButtonTabStyle}" 
                           Command="{Binding CommandOxygenSaturationEntryView}"
                           GroupName="ImportSelection"
-                          ToolTip="Samsung Oxygen Saturation CSV Import">
+                          ToolTip="{loc:Translate ToolTipOxygenSaturationEntries}">
 
-                    <TextBlock Style="{DynamicResource TextBlockNavButtonTabTitle}">
-
-                         <InlineUIContainer>
-                             <Image Source="/Ressources/Images/icons8-pulse-oximeter-100.png" 
-                                    Width="22" 
-                                    Height="22" 
-                                    Margin="0"/>
-                         </InlineUIContainer>
-                     
-                         <Run Text=" SpO₂"/>
-
-                    </TextBlock>
-
-
+                    <TextBlock  Text="{loc:Translate NavSpO2}"
+                                Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
 
                 </RadioButton>
 
@@ -125,14 +112,12 @@
                 <RadioButton Style="{StaticResource NavButtonTabStyle}" 
                           Command="{Binding CommandShowHevyAppEntryView}"
                           GroupName="ImportSelection"
-                          ToolTip="Hevy App Database Entries">
+                          ToolTip="{loc:Translate ToolTipHevyEntries}">
 
-                    <TextBlock Text="🏋️ Gym"
+                    <TextBlock Text="{loc:Translate NavGym}"
                             Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
 
                 </RadioButton>
-
-
 
             </StackPanel>
         </Border>

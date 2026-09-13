@@ -124,9 +124,7 @@ namespace BodyTracker.ViewModels
             databaseService = db;
 
             CommandShowMeasurements = new AsyncRelayCommand(ShowMeasurementsAsync);
-
             CommandShowWorkouts = new AsyncRelayCommand(ShowWorkoutsPage);
-
             CommandShowDailyStep = new AsyncRelayCommand(ShowDailyStepsAsync);
             CommandShowExercise = new AsyncRelayCommand(ShowExerciseAsync);
             CommandShowHeartRate = new AsyncRelayCommand(ShowHeartRateAsync);

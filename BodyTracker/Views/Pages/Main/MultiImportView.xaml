@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:BodyTracker.Views.Pages"
+      xmlns:loc="clr-namespace:BodyTracker.Services.Localization"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="MultiChartPage">
@@ -22,22 +23,20 @@
         <Border Grid.Column="0"
                 Grid.Row="0"
                 Style="{DynamicResource BorderDashboardCardStyle}">
-            
+
             <StackPanel VerticalAlignment="Top"
                         HorizontalAlignment="Left"
                         Orientation="Horizontal">
-
 
                 <!-- ================= SHOW IMPORT SAMSUNG FOOD INTAKE ================= -->
                 <RadioButton Style="{StaticResource NavButtonTabStyle}"
                              Command="{Binding CommandShowFoodIntakeEntryView}"
                              GroupName="ImportSelection"
                              IsChecked="True"
-                             ToolTip="Samsung Food Intake CSV Import">
+                             ToolTip="{loc:Translate ToolTipFoodIntakeImport}">
 
-                    <TextBlock Text="🥗 Food Intake"
+                    <TextBlock Text="{loc:Translate NavFoodIntake}"
                                Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
-                    
                 </RadioButton>
 
                 <!-- ================= SHOW IMPORT SAMSUNG FOOD INFO ================= -->
@@ -45,82 +44,61 @@
                              Command="{Binding CommandShowFoodInfoImportView}"
                              GroupName="ImportSelection"
                              IsChecked="False"
-                             ToolTip="Samsung Food Info CSV Import">
+                             ToolTip="{loc:Translate ToolTipFoodInfoImport}">
 
-                    <TextBlock Text="🥗 Food Info"
+                    <TextBlock Text="{loc:Translate NavFoodInfo}"
                                Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
-
                 </RadioButton>
-
 
                 <!-- ================= SHOW IMPORT SAMSUNG DAILY STEP ================= -->
                 <RadioButton Style="{StaticResource NavButtonTabStyle}" 
                              Command="{Binding CommandShowStepTrendImportView}"
                              GroupName="ImportSelection"
-                             ToolTip="Samsung Daily Step Trend CSV Import">
+                             ToolTip="{loc:Translate ToolTipDailyStepsImport}">
 
-                    <TextBlock Text="🚶 Daily Steps"
+                    <TextBlock Text="{loc:Translate NavDailyStep}"
                                Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
-
                 </RadioButton>
 
                 <!-- ================= SHOW IMPORT SAMSUNG EXERCISE ================= -->
                 <RadioButton Style="{StaticResource NavButtonTabStyle}" 
                              Command="{Binding CommandShowExerciseImportView}"
                              GroupName="ImportSelection"
-                             ToolTip="Samsung Exercise CSV Import">
+                             ToolTip="{loc:Translate ToolTipExerciseImport}">
 
-                    <TextBlock Text="🏃‍♀️ Exercises"
+                    <TextBlock Text="{loc:Translate NavExercise}"
                                Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
-
                 </RadioButton>
 
                 <!-- ================= SHOW IMPORT SAMSUNG HEART RATE ================= -->
                 <RadioButton Style="{StaticResource NavButtonTabStyle}" 
                              Command="{Binding CommandShowHeartRateImportView}"
                              GroupName="ImportSelection"
-                             ToolTip="Samsung Heart Rate CSV Import">
+                             ToolTip="{loc:Translate ToolTipHeartRateImport}">
 
-                    <TextBlock Text="💓 Heart Rate"
+                    <TextBlock Text="{loc:Translate NavHeartRate}"
                                Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
-
                 </RadioButton>
 
                 <!-- ================= SHOW IMPORT SAMSUNG OXYGEN SATURATION ================= -->
                 <RadioButton Style="{StaticResource NavButtonTabStyle}" 
                              Command="{Binding CommandOxygenSaturationImportView}"
                              GroupName="ImportSelection"
-                             ToolTip="Samsung Oxygen Saturation CSV Import">
+                             ToolTip="{loc:Translate ToolTipOxygenSaturationImport}">
 
-                    <TextBlock Style="{DynamicResource TextBlockNavButtonTabTitle}">
+                    <TextBlock Style="{DynamicResource TextBlockNavButtonTabTitle}"
+                               Text="{loc:Translate NavSpO2}"/>
+                    </RadioButton>
 
-                            <InlineUIContainer>
-                                <Image Source="/Ressources/Images/icons8-pulse-oximeter-100.png" 
-                                       Width="22" 
-                                       Height="22" 
-                                       Margin="0"/>
-                            </InlineUIContainer>
-                        
-                            <Run Text=" SpO₂"/>
-                        
-                    </TextBlock>
-
-
-
-                </RadioButton>
-
-                <!-- ================= SHOW IMPOR Hevy APP ================= -->
+                <!-- ================= SHOW IMPORT Hevy APP ================= -->
                 <RadioButton Style="{StaticResource NavButtonTabStyle}" 
                              Command="{Binding CommandShowHevyAppImportView}"
                              GroupName="ImportSelection"
-                             ToolTip="Hevy App CSV Import">
+                             ToolTip="{loc:Translate ToolTipHevyImport}">
 
-                    <TextBlock Text="🏋️ Gym"
+                    <TextBlock Text="{loc:Translate NavGym}"
                                Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
-
                 </RadioButton>
-
-
 
             </StackPanel>
         </Border>

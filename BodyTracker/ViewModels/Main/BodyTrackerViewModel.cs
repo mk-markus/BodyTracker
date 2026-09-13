@@ -35,20 +35,35 @@ namespace BodyTracker.ViewModels
         /// </remarks>
         private readonly DatabaseService databaseService;
 
-
+        /// <summary>
+        /// Backing field for the dashboard view instance.
+        /// </summary>
         private DashboardView? dashboardView;
 
+        /// <summary>
+        /// Backing field for the multi-charts analytical view instance.
+        /// </summary>
         private MultiChartsView? multiChartsView;
 
+        /// <summary>
+        /// Backing field for the multi-database management view instance.
+        /// </summary>
         private MultiDatabaseView? multiDatabaseView;
 
+        /// <summary>
+        /// Backing field for the new data entry view instance.
+        /// </summary>
         private NewDataEntryView? newDataEntryView;
 
+        /// <summary>
+        /// Backing field for the multi-import operation view instance.
+        /// </summary>
         private MultiImportView? multiImportView;
 
+        /// <summary>
+        /// Backing field for the application information view instance.
+        /// </summary>
         private InfoView? infoView;
-
-
 
         /// <summary>
         /// Gets or sets the name of the person currently being viewed.
@@ -189,10 +204,9 @@ namespace BodyTracker.ViewModels
         private bool suppressSelectionAction = false;
 
         /// <summary>
-        /// 
+        /// Backing field for the cancellation token source used to manage and cancel asynchronous connection check operations.
         /// </summary>
         private CancellationTokenSource? connectionCheckCancellationTokenSource;
-
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BodyTrackerViewModel"/> class with the specified main window shell and database service.
@@ -218,6 +232,7 @@ namespace BodyTracker.ViewModels
             CommandNewDatabaseEntryPageAsync = new AsyncRelayCommand(ShowNewDatabaseEntryPageAsync);
             CommandMultiImportPageAsync = new AsyncRelayCommand(ShowMultiDBEntryViewAsync);
             CommandInfoPageAsync = new AsyncRelayCommand(ShowInfoPageAsync);
+
 
             WeakReferenceMessenger.Default.Register<GeneralInfoMessage>(this, (r, m) =>
             {
@@ -325,8 +340,6 @@ namespace BodyTracker.ViewModels
                 }
             });
         }
-
-
 
         /// <summary>
         /// Generates an uppercase initials string from a given person's full name.
@@ -439,7 +452,6 @@ namespace BodyTracker.ViewModels
             if (dashboardView == null)
             {
                 dashboardView = new DashboardView(mainWindow, databaseService);
-                Debug.WriteLine("Dashboard View was null");
             }
 
             CurrentPage = dashboardView;
@@ -461,7 +473,7 @@ namespace BodyTracker.ViewModels
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task ShowChartsPageAsync()
         {
-            if(multiChartsView == null) multiChartsView = new MultiChartsView(mainWindow, databaseService);
+            if (multiChartsView == null) multiChartsView = new MultiChartsView(mainWindow, databaseService);
             CurrentPage = multiChartsView;
 
             suppressSelectionAction = true;

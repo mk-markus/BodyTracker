@@ -1,8 +1,10 @@
-﻿using BodyTracker.Models.WorkoutLog;
+﻿using BodyTracker.Models;
+using BodyTracker.Models.WorkoutLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -155,7 +157,15 @@ namespace BodyTracker.Services.WorkoutLog
         {
             var cfg = LoadConfigurationFile();
 
-            cfg.ApiKey = CryptoHelper.Protect(newConfig.ApiKey);
+            foreach (PropertyInfo property in typeof(HevyAppAPIConfigurationModel).GetProperties())
+            {
+                if (property.CanRead && property.CanWrite)
+                {
+                    var value = property.GetValue(newConfig);
+                    property.SetValue(cfg, value);
+                }
+
+            }
             Save(cfg);
         }
 

@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:BodyTracker.ViewModels.Main"
+      xmlns:loc="clr-namespace:BodyTracker.Services.Localization"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="OxygenSaturationViewModel">
@@ -24,26 +25,19 @@
                         Margin="10">
 
                 <Button Content="🔄"
-                        ToolTip="Refresh"
+                        ToolTip="{loc:Translate ToolTipRefresh}"
                         Command="{Binding CommandRefresh}"
                         Style="{DynamicResource IconStandardButton}" />
 
                 <Button Content="📁"
-                        ToolTip="Open File Dialog"
+                        ToolTip="{loc:Translate ToolTipOpenFileDialog}"
                         Command="{Binding CommandOpen}"
                         Style="{DynamicResource IconStandardButton}" />
 
                 <Button Content="📤"
-                        ToolTip="Insert Datas in Database"
+                        ToolTip="{loc:Translate ToolTipInsertDatabase}"
                         Command="{Binding CommandInsert}"
                         Style="{DynamicResource IconStandardButton}" />
-
-                <!--<ProgressBar Height="25"
-                             MinWidth="100"
-                             IsIndeterminate="True"
-                             Value="{Binding ProgressValue}"
-                             Visibility="{Binding IsLoading, Converter={StaticResource bool2VisibilityConverter}}"
-                             Style="{DynamicResource ProgressbarCurrentBarValue}" />-->
 
                 <WrapPanel>
                     <TextBlock Text="{Binding TimeElapse}"
@@ -54,9 +48,7 @@
                     <TextBlock Text="{Binding ProgressText}"
                                TextAlignment="Center"
                                Style="{DynamicResource TextBlockDescribing}" />
-
                 </WrapPanel>
-                
             </StackPanel>
 
             <DataGrid Grid.Row="1"
@@ -67,107 +59,32 @@
                     Style="{StaticResource DataGrid_Default}">
 
                 <DataGrid.Columns>
-
-                    <DataGridTextColumn Header="integrated__id"
-                                        Binding="{Binding IntegratedId}"
-                                        Width="Auto"/>
-
-                    <DataGridTextColumn Header="source"
-                                        Binding="{Binding Source}"
-                                        Width="Auto"/>
-
-                    <DataGridTextColumn Header="tag_id"
-                                        Binding="{Binding TagId}"
-                                        Width="Auto"/>
-
-                    <DataGridTextColumn Header="coverage__rate"
-                                        Binding="{Binding CoverageRate}"
-                                        Width="Auto"/>
-
-                    <DataGridTextColumn Header="com.samsung.health.oxygen__saturation.create__sh__ver"
-                                        Binding="{Binding CreateShVer}"
-                                        Width="Auto"/>
-
-                    <DataGridTextColumn Header="com.samsung.health.oxygen__saturation.start__time"
-                                        Binding="{Binding StartTime, StringFormat=dd.MM.yyyy HH:mm:ss}"
-                                        Width="Auto"/>
-
-                    <DataGridTextColumn Header="com.samsung.health.oxygen__saturation.custom"
-                                        Binding="{Binding Custom}"
-                                        Width="Auto"/>
-
-                    <DataGridTextColumn Header="com.samsung.health.oxygen__saturation.modify__sh__ver"
-                                        Binding="{Binding ModifyShVer}"
-                                        Width="Auto"/>
-
-                    <DataGridTextColumn Header="com.samsung.health.oxygen__saturation.update__time"
-                                        Binding="{Binding UpdateTime, StringFormat=dd.MM.yyyy HH:mm:ss}"
-                                        Width="Auto"/>
-
-                    <DataGridTextColumn Header="com.samsung.health.oxygen__saturation.create__time"
-                                        Binding="{Binding CreateTime, StringFormat=dd.MM.yyyy HH:mm:ss}"
-                                        Width="Auto"/>
-
-                    <DataGridTextColumn Header="com.samsung.health.oxygen__saturation.client__data__id"
-                                        Binding="{Binding ClientDataId}"
-                                        Width="Auto"/>
-
-                    <DataGridTextColumn Header="com.samsung.health.oxygen__saturation.low__duration"
-                                        Binding="{Binding LowSpO2Duration}"
-                                        Width="Auto"/>
-                    
-                    <DataGridTextColumn Header="com.samsung.health.oxygen__saturation.binning"
-                                        Binding="{Binding Binning}"
-                                        Width="Auto"/>
-
-                    <DataGridTextColumn Header="com.samsung.health.oxygen__saturation.max"
-                                        Binding="{Binding SpO2Max, StringFormat=F2}"
-                                        Width="Auto"/>
-
-                    <DataGridTextColumn Header="com.samsung.health.oxygen__saturation.min"
-                                        Binding="{Binding SpO2Min, StringFormat=F2}"
-                                        Width="Auto"/>
-                    
-                    <DataGridTextColumn Header="com.samsung.health.oxygen__saturation.spo2"
-                                        Binding="{Binding SpO2, StringFormat=F2}"
-                                        Width="Auto"/>
-
-                    <DataGridTextColumn Header="com.samsung.health.oxygen__saturation.client__data__ver"
-                                        Binding="{Binding ClientDataVer}"
-                                        Width="Auto"/>
-
-                    <DataGridTextColumn Header="com.samsung.health.oxygen__saturation.time__offset"
-                                        Binding="{Binding TimeOffset}"
-                                        Width="Auto"/>
-
-                    <DataGridTextColumn Header="com.samsung.health.oxygen__saturation.deviceuuid"
-                                        Binding="{Binding DeviceUuid}"
-                                        Width="Auto"/>
-
-                    <DataGridTextColumn Header="com.samsung.health.oxygen__saturation.comment"
-                                        Binding="{Binding Comment}"
-                                        Width="Auto"/>
-
-                    <DataGridTextColumn Header="com.samsung.health.oxygen__saturation.pkg__name"
-                                        Binding="{Binding PackageName}"
-                                        Width="Auto"/>
-
-                    <DataGridTextColumn Header="com.samsung.health.oxygen__saturation.end__time"
-                                        Binding="{Binding EndTime, StringFormat=dd.MM.yyyy HH:mm:ss}"
-                                        Width="Auto"/>
-
-                    <DataGridTextColumn Header="com.samsung.health.oxygen__saturation.datauuid"
-                                        Binding="{Binding DataUuid}"
-                                        Width="Auto"/>
-
-                    <DataGridTextColumn Header="com.samsung.health.oxygen__saturation.heart__rate"
-                                        Binding="{Binding HeartRate, StringFormat=F2}"
-                                        Width="Auto"/>
-
+                    <DataGridTextColumn Header="{loc:Translate ColIntegratedId}" Binding="{Binding IntegratedId}" Width="Auto"/>
+                    <DataGridTextColumn Header="{loc:Translate ColSource}" Binding="{Binding Source}" Width="Auto"/>
+                    <DataGridTextColumn Header="{loc:Translate ColTagId}" Binding="{Binding TagId}" Width="Auto"/>
+                    <DataGridTextColumn Header="{loc:Translate ColCoverageRate}" Binding="{Binding CoverageRate}" Width="Auto"/>
+                    <DataGridTextColumn Header="{loc:Translate ColCreateShVer}" Binding="{Binding CreateShVer}" Width="Auto"/>
+                    <DataGridTextColumn Header="{loc:Translate ColStartTime}" Binding="{Binding StartTime, StringFormat=dd.MM.yyyy HH:mm:ss}" Width="Auto"/>
+                    <DataGridTextColumn Header="{loc:Translate ColCustom}" Binding="{Binding Custom}" Width="Auto"/>
+                    <DataGridTextColumn Header="{loc:Translate ColModifyShVer}" Binding="{Binding ModifyShVer}" Width="Auto"/>
+                    <DataGridTextColumn Header="{loc:Translate ColUpdateTime}" Binding="{Binding UpdateTime, StringFormat=dd.MM.yyyy HH:mm:ss}" Width="Auto"/>
+                    <DataGridTextColumn Header="{loc:Translate ColCreateTime}" Binding="{Binding CreateTime, StringFormat=dd.MM.yyyy HH:mm:ss}" Width="Auto"/>
+                    <DataGridTextColumn Header="{loc:Translate ColClientDataId}" Binding="{Binding ClientDataId}" Width="Auto"/>
+                    <DataGridTextColumn Header="{loc:Translate ColLowDuration}" Binding="{Binding LowSpO2Duration}" Width="Auto"/>
+                    <DataGridTextColumn Header="{loc:Translate ColBinning}" Binding="{Binding Binning}" Width="Auto"/>
+                    <DataGridTextColumn Header="{loc:Translate ColMaxSpO2}" Binding="{Binding SpO2Max, StringFormat=F2}" Width="Auto"/>
+                    <DataGridTextColumn Header="{loc:Translate ColMinSpO2}" Binding="{Binding SpO2Min, StringFormat=F2}" Width="Auto"/>
+                    <DataGridTextColumn Header="{loc:Translate ColSpO2}" Binding="{Binding SpO2, StringFormat=F2}" Width="Auto"/>
+                    <DataGridTextColumn Header="{loc:Translate ColClientDataVer}" Binding="{Binding ClientDataVer}" Width="Auto"/>
+                    <DataGridTextColumn Header="{loc:Translate ColTimeOffset}" Binding="{Binding TimeOffset}" Width="Auto"/>
+                    <DataGridTextColumn Header="{loc:Translate ColDeviceUuid}" Binding="{Binding DeviceUuid}" Width="Auto"/>
+                    <DataGridTextColumn Header="{loc:Translate ColComment}" Binding="{Binding Comment}" Width="Auto"/>
+                    <DataGridTextColumn Header="{loc:Translate ColPackageName}" Binding="{Binding PackageName}" Width="Auto"/>
+                    <DataGridTextColumn Header="{loc:Translate ColEndTime}" Binding="{Binding EndTime, StringFormat=dd.MM.yyyy HH:mm:ss}" Width="Auto"/>
+                    <DataGridTextColumn Header="{loc:Translate ColDataUuid}" Binding="{Binding DataUuid}" Width="Auto"/>
+                    <DataGridTextColumn Header="{loc:Translate ColHeartRate}" Binding="{Binding HeartRate, StringFormat=F2}" Width="Auto"/>
                 </DataGrid.Columns>
-
             </DataGrid>
         </Grid>
-
     </Border>
 </Page>

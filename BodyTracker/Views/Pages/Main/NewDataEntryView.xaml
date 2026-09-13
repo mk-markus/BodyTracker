@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:BodyTracker.Views"
+      xmlns:loc="clr-namespace:BodyTracker.Services.Localization"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="NewEntryPage"
@@ -33,18 +34,16 @@
                         Margin="10,10,0,0">
 
                         <StackPanel>
-                            <TextBlock Text="📋 General Information" 
+                            <TextBlock Text="{loc:Translate TitleGeneralInformation}" 
                                    Style="{DynamicResource TextBlockDashBoardTitle}"/>
 
                             <Grid>
-
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
@@ -52,8 +51,7 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
-
-                                <TextBlock Text="📅 Date:"
+                                <TextBlock Text="{loc:Translate LblDate}"
                                            FontSize="14"
                                        Style="{DynamicResource TextBlockDescribing}"
                                        VerticalAlignment="Center"
@@ -63,49 +61,43 @@
                                 <DatePicker FontSize="14"
                                         FontWeight="Normal"
                                         Margin="3"
-                                        SelectedDate="{Binding MeasurementDate, Mode=TwoWay, 
-                                                       UpdateSourceTrigger=PropertyChanged}"
+                                        SelectedDate="{Binding MeasurementDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                         Grid.Column="1"
                                         Grid.Row="0"
                                         Grid.ColumnSpan="3"/>
 
-
-                                <TextBlock Text="⚖️ Weight:"
+                                <TextBlock Text="{loc:Translate LblWeight}"
                                            FontSize="14"
                                         Style="{DynamicResource TextBlockDescribing}"
                                         Grid.Column="0"
                                         Grid.Row="1"/>
 
                                 <TextBox x:Name="tbWeight"
-                                     Text="{Binding BodyWeight, 
-                                                    Mode=TwoWay, 
-                                                    UpdateSourceTrigger=PropertyChanged}"
+                                     Text="{Binding BodyWeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      PreviewTextInput="Decimal_PreviewTextInput"
                                      GotKeyboardFocus="SelectAllOnFocus"
                                      Style="{DynamicResource TextBoxWithSuffixStyle_kg}"
                                      Grid.Column="1"
                                      Grid.Row="1"/>
 
-                                <TextBlock Text="📐 BMI:"
+                                <TextBlock Text="{loc:Translate LblBmi}"
                                            FontSize="14"
-                                       Style="{DynamicResource TextBlockDescribing}"
-                                       VerticalAlignment="Center"
-                                       Grid.Column="2"
-                                       Grid.Row="1"/>
+                                           Style="{DynamicResource TextBlockDescribing}"
+                                           VerticalAlignment="Center"
+                                           Grid.Column="2"
+                                           Grid.Row="1"/>
 
                                 <TextBox x:Name="tbBMI"
-                                     Text="{Binding Bmi, Mode=TwoWay, 
-                                                    UpdateSourceTrigger=PropertyChanged, 
-                                                    StringFormat='0.00'}"
-                                     PreviewTextInput="Decimal_PreviewTextInput" 
-                                     GotKeyboardFocus="SelectAllOnFocus"
-                                     IsTabStop="False"
-                                     Style="{DynamicResource StandardNumericInputField}"
-                                     IsReadOnly="True"
-                                     Grid.Column="3"
-                                     Grid.Row="1"/>
+                                         Text="{Binding Bmi, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='0.00'}"
+                                         PreviewTextInput="Decimal_PreviewTextInput" 
+                                         GotKeyboardFocus="SelectAllOnFocus"
+                                         IsTabStop="False"
+                                         Style="{DynamicResource StandardNumericInputField}"
+                                         IsReadOnly="True"
+                                         Grid.Column="3"
+                                         Grid.Row="1"/>
 
-                                <TextBlock Text="💧 Fat:"
+                                <TextBlock Text="{loc:Translate LblFat}"
                                            FontSize="14"
                                        Style="{DynamicResource TextBlockDescribing}"
                                        VerticalAlignment="Center"
@@ -113,53 +105,49 @@
                                        Grid.Row="2"/>
 
                                 <TextBox x:Name="tbFat"
-                                    Text="{Binding BodyFatPercentage, Mode=TwoWay, 
-                                                   UpdateSourceTrigger=PropertyChanged}"
+                                    Text="{Binding BodyFatPercentage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     PreviewTextInput="Decimal_PreviewTextInput"
                                     GotKeyboardFocus="SelectAllOnFocus"
                                     Style="{DynamicResource TextBoxWithSuffixStyle_Percentage}"
                                     Grid.Column="1"
                                     Grid.Row="2"/>
 
-                                <TextBlock Text="💧 Water:"
+                                <TextBlock Text="{loc:Translate LblWater}"
                                            FontSize="14"
                                     Style="{DynamicResource TextBlockDescribing}"
                                     VerticalAlignment="Center"
                                     Grid.Column="2"
                                     Grid.Row="2"/>
 
-                                <TextBox Text="{Binding BodyWaterPercentage, Mode=TwoWay, 
-                                                    UpdateSourceTrigger=PropertyChanged}"
+                                <TextBox Text="{Binding BodyWaterPercentage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      PreviewTextInput="Decimal_PreviewTextInput" 
                                      GotKeyboardFocus="SelectAllOnFocus"
                                      Style="{DynamicResource TextBoxWithSuffixStyle_Percentage}"
                                      Grid.Column="3"
                                      Grid.Row="2"/>
 
-                                <TextBlock Text="🧬 Muscle:"
+                                <TextBlock Text="{loc:Translate LblMuscle}"
                                            FontSize="14"
                                        Style="{DynamicResource TextBlockDescribing}"
                                        VerticalAlignment="Center"
                                        Grid.Column="0"
                                        Grid.Row="3"/>
 
-                                <TextBox Text="{Binding BodyMusclePercentage, Mode=TwoWay, 
-                                                    UpdateSourceTrigger=PropertyChanged}"
+                                <TextBox Text="{Binding BodyMusclePercentage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      PreviewTextInput="Decimal_PreviewTextInput" 
                                      GotKeyboardFocus="SelectAllOnFocus"
                                      Style="{DynamicResource TextBoxWithSuffixStyle_Percentage}"
                                      Grid.Column="1"
                                      Grid.Row="3"/>
 
-                                <TextBlock Text="🦴 Mass:"
+                                <TextBlock Text="{loc:Translate LblBoneMass}"
                                            FontSize="14"
                                        Style="{DynamicResource TextBlockDescribing}"
                                        VerticalAlignment="Center"
                                        Grid.Column="2"
                                        Grid.Row="3"/>
 
-                                <TextBox Text="{Binding BodyBoneMass, Mode=TwoWay, 
-                                                    UpdateSourceTrigger=PropertyChanged}"
+                                <TextBox Text="{Binding BodyBoneMass, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      PreviewTextInput="Decimal_PreviewTextInput" 
                                      GotKeyboardFocus="SelectAllOnFocus"  
                                      Style="{DynamicResource TextBoxWithSuffixStyle_kg}"
@@ -175,92 +163,85 @@
                         Margin="10,10,0,0">
 
                         <StackPanel>
-                            <TextBlock Text="📈 Detailed Distribution" Style="{DynamicResource TextBlockDashBoardTitle}"/>
+                            <TextBlock Text="{loc:Translate TitleDetailedDistribution}" Style="{DynamicResource TextBlockDashBoardTitle}"/>
 
                             <Grid>
-
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
-                                <TextBlock Text="💧 Fat Top:"
+                                <TextBlock Text="{loc:Translate LblFatTop}"
                                            FontSize="14"
                                        Style="{DynamicResource TextBlockDescribing}"
                                        VerticalAlignment="Center"
                                        Grid.Column="0"
                                        Grid.Row="0"/>
 
-                                <TextBox Text="{Binding BodyFatPercentageTop, Mode=TwoWay, 
-                                                    UpdateSourceTrigger=PropertyChanged}"
+                                <TextBox Text="{Binding BodyFatPercentageTop, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      PreviewTextInput="Decimal_PreviewTextInput" 
                                      GotKeyboardFocus="SelectAllOnFocus"
                                      Style="{DynamicResource TextBoxWithSuffixStyle_Percentage}"
                                      Grid.Column="1"
                                      Grid.Row="0"/>
 
-                                <TextBlock Text="💧 Fat Bottom:"
+                                <TextBlock Text="{loc:Translate LblFatBottom}"
                                            FontSize="14"
                                        Style="{DynamicResource TextBlockDescribing}"
                                        VerticalAlignment="Center"
                                        Grid.Column="2"
                                        Grid.Row="0"/>
 
-                                <TextBox Text="{Binding BodyFatPercentageBottom, Mode=TwoWay, 
-                                                    UpdateSourceTrigger=PropertyChanged}"
+                                <TextBox Text="{Binding BodyFatPercentageBottom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      PreviewTextInput="Decimal_PreviewTextInput" 
                                      GotKeyboardFocus="SelectAllOnFocus"
-                                 Style="{DynamicResource TextBoxWithSuffixStyle_Percentage}"
+                                     Style="{DynamicResource TextBoxWithSuffixStyle_Percentage}"
                                      Grid.Column="3"
                                      Grid.Row="0"/>
 
-                                <TextBlock Text="🧬 Muscle Top:"
+                                <TextBlock Text="{loc:Translate LblMuscleTop}"
                                            FontSize="14"
                                        Style="{DynamicResource TextBlockDescribing}"
                                        VerticalAlignment="Center"
                                        Grid.Column="0"
                                        Grid.Row="1"/>
 
-                                <TextBox Text="{Binding BodyMusclePercentageTop, Mode=TwoWay, 
-                                                    UpdateSourceTrigger=PropertyChanged}"
+                                <TextBox Text="{Binding BodyMusclePercentageTop, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      PreviewTextInput="Decimal_PreviewTextInput" 
                                      GotKeyboardFocus="SelectAllOnFocus"
                                      Style="{DynamicResource TextBoxWithSuffixStyle_Percentage}"
                                      Grid.Column="1"
                                      Grid.Row="1"/>
 
-                                <TextBlock Text="🧬 Muscle Bottom:"
+                                <TextBlock Text="{loc:Translate LblMuscleBottom}"
                                            FontSize="14"
                                        Style="{DynamicResource TextBlockDescribing}"
                                        VerticalAlignment="Center"
                                        Grid.Column="2"
                                        Grid.Row="1"/>
 
-                                <TextBox Text="{Binding BodyMusclePercentageBottom, Mode=TwoWay, 
-                                                    UpdateSourceTrigger=PropertyChanged}"
+                                <TextBox Text="{Binding BodyMusclePercentageBottom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      PreviewTextInput="Decimal_PreviewTextInput" 
                                      GotKeyboardFocus="SelectAllOnFocus"
                                      Style="{DynamicResource TextBoxWithSuffixStyle_Percentage}"
                                      Grid.Column="3"
                                      Grid.Row="1"/>
 
-                                <TextBlock Text="💧Visceral Fat:"
+                                <TextBlock Text="{loc:Translate LblVisceralFat}"
                                            FontSize="14"
                                        Style="{DynamicResource TextBlockDescribing}"
                                        VerticalAlignment="Center"
                                        Grid.Column="0"
                                        Grid.Row="2"/>
 
-                                <TextBox Text="{Binding BodyVisceralFat, Mode=TwoWay, 
-                                                    UpdateSourceTrigger=PropertyChanged}"
+                                <TextBox Text="{Binding BodyVisceralFat, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      PreviewTextInput="Decimal_PreviewTextInput" 
                                      GotKeyboardFocus="SelectAllOnFocus"
                                      Style="{DynamicResource TextBoxWithSuffixStyle_Percentage}"
@@ -276,7 +257,7 @@
                         Margin="10,10,0,0">
 
                         <StackPanel>
-                            <TextBlock Text="📐 Body Dimensions" Style="{DynamicResource TextBlockDashBoardTitle}"/>
+                            <TextBlock Text="{loc:Translate TitleBodyDimensions}" Style="{DynamicResource TextBlockDashBoardTitle}"/>
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
@@ -284,7 +265,6 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
@@ -292,45 +272,42 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
-                                <TextBlock Text="📏 Chest:"
+                                <TextBlock Text="{loc:Translate LblChest}"
                                            FontSize="14"
                                            Style="{DynamicResource TextBlockDescribing}"
                                            VerticalAlignment="Center"
                                            Grid.Column="0"
                                            Grid.Row="0"/>
 
-                                <TextBox Text="{Binding ChestCircumference,Mode=TwoWay, 
-                                                    UpdateSourceTrigger=PropertyChanged}"
+                                <TextBox Text="{Binding ChestCircumference, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      PreviewTextInput="Decimal_PreviewTextInput" 
                                      GotKeyboardFocus="SelectAllOnFocus"
                                      Style="{DynamicResource TextBoxWithSuffixStyle_cm}"
                                      Grid.Column="1"
                                      Grid.Row="0"/>
 
-                                <TextBlock Text="📏 Waist:"
+                                <TextBlock Text="{loc:Translate LblWaist}"
                                            FontSize="14"
                                        Style="{DynamicResource TextBlockDescribing}"
                                        VerticalAlignment="Center"
                                        Grid.Column="2"
                                        Grid.Row="0"/>
 
-                                <TextBox Text="{Binding WaistCircumference, Mode=TwoWay, 
-                                                    UpdateSourceTrigger=PropertyChanged}"
+                                <TextBox Text="{Binding WaistCircumference, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      PreviewTextInput="Decimal_PreviewTextInput" 
                                      GotKeyboardFocus="SelectAllOnFocus"
                                      Style="{DynamicResource TextBoxWithSuffixStyle_cm}"
                                      Grid.Column="3"
                                      Grid.Row="0"/>
 
-                                <TextBlock Text="📏 Hips:"
+                                <TextBlock Text="{loc:Translate LblHips}"
                                            FontSize="14"
                                        Style="{DynamicResource TextBlockDescribing}"
                                        VerticalAlignment="Center"
                                        Grid.Column="0"
                                        Grid.Row="1"/>
 
-                                <TextBox Text="{Binding HipsCircumference, Mode=TwoWay, 
-                                                    UpdateSourceTrigger=PropertyChanged}"
+                                <TextBox Text="{Binding HipsCircumference, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      PreviewTextInput="Decimal_PreviewTextInput" 
                                      GotKeyboardFocus="SelectAllOnFocus"
                                      Style="{DynamicResource TextBoxWithSuffixStyle_cm}"
@@ -350,7 +327,7 @@
                         HorizontalAlignment="Left">
 
                     <StackPanel>
-                        <TextBlock Text="🤏 Skinfold Measurement" Style="{DynamicResource TextBlockDashBoardTitle}"/>
+                        <TextBlock Text="{loc:Translate TitleSkinfoldMeasurement}" Style="{DynamicResource TextBlockDashBoardTitle}"/>
 
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -359,160 +336,174 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
-
                             </Grid.RowDefinitions>
 
-                            <TextBlock Text="🤏 Breast:"
+                            <TextBlock Text="{loc:Translate LblCreaseBreast}"
                                            FontSize="14"
                                        Style="{DynamicResource TextBlockDescribing}"
                                        VerticalAlignment="Center"
                                        Grid.Column="0"
                                        Grid.Row="0"/>
 
-                            <TextBox Text="{Binding FatTongBreastCrease,Mode=TwoWay, 
-                                                    UpdateSourceTrigger=PropertyChanged}"
+                            <TextBox Text="{Binding FatTongBreastCrease, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                       GotKeyboardFocus="SelectAllOnFocus"
                                       Style="{DynamicResource TextBoxWithSuffixStyle_mm}"
                                       Grid.Column="1"
                                       Grid.Row="0"/>
 
-                            <TextBlock Text="🤏 Midaxillary:"
+                            <TextBlock Text="{loc:Translate LblCreaseMidaxillary}"
                                            FontSize="14"
                                        Style="{DynamicResource TextBlockDescribing}"
                                        VerticalAlignment="Center"
                                        Grid.Column="2"
                                        Grid.Row="0"/>
 
-                            <TextBox Text="{Binding FatTongArmpitCrease, Mode=TwoWay, 
-                                                    UpdateSourceTrigger=PropertyChanged}"
+                            <TextBox Text="{Binding FatTongArmpitCrease, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      PreviewTextInput="Decimal_PreviewTextInput" 
                                      GotKeyboardFocus="SelectAllOnFocus"
                                      Style="{DynamicResource TextBoxWithSuffixStyle_mm}"
                                      Grid.Column="3"
                                      Grid.Row="0"/>
 
-                            <TextBlock Text="🤏 Abdominal:"
+                            <TextBlock Text="{loc:Translate LblCreaseAbdominal}"
                                            FontSize="14"
                                        Style="{DynamicResource TextBlockDescribing}"
                                    VerticalAlignment="Center"
                                    Grid.Column="0"
                                    Grid.Row="1"/>
 
-                            <TextBox Text="{Binding FatTongAbdominalCrease, Mode=TwoWay, 
-                                                    UpdateSourceTrigger=PropertyChanged}"
+                            <TextBox Text="{Binding FatTongAbdominalCrease, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      PreviewTextInput="Decimal_PreviewTextInput" 
                                      GotKeyboardFocus="SelectAllOnFocus"
                                      Style="{DynamicResource TextBoxWithSuffixStyle_mm}"
                                      Grid.Column="1"
                                      Grid.Row="1"/>
 
-                            <TextBlock Text="🤏 Suprailiac:"
+                            <TextBlock Text="{loc:Translate LblCreaseHip}"
                                            FontSize="14"
                                        Style="{DynamicResource TextBlockDescribing}"
                                        VerticalAlignment="Center"
                                        Grid.Column="2"
                                        Grid.Row="1"/>
 
-                            <TextBox Text="{Binding FatTongHipCrease, Mode=TwoWay, 
-                                                    UpdateSourceTrigger=PropertyChanged}"
+                            <TextBox Text="{Binding FatTongHipCrease, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      PreviewTextInput="Decimal_PreviewTextInput"
                                      GotKeyboardFocus="SelectAllOnFocus"
                                      Style="{DynamicResource TextBoxWithSuffixStyle_mm}"
                                      Grid.Column="3"
                                      Grid.Row="1"/>
 
-                            <TextBlock Text="🤏Thigh:"
+                            <TextBlock Text="{loc:Translate LblCreaseThigh}"
                                            FontSize="14"
                                        Style="{DynamicResource TextBlockDescribing}"
                                        VerticalAlignment="Center"
                                        Grid.Column="0"
                                        Grid.Row="2"/>
 
-                            <TextBox Text="{Binding FatTongThighCrease, Mode=TwoWay, 
-                                                    UpdateSourceTrigger=PropertyChanged}"
+                            <TextBox Text="{Binding FatTongThighCrease, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      PreviewTextInput="Decimal_PreviewTextInput"
                                      GotKeyboardFocus="SelectAllOnFocus"
                                      Style="{DynamicResource TextBoxWithSuffixStyle_mm}"
                                      Grid.Column="1"
                                      Grid.Row="2"/>
 
-                            <TextBlock Text="🤏 Back:"
+                            <TextBlock Text="{loc:Translate LblCreaseBack}"
                                            FontSize="14"
                                        Style="{DynamicResource TextBlockDescribing}"
                                        VerticalAlignment="Center"
                                        Grid.Column="2"
                                        Grid.Row="2"/>
 
-                            <TextBox Text="{Binding FatTongBackCrease, Mode=TwoWay, 
-                                                    UpdateSourceTrigger=PropertyChanged}"
+                            <TextBox Text="{Binding FatTongBackCrease, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      PreviewTextInput="Decimal_PreviewTextInput"
                                      GotKeyboardFocus="SelectAllOnFocus"
                                      Style="{DynamicResource TextBoxWithSuffixStyle_mm}"
                                      Grid.Column="3"
                                      Grid.Row="2"/>
 
-                            <TextBlock Text="🤏 Triceps:"
+                            <TextBlock Text="{loc:Translate LblCreaseTriceps}"
                                            FontSize="14"
                                        Style="{DynamicResource TextBlockDescribing}"
                                        VerticalAlignment="Center"
                                        Grid.Column="0"            
                                        Grid.Row="3"/>
 
-                            <TextBox Text="{Binding FatTongTricepsCrease, Mode=TwoWay,
-                                                    UpdateSourceTrigger=PropertyChanged}"
+                            <TextBox Text="{Binding FatTongTricepsCrease, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      PreviewTextInput="Decimal_PreviewTextInput"
                                      GotKeyboardFocus="SelectAllOnFocus"
                                      Style="{DynamicResource TextBoxWithSuffixStyle_mm}"
                                      Grid.Column="1"
                                      Grid.Row="3"/>
-
-
-                            <!--<TextBlock Grid.Column="4"
-                 Grid.Row="0"
-                 Grid.RowSpan="5"
-                 TextWrapping="Wrap"
-                 TextAlignment="Left"
-                 Foreground="Black"
-                 FontSize="12"
-                 FontWeight="Normal">
-      &#x2022; Breast crease: This measurement point is located in a diagonal skin crease, midway between the armpit and nipple.<LineBreak/>
-      &#x2022; Armpit crease: This measurement point is located in a vertical skin crease at the base of the armpit, at nipple level.<LineBreak/>
-      &#x2022; Abdominal crease: This measurement point is located in a vertical skin crease, approximately two to three centimeters to the right of the navel.<LineBreak/>
-      &#x2022; Hip crease: This measurement point is located in a diagonal skin crease directly at or slightly above the hip bone.<LineBreak/>
-      &#x2022; Thigh crease: This measurement point is located in a vertical skin crease on the front of the thigh, midway between the groin and the knee.<LineBreak/>
-      &#x2022; Back crease: This measurement point is located in a diagonal skin crease in the center of the shoulder blade.<LineBreak/>     
-      &#x2022; Triceps crease: This measurement point is located in a vertical skin crease on the back of the upper arm, approximately one centimeter above the midpoint between the shoulder and elbow."
-      </TextBlock>-->
-
                         </Grid>
 
-                        <Image Source="/Ressources/Images/Caliper-Male-Female.jpg"
-                               Grid.Column="4"
-                               Grid.Row="0"
-                               Grid.RowSpan="6"
-                               Margin="2"
-                               Width="Auto"
-                               Height="Auto"
-                               VerticalAlignment="Center"
-                               HorizontalAlignment="Center"
-                               MaxHeight="350"
-                               MaxWidth="400"/>
+                        <Grid Grid.Column="4" Grid.Row="0" Grid.RowSpan="6" Margin="2">
 
+                            <!-- 1. Vorschaubild als CheckBox (schaltet den Zustand per Klick zuverlässig um) -->
+                            <CheckBox x:Name="ZoomToggle" 
+              Cursor="Hand"
+              VerticalAlignment="Center" 
+              HorizontalAlignment="Center"
+              Background="Transparent"
+              BorderBrush="Transparent">
+                                <CheckBox.Template>
+                                    <ControlTemplate TargetType="CheckBox">
+                                        <ContentPresenter />
+                                    </ControlTemplate>
+                                </CheckBox.Template>
+
+                                <Image Source="{loc:Translate ImgCaliperMeasurement}"
+               MaxHeight="350" MaxWidth="400"
+               Stretch="Uniform"/>
+                            </CheckBox>
+
+                            <!-- 2. Das Overlay (wird per DataTrigger eingeblendet) -->
+                            <Grid Background="#99000000" 
+          Panel.ZIndex="999" 
+          Visibility="Collapsed">
+
+                                <Grid.Style>
+                                    <Style TargetType="Grid">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsChecked, ElementName=ZoomToggle}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Style>
+
+                                <!-- Klick auf das Overlay bzw. das große Bild schließt es wieder -->
+                                <CheckBox IsChecked="{Binding IsChecked, ElementName=ZoomToggle}" 
+                  Cursor="Hand"
+                  HorizontalAlignment="Stretch" 
+                  VerticalAlignment="Stretch"
+                  Background="Transparent"
+                  BorderBrush="Transparent">
+                                    <CheckBox.Template>
+                                        <ControlTemplate TargetType="CheckBox">
+                                            <Border Background="{TemplateBinding Background}">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </CheckBox.Template>
+
+                                    <Image Source="{loc:Translate ImgCaliperMeasurement}"
+                   MaxHeight="700" MaxWidth="800"
+                   Stretch="Uniform"/>
+                                </CheckBox>
+                            </Grid>
+                        </Grid>
 
 
                     </StackPanel>
-
                 </Border>
-
             </StackPanel>
 
-            <Button Content="Save"
+            <Button Content="{loc:Translate BtnSave}"
                     Style="{StaticResource SaveButton}"
                     Grid.Column="0"
                     Grid.ColumnSpan="2"
@@ -524,7 +515,6 @@
                     Margin="20"
                     Command="{Binding CommandSaveNewDatas}"/>
 
-
             <TextBlock Text="{Binding ValidationMessage}" 
                        Foreground="Red" 
                        Margin="8" 
@@ -535,12 +525,6 @@
                        Grid.ColumnSpan="2"
                        VerticalAlignment="Center"
                        HorizontalAlignment="Center"/>
-
-
-
-
-
         </Grid>
-
     </ScrollViewer>
 </Page>

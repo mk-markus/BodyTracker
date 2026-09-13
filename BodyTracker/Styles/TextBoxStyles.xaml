@@ -296,7 +296,7 @@
         </Setter>
     </Style>
 
-    <!-- Numeric validation style extending the standard numeric input field to handle error states, tooltips, and invalid border styling. -->
+    <!-- Numeric validation style extending the standard numeric input field to handle error states, ToolTips, and invalid border styling. -->
     <Style x:Key="NumericValidationStyle" 
             TargetType="TextBox" 
             BasedOn="{StaticResource StandardNumericInputField}">

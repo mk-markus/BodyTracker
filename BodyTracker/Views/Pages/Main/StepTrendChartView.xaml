@@ -4,11 +4,11 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:BodyTracker.Views.Pages"
+      xmlns:loc="clr-namespace:BodyTracker.Services.Localization"
       xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="ChartsStepDailyTrendPage">
-
 
     <ScrollViewer VerticalScrollBarVisibility="Auto"  Padding="0"
             HorizontalScrollBarVisibility="Auto"
@@ -26,7 +26,6 @@
                 <RowDefinition Height="300"/>
             </Grid.RowDefinitions>
 
-
             <!-- SECTION 1: CONTROLS & FILTERS HEADER -->
             <Grid Grid.Column="0"
                Grid.Row="0">
@@ -38,70 +37,66 @@
 
                 <!-- ================= TIMESPAN SECTION ================= -->
                 <Border Style="{StaticResource BorderDashboardCardStyle}"
-                     Grid.Column="0"
-                     Padding="10"
-                     Margin="0,0,10,0">
+                 Grid.Column="0"
+                 Padding="10"
+                 Margin="0,0,10,0">
 
                     <StackPanel>
-
-                        <TextBlock Text="📅 Timespan" 
-                                Style="{DynamicResource TextBlockDashBoardTitle}" 
-                                Margin="0,0,0,10"/>
+                        <TextBlock Text="{loc:Translate LblTimespan}" 
+                            Style="{DynamicResource TextBlockDashBoardTitle}" 
+                            Margin="0,0,0,10"/>
 
                         <!-- Datepickers -->
                         <StackPanel Orientation="Horizontal">
-
-                            <TextBlock Text="From:" VerticalAlignment="Center" Margin="0,0,10,0" Style="{DynamicResource TextBlockDescribing}"/>
+                            <TextBlock Text="{loc:Translate LblFrom}" VerticalAlignment="Center" Margin="0,0,10,0" Style="{DynamicResource TextBlockDescribing}"/>
                             <DatePicker SelectedDate="{Binding StartDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                     Style="{DynamicResource ModernFlatDatePicker}"/>
+                                 Style="{DynamicResource ModernFlatDatePicker}"/>
 
-                            <TextBlock Text="To:" VerticalAlignment="Center" Margin="10,0,10,0" Style="{DynamicResource TextBlockDescribing}"/>
-
+                            <TextBlock Text="{loc:Translate LblTo}" VerticalAlignment="Center" Margin="10,0,10,0" Style="{DynamicResource TextBlockDescribing}"/>
                             <DatePicker SelectedDate="{Binding EndDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                     Style="{DynamicResource ModernFlatDatePicker}"/>
+                                 Style="{DynamicResource ModernFlatDatePicker}"/>
 
                             <!-- ================= TOGGLE BUTTON QUICK DATE RANGES ================= -->
                             <ToggleButton x:Name="DateShortCuts"
-                                       Style="{DynamicResource ModernStandardToggleButton}"
-                                       Content="📅 Quick Ranges ▼ "
-                                       Margin="10,0,0,0"          
-                                       ToolTip="Filters the chart to show data exclusively for the current year."/>
+                                   Style="{DynamicResource ModernStandardToggleButton}"
+                                   Content="{loc:Translate BtnQuickRanges}"
+                                   Margin="10,0,0,0"          
+                                   ToolTip="{loc:Translate ToolTipQuickRanges}"/>
 
                             <!-- ================= POPUP QUICK DATE RANGES ================= -->
                             <Popup PlacementTarget="{Binding ElementName=DateShortCuts}"
-                                Placement="Bottom"
-                                StaysOpen="False"
-                                IsOpen="{Binding IsChecked, ElementName=DateShortCuts}" 
-                                AllowsTransparency="True">
+                            Placement="Bottom"
+                            StaysOpen="False"
+                            IsOpen="{Binding IsChecked, ElementName=DateShortCuts}" 
+                            AllowsTransparency="True">
 
                                 <Border Style="{DynamicResource BorderPopupDownCardStyle}"
-                                     Width="{Binding ActualWidth, ElementName=DateShortCuts}">
+                                 Width="{Binding ActualWidth, ElementName=DateShortCuts}">
 
                                     <StackPanel>
+                                        <Button Content="{loc:Translate BtnYear}" 
+                                         Style="{StaticResource ModernStandardButton}" 
+                                         Command="{Binding CommandSetActualYear}" 
+                                         ToolTip="{loc:Translate ToolTipYear}"
+                                         Margin="0,0,0,0"/>
 
-                                        <Button Content="📅 Year" 
-                                             Style="{StaticResource ModernStandardButton}" 
-                                             Command="{Binding CommandSetActualYear}" 
-                                             ToolTip="Filter chart data for the current year."
-                                             Margin="0,0,0,0"/>
+                                        <Button Content="{loc:Translate BtnWeek}" 
+                                         Style="{StaticResource ModernStandardButton}" 
+                                         Command="{Binding CommandSetActualWeek}" 
+                                         ToolTip="{loc:Translate ToolTipWeek}"
+                                         Margin="0,5,0,0"/>
 
-                                        <Button Content="📆 Week" 
-                                             Style="{StaticResource ModernStandardButton}" 
-                                             Command="{Binding CommandSetActualWeek}" 
-                                             ToolTip="Filter chart data for the current week."
-                                             Margin="0,5,0,0"/>
+                                        <Button Content="{loc:Translate BtnMonth}" 
+                                         Style="{StaticResource ModernStandardButton}" 
+                                         Command="{Binding CommandSetActualMonth}" 
+                                         ToolTip="{loc:Translate ToolTipMonth}"
+                                         Margin="0,5,0,0"/>
 
-                                        <Button Content="🗓️ Month" 
-                                             Style="{StaticResource ModernStandardButton}" 
-                                             Command="{Binding CommandSetActualMonth}" 
-                                             ToolTip="Filter chart data for the current month."
-                                             Margin="0,5,0,0"/>
-
-                                        <Button Content="🌍 All Time" 
-                                             Style="{StaticResource ModernStandardButton}" 
-                                             Command="{Binding CommandShowAllData}" 
-                                             ToolTip="Display the complete historical dataset without time restrictions."
-                                             Margin="0,5,0,0"/>
+                                        <Button Content="{loc:Translate BtnAllTime}" 
+                                         Style="{StaticResource ModernStandardButton}" 
+                                         Command="{Binding CommandShowAllData}" 
+                                         ToolTip="{loc:Translate ToolTipAllTime}"
+                                         Margin="0,5,0,0"/>
                                     </StackPanel>
                                 </Border>
                             </Popup>
@@ -111,26 +106,23 @@
                 </Border>
 
                 <!-- ================= METRICS SETTINGS SECTION ================= -->
-                <Border Style="{StaticResource BorderDashboardCardStyle}"
+                <Border Style="{DynamicResource BorderDashboardCardStyle}"
                      Grid.Column="1"
                      Padding="10">
 
                     <StackPanel Orientation="Vertical">
-
-                        <TextBlock Text="📊 Series Visibility" 
+                        <TextBlock Text="{loc:Translate LblSeriesVisibility}" 
                                 VerticalAlignment="Center"
                                 Style="{DynamicResource TextBlockDashBoardTitle}" 
                                 Margin="0,0,0,10"/>
 
                         <StackPanel Orientation="Horizontal">
-
                             <!-- ================= TOGGLE BUTTON SERIES MEASUREMENT DATAS ================= -->
                             <ToggleButton x:Name="SeriesButton"
-                                       Style="{DynamicResource ModernStandardToggleButton}"
-                                       Content="📊 Show Measurements ▼ "
-                                       Margin="0,0,10,0"          
-                                       ToolTip="Select or clear the check boxes to show or hide in the following diagrams."/>
-
+                                   Style="{DynamicResource ModernStandardToggleButton}"
+                                   Content="{loc:Translate BtnShowMeasurements}"
+                                   Margin="0,0,10,0"          
+                                   ToolTip="{loc:Translate ToolTipShowMeasurements}"/>
 
                             <!-- ================= POPUP SERIES CHECKBOXES RANGES ================= -->
                             <Popup PlacementTarget="{Binding ElementName=SeriesButton}"
@@ -139,42 +131,36 @@
                                 IsOpen="{Binding IsChecked, ElementName=SeriesButton}" 
                                 AllowsTransparency="True">
 
-
                                 <Border Style="{DynamicResource BorderPopupDownCardStyle}"
                                       Width="{Binding ActualWidth, ElementName=SeriesButton}">
 
                                     <StackPanel>
-
-                                        <CheckBox Content="👟 Steps" 
+                                        <CheckBox Content="{loc:Translate CheckBoxSteps}" 
                                                IsChecked="{Binding ShowSteps}" 
                                                Command="{Binding CommandReloadChartsAsync}" 
                                                Style="{StaticResource StandardCheckBox}"
                                                Margin="0,0,0,8"/>
 
-                                        <CheckBox Content="🔥 Calories" 
+                                        <CheckBox Content="{loc:Translate CheckBoxCalories}" 
                                                IsChecked="{Binding ShowCalories}" 
                                                Command="{Binding CommandReloadChartsAsync}" 
                                                Style="{StaticResource StandardCheckBox}" 
                                                Margin="0,0,0,8"/>
 
-                                        <CheckBox Content="📍 Distance" 
+                                        <CheckBox Content="{loc:Translate CheckBoxDistance}" 
                                                IsChecked="{Binding ShowDistance}" 
                                                Command="{Binding CommandReloadChartsAsync}" 
                                                Style="{StaticResource StandardCheckBox}" 
                                                Margin="0,0,0,8"/>
-
-
-                                      
                                     </StackPanel>
                                 </Border>
                             </Popup>
 
-
                             <!-- ================= TOGGLE BUTTON TREND SERIES MEASUREMENT DATAS ================= -->
                             <ToggleButton x:Name="TrendSeriesButton"
-                                       Style="{DynamicResource ModernStandardToggleButton}"
-                                       Content="📈 Show Trends ▼ "
-                                       ToolTip="Select or clear the trend check boxes to show or hide in the following diagrams."/>
+                                   Style="{DynamicResource ModernStandardToggleButton}"
+                                   Content="{loc:Translate BtnShowTrends}"
+                                   ToolTip="{loc:Translate ToolTipShowTrends}"/>
 
                             <!-- ================= POPUP TREND SERIES CHECKBOXES RANGES ================= -->
                             <Popup PlacementTarget="{Binding ElementName=TrendSeriesButton}"
@@ -188,32 +174,29 @@
                                       Width="{Binding ActualWidth, ElementName=TrendSeriesButton}">
 
                                     <StackPanel>
-                                        <CheckBox Content="👟 Steps" 
+                                        <CheckBox Content="{loc:Translate CheckBoxSteps}" 
                                                IsChecked="{Binding ShowStepsTrend}"
                                                Command="{Binding CommandReloadChartsAsync}" 
                                                Style="{StaticResource StandardCheckBox}" 
                                                Margin="0,0,0,8"/>
 
-                                        <CheckBox Content="🔥 Calories" 
+                                        <CheckBox Content="{loc:Translate CheckBoxCalories}" 
                                                IsChecked="{Binding ShowCaloriesTrend}"
                                                Command="{Binding CommandReloadChartsAsync}" 
                                                Style="{StaticResource StandardCheckBox}" 
                                                Margin="0,0,0,8"/>
 
-                                        <CheckBox Content="📍 Distance" 
-                                               IsChecked="{Binding ShowDistanceTrend}" 
+                                        <CheckBox Content="{loc:Translate CheckBoxDistance}" 
+                                               IsChecked="{Binding ShowDistanceTrend}"
                                                Command="{Binding CommandReloadChartsAsync}" 
                                                Style="{StaticResource StandardCheckBox}" 
                                                Margin="0,0,0,8"/>
-
                                     </StackPanel>
-
                                 </Border>
                             </Popup>
 
-
                             <Button Content="🔄"
-                             ToolTip="Refresh Datas: Reload all datas from Database"
+                             ToolTip="{loc:Translate ToolTipRefreshDatabaseDatas}"
                              Command="{Binding CommandRefreshAsync}"
                              Style="{DynamicResource IconStandardButton}" />
 
@@ -232,14 +215,12 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
-
                     </Grid.RowDefinitions>
 
-                    <TextBlock Text="👟 Steps" 
+                    <TextBlock Text="{loc:Translate ChartTitleSteps}" 
                                 Style="{DynamicResource TextBlockDashBoardTitle}"
                                 Grid.Column="0"
                                 Grid.Row="0"
@@ -255,7 +236,6 @@
                                      Grid.Column="0"
                                      Grid.Row="1">
                     </lvc:CartesianChart>
-
                 </Grid>
             </Border>
 
@@ -269,14 +249,12 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
-
                     </Grid.RowDefinitions>
 
-                    <TextBlock Text="🔥 Calories" 
+                    <TextBlock Text="{loc:Translate ChartTitleCalories}" 
                                  Style="{DynamicResource TextBlockDashBoardTitle}"
                                  Grid.Column="0"
                                  Grid.Row="0"
@@ -292,10 +270,8 @@
                                           Grid.Column="0"
                                           Grid.Row="1">
                     </lvc:CartesianChart>
-
                 </Grid>
             </Border>
-
 
             <!-- ================= CHART DISTANCE ================= -->
             <Border Style="{StaticResource BorderDashboardCardStyle}"
@@ -307,14 +283,12 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
-
                     </Grid.RowDefinitions>
 
-                    <TextBlock Text="📍 Distance Overview"
+                    <TextBlock Text="{loc:Translate ChartTitleDistanceOverview}"
                       Style="{DynamicResource TextBlockDashBoardTitle}"
                       Grid.Column="0"
                       Grid.Row="0"
@@ -330,10 +304,8 @@
                            Grid.Column="0"
                            Grid.Row="1">
                     </lvc:CartesianChart>
-
                 </Grid>
             </Border>
         </Grid>
     </ScrollViewer>
 </Page>
-

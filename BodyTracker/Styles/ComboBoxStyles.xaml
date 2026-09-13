@@ -15,6 +15,7 @@
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
+                            Height="{TemplateBinding Height}"
                             CornerRadius="6">
 
                         <Grid>

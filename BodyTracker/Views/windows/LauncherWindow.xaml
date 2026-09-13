@@ -5,10 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BodyTracker.Views.windows"
         mc:Ignorable="d"
-        Title="Login Window" 
+        xmlns:s="clr-namespace:BodyTracker.Resources.Languages"
+        xmlns:loc="clr-namespace:BodyTracker.Services.Localization"
+        Title="{loc:Translate LauncherWindowTitle}" 
         Height="450" 
         Width="800"
-        Icon="/Ressources/Icon/ProgramIcon_GymRunning.ico">
+        Icon="/Resources/Icon/ProgramIcon_GymRunning.ico">
     <Grid Background="{StaticResource AppBackgroundBrush}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="72"/>
@@ -28,33 +30,33 @@
             BorderBrush="{StaticResource BorderBrushColor}" 
             BorderThickness="0,0,1,0">
             <StackPanel Margin="0,20,0,0" HorizontalAlignment="Center">
-             
+
 
                 <!-- ================= HOME ================= -->
                 <RadioButton Style="{StaticResource NavButtonStyle}" 
-                         ToolTip="Home"
-                         IsChecked="{Binding IsHomeSelected, Mode=TwoWay}">
+                           ToolTip="{loc:Translate NavHomeToolTip}"
+                           IsChecked="{Binding IsHomeSelected, Mode=TwoWay}">
                     <TextBlock Text="🏠" FontSize="16"/>
                 </RadioButton>
 
                 <!-- ================= NEW PERSON ================= -->
                 <RadioButton Style="{StaticResource NavButtonStyle}" 
-                         ToolTip="New Database Person"
-                         IsChecked="{Binding IsNewDatabasePersonSelected, Mode=TwoWay}">
+                           ToolTip="{loc:Translate NavNewPersonToolTip}"
+                           IsChecked="{Binding IsNewDatabasePersonSelected, Mode=TwoWay}">
                     <TextBlock Text="👤" FontSize="16"/>
                 </RadioButton>
 
                 <!-- ================= NEW DATABASE ================= -->
                 <RadioButton Style="{StaticResource NavButtonStyle}" 
-                         ToolTip="New Database Connection"
-                         IsChecked="{Binding IsNewDatabaseConnectionSelected, Mode=TwoWay}">
+                           ToolTip="{loc:Translate NavNewDatabaseToolTip}"
+                           IsChecked="{Binding IsNewDatabaseConnectionSelected, Mode=TwoWay}">
                     <TextBlock Text="🗄️" FontSize="16"/>
                 </RadioButton>
 
                 <!-- ================= NEW Hevy APP Settings ================= -->
                 <RadioButton Style="{StaticResource NavButtonStyle}" 
-                         ToolTip="Settings"
-                         IsChecked="{Binding IsHevyAppSettingsSelected, Mode=TwoWay}">
+                           ToolTip="{loc:Translate NavGeneralSettingsToolTip}"
+                           IsChecked="{Binding IsHevyAppSettingsSelected, Mode=TwoWay}">
                     <TextBlock Text="⚙️" FontSize="16"/>
                 </RadioButton>
 
@@ -92,9 +94,10 @@
                     Grid.Column="0">
 
                 <TextBlock Text="🔌: "
-                       Style="{DynamicResource TextBlockDescribing}"
-                       FontWeight="Bold"
-                       Margin="5,0,5,0"/>
+                           ToolTip="{loc:Translate TxtConnectionStatusToolTip}"
+                           Style="{DynamicResource TextBlockDescribing}"
+                           FontWeight="Bold"
+                           Margin="5,0,5,0"/>
 
 
                 <TextBlock Text="{Binding SqlConnectionStatusMessage}" 
@@ -102,18 +105,13 @@
                            Style="{DynamicResource TextBlockDescribing}"
                            Margin="0,0,5,0"/>
 
-                <!--<TextBlock Text="{Binding SqlAddtionalConnectionStatusMessage}" 
-                           Foreground="{Binding SqlConnectionStatusColor}"
-                           Style="{DynamicResource TextBlockDescribing}"
-                           Margin="0,0,5,0"
-                           Width="100"/>-->   
-
             </StackPanel>
 
             <StackPanel Orientation="Horizontal"
                         Grid.Column="1">
 
                 <TextBlock Text="| 👤: "
+                           ToolTip="{loc:Translate TxtAcutalLoggedInUserToolTip}"
                            Style="{DynamicResource TextBlockDescribing}"
                            FontWeight="Bold"
                            Margin="5,0,5,0"/>
@@ -129,6 +127,7 @@
                   Grid.Column="2">
 
                 <TextBlock Text="| 🗄️: "
+                           ToolTip="{loc:Translate TxtActualUsedDatabaseToolTip}"
                            Style="{DynamicResource TextBlockDescribing}"
                            FontWeight="Bold"
                            Margin="5,0,5,0"/>
@@ -141,21 +140,35 @@
             </StackPanel>
 
             <StackPanel Orientation="Horizontal"
-                    Grid.Column="3">
+    Grid.Column="3">
 
 
-                <TextBlock Text="| ❌: "
-                       Style="{DynamicResource TextBlockDescribing}"
-                       FontWeight="Bold"
-                       Margin="5,0,5,0"/>
+                <TextBlock  Text="|"
+                            ToolTip="{loc:Translate TxtInfoMessageToolTip}"
+                            Style="{DynamicResource TextBlockDescribing}"
+                            FontWeight="Bold"
+                            Margin="5,0,5,0"/>
 
-                <TextBlock Text="{Binding DatabaseFailureMessage}"
-                       Style="{DynamicResource TextBlockDescribing}"
-                       Foreground="Red"/>
+                <TextBlock  Text="ⓘ"
+                            ToolTip="{loc:Translate TxtInfoMessageToolTip}"
+                            FontSize="20"
+                            Style="{DynamicResource TextBlockDescribing}"
+                            FontWeight="Bold"
+                            Margin="5,0,5,0"/>
 
-                <TextBlock Text="{Binding GeneralFailureMessage}" 
-                       Style="{DynamicResource TextBlockDescribing}"
-              Foreground="Red"/>
+                <TextBlock  Text=": "
+                            ToolTip="{loc:Translate TxtInfoMessageToolTip}"
+                            Style="{DynamicResource TextBlockDescribing}"
+                            FontWeight="Bold"
+                            Margin="5,0,5,0"/>
+
+                <TextBlock  Text="{Binding DatabaseFailureMessage}"
+                             Style="{DynamicResource TextBlockDescribing}"
+                             Foreground="Red"/>
+
+                <TextBlock  Text="{Binding GeneralFailureMessage}" 
+                            Style="{DynamicResource TextBlockDescribing}"
+                            Foreground="Red"/>
 
 
             </StackPanel>

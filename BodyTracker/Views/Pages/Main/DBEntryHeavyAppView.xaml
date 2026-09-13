@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:BodyTracker.Views.Pages.Main"
+      xmlns:loc="clr-namespace:BodyTracker.Services.Localization"
       mc:Ignorable="d"       
       xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
       d:DesignHeight="450" d:DesignWidth="800"
@@ -20,43 +21,37 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-
             <Border Style="{DynamicResource BorderDashboardCardStyle}"
                    Margin="0,10,0,10"
                    Grid.Column="0"
                    Grid.Row="0">
                 <StackPanel Orientation="Vertical">
 
-                    <TextBlock Text="🛠️ Actions"
+                    <TextBlock Text="{loc:Translate TitleActions}"
                               Style="{DynamicResource TextBlockDashBoardTitle}"/>
 
                     <StackPanel Orientation="Horizontal">
 
                         <Button Content="🗑"
-                               ToolTip="Delete Selected Entry"
+                               ToolTip="{loc:Translate TooltipDeleteSelectedEntry}"
                                Command="{Binding CommandDelete}"
                                Style="{DynamicResource IconStandardButton}" 
                                Margin="0,0,15,0"/>
 
                         <Button Content="🔄"
-                               ToolTip="Refresh Datas: Reload all datas from Database"
+                               ToolTip="{loc:Translate TooltipRefreshDatabaseDatas}"
                                Command="{Binding CommandRefresh}"
                                Style="{DynamicResource IconStandardButton}" />
 
                     </StackPanel>
                 </StackPanel>
-
             </Border>
 
-            <Grid Grid.Column="0"
-                 Grid.Row="1">
-
+            <Grid Grid.Column="0" Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
-
                 </Grid.ColumnDefinitions>
-
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
@@ -64,28 +59,13 @@
                 <Border Style="{DynamicResource BorderDashboardCardStyle}"
                        Grid.Column="0"
                        Grid.Row="1">
-
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
-                            <!--<RowDefinition Height="*"/>-->
                         </Grid.RowDefinitions>
-
-                        <!--<TextBlock Grid.Column="0"
-                                  Grid.Row="0">
-                           
-                       <Run Text="Measurements from " 
-                            FontWeight="SemiBold"
-                            FontSize="12"/>
-                       <Run Text="{Binding UserName}" 
-                            FontWeight="Bold"
-                            FontSize="15"/>
-
-                       </TextBlock>-->
 
                         <DataGrid x:Name="MeasurementsGrid"
                                  ItemsSource="{Binding BodyMeasurement, UpdateSourceTrigger=PropertyChanged}" 
@@ -115,105 +95,35 @@
                             </i:Interaction.Triggers>
 
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Date" 
-                                                     Binding="{Binding WorkoutLogID, StringFormat='dddd, dd.MM.yyyy'}"
-                                                     Width="Auto"
-                                                     IsReadOnly="True"/>
-                                
-                                <DataGridTextColumn Header="Date" 
-                                                   Binding="{Binding MeasurementDate, StringFormat='dddd, dd.MM.yyyy'}"
-                                                   Width="Auto"
-                                                   IsReadOnly="True"/>
-
-                                <DataGridTextColumn Header="Bodyweight (kg)" 
-                                                   Binding="{Binding BodyWeight, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                   CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                <DataGridTextColumn Header="BMI" 
-                                                   Binding="{Binding BMI, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                   CellStyle="{StaticResource DataGrid_CellStyle}"
-                                                   IsReadOnly="True"/>
-
-                                <DataGridTextColumn Header="Body Fat (%)" 
-                                                   Binding="{Binding BodyFatPercentage, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                   CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                <DataGridTextColumn Header="Body Fat Top (%)" 
-                                                   Binding="{Binding BodyFatPercentageTop, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                   CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                <DataGridTextColumn Header="Body Fat Bottom (%)" 
-                                                   Binding="{Binding BodyFatPercentageBottom, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                   CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                <DataGridTextColumn Header="Muscle Mass (%)" 
-                                                   Binding="{Binding BodyMusclePercentage, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                   CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                <DataGridTextColumn Header="Muscle Mass Top (%)" 
-                                                   Binding="{Binding BodyMusclePercentageTop, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                   CellStyle="{StaticResource DataGrid_CellStyle}"/>
-                                <DataGridTextColumn Header="Muscle Mass Bottom (%)" 
-                                                   Binding="{Binding BodyMusclePercentageBottom, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                   CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                <DataGridTextColumn Header="Body Water (%)" 
-                                                   Binding="{Binding BodyWaterPercentage, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                   CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                <DataGridTextColumn Header="Bone Mass (kg)" 
-                                                   Binding="{Binding BodyBoneMass, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                   CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                <DataGridTextColumn Header="Visceral Fat" 
-                                                   Binding="{Binding BodyVisceralFat, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                   CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                <DataGridTextColumn Header="Chest Circumference (cm)" 
-                                                   Binding="{Binding ChestCircumference, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                   CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                <DataGridTextColumn Header="Waist Circumference (cm)" 
-                                                   Binding="{Binding WaistCircumference, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                   CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                <DataGridTextColumn Header="Hips Circumference (cm)" 
-                                                   Binding="{Binding HipsCircumference, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                   CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                <DataGridTextColumn Header="Fat Tong Breast Crease (mm)" 
-                                                   Binding="{Binding FatTongBreastCrease, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                   CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                <DataGridTextColumn Header="Fat Tong Midaxillary Crease (mm):" 
-                                                   Binding="{Binding FatTongArmpitCrease, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                   CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                <DataGridTextColumn Header="Fat Tong Abdominal Crease (mm)" 
-                                                   Binding="{Binding FatTongAbdominalCrease, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                   CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                <DataGridTextColumn Header="Fat Tong Hip Crease (mm)" 
-                                                   Binding="{Binding FatTongHipCrease, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                   CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                <DataGridTextColumn Header="Fat Tong Thigh Crease (mm)" 
-                                                   Binding="{Binding FatTongThighCrease, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                   CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                <DataGridTextColumn Header="Fat Tong back Crease (mm)" 
-                                                   Binding="{Binding FatTongBackCrease, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                   CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                <DataGridTextColumn Header="Fat Tong Triceps Crease (mm)" 
-                                                   Binding="{Binding FatTongTricepsCrease, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                   CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                <DataGridTextColumn Header="{loc:Translate ColDate}" Binding="{Binding WorkoutLogID, StringFormat='dddd, dd.MM.yyyy'}" Width="Auto" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColDate}" Binding="{Binding MeasurementDate, StringFormat='dddd, dd.MM.yyyy'}" Width="Auto" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColBodyWeight}" Binding="{Binding BodyWeight, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                <DataGridTextColumn Header="{loc:Translate ColBmi}" Binding="{Binding BMI, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColBodyFatPercentage}" Binding="{Binding BodyFatPercentage, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                <DataGridTextColumn Header="{loc:Translate ColBodyFatPercentageTop}" Binding="{Binding BodyFatPercentageTop, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                <DataGridTextColumn Header="{loc:Translate ColBodyFatPercentageBottom}" Binding="{Binding BodyFatPercentageBottom, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                <DataGridTextColumn Header="{loc:Translate ColBodyMusclePercentage}" Binding="{Binding BodyMusclePercentage, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                <DataGridTextColumn Header="{loc:Translate ColBodyMusclePercentageTop}" Binding="{Binding BodyMusclePercentageTop, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                <DataGridTextColumn Header="{loc:Translate ColBodyMusclePercentageBottom}" Binding="{Binding BodyMusclePercentageBottom, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                <DataGridTextColumn Header="{loc:Translate ColBodyWaterPercentage}" Binding="{Binding BodyWaterPercentage, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                <DataGridTextColumn Header="{loc:Translate ColBodyBoneMass}" Binding="{Binding BodyBoneMass, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                <DataGridTextColumn Header="{loc:Translate ColBodyVisceralFat}" Binding="{Binding BodyVisceralFat, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                <DataGridTextColumn Header="{loc:Translate ColChestCircumference}" Binding="{Binding ChestCircumference, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                <DataGridTextColumn Header="{loc:Translate ColWaistCircumference}" Binding="{Binding WaistCircumference, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                <DataGridTextColumn Header="{loc:Translate ColHipsCircumference}" Binding="{Binding HipsCircumference, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                <DataGridTextColumn Header="{loc:Translate ColFatTongBreastCrease}" Binding="{Binding FatTongBreastCrease, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                <DataGridTextColumn Header="{loc:Translate ColFatTongArmpitCrease}" Binding="{Binding FatTongArmpitCrease, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                <DataGridTextColumn Header="{loc:Translate ColFatTongAbdominalCrease}" Binding="{Binding FatTongAbdominalCrease, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                <DataGridTextColumn Header="{loc:Translate ColFatTongHipCrease}" Binding="{Binding FatTongHipCrease, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                <DataGridTextColumn Header="{loc:Translate ColFatTongThighCrease}" Binding="{Binding FatTongThighCrease, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                <DataGridTextColumn Header="{loc:Translate ColFatTongBackCrease}" Binding="{Binding FatTongBackCrease, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                <DataGridTextColumn Header="{loc:Translate ColFatTongTricepsCrease}" Binding="{Binding FatTongTricepsCrease, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
                 </Border>
 
-                <Expander Header="Initial Values"
+                <Expander Header="{loc:Translate InitialValues}"
                          ExpandDirection="Left"
                          VerticalAlignment="Stretch"
                          HorizontalAlignment="Right"
@@ -229,22 +139,14 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
 
-                            <TextBlock Grid.Column="0"
-                                  Grid.Row="0">
-                           
-                       <Run Text="Initial Measurements from " 
-                            FontWeight="SemiBold"
-                            FontSize="12"/>
-                       <Run Text="{Binding UserName}" 
-                            FontWeight="Bold"
-                            FontSize="15"/>
-
+                            <TextBlock Grid.Column="0" Grid.Row="0">
+                                <Run Text="{loc:Translate InitialMeasurementsFrom}" FontWeight="SemiBold" FontSize="12"/>
+                                <Run Text="{Binding UserName}" FontWeight="Bold" FontSize="15"/>
                             </TextBlock>
 
                             <DataGrid x:Name="InitialMeasurementsGrid"
@@ -268,108 +170,35 @@
                                      Grid.Row="1"
                                      IsReadOnly="True">
 
-
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Date" 
-                                                       Binding="{Binding MeasurementDate, StringFormat='dddd, dd.MM.yyyy'}"
-                                                       Width="Auto"
-                                                       IsReadOnly="True"/>
-
-                                    <DataGridTextColumn Header="Bodyweight (kg)" 
-                                                       Binding="{Binding BodyWeight, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                       CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                    <DataGridTextColumn Header="BMI" 
-                                                       Binding="{Binding BMI, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                       CellStyle="{StaticResource DataGrid_CellStyle}"
-                                                       IsReadOnly="True"/>
-
-                                    <DataGridTextColumn Header="Body Fat (%)" 
-                                                       Binding="{Binding BodyFatPercentage, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                       CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                    <DataGridTextColumn Header="Body Fat Top (%)" 
-                                                       Binding="{Binding BodyFatPercentageTop, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                       CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                    <DataGridTextColumn Header="Body Fat Bottom (%)" 
-                                                       Binding="{Binding BodyFatPercentageBottom, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                       CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                    <DataGridTextColumn Header="Muscle Mass (%)" 
-                                                       Binding="{Binding BodyMusclePercentage, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                       CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                    <DataGridTextColumn Header="Muscle Mass Top (%)" 
-                                                       Binding="{Binding BodyMusclePercentageTop, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                       CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                    <DataGridTextColumn Header="Muscle Mass Bottom (%)" 
-                                                       Binding="{Binding BodyMusclePercentageBottom, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                       CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                    <DataGridTextColumn Header="Body Water (%)" 
-                                                       Binding="{Binding BodyWaterPercentage, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                       CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                    <DataGridTextColumn Header="Bone Mass (kg)" 
-                                                       Binding="{Binding BodyBoneMass, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                       CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                    <DataGridTextColumn Header="Visceral Fat" 
-                                                       Binding="{Binding BodyVisceralFat, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                       CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                    <DataGridTextColumn Header="Chest Circumference (cm)" 
-                                                       Binding="{Binding ChestCircumference, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                       CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                    <DataGridTextColumn Header="Waist Circumference (cm)" 
-                                                       Binding="{Binding WaistCircumference, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                       CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                    <DataGridTextColumn Header="Hips Circumference (cm)" 
-                                                       Binding="{Binding HipsCircumference, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                       CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                    <DataGridTextColumn Header="Fat Tong Breast Crease (mm)" 
-                                                       Binding="{Binding FatTongBreastCrease, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                       CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                    <DataGridTextColumn Header="Fat Tong Midaxillary Crease (mm):" 
-                                                       Binding="{Binding FatTongArmpitCrease, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                       CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                    <DataGridTextColumn Header="Fat Tong Abdominal Crease (mm)" 
-                                                       Binding="{Binding FatTongAbdominalCrease, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                       CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                    <DataGridTextColumn Header="Fat Tong Hip Crease (mm)" 
-                                                       Binding="{Binding FatTongHipCrease, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                       CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                    <DataGridTextColumn Header="Fat Tong Thigh Crease (mm)" 
-                                                       Binding="{Binding FatTongThighCrease, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                       CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                    <DataGridTextColumn Header="Fat Tong back Crease (mm)" 
-                                                       Binding="{Binding FatTongBackCrease, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                       CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
-                                    <DataGridTextColumn Header="Fat Tong Triceps Crease (mm)" 
-                                                       Binding="{Binding FatTongTricepsCrease, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
-                                                       CellStyle="{StaticResource DataGrid_CellStyle}"/>
-
+                                    <DataGridTextColumn Header="{loc:Translate ColDate}" Binding="{Binding MeasurementDate, StringFormat='dddd, dd.MM.yyyy'}" Width="Auto" IsReadOnly="True"/>
+                                    <DataGridTextColumn Header="{loc:Translate ColBodyWeight}" Binding="{Binding BodyWeight, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                    <DataGridTextColumn Header="{loc:Translate ColBmi}" Binding="{Binding BMI, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}" IsReadOnly="True"/>
+                                    <DataGridTextColumn Header="{loc:Translate ColBodyFatPercentage}" Binding="{Binding BodyFatPercentage, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                    <DataGridTextColumn Header="{loc:Translate ColBodyFatPercentageTop}" Binding="{Binding BodyFatPercentageTop, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                    <DataGridTextColumn Header="{loc:Translate ColBodyFatPercentageBottom}" Binding="{Binding BodyFatPercentageBottom, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                    <DataGridTextColumn Header="{loc:Translate ColBodyMusclePercentage}" Binding="{Binding BodyMusclePercentage, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                    <DataGridTextColumn Header="{loc:Translate ColBodyMusclePercentageTop}" Binding="{Binding BodyMusclePercentageTop, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                    <DataGridTextColumn Header="{loc:Translate ColBodyMusclePercentageBottom}" Binding="{Binding BodyMusclePercentageBottom, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                    <DataGridTextColumn Header="{loc:Translate ColBodyWaterPercentage}" Binding="{Binding BodyWaterPercentage, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                    <DataGridTextColumn Header="{loc:Translate ColBodyBoneMass}" Binding="{Binding BodyBoneMass, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                    <DataGridTextColumn Header="{loc:Translate ColBodyVisceralFat}" Binding="{Binding BodyVisceralFat, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                    <DataGridTextColumn Header="{loc:Translate ColChestCircumference}" Binding="{Binding ChestCircumference, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                    <DataGridTextColumn Header="{loc:Translate ColWaistCircumference}" Binding="{Binding WaistCircumference, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                    <DataGridTextColumn Header="{loc:Translate ColHipsCircumference}" Binding="{Binding HipsCircumference, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                    <DataGridTextColumn Header="{loc:Translate ColFatTongBreastCrease}" Binding="{Binding FatTongBreastCrease, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                    <DataGridTextColumn Header="{loc:Translate ColFatTongArmpitCrease}" Binding="{Binding FatTongArmpitCrease, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                    <DataGridTextColumn Header="{loc:Translate ColFatTongAbdominalCrease}" Binding="{Binding FatTongAbdominalCrease, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                    <DataGridTextColumn Header="{loc:Translate ColFatTongHipCrease}" Binding="{Binding FatTongHipCrease, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                    <DataGridTextColumn Header="{loc:Translate ColFatTongThighCrease}" Binding="{Binding FatTongThighCrease, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                    <DataGridTextColumn Header="{loc:Translate ColFatTongBackCrease}" Binding="{Binding FatTongBackCrease, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
+                                    <DataGridTextColumn Header="{loc:Translate ColFatTongTricepsCrease}" Binding="{Binding FatTongTricepsCrease, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" CellStyle="{StaticResource DataGrid_CellStyle}"/>
                                 </DataGrid.Columns>
                             </DataGrid>
                         </Grid>
                     </Border>
                 </Expander>
             </Grid>
-
-
-
         </Grid>
-
     </Grid>
 </Page>

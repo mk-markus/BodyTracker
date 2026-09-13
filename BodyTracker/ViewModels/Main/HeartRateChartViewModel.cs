@@ -45,7 +45,7 @@ namespace BodyTracker.ViewModels.Main
 
         /// <summary>
         /// Gets or sets the X-axes configuration for the heart rate Cartesian chart.
-        /// This property defines the horizontal scale, including labels (e.g., dates), 
+        /// This property defines the horizontal scale, including Lbls (e.g., dates), 
         /// unit spacing, and title formatting.
         /// </summary>
         [ObservableProperty]

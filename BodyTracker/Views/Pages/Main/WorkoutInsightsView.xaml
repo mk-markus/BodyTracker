@@ -5,6 +5,7 @@
       xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:BodyTracker.Views"
+      xmlns:loc="clr-namespace:BodyTracker.Services.Localization"
       mc:Ignorable="d"
       Background="{StaticResource AppBackgroundBrush}">
 
@@ -40,34 +41,32 @@
                 <!-- ================= TIMESPAN SECTION ================= -->
                 <Border Grid.Row="0" Style="{StaticResource BorderDashboardCardStyle}" Padding="10" Margin="0,0,0,10">
                     <StackPanel>
-                        <TextBlock Text="📅 Timespan" Style="{DynamicResource TextBlockDashBoardTitle}" Margin="0,0,0,10"/>
+                        <TextBlock Text="{loc:Translate LblTimespan}" Style="{DynamicResource TextBlockDashBoardTitle}" Margin="0,0,0,10"/>
 
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="From:" VerticalAlignment="Center" Margin="0,0,10,0" Style="{DynamicResource TextBlockDescribing}"/>
+                            <TextBlock Text="{loc:Translate LblFrom}" VerticalAlignment="Center" Margin="0,0,10,0" Style="{DynamicResource TextBlockDescribing}"/>
                             <DatePicker SelectedDate="{Binding StartDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource ModernFlatDatePicker}"/>
 
-                            <TextBlock Text="To:" VerticalAlignment="Center" Margin="10,0,10,0" Style="{DynamicResource TextBlockDescribing}"/>
+                            <TextBlock Text="{loc:Translate LblTo}" VerticalAlignment="Center" Margin="10,0,10,0" Style="{DynamicResource TextBlockDescribing}"/>
                             <DatePicker SelectedDate="{Binding EndDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource ModernFlatDatePicker}"/>
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
-
                             <!-- ================= TOGGLE BUTTON QUICK DATE RANGES ================= -->
                             <ToggleButton x:Name="DateShortCuts"
                                        Style="{DynamicResource ModernStandardToggleButton}"
-                                       Content="📅 Quick Ranges ▼ "
+                                       Content="{loc:Translate BtnQuickRanges}"
                                        Margin="0,10,0,0"
-                                      HorizontalAlignment="Left"
-                                       ToolTip="Filters the chart to show data exclusively for the current year."/>
+                                       HorizontalAlignment="Left"
+                                       ToolTip="{loc:Translate ToolTipQuickRanges}"/>
 
                             <Button Content="🔄"
-                                ToolTip="Refresh Datas: Reload all datas from Database"
+                                ToolTip="{loc:Translate ToolTipRefreshDatabaseDatas}"
                                 Command="{Binding CommandRefresh}"
                                 Style="{DynamicResource IconStandardButton}" 
                                 Margin="10,10,0,0"/>
-
-
                         </StackPanel>
+
                         <!-- ================= POPUP QUICK DATE RANGES ================= -->
                         <Popup PlacementTarget="{Binding ElementName=DateShortCuts}"
                                 Placement="Bottom"
@@ -79,44 +78,36 @@
                                      Width="{Binding ActualWidth, ElementName=DateShortCuts}">
 
                                 <StackPanel>
+                                    <Button Content="{loc:Translate BtnYear}" 
+                                         Style="{StaticResource ModernStandardButton}" 
+                                         Command="{Binding CommandSetActualYear}" 
+                                         ToolTip="{loc:Translate ToolTipYear}"
+                                         Margin="0,0,0,0"/>
 
-                                    <Button Content="📅 Year" 
-                                             Style="{StaticResource ModernStandardButton}" 
-                                             Command="{Binding CommandSetActualYear}" 
-                                             ToolTip="Filter chart data for the current year."
-                                             Margin="0,0,0,0"/>
+                                    <Button Content="{loc:Translate BtnWeek}" 
+                                         Style="{StaticResource ModernStandardButton}" 
+                                         Command="{Binding CommandSetActualWeek}" 
+                                         ToolTip="{loc:Translate ToolTipWeek}"
+                                         Margin="0,5,0,0"/>
 
-                                    <Button Content="📆 Week" 
-                                             Style="{StaticResource ModernStandardButton}" 
-                                             Command="{Binding CommandSetActualWeek}" 
-                                             ToolTip="Filter chart data for the current week."
-                                             Margin="0,5,0,0"/>
-
-                                    <Button Content="🗓️ Month" 
-                                             Style="{StaticResource ModernStandardButton}" 
-                                             Command="{Binding CommandSetActualMonth}" 
-                                             ToolTip="Filter chart data for the current month."
-                                             Margin="0,5,0,0"/>
-
-                                    <!--<Button Content="🌍 All Time" 
-                                             Style="{StaticResource ModernStandardButton}" 
-                                             Command="{Binding CommandShowAllData}" 
-                                             ToolTip="Display the complete historical dataset without time restrictions."
-                                             Margin="0,5,0,0"/>-->
+                                    <Button Content="{loc:Translate BtnMonth}" 
+                                         Style="{StaticResource ModernStandardButton}" 
+                                         Command="{Binding CommandSetActualMonth}" 
+                                         ToolTip="{loc:Translate ToolTipMonth}"
+                                         Margin="0,5,0,0"/>
                                 </StackPanel>
                             </Border>
                         </Popup>
-
                     </StackPanel>
                 </Border>
 
                 <!-- ================= EXERCISE PROGRESS SELECTION ================= -->
                 <Border Grid.Row="1" Style="{DynamicResource BorderDashboardCardStyle}" Padding="10" Margin="0,0,0,10">
                     <StackPanel Margin="0">
-                        <TextBlock Text="🎯 Exercise Progress Selection" Style="{DynamicResource TextBlockWorkoutInsightsChartTitleStyle}" Margin="0,0,0,8"/>
+                        <TextBlock Text="{loc:Translate LblExerciseProgressSelection}" Style="{DynamicResource TextBlockWorkoutInsightsChartTitleStyle}" Margin="0,0,0,8"/>
                         <ComboBox ItemsSource="{Binding ExercisesList}"
-                      SelectedItem="{Binding SelectedExerciseItem, Mode=TwoWay}"
-                      Style="{DynamicResource ModernFlatComboBox}"/>
+                                  SelectedItem="{Binding SelectedExerciseItem, Mode=TwoWay}"
+                                  Style="{DynamicResource ModernFlatComboBox}"/>
                     </StackPanel>
                 </Border>
 
@@ -132,7 +123,7 @@
                         <!-- Workouts Box -->
                         <Border Grid.Column="0" Background="#F9F9F9" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Padding="12">
                             <StackPanel VerticalAlignment="Center">
-                                <TextBlock Text="🏋️ Workouts" FontSize="11" Foreground="Gray" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{loc:Translate LblWorkouts}" FontSize="11" Foreground="Gray" HorizontalAlignment="Center"/>
                                 <TextBlock Text="{Binding TotalWorkouts}" FontSize="22" FontWeight="Bold" Foreground="#333333" HorizontalAlignment="Center" Margin="0,4,0,0"/>
                             </StackPanel>
                         </Border>
@@ -140,16 +131,14 @@
                         <!-- Volume Box -->
                         <Border Grid.Column="2" Background="#F9F9F9" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Padding="12">
                             <StackPanel VerticalAlignment="Center">
-                                <TextBlock Text="📊 Total Volume" FontSize="11" Foreground="Gray" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{loc:Translate LblTotalVolume}" FontSize="11" Foreground="Gray" HorizontalAlignment="Center"/>
                                 <TextBlock Text="{Binding TotalWorkoutsVolume}" FontSize="18" FontWeight="Bold" Foreground="#2ECC71" HorizontalAlignment="Center" Margin="0,4,0,0"/>
                             </StackPanel>
                         </Border>
                     </Grid>
                 </Border>
-
             </Grid>
 
-       
             <!-- ================= MOST DONE EXERCISES ================= -->
             <Border Grid.Column="1"
                     Grid.Row="0"
@@ -158,7 +147,7 @@
                     Height="{Binding ActualHeight, ElementName=TimeSECTION}"
                     Style="{DynamicResource BorderDashboardCardStyle}">
                 <StackPanel Margin="16">
-                    <TextBlock Text="🔥 Most Done Exercises" 
+                    <TextBlock Text="{loc:Translate LblMostDoneExercises}" 
                                    Style="{DynamicResource TextBlockWorkoutInsightsChartTitleStyle}" 
                                    Margin="0,0,0,12"/>
 
@@ -172,10 +161,6 @@
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="*"/>
-                                        </Grid.RowDefinitions>
 
                                         <!-- Exercise Name -->
                                         <TextBlock Grid.Column="0" Style="{DynamicResource TextBlockDescribing}" 
@@ -209,19 +194,18 @@
                      Grid.Column="2"
                      Grid.ColumnSpan="2"
                      Style="{DynamicResource BorderDashboardCardStyle}"
-                     Margin="0,00,0,0">
+                     Margin="0,0,0,0">
 
                 <Grid Margin="0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Text="💪 Workout Muscle Distribution (MoM)" 
+                    <TextBlock Text="{loc:Translate LblMuscleDistribution}" 
                                 Grid.Column="0"
                                 Grid.Row="0"
                                 Style="{DynamicResource TextBlockDashBoardTitle}" 
@@ -235,13 +219,11 @@
                          Width="Auto"
                          LegendPosition="Hidden"
                          LegendTextSize="10"
-                         
                          Series="{Binding SeriesMuscleDistributionSpiderChart}" 
                          AngleAxes="{Binding AngleAxisMuscleDistirbutionSpiderChart}"
                          RadiusAxes="{Binding RadiusAxisMuscleDistirbutionSpiderChart}"/>
                 </Grid>
             </Border>
-
 
             <!-- ================= PEAK VOLUME ================= -->
             <Border Style="{DynamicResource BorderDashboardCardStyle}" 
@@ -250,17 +232,16 @@
                     Grid.Row="2"
                     Padding="10"
                     Margin="0,10,0,0">
-                
+
                 <StackPanel Margin="16">
-                    <TextBlock Text="📈 Peak Weight Progress" 
+                    <TextBlock Text="{loc:Translate LblPeakWeightProgress}" 
                                Style="{DynamicResource TextBlockWorkoutInsightsChartTitleStyle}" 
                                Margin="0,0,0,12"/>
                     <lvc:CartesianChart Height="250" 
                                        Series="{Binding SeriesWorkoutPeakProgress}" 
                                        XAxes="{Binding XAxesWorkoutPeakProgress}" 
                                        YAxes="{Binding YAxesWorkoutPeakProgress}" 
-                                       LegendPosition="Hidden"
-                                       />
+                                       LegendPosition="Hidden"/>
                 </StackPanel>
             </Border>
 
@@ -271,9 +252,9 @@
                     Grid.Row="3"
                     Padding="10"
                     Margin="0,10,0,0">
-                
+
                 <StackPanel Margin="16">
-                    <TextBlock Text="📈 Total Volume Progress" 
+                    <TextBlock Text="{loc:Translate LblTotalVolumeProgress}" 
                                Style="{DynamicResource TextBlockWorkoutInsightsChartTitleStyle}" 
                                Margin="0,0,0,12"/>
                     <lvc:CartesianChart Height="250" 
@@ -291,9 +272,9 @@
                     Grid.Row="4"
                     Padding="10"
                     Margin="0,10,0,0">
-                
+
                 <StackPanel Margin="16">
-                    <TextBlock Text="📈 Max Reps Progress" 
+                    <TextBlock Text="{loc:Translate LblMaxRepsProgress}" 
                                Style="{DynamicResource TextBlockWorkoutInsightsChartTitleStyle}" 
                                Margin="0,0,0,12"/>
                     <lvc:CartesianChart Height="250" 

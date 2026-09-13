@@ -5,6 +5,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:BodyTracker.Views"
+      xmlns:loc="clr-namespace:BodyTracker.Services.Localization"
       mc:Ignorable="d" 
       d:DesignHeight="700" d:DesignWidth="1000"
       Title="HerartRateChartView">
@@ -22,7 +23,6 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
-
             </Grid.RowDefinitions>
 
 
@@ -43,18 +43,18 @@
 
                     <StackPanel>
 
-                        <TextBlock Text="📅 Timespan" 
+                        <TextBlock Text="{loc:Translate LblTimespan}" 
                                 Style="{DynamicResource TextBlockDashBoardTitle}" 
                                 Margin="0,0,0,10"/>
 
                         <!-- Datepickers -->
                         <StackPanel Orientation="Horizontal">
 
-                            <TextBlock Text="From:" VerticalAlignment="Center" Margin="0,0,10,0" Style="{DynamicResource TextBlockDescribing}"/>
+                            <TextBlock Text="{loc:Translate LblFrom}" VerticalAlignment="Center" Margin="0,0,10,0" Style="{DynamicResource TextBlockDescribing}"/>
                             <DatePicker SelectedDate="{Binding StartDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      Style="{DynamicResource ModernFlatDatePicker}"/>
 
-                            <TextBlock Text="To:" VerticalAlignment="Center" Margin="10,0,10,0" Style="{DynamicResource TextBlockDescribing}"/>
+                            <TextBlock Text="{loc:Translate LblTo}" VerticalAlignment="Center" Margin="10,0,10,0" Style="{DynamicResource TextBlockDescribing}"/>
 
                             <DatePicker SelectedDate="{Binding EndDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                      Style="{DynamicResource ModernFlatDatePicker}"/>
@@ -62,9 +62,9 @@
                             <!-- ================= TOGGLE BUTTON QUICK DATE RANGES ================= -->
                             <ToggleButton x:Name="DateShortCuts"
                                        Style="{DynamicResource ModernStandardToggleButton}"
-                                       Content="📅 Quick Ranges ▼ "
+                                       Content="{loc:Translate BtnQuickRanges}"
                                        Margin="10,0,0,0"          
-                                       ToolTip="Filters the chart to show data exclusively for the current year."/>
+                                       ToolTip="{loc:Translate ToolTipQuickRanges}"/>
 
                             <!-- ================= POPUP QUICK DATE RANGES ================= -->
                             <Popup PlacementTarget="{Binding ElementName=DateShortCuts}"
@@ -78,28 +78,28 @@
 
                                     <StackPanel>
 
-                                        <Button Content="📅 Year" 
+                                        <Button Content="{loc:Translate BtnYear}" 
                                              Style="{StaticResource ModernStandardButton}" 
                                              Command="{Binding CommandSetActualYear}" 
-                                             ToolTip="Filter chart data for the current year."
+                                             ToolTip="{loc:Translate ToolTipYear}"
                                              Margin="0,0,0,0"/>
 
-                                        <Button Content="📆 Week" 
+                                        <Button Content="{loc:Translate BtnWeek}" 
                                              Style="{StaticResource ModernStandardButton}" 
                                              Command="{Binding CommandSetActualWeek}" 
-                                             ToolTip="Filter chart data for the current week."
+                                             ToolTip="{loc:Translate ToolTipWeek}"
                                              Margin="0,5,0,0"/>
 
-                                        <Button Content="🗓️ Month" 
+                                        <Button Content="{loc:Translate BtnMonth}" 
                                              Style="{StaticResource ModernStandardButton}" 
                                              Command="{Binding CommandSetActualMonth}" 
-                                             ToolTip="Filter chart data for the current month."
+                                             ToolTip="{loc:Translate ToolTipMonth}"
                                              Margin="0,5,0,0"/>
 
-                                        <Button Content="🌍 All Time" 
+                                        <Button Content="{loc:Translate BtnAllTime}" 
                                              Style="{StaticResource ModernStandardButton}" 
                                              Command="{Binding CommandShowAllData}" 
-                                             ToolTip="Display the complete historical dataset without time restrictions."
+                                             ToolTip="{loc:Translate ToolTipAllTime}"
                                              Margin="0,5,0,0"/>
                                     </StackPanel>
                                 </Border>
@@ -112,11 +112,12 @@
                 <!-- ================= METRICS SETTINGS SECTION ================= -->
                 <Border Style="{StaticResource BorderDashboardCardStyle}"
                      Grid.Column="1"
-                     Padding="10">
+                     Padding="10"
+                        >
 
                     <StackPanel Orientation="Vertical">
 
-                        <TextBlock Text="📊 Series Visibility" 
+                        <TextBlock Text="{loc:Translate LblSeriesVisibility}" 
                                 VerticalAlignment="Center"
                                 Style="{DynamicResource TextBlockDashBoardTitle}" 
                                 Margin="0,0,0,10"/>
@@ -126,9 +127,9 @@
                             <!-- ================= TOGGLE BUTTON SERIES MEASUREMENT DATAS ================= -->
                             <ToggleButton x:Name="SeriesButton"
                                        Style="{DynamicResource ModernStandardToggleButton}"
-                                       Content="📊 Show Measurements ▼ "
-                                       Margin="0,0,10,0"          
-                                       ToolTip="Select or clear the check boxes to show or hide in the following diagrams."/>
+                                       Content="{loc:Translate BtnShowMeasurements}"
+                                       Margin="0,0,10,0"    Width="210"      
+                                       ToolTip="{loc:Translate ToolTipShowMeasurements}"/>
 
 
                             <!-- ================= POPUP SERIES CHECKBOXES RANGES ================= -->
@@ -144,26 +145,26 @@
 
 
                                     <StackPanel>
-                                       
-                                        <CheckBox Content="❤️ Heart Rate" 
+
+                                        <CheckBox Content="{loc:Translate ChartTitleHeartRate}" 
                                                IsChecked="{Binding ShowHeartRate}" 
                                                Command="{Binding CommandReloadChartsAsync}" 
                                                Style="{StaticResource StandardCheckBox}"
                                                Margin="0,0,0,8"/>
 
 
-                                        <CheckBox Content="❤️ Min Heart Rate" 
+                                        <CheckBox Content="{loc:Translate ChartTitleMinHeartRate}" 
                                                IsChecked="{Binding ShowMinHeartRate}" 
                                                Command="{Binding CommandReloadChartsAsync}" 
                                                Style="{StaticResource StandardCheckBox}"
                                                Margin="0,0,0,8"/>
 
 
-                                        <CheckBox Content="❤️ Max Heart Rate" 
+                                        <CheckBox Content="{loc:Translate ChartTitleMaxHeartRate}" 
                                                IsChecked="{Binding ShowMaxHeartRate}" 
                                                Command="{Binding CommandReloadChartsAsync}" 
                                                Style="{StaticResource StandardCheckBox}"
-                                                      Margin="0,0,0,8"/>
+                                               Margin="0,0,0,8"/>
 
                                     </StackPanel>
 
@@ -174,8 +175,9 @@
                             <!-- ================= TOGGLE BUTTON TREND SERIES MEASUREMENT DATAS ================= -->
                             <ToggleButton x:Name="TrendSeriesButton"
                                        Style="{DynamicResource ModernStandardToggleButton}"
-                                       Content="📈 Show Trends ▼ "
-                                       ToolTip="Select or clear the trend check boxes to show or hide in the following diagrams."/>
+                                       Content="{loc:Translate BtnShowTrends}"
+                                       ToolTip="{loc:Translate ToolTipShowTrends}"
+                                          Width="210"/>
 
                             <!-- ================= POPUP TREND SERIES CHECKBOXES RANGES ================= -->
                             <Popup PlacementTarget="{Binding ElementName=TrendSeriesButton}"
@@ -189,35 +191,35 @@
                                       Width="{Binding ActualWidth, ElementName=TrendSeriesButton}">
 
                                     <StackPanel>
-                                 
-                                        <CheckBox Content="❤️ Heart Rate" 
+
+                                        <CheckBox Content="{loc:Translate ChartTitleHeartRate}" 
                                                IsChecked="{Binding ShowHeartRateTrend}" 
                                                Command="{Binding CommandReloadChartsAsync}" 
                                                Style="{StaticResource StandardCheckBox}"
                                                Margin="0,0,0,8"/>
 
 
-                                        <CheckBox Content="❤️ Min Heart Rate" 
+                                        <CheckBox Content="{loc:Translate ChartTitleMinHeartRate}" 
                                                IsChecked="{Binding ShowMinHeartRateTrend}" 
                                                Command="{Binding CommandReloadChartsAsync}" 
                                                Style="{StaticResource StandardCheckBox}"
                                                Margin="0,0,0,8"/>
 
 
-                                        <CheckBox Content="❤️ Max Heart Rate" 
+                                        <CheckBox Content="{loc:Translate ChartTitleMaxHeartRate}" 
                                                IsChecked="{Binding ShowMaxHeartRateTrend}" 
                                                Command="{Binding CommandReloadChartsAsync}" 
                                                Style="{StaticResource StandardCheckBox}"
                                                Margin="0,0,0,8"/>
 
-                                     </StackPanel>
+                                    </StackPanel>
 
                                 </Border>
                             </Popup>
 
 
                             <Button Content="🔄"
-                             ToolTip="Refresh Datas: Reload all datas from Database"
+                             ToolTip="{loc:Translate ToolTipRefreshDatabaseDatas}"
                              Command="{Binding CommandRefreshAsync}"
                              Style="{DynamicResource IconStandardButton}" />
 
@@ -226,7 +228,7 @@
                 </Border>
             </Grid>
 
-          
+
             <!-- ================= POPUP HEART RATE CHART ================= -->
             <Border Style="{StaticResource BorderDashboardCardStyle}"
                     Grid.Column="0"
@@ -241,10 +243,9 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
-
                     </Grid.RowDefinitions>
 
-                    <TextBlock Text="❤️ Heart Rate" 
+                    <TextBlock Text="{loc:Translate ChartTitleHeartRate}" 
                                 Style="{DynamicResource TextBlockDashBoardTitle}"
                                 Grid.Column="0"
                                 Grid.Row="0"
@@ -261,6 +262,6 @@
 
                 </Grid>
             </Border>
-       </Grid>
+        </Grid>
     </ScrollViewer>
 </Page>

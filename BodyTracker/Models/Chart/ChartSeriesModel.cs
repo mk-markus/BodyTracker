@@ -8,13 +8,13 @@ public class ChartSeriesModel<T>
     /// <summary>
     /// Gets or sets the display name of the bodyMeasurement series.
     /// </summary>
-    /// <remarks>Used to identify the series within chart legends and tooltips.</remarks>
+    /// <remarks>Used to identify the series within chart legends and ToolTips.</remarks>
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the display name of the trend line.
     /// </summary>
-    /// <remarks>Used to label the calculated trend line corresponding to this bodyMeasurement series in legends.</remarks>
+    /// <remarks>Used to Lbl the calculated trend line corresponding to this bodyMeasurement series in legends.</remarks>
     public string TrendName { get; set; } = string.Empty;
 
     /// <summary>
@@ -44,7 +44,7 @@ public class ChartSeriesModel<T>
     /// <summary>
     /// Gets or sets a value indicating whether the trend line is hoverable.
     /// </summary>
-    /// <remarks>Controls whether the trend line responds to mouse hover interactions and tooltips.</remarks>
+    /// <remarks>Controls whether the trend line responds to mouse hover interactions and ToolTips.</remarks>
     public bool IsTrendLineHoverable { get; set; }
 
     /// <summary>

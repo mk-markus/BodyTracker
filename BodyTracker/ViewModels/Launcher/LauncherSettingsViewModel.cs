@@ -1,17 +1,26 @@
 ﻿using BodyTracker.Models;
+using BodyTracker.Models.Languages;
 using BodyTracker.Models.WorkoutLog;
+using BodyTracker.Resources.Languages;
 using BodyTracker.Services;
+using BodyTracker.Services.App;
+using BodyTracker.Services.Localization;
 using BodyTracker.Services.WorkoutLog;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Win32;
 using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Sources;
 using System.Web;
+using System.Windows;
 
 namespace BodyTracker.ViewModels
 {
@@ -35,6 +44,16 @@ namespace BodyTracker.ViewModels
         /// </summary>
         [ObservableProperty]
         public string apiKeyError = string.Empty;
+
+
+        [ObservableProperty]
+        public ObservableCollection<string> languagesList;
+
+        [ObservableProperty]
+        public string selectedLanguagesItem;
+
+        private bool firstLoad = true;
+
 
         /// <summary>
         /// Gets a value indicating whether the current API key string matches the standard UUID format.
@@ -103,6 +122,9 @@ namespace BodyTracker.ViewModels
         /// </summary>
         public IAsyncRelayCommand CommandSelectDefaultImportFolder { get; }
 
+
+        public IAsyncRelayCommand CommandChangeLanguage { get; }
+
         /// <summary>
         /// Service responsible for managing Hevy API configuration settings and credential encryption.
         /// </summary>
@@ -122,6 +144,19 @@ namespace BodyTracker.ViewModels
         {
             CommandSaveApiKey = new AsyncRelayCommand(SaveApiKeyAsync);
             CommandSelectDefaultImportFolder = new AsyncRelayCommand(SelectDefaultImportFolder);
+            CommandChangeLanguage = new AsyncRelayCommand(ChangeLanguage);
+
+
+            if (firstLoad)
+            {
+
+            }
+
+            LanguagesList = new ObservableCollection<string>(CultureCodeModel.Languages());
+            if (SelectedLanguagesItem == null || !LanguagesList.Contains(SelectedLanguagesItem))
+            {
+                SelectedLanguagesItem = LanguagesList?.FirstOrDefault() ?? "";
+            }
 
             var cfgApiKey = hevyAppApiService.LoadConfigurationFile();
 
@@ -130,6 +165,20 @@ namespace BodyTracker.ViewModels
 
             var settings = appSettingsService.LoadConfigurationFile();
             DefaultImportPath = settings.DefaultImportFolder;
+            var lang = settings.Language;
+
+            if (firstLoad)
+            {
+                LanguagesList = new ObservableCollection<string>(CultureCodeModel.Languages());
+
+                if ((SelectedLanguagesItem == null || !LanguagesList.Contains(SelectedLanguagesItem)) && string.IsNullOrEmpty(lang))
+                {
+                    SelectedLanguagesItem = LanguagesList?.FirstOrDefault() ?? "";
+                }
+                else SelectedLanguagesItem = lang;
+                firstLoad = false;
+            }
+
 
         }
 
@@ -178,11 +227,33 @@ namespace BodyTracker.ViewModels
                     defaultImportPath = string.Empty;
                 }
 
+
             }
             catch (Exception ex)
             {
                 ValidationMessage += ex.ToString();
             }
+        }
+
+        bool speak = false;
+
+        public async Task ChangeLanguage()
+        {
+            if (!speak)
+            {
+                speak = !speak;
+                LocalizationService.Instance.ChangeLanguage("en-US");
+            }
+            else
+            {
+                speak = !speak;
+                LocalizationService.Instance.ChangeLanguage("de-AT");
+            }
+
+            Debug.WriteLine($"SpeakChanged: {speak} | {CultureInfo.CurrentCulture.ToString()}");
+
+
+
         }
 
         /// <summary>
@@ -213,6 +284,43 @@ namespace BodyTracker.ViewModels
                 return true;
             }
             catch { return false; }
+        }
+
+
+        /// <summary>
+        /// Handles changes to the selected exercise item by logging the selection and fetching the corresponding workout progress chart data.
+        /// </summary>
+        /// <param name="value">The name or identifier of the newly selected exercise.</param>
+        partial void OnSelectedLanguagesItemChanged(string? value)
+        {
+            if (!firstLoad)
+            {
+                var cfg = appSettingsService.LoadConfigurationFile();
+                cfg.Language = SelectedLanguagesItem;
+
+                appSettingsService.Save(cfg);
+
+                MessageBoxResult result = MessageBox.Show(
+                    UiStrings.RestartPromptMessage,
+                    UiStrings.RestartPromptTitle,
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    RestartApplication.Restart();
+                }
+                else
+                {
+                    MessageBox.Show(
+                        UiStrings.RestartRequiredMessage,
+                        UiStrings.InformationTitle,
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                }
+
+            }
+
         }
 
         #region Disposal Pattern
@@ -257,5 +365,12 @@ namespace BodyTracker.ViewModels
         }
 
         #endregion
+    
+
+
+       
+
+
     }
 }
+

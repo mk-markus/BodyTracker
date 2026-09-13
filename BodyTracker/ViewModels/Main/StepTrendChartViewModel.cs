@@ -53,7 +53,7 @@ namespace BodyTracker.ViewModels
 
         /// <summary>
         /// Gets or sets the X-axes configuration for the calories Cartesian chart.
-        /// This property defines the horizontal scale, including labels (e.g., dates), 
+        /// This property defines the horizontal scale, including Lbls (e.g., dates), 
         /// unit spacing, and title formatting.
         /// </summary>
         [ObservableProperty]
@@ -69,7 +69,7 @@ namespace BodyTracker.ViewModels
 
         /// <summary>
         /// Gets or sets the X-axes configuration for the distance Cartesian chart.
-        /// This property defines the horizontal scale, including labels (e.g., dates), 
+        /// This property defines the horizontal scale, including Lbls (e.g., dates), 
         /// unit spacing, and title formatting.
         /// </summary>
         [ObservableProperty]
@@ -85,7 +85,7 @@ namespace BodyTracker.ViewModels
 
         /// <summary>
         /// Gets or sets the X-axes configuration for the steps Cartesian chart.
-        /// This property defines the horizontal scale, including labels (e.g., dates), 
+        /// This property defines the horizontal scale, including Lbls (e.g., dates), 
         /// unit spacing, and title formatting.
         /// </summary>
         [ObservableProperty]

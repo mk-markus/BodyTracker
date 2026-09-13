@@ -288,30 +288,50 @@ namespace BodyTracker.ViewModels
             });
         }
 
+        /// <summary>
+        /// Called when the home selection state changes, triggering navigation to the home page if selected and actions are not suppressed.
+        /// </summary>
+        /// <param name="value">The new selection state value.</param>
         partial void OnIsHomeSelectedChanged(bool value)
         {
             if (!value || suppressSelectionAction) return;
             _ = ShowHomePageAsync();
         }
 
+        /// <summary>
+        /// Called when the new database person selection state changes, triggering navigation to the person setup page if selected and actions are not suppressed.
+        /// </summary>
+        /// <param name="value">The new selection state value.</param>
         partial void OnIsNewDatabasePersonSelectedChanged(bool value)
         {
             if (!value || suppressSelectionAction) return;
             _ = ShowNewDatabasePersonPageAsync();
         }
 
+        /// <summary>
+        /// Called when the new database connection selection state changes, triggering navigation to the connection setup page if selected and actions are not suppressed.
+        /// </summary>
+        /// <param name="value">The new selection state value.</param>
         partial void OnIsNewDatabaseConnectionSelectedChanged(bool value)
         {
             if (!value || suppressSelectionAction) return;
             _ = ShowNewDatabaseConnectionPageAsync();
         }
 
+        /// <summary>
+        /// Called when the Hevy app settings selection state changes, triggering navigation to the settings view if selected and actions are not suppressed.
+        /// </summary>
+        /// <param name="value">The new selection state value.</param>
         partial void OnIsHevyAppSettingsSelectedChanged(bool value)
         {
             if (!value || suppressSelectionAction) return;
             _ = ShowHevyAppSettingsViewAsnyc();
         }
 
+        /// <summary>
+        /// Asynchronously updates the active page to the launcher home page and synchronizes the selection toggle states.
+        /// </summary>
+        /// <returns>A task representing the asynchronous navigation operation.</returns>
         private async Task ShowHomePageAsync()
         {
             CurrentPage = new LauncherHomePage(launcherWindow);
@@ -320,10 +340,14 @@ namespace BodyTracker.ViewModels
             IsHomeSelected = true;
             IsNewDatabaseConnectionSelected = false;
             IsNewDatabasePersonSelected = false;
-            IsHevyAppSettingsSelected = false; 
+            IsHevyAppSettingsSelected = false;
             suppressSelectionAction = false;
         }
 
+        /// <summary>
+        /// Asynchronously updates the active page to the new database connection page and synchronizes the selection toggle states.
+        /// </summary>
+        /// <returns>A task representing the asynchronous navigation operation.</returns>
         private async Task ShowNewDatabaseConnectionPageAsync()
         {
             CurrentPage = new LauncherNewDatabaseConnectionPage();
@@ -336,6 +360,10 @@ namespace BodyTracker.ViewModels
             suppressSelectionAction = false;
         }
 
+        /// <summary>
+        /// Asynchronously updates the active page to the new database person page and synchronizes the selection toggle states.
+        /// </summary>
+        /// <returns>A task representing the asynchronous navigation operation.</returns>
         private async Task ShowNewDatabasePersonPageAsync()
         {
             CurrentPage = new LauncherNewDatabasePersonPage();
@@ -348,6 +376,10 @@ namespace BodyTracker.ViewModels
             suppressSelectionAction = false;
         }
 
+        /// <summary>
+        /// Asynchronously updates the active page to the Hevy app settings view and synchronizes the selection toggle states.
+        /// </summary>
+        /// <returns>A task representing the asynchronous navigation operation.</returns>
         private async Task ShowHevyAppSettingsViewAsnyc()
         {
             CurrentPage = new LauncherSettingsView();

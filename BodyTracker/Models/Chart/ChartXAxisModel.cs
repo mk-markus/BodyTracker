@@ -9,7 +9,7 @@ namespace BodyTracker.Services
         /// <summary>
         /// Gets or sets the name identifier of the axis.
         /// </summary>
-        /// <remarks>Used to label or identify the specific axis within charting components.</remarks>
+        /// <remarks>Used to Lbl or identify the specific axis within charting components.</remarks>
         public string Name { get; set; } = string.Empty;
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace BodyTracker.Services
         /// <summary>
         /// Gets or sets the formatting string applied to numerical values along the axis.
         /// </summary>
-        /// <remarks>Uses standard .NET numeric format strings (such as <c>"F2"</c>) to control the presentation of tick labels.</remarks>
+        /// <remarks>Uses standard .NET numeric format strings (such as <c>"F2"</c>) to control the presentation of tick Lbls.</remarks>
         public string Format { get; set; } = "F2";
     }
 }

@@ -1,11 +1,9 @@
 ﻿using BodyTracker.Models;
 using BodyTracker.Models.WorkoutLog;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Net.Http;
+using System.Reflection;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace BodyTracker.Services.WorkoutLog
 {
@@ -25,8 +23,6 @@ namespace BodyTracker.Services.WorkoutLog
         /// </summary>
         private string DefautlPath = @"%Userprofile%\AppData\Local\BodyTracker";
 
-
-
         /// <summary>
         /// Gets a value indicating whether the configuration file and directory path were successfully validated or created.
         /// </summary>
@@ -37,7 +33,7 @@ namespace BodyTracker.Services.WorkoutLog
         /// </summary>
         public AppSettingsService()
         {
-            (PathOK, AppSettingsPath) = ConfigFileAvialable(DefautlPath, "Paths.json");
+            (PathOK, AppSettingsPath) = ConfigFileAvialable(DefautlPath, "AppSetttings.json");
         }
 
        
@@ -77,7 +73,16 @@ namespace BodyTracker.Services.WorkoutLog
         public void SaveCredentials(AppSettingsModel newConfig)
         {
             var cfg = LoadConfigurationFile();
-            cfg.DefaultImportFolder = newConfig.DefaultImportFolder;
+
+            foreach(PropertyInfo property in typeof(AppSettingsModel).GetProperties())
+            {
+                if(property.CanRead && property.CanWrite)
+                {
+                    var value = property.GetValue(newConfig);
+                    property.SetValue(cfg, value);
+                }
+
+            }
             Save(cfg);
         }
 

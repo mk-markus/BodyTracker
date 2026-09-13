@@ -10,7 +10,7 @@
         FontWeight="Bold"
         Height="700" 
         Width="1210"
-        Icon="/Ressources/Icon/ProgramIcon_GymRunning.ico">
+        Icon="/Resources/Icon/ProgramIcon_GymRunning.ico">
     
     <Grid>
         <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden"/>

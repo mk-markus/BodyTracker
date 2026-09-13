@@ -10,7 +10,7 @@ namespace BodyTracker.Services
         /// <summary>
         /// Gets or sets the name identifier of the axis.
         /// </summary>
-        /// <remarks>Used to label or identify the specific axis within charting components.</remarks>
+        /// <remarks>Used to Lbl or identify the specific axis within charting components.</remarks>
         public string Name { get; set; } = string.Empty;
 
         /// <summary>

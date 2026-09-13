@@ -1,5 +1,6 @@
 ﻿using BodyTracker.Models;
 using BodyTracker.Models.Calculation;
+using BodyTracker.Resources.Languages;
 using BodyTracker.Services;
 using BodyTracker.Services.AI;
 using BodyTracker.Services.Calculation;
@@ -193,7 +194,7 @@ namespace BodyTracker.ViewModels
 
         /// <summary>
         /// Gets or sets the X-axes configuration for the Cartesian chart.
-        /// This property defines the horizontal scale, including labels (e.g., dates), 
+        /// This property defines the horizontal scale, including Lbls (e.g., dates), 
         /// unit spacing, and title formatting.
         /// </summary>
         [ObservableProperty] private ICartesianAxis[] xAxesBodyMeasurements = Array.Empty<ICartesianAxis>();
@@ -460,7 +461,7 @@ namespace BodyTracker.ViewModels
 
         /// <summary>
         /// Gets or sets the X-axes configuration for the Cartesian chart.
-        /// This property defines the horizontal scale, including labels (e.g., dates), 
+        /// This property defines the horizontal scale, including Lbls (e.g., dates), 
         /// unit spacing, and title formatting.
         /// </summary>
         [ObservableProperty] private ICartesianAxis[] xAxesMonthlyTraningsVolume = Array.Empty<ICartesianAxis>();
@@ -722,8 +723,8 @@ namespace BodyTracker.ViewModels
 
             var timeRange = TimeFrameCalculator.GetComparisonPeriodForToday(2);
 
-            PeriodMonthBefore = timeRange.CurStartDate.ToString("MMMM yyyy", CultureInfo.InvariantCulture);
-            PeriodTwoMonthsBefore = timeRange.PrevStartDate.ToString("MMMM yyyy", CultureInfo.InvariantCulture);
+            PeriodMonthBefore = timeRange.CurStartDate.ToString("MMMM yyyy", CultureInfo.CurrentCulture);
+            PeriodTwoMonthsBefore = timeRange.PrevStartDate.ToString("MMMM yyyy", CultureInfo.CurrentCulture);
 
             // Application for the BodyCalculationToolsService
             var currentPeriodAverages = BodyCalculationToolsService.GetAverageValues(timeRange.CurStartDate, timeRange.CurEndDate, BodyMeasurement);
@@ -829,8 +830,8 @@ namespace BodyTracker.ViewModels
         {
             var timeRange = TimeFrameCalculator.GetComparisonPeriodForToday(4);
 
-            HeaderBodyMeasurements = $"Body Metrics ({timeRange.PrevStartDate.ToString("MMM yyyy", CultureInfo.InvariantCulture)} - " +
-           $"{timeRange.CurEndDate.ToString("MMM yyyy", CultureInfo.InvariantCulture)})";
+            HeaderBodyMeasurements = $"{UiStrings.CharTitleBodyMeasurements} ({timeRange.PrevStartDate.ToString("MMM yyyy", CultureInfo.CurrentCulture)} - " +
+           $"{timeRange.CurEndDate.ToString("MMM yyyy", CultureInfo.CurrentCulture)})";
             
             var data = BodyMeasurement.ToList<FullBodyMeasurementDatasModel>();
 
@@ -866,8 +867,8 @@ namespace BodyTracker.ViewModels
         {
             var timeRange = TimeFrameCalculator.GetComparisonPeriodForToday(2);
 
-            HeaderMuscleDistribution = $"({timeRange.PrevStartDate.ToString("MMM yyyy", CultureInfo.InvariantCulture)} - " +
-           $"{timeRange.CurEndDate.ToString("MMM yyyy", CultureInfo.InvariantCulture)})";
+            HeaderMuscleDistribution = $"({timeRange.PrevStartDate.ToString("MMMM yyyy", CultureInfo.CurrentCulture)} - " +
+           $"{timeRange.CurEndDate.ToString("MMMM yyyy", CultureInfo.CurrentCulture)})";
 
 
             var actualMonthMuscleDistribution = analyzer.CalculateMuscleSplit(analyzer.WorkoutEntries,
@@ -880,8 +881,8 @@ namespace BodyTracker.ViewModels
 
             (SeriesMuscleDistributionSpiderChart, AngleAxisMuscleDistirbutionSpiderChart, RadiusAxisMuscleDistirbutionSpiderChart) = 
                 ChartTemplateService.CreateWorkloadMuscleSpiderChart(actualMonthMuscleDistribution, previousMonthMuscleDistribution,
-                timeRange.PrevStartDate.ToString("MMMM yyyy", CultureInfo.InvariantCulture),
-                timeRange.CurEndDate.ToString("MMMM yyyy", CultureInfo.InvariantCulture), geometrySize: 0, strokeThickness: 1);
+                timeRange.PrevStartDate.ToString("MMMM yyyy", CultureInfo.CurrentCulture),
+                timeRange.CurEndDate.ToString("MMMM yyyy", CultureInfo.CurrentCulture), geometrySize: 0, strokeThickness: 1);
         }
 
         /// <summary>
@@ -894,18 +895,18 @@ namespace BodyTracker.ViewModels
             var totalWorkoutVolume = analyzer.GetVolume(analyzer.WorkoutEntries, 
                 startDate: timeRange.PrevStartDate, endDate: timeRange.CurEndDate);
 
-            HeaderTotalVolume = $"Total Volume ({timeRange.PrevStartDate.ToString("MMM yy", CultureInfo.InvariantCulture)} - " +
-                   $"{timeRange.CurEndDate.ToString("MMM yy", CultureInfo.InvariantCulture)})";
+            HeaderTotalVolume = $"{UiStrings.TxtTotalVolume} ({timeRange.PrevStartDate.ToString("MMM yy", CultureInfo.CurrentCulture)} - " +
+                   $"{timeRange.CurEndDate.ToString("MMM yy", CultureInfo.CurrentCulture)})";
 
-            HeaderTotalWorkouts = $"Total Workouts ({timeRange.PrevStartDate.ToString("MMM yy", CultureInfo.InvariantCulture)} - " +
-                $"{timeRange.CurEndDate.ToString("MMM yy", CultureInfo.InvariantCulture)})";
+            HeaderTotalWorkouts = $"{UiStrings.TxtTotalWorkouts} ({timeRange.PrevStartDate.ToString("MMM yy", CultureInfo.CurrentCulture)} - " +
+                $"{timeRange.CurEndDate.ToString("MMM yy", CultureInfo.CurrentCulture)})";
 
 
-            TotalWorkoutsVolume = totalWorkoutVolume.TotalVolume.ToString("N0", new System.Globalization.CultureInfo("de-DE")) + " kg";
-            TotalWorkoutsPrimaryVolume = totalWorkoutVolume.PrimaryVolume.ToString("N0", new System.Globalization.CultureInfo("de-DE")) + " kg";
-            TotalWorkoutsSecondaryVolume = totalWorkoutVolume.SecondaryVolume.ToString("N0", new System.Globalization.CultureInfo("de-DE")) + " kg";
+            TotalWorkoutsVolume = totalWorkoutVolume.TotalVolume.ToString("N0", CultureInfo.CurrentCulture) + " kg";
+            //TotalWorkoutsPrimaryVolume = totalWorkoutVolume.PrimaryVolume.ToString("N0", CultureInfo.CurrentCulture) + " kg";
+            //TotalWorkoutsSecondaryVolume = totalWorkoutVolume.SecondaryVolume.ToString("N0", CultureInfo.CurrentCulture) + " kg";
 
-            TotalWorkouts = totalWorkoutVolume.TotalExercises.ToString("N0", new System.Globalization.CultureInfo("de-DE")) + " x";
+            TotalWorkouts = totalWorkoutVolume.TotalExercises.ToString("N0", CultureInfo.CurrentCulture) + " x";
             
         }
 
@@ -919,8 +920,8 @@ namespace BodyTracker.ViewModels
         {
             var timeRange = TimeFrameCalculator.GetComparisonPeriodForToday(2);
 
-            HeaderMostDoneExercises = $"Most Done Exercises ({timeRange.PrevStartDate.ToString("MMM yyyy", CultureInfo.InvariantCulture)} - " +
-            $"{timeRange.CurEndDate.ToString("MMM yyyy", CultureInfo.InvariantCulture)})";
+            HeaderMostDoneExercises = $"{UiStrings.CharTitleMostDoneExercises} ({timeRange.PrevStartDate.ToString("MMM yyyy", CultureInfo.CurrentCulture)} - " +
+            $"{timeRange.CurEndDate.ToString("MMM yyyy", CultureInfo.CurrentCulture)})";
 
             TopExercises = new ObservableCollection<ExerciseFrequencyModel>(analyzer.CalculateExerciseFrequency(
                 analyzer.WorkoutEntries, startDate: timeRange.PrevStartDate, endDate: timeRange.CurEndDate));
@@ -941,8 +942,8 @@ namespace BodyTracker.ViewModels
 
             var timeRange = TimeFrameCalculator.GetComparisonPeriodForToday(4);
 
-            HeaderTrainingsVolume = $"Trainings Volume ({timeRange.PrevStartDate.ToString("MMM yyyy", CultureInfo.InvariantCulture)} - " +
-                $"{timeRange.CurEndDate.ToString("MMM yyyy", CultureInfo.InvariantCulture)})";
+            HeaderTrainingsVolume = $"{UiStrings.CharTitleTrainingsVolume} ({timeRange.PrevStartDate.ToString("MMM yyyy", CultureInfo.CurrentCulture)} - " +
+                $"{timeRange.CurEndDate.ToString("MMM yyyy", CultureInfo.CurrentCulture)})";
 
 
             minMeasurementsDateMonthlyTraningsVolume = data.Min(d => d.ExcerciseDate);
@@ -1066,17 +1067,17 @@ namespace BodyTracker.ViewModels
                 var ffm = BodyCalculationToolsService.CalculateFFM((float)value[0].BodyWeight, (float)value[0].BodyFatPercentage);
                 var ffm_index = BodyCalculationToolsService.GetFFMIndex(ffm, AppState.SelectedPersonHeight);
 
-                BodyWeight = value[0].BodyWeight?.ToString("N2");
-                BMI = value[0].BMI?.ToString("N2");
-                FFM_kg = ffm.ToString("F2");
+                BodyWeight = value[0].BodyWeight?.ToString("N2") ?? "0";
+                BMI = value[0].BMI?.ToString("N2") ?? "0";
+                FFM_kg = ffm.ToString("F2") ?? "0";
                 FFM_describing = $"{ffm_index.ToString("N2")} | {BodyCalculationToolsService.GetFFMIndexDescribing(ffm_index, BodyCalculationGenderModel.Gender.Male)}";
-                BodyFatPercentage = value[0].BodyFatPercentage?.ToString("N2");
-                BodyFatCaliper = value[0].CaliperBodyFatPercentage?.ToString("N2");
-                BodyMusclePercentage = value[0].BodyMusclePercentage?.ToString("N2");
-                BodyWaterPercentage = value[0].BodyWaterPercentage?.ToString("N2");
-                ChestCircumference = value[0].ChestCircumference?.ToString("N2");
-                WaistCircumference = value[0].WaistCircumference?.ToString("N2");
-                HipsCircumference = value[0].HipsCircumference?.ToString("N2");
+                BodyFatPercentage = value[0].BodyFatPercentage?.ToString("N2") ?? "0";
+                BodyFatCaliper = value[0].CaliperBodyFatPercentage?.ToString("N2") ?? "0";
+                BodyMusclePercentage = value[0].BodyMusclePercentage?.ToString("N2") ?? "0";
+                BodyWaterPercentage = value[0].BodyWaterPercentage?.ToString("N2") ?? "0";
+                ChestCircumference = value[0].ChestCircumference?.ToString("N2") ?? "0";
+                WaistCircumference = value[0].WaistCircumference?.ToString("N2") ?? "0";
+                HipsCircumference = value[0].HipsCircumference?.ToString("N2") ?? "0";
 
             }
             catch (Exception ex) { GeneralInfoMessage = ex.ToString(); }

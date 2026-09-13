@@ -4,10 +4,11 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:BodyTracker.Views.Pages.Main"
+      xmlns:loc="clr-namespace:BodyTracker.Services.Localization"
       mc:Ignorable="d" 
       xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="DBEntryStepTrendView">
+      Title="{loc:Translate TitleDBEntryStepTrendView}">
 
     <Grid>
         <Grid>
@@ -27,19 +28,19 @@
                    Grid.Row="0">
                 <StackPanel Orientation="Vertical">
 
-                    <TextBlock Text="🛠️ Actions"
+                    <TextBlock Text="{loc:Translate TitleActions}"
                               Style="{DynamicResource TextBlockDashBoardTitle}"/>
 
                     <StackPanel Orientation="Horizontal">
 
                         <Button Content="🗑"
-                               ToolTip="Delete Selected Entry"
+                               ToolTip="{loc:Translate ToolTipDeleteSelectedEntry}"
                                Command="{Binding CommandDelete}"
                                Style="{DynamicResource IconStandardButton}" 
                                Margin="0,0,15,0"/>
 
                         <Button Content="🔄"
-                               ToolTip="Refresh Datas: Reload all datas from Database"
+                               ToolTip="{loc:Translate ToolTipRefreshDatabaseDatas}"
                                Command="{Binding CommandRefresh}"
                                Style="{DynamicResource IconStandardButton}" />
 
@@ -72,20 +73,7 @@
 
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
-                            <!--<RowDefinition Height="*"/>-->
                         </Grid.RowDefinitions>
-
-                        <!--<TextBlock Grid.Column="0"
-                                  Grid.Row="0">
-                           
-                       <Run Text="Measurements from " 
-                            FontWeight="SemiBold"
-                            FontSize="12"/>
-                       <Run Text="{Binding UserName}" 
-                            FontWeight="Bold"
-                            FontSize="15"/>
-
-                       </TextBlock>-->
 
                         <DataGrid x:Name="StepTrendGrid"
                                   ItemsSource="{Binding StepTrendDatas, UpdateSourceTrigger=PropertyChanged}"
@@ -116,26 +104,25 @@
 
                             <DataGrid.Columns>
 
-                                <DataGridTextColumn Header="DB ID" Binding="{Binding StepTrendID}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColDbId}" Binding="{Binding StepTrendID}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColId}" Binding="{Binding StepTrendID}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColDate}" Binding="{Binding DayTime, StringFormat=dd.MM.yyyy}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColSteps}" Binding="{Binding Count}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColDistanceM}" Binding="{Binding Distance, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColSpeed}" Binding="{Binding Speed, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColCalories}" Binding="{Binding Calorie, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColSourcePackage}" Binding="{Binding SourcePkgName}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColSourceType}" Binding="{Binding SourceType}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColDeviceUuid}" Binding="{Binding DeviceUuid}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColPackageName}" Binding="{Binding PkgName}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColDataUuid}" Binding="{Binding DataUuid}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColCreated}" Binding="{Binding CreateTime, StringFormat=dd.MM.yyyy HH:mm}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColUpdated}" Binding="{Binding UpdateTime, StringFormat=dd.MM.yyyy HH:mm}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColBinningData}" Binding="{Binding BinningData}" IsReadOnly="True"/>
 
-                                <DataGridTextColumn Header="ID" Binding="{Binding StepTrendID}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Date" Binding="{Binding DayTime, StringFormat=dd.MM.yyyy}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Steps" Binding="{Binding Count}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Distance (m)" Binding="{Binding Distance, StringFormat=N2}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Speed" Binding="{Binding Speed, StringFormat=N2}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Calories" Binding="{Binding Calorie, StringFormat=N2}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Source Package" Binding="{Binding SourcePkgName}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Source Type" Binding="{Binding SourceType}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Device UUID" Binding="{Binding DeviceUuid}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Package Name" Binding="{Binding PkgName}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Data UUID" Binding="{Binding DataUuid}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Created" Binding="{Binding CreateTime, StringFormat=dd.MM.yyyy HH:mm}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Updated" Binding="{Binding UpdateTime, StringFormat=dd.MM.yyyy HH:mm}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Binning Data" Binding="{Binding BinningData}" IsReadOnly="True"/>
                             </DataGrid.Columns>
 
                         </DataGrid>
-
 
                     </Grid>
                 </Border>

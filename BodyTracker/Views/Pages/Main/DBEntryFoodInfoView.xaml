@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:BodyTracker.Views.Pages.Main"
+      xmlns:loc="clr-namespace:BodyTracker.Services.Localization"
       mc:Ignorable="d" 
       xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
       d:DesignHeight="450" d:DesignWidth="800"
@@ -20,42 +21,37 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-
             <Border Style="{DynamicResource BorderDashboardCardStyle}"
                     Margin="0,10,0,10"
                     Grid.Column="0"
                     Grid.Row="0">
                 <StackPanel Orientation="Vertical">
 
-                    <TextBlock Text="🛠️ Actions"
+                    <TextBlock Text="{loc:Translate TitleActions}"
                                Style="{DynamicResource TextBlockDashBoardTitle}"/>
 
                     <StackPanel Orientation="Horizontal">
 
                         <Button Content="🗑"
-                               ToolTip="Delete Selected Entry"
+                               ToolTip="{loc:Translate ToolTipDeleteSelectedEntry}"
                                Command="{Binding CommandDelete}"
                                Style="{DynamicResource IconStandardButton}" 
                                Margin="0,0,15,0"/>
 
                         <Button Content="🔄"
-                               ToolTip="Refresh Datas: Reload all datas from Database"
+                               ToolTip="{loc:Translate ToolTipRefreshDatabaseDatas}"
                                Command="{Binding CommandRefresh}"
                                Style="{DynamicResource IconStandardButton}" />
 
                     </StackPanel>
                 </StackPanel>
-
             </Border>
 
-            <Grid Grid.Column="0"
-                  Grid.Row="1">
-
+            <Grid Grid.Column="0" Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
@@ -63,12 +59,10 @@
                 <Border Style="{DynamicResource BorderDashboardCardStyle}"
                         Grid.Column="0"
                         Grid.Row="0">
-
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
@@ -99,49 +93,45 @@
                             </i:Interaction.Triggers>
 
                             <DataGrid.Columns>
-                                <!-- General Info -->
-                                <DataGridTextColumn Header="DB ID" Binding="{Binding Id}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Person ID" Binding="{Binding PersonId}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Description" Binding="{Binding Description}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Serving Description" Binding="{Binding ServingDescription}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Metric Serving Amount" Binding="{Binding MetricServingAmount, StringFormat=N2}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Metric Serving Unit" Binding="{Binding MetricServingUnit}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Default Serving Unit" Binding="{Binding DefaultNumberOfServingUnit, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColDbId}" Binding="{Binding Id}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColPersonId}" Binding="{Binding PersonId}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColName}" Binding="{Binding Name}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColDescription}" Binding="{Binding Description}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColServingDescription}" Binding="{Binding ServingDescription}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColMetricServingAmount}" Binding="{Binding MetricServingAmount, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColMetricServingUnit}" Binding="{Binding MetricServingUnit}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColDefaultServingUnit}" Binding="{Binding DefaultNumberOfServingUnit, StringFormat=N2}" IsReadOnly="True"/>
 
-                                <!-- Nutritional Values -->
-                                <DataGridTextColumn Header="Calories" Binding="{Binding Calorie, StringFormat=N2}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Carbohydrates" Binding="{Binding Carbohydrate, StringFormat=N2}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Protein" Binding="{Binding Protein, StringFormat=N2}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Total Fat" Binding="{Binding TotalFat, StringFormat=N2}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Saturated Fat" Binding="{Binding SaturatedFat, StringFormat=N2}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Monosaturated Fat" Binding="{Binding MonosaturatedFat, StringFormat=N2}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Polysaturated Fat" Binding="{Binding PolysaturatedFat, StringFormat=N2}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Trans Fat" Binding="{Binding TransFat}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Sugar" Binding="{Binding Sugar, StringFormat=N2}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Added Sugar" Binding="{Binding AddedSugar, StringFormat=N2}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Dietary Fiber" Binding="{Binding DietaryFiber, StringFormat=N2}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Sodium" Binding="{Binding Sodium, StringFormat=N2}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Potassium" Binding="{Binding Potassium, StringFormat=N2}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Calcium" Binding="{Binding Calcium, StringFormat=N2}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Iron" Binding="{Binding Iron, StringFormat=N2}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Cholesterol" Binding="{Binding Cholesterol, StringFormat=N2}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Vitamin A" Binding="{Binding VitaminA, StringFormat=N2}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Vitamin C" Binding="{Binding VitaminC, StringFormat=N2}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Vitamin D" Binding="{Binding VitaminD, StringFormat=N2}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Unit Count / Calorie" Binding="{Binding UnitCountPerCalorie, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColCalories}" Binding="{Binding Calorie, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColCarbohydrates}" Binding="{Binding Carbohydrate, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColProtein}" Binding="{Binding Protein, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColTotalFat}" Binding="{Binding TotalFat, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColSaturatedFat}" Binding="{Binding SaturatedFat, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColMonosaturatedFat}" Binding="{Binding MonosaturatedFat, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColPolysaturatedFat}" Binding="{Binding PolysaturatedFat, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColTransFat}" Binding="{Binding TransFat}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColSugar}" Binding="{Binding Sugar, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColAddedSugar}" Binding="{Binding AddedSugar, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColDietaryFiber}" Binding="{Binding DietaryFiber, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColSodium}" Binding="{Binding Sodium, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColPotassium}" Binding="{Binding Potassium, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColCalcium}" Binding="{Binding Calcium, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColIron}" Binding="{Binding Iron, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColCholesterol}" Binding="{Binding Cholesterol, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColVitaminA}" Binding="{Binding VitaminA, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColVitaminC}" Binding="{Binding VitaminC, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColVitaminD}" Binding="{Binding VitaminD, StringFormat=N2}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColUnitCountPerCalorie}" Binding="{Binding UnitCountPerCalorie, StringFormat=N2}" IsReadOnly="True"/>
 
-                                <!-- Metadata & Provider -->
-                                <DataGridTextColumn Header="Provider Food ID" Binding="{Binding ProviderFoodId}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Info Provider" Binding="{Binding InfoProvider}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Custom" Binding="{Binding Custom}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Device UUID" Binding="{Binding DeviceUuid}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Package Name" Binding="{Binding PkgName}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Data UUID" Binding="{Binding DataUuid}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Update At" Binding="{Binding UpdateTime}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Create At" Binding="{Binding CreateTime}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColProviderFoodId}" Binding="{Binding ProviderFoodId}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColInfoProvider}" Binding="{Binding InfoProvider}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColCustom}" Binding="{Binding Custom}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColDeviceUuid}" Binding="{Binding DeviceUuid}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColPkgName}" Binding="{Binding PkgName}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColDataUuid}" Binding="{Binding DataUuid}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColUpdateAt}" Binding="{Binding UpdateTime}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="{loc:Translate ColCreateAt}" Binding="{Binding CreateTime}" IsReadOnly="True"/>
                             </DataGrid.Columns>
-
                         </DataGrid>
                     </Grid>
                 </Border>

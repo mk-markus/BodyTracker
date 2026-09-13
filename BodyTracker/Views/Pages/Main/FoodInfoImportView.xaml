@@ -1,104 +1,65 @@
 ﻿<Page x:Class="BodyTracker.Views.Pages.FoodInfoImportView"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:vm="clr-namespace:BodyTracker.ViewModels"
+      xmlns:loc="clr-namespace:BodyTracker.Services.Localization"
       Title="Food Info">
 
-    <Border Style="{DynamicResource BorderDashboardCardStyle}"
-            Margin="0,10,0,0">
+    <Border Style="{DynamicResource BorderDashboardCardStyle}" Margin="0,10,0,0">
         <Grid Margin="10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <StackPanel Grid.Row="0" 
-                        Orientation="Horizontal" 
-                        HorizontalAlignment="Left" 
-                        Margin="10">
-
-                <Button Content="🔄"
-                        ToolTip="Refresh"
-                        Command="{Binding CommandRefresh}"
-                        Style="{DynamicResource IconStandardButton}" />
-
-                <Button Content="📁"
-                        ToolTip="Open File Dialog"
-                        Command="{Binding CommandOpen}"
-                        Style="{DynamicResource IconStandardButton}" />
-
-                <Button Content="📤"
-                        ToolTip="Insert Data in Database"
-                        Command="{Binding CommandInsert}"
-                        Style="{DynamicResource IconStandardButton}" />
+            <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10">
+                <Button Content="🔄" ToolTip="{loc:Translate ToolTipRefresh}" Command="{Binding CommandRefresh}" Style="{DynamicResource IconStandardButton}" />
+                <Button Content="📁" ToolTip="{loc:Translate ToolTipOpenFileDialog}" Command="{Binding CommandOpen}" Style="{DynamicResource IconStandardButton}" />
+                <Button Content="📤" ToolTip="{loc:Translate ToolTipInsertDatabase}" Command="{Binding CommandInsert}" Style="{DynamicResource IconStandardButton}" />
 
                 <WrapPanel>
-                    <TextBlock Text="{Binding TimeElapse}"
-                               Margin="10"
-                               TextAlignment="Center"
-                               Style="{DynamicResource TextBlockDescribing}" />
-
-                    <TextBlock Text="{Binding ProgressText}"
-                               TextAlignment="Center"
-                               Style="{DynamicResource TextBlockDescribing}" />
+                    <TextBlock Text="{Binding TimeElapse}" Margin="10" TextAlignment="Center" Style="{DynamicResource TextBlockDescribing}" />
+                    <TextBlock Text="{Binding ProgressText}" TextAlignment="Center" Style="{DynamicResource TextBlockDescribing}" />
                 </WrapPanel>
-
             </StackPanel>
 
-            <DataGrid Grid.Row="1"
-                      ItemsSource="{Binding FoodInfoDatas}"
-                      AutoGenerateColumns="False"
-                      IsReadOnly="True"
-                      CanUserAddRows="False"
-                      CanUserDeleteRows="False"
-                      Margin="10"
-                      EnableRowVirtualization="True"
-                      EnableColumnVirtualization="True"
-                      VirtualizingPanel.IsVirtualizing="True"
-                      VirtualizingPanel.VirtualizationMode="Recycling"
-                      ScrollViewer.CanContentScroll="True"
-                      Style="{StaticResource DataGrid_Default}">
-
+            <DataGrid Grid.Row="1" ItemsSource="{Binding FoodInfoDatas}" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" 
+                      CanUserDeleteRows="False" Margin="10" Style="{StaticResource DataGrid_Default}">
+                
                 <DataGrid.Columns>
-                    <!-- General Info -->
-                    <DataGridTextColumn Header="name" Binding="{Binding Name}" Width="Auto" />
-                    <DataGridTextColumn Header="description" Binding="{Binding Description}" Width="Auto" />
-                    <DataGridTextColumn Header="serving__description" Binding="{Binding ServingDescription}" Width="Auto" />
-                    <DataGridTextColumn Header="metric__serving__amount" Binding="{Binding MetricServingAmount}" Width="Auto" />
-                    <DataGridTextColumn Header="metric__serving__unit" Binding="{Binding MetricServingUnit}" Width="Auto" />
-                    <DataGridTextColumn Header="default__number__of__serving__unit" Binding="{Binding DefaultNumberOfServingUnit}" Width="Auto" />
-
-                    <!-- Nutritional Values -->
-                    <DataGridTextColumn Header="calorie" Binding="{Binding Calorie, StringFormat=F1}" Width="Auto" />
-                    <DataGridTextColumn Header="carbohydrate" Binding="{Binding Carbohydrate, StringFormat=F1}" Width="Auto" />
-                    <DataGridTextColumn Header="protein" Binding="{Binding Protein, StringFormat=F1}" Width="Auto" />
-                    <DataGridTextColumn Header="total__fat" Binding="{Binding TotalFat, StringFormat=F1}" Width="Auto" />
-                    <DataGridTextColumn Header="saturated__fat" Binding="{Binding SaturatedFat, StringFormat=F1}" Width="Auto" />
-                    <DataGridTextColumn Header="monosaturated__fat" Binding="{Binding MonosaturatedFat, StringFormat=F1}" Width="Auto" />
-                    <DataGridTextColumn Header="polysaturated__fat" Binding="{Binding PolysaturatedFat, StringFormat=F1}" Width="Auto" />
-                    <DataGridTextColumn Header="trans__fat" Binding="{Binding TransFat}" Width="Auto" />
-                    <DataGridTextColumn Header="sugar" Binding="{Binding Sugar, StringFormat=F1}" Width="Auto" />
-                    <DataGridTextColumn Header="added__sugar" Binding="{Binding AddedSugar, StringFormat=F1}" Width="Auto" />
-                    <DataGridTextColumn Header="dietary__fiber" Binding="{Binding DietaryFiber, StringFormat=F1}" Width="Auto" />
-                    <DataGridTextColumn Header="sodium" Binding="{Binding Sodium, StringFormat=F1}" Width="Auto" />
-                    <DataGridTextColumn Header="potassium" Binding="{Binding Potassium, StringFormat=F1}" Width="Auto" />
-                    <DataGridTextColumn Header="calcium" Binding="{Binding Calcium, StringFormat=F1}" Width="Auto" />
-                    <DataGridTextColumn Header="iron" Binding="{Binding Iron, StringFormat=F1}" Width="Auto" />
-                    <DataGridTextColumn Header="cholesterol" Binding="{Binding Cholesterol, StringFormat=F1}" Width="Auto" />
-                    <DataGridTextColumn Header="vitamin__a" Binding="{Binding VitaminA, StringFormat=F1}" Width="Auto" />
-                    <DataGridTextColumn Header="vitamin__c" Binding="{Binding VitaminC, StringFormat=F1}" Width="Auto" />
-                    <DataGridTextColumn Header="vitamin__d" Binding="{Binding VitaminD, StringFormat=F1}" Width="Auto" />
-                    <DataGridTextColumn Header="unit__count__per__calorie" Binding="{Binding UnitCountPerCalorie}" Width="Auto" />
-
-                    <!-- Provider & Metadata -->
-                    <DataGridTextColumn Header="provider__food__id" Binding="{Binding ProviderFoodId}" Width="Auto" />
-                    <DataGridTextColumn Header="info__provider" Binding="{Binding InfoProvider}" Width="Auto" />
-                    <DataGridTextColumn Header="custom" Binding="{Binding Custom}" Width="Auto" />
-                    <DataGridTextColumn Header="update__time" Binding="{Binding UpdateTime}" Width="Auto" />
-                    <DataGridTextColumn Header="create__time" Binding="{Binding CreateTime}" Width="Auto" />
-                    <DataGridTextColumn Header="deviceuuid" Binding="{Binding DeviceUuid}" Width="Auto" />
-                    <DataGridTextColumn Header="pkg__name" Binding="{Binding PkgName}" Width="Auto" />
-                    <DataGridTextColumn Header="datauuid" Binding="{Binding DataUuid}" Width="Auto" />
+                    <DataGridTextColumn Header="{loc:Translate ColName}" Binding="{Binding Name}" Width="Auto" />
+                    <DataGridTextColumn Header="{loc:Translate ColDescription}" Binding="{Binding Description}" Width="Auto" />
+                    <DataGridTextColumn Header="{loc:Translate ColServingDescription}" Binding="{Binding ServingDescription}" Width="Auto" />
+                    <DataGridTextColumn Header="{loc:Translate ColMetricServingAmount}" Binding="{Binding MetricServingAmount}" Width="Auto" />
+                    <DataGridTextColumn Header="{loc:Translate ColMetricServingUnit}" Binding="{Binding MetricServingUnit}" Width="Auto" />
+                    <DataGridTextColumn Header="{loc:Translate ColDefaultServingUnit}" Binding="{Binding DefaultNumberOfServingUnit}" Width="Auto" />
+                    <DataGridTextColumn Header="{loc:Translate ColCalorie}" Binding="{Binding Calorie, StringFormat=F1}" Width="Auto" />
+                    <DataGridTextColumn Header="{loc:Translate ColCarbohydrate}" Binding="{Binding Carbohydrate, StringFormat=F1}" Width="Auto" />
+                    <DataGridTextColumn Header="{loc:Translate ColProtein}" Binding="{Binding Protein, StringFormat=F1}" Width="Auto" />
+                    <DataGridTextColumn Header="{loc:Translate ColTotalFat}" Binding="{Binding TotalFat, StringFormat=F1}" Width="Auto" />
+                    <DataGridTextColumn Header="{loc:Translate ColSaturatedFat}" Binding="{Binding SaturatedFat, StringFormat=F1}" Width="Auto" />
+                    <DataGridTextColumn Header="{loc:Translate ColMonosaturatedFat}" Binding="{Binding MonosaturatedFat, StringFormat=F1}" Width="Auto" />
+                    <DataGridTextColumn Header="{loc:Translate ColPolysaturatedFat}" Binding="{Binding PolysaturatedFat, StringFormat=F1}" Width="Auto" />
+                    <DataGridTextColumn Header="{loc:Translate ColTransFat}" Binding="{Binding TransFat}" Width="Auto" />
+                    <DataGridTextColumn Header="{loc:Translate ColSugar}" Binding="{Binding Sugar, StringFormat=F1}" Width="Auto" />
+                    <DataGridTextColumn Header="{loc:Translate ColAddedSugar}" Binding="{Binding AddedSugar, StringFormat=F1}" Width="Auto" />
+                    <DataGridTextColumn Header="{loc:Translate ColDietaryFiber}" Binding="{Binding DietaryFiber, StringFormat=F1}" Width="Auto" />
+                    <DataGridTextColumn Header="{loc:Translate ColSodium}" Binding="{Binding Sodium, StringFormat=F1}" Width="Auto" />
+                    <DataGridTextColumn Header="{loc:Translate ColPotassium}" Binding="{Binding Potassium, StringFormat=F1}" Width="Auto" />
+                    <DataGridTextColumn Header="{loc:Translate ColCalcium}" Binding="{Binding Calcium, StringFormat=F1}" Width="Auto" />
+                    <DataGridTextColumn Header="{loc:Translate ColIron}" Binding="{Binding Iron, StringFormat=F1}" Width="Auto" />
+                    <DataGridTextColumn Header="{loc:Translate ColCholesterol}" Binding="{Binding Cholesterol, StringFormat=F1}" Width="Auto" />
+                    <DataGridTextColumn Header="{loc:Translate ColVitaminA}" Binding="{Binding VitaminA, StringFormat=F1}" Width="Auto" />
+                    <DataGridTextColumn Header="{loc:Translate ColVitaminC}" Binding="{Binding VitaminC, StringFormat=F1}" Width="Auto" />
+                    <DataGridTextColumn Header="{loc:Translate ColVitaminD}" Binding="{Binding VitaminD, StringFormat=F1}" Width="Auto" />
+                    <DataGridTextColumn Header="{loc:Translate ColUnitCountPerCalorie}" Binding="{Binding UnitCountPerCalorie}" Width="Auto" />
+                    <DataGridTextColumn Header="{loc:Translate ColProviderFoodId}" Binding="{Binding ProviderFoodId}" Width="Auto" />
+                    <DataGridTextColumn Header="{loc:Translate ColInfoProvider}" Binding="{Binding InfoProvider}" Width="Auto" />
+                    <DataGridTextColumn Header="{loc:Translate ColCustom}" Binding="{Binding Custom}" Width="Auto" />
+                    <DataGridTextColumn Header="{loc:Translate ColUpdateTime}" Binding="{Binding UpdateTime}" Width="Auto" />
+                    <DataGridTextColumn Header="{loc:Translate ColCreateTime}" Binding="{Binding CreateTime}" Width="Auto" />
+                    <DataGridTextColumn Header="{loc:Translate ColDeviceUuid}" Binding="{Binding DeviceUuid}" Width="Auto" />
+                    <DataGridTextColumn Header="{loc:Translate ColPkgName}" Binding="{Binding PkgName}" Width="Auto" />
+                    <DataGridTextColumn Header="{loc:Translate ColDataUuid}" Binding="{Binding DataUuid}" Width="Auto" />
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>

@@ -15,7 +15,7 @@ namespace BodyTracker.Services.ErrorHandlingViews
         public static void SetHasError(UIElement element, bool value) => element.SetValue(HasErrorProperty, value);
         public static bool GetHasError(UIElement element) => (bool)element.GetValue(HasErrorProperty);
 
-        // Eigenschaft für die Fehlermeldung im Tooltip (String)
+        // Eigenschaft für die Fehlermeldung im ToolTip (String)
         public static readonly DependencyProperty ErrorMessageProperty =
             DependencyProperty.RegisterAttached(
                 "ErrorMessage",

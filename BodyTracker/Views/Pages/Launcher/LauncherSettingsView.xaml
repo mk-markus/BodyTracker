@@ -6,10 +6,12 @@
       xmlns:local="clr-namespace:BodyTracker.Views.Pages"
       xmlns:localError="clr-namespace:BodyTracker.Services.ErrorHandlingViews"
       xmlns:pswd="clr-namespace:BodyTracker.Services"
+      xmlns:s="clr-namespace:BodyTracker.Resources.Languages"
+      xmlns:loc="clr-namespace:BodyTracker.Services.Localization"
       mc:Ignorable="d" 
       d:DesignHeight="450" 
       d:DesignWidth="800"
-      Title="NewDatabaseConnectionPage">
+      Title="{loc:Translate LauncherSettingsViewTitle}">
 
     <Grid>
         <Border Style="{DynamicResource BorderDashboardCardStyle}">
@@ -24,14 +26,14 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="40"/>
                     <RowDefinition Height="40"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="40"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Text="API_Key:"
+                <TextBlock Text="{loc:Translate TxtApiKey}"
                            Style="{DynamicResource TextBlockDescribing}"
                            Grid.Column="0"
                            Grid.Row="0"/>
@@ -40,7 +42,7 @@
                 <StackPanel Grid.Column="1"
                             Grid.Row="0"
                             Orientation="Horizontal">
-                    
+
                     <TextBox Text="{Binding ApiKey, UpdateSourceTrigger=PropertyChanged}" 
                              Grid.Column="1" Grid.Row="0"
                              Width="250"
@@ -50,7 +52,7 @@
                              localError:ValidationProperties.ErrorMessage="{Binding ApiKeyError}"/>
 
                     <Button Content="💾"
-                            ToolTip="Save API Key"
+                            ToolTip="{loc:Translate BtnSaveApiKeyToolTip}"
                             FontSize="15"
                             Height="25"
                             Width="25"
@@ -58,9 +60,9 @@
                             Style="{DynamicResource IconStandardButton}"
                             Margin="10,0,0,0"/>
                 </StackPanel>
-         
-                
-                <TextBlock Text="Default Import Folder: "
+
+
+                <TextBlock Text="{loc:Translate TxtDefaultImportFolder}"
                            Style="{DynamicResource TextBlockDescribing}"
                            Grid.Column="0"
                            Grid.Row="1"/>
@@ -75,15 +77,32 @@
                              Style="{DynamicResource StandardTextBox}"
                              Width="250"
                              TextAlignment="Center"/>
-                    
+
                     <Button Content="..."
-                            ToolTip="Select Folder"
+                            ToolTip="{loc:Translate BtnOpenDefaultFolderToolTip}"
                             FontSize="15"  Height="25" Width="25"
                             Command="{Binding CommandSelectDefaultImportFolder}"
                             Style="{DynamicResource IconStandardButton}"
                             Margin="10,0,0,0"/>
 
                 </StackPanel>
+
+                <TextBlock Text="{loc:Translate TxtLanguage}"
+                           Style="{DynamicResource TextBlockDescribing}"
+                           Grid.Column="0" Grid.Row="2"/>
+                
+                <ComboBox ItemsSource="{Binding LanguagesList}"
+                          SelectedItem="{Binding SelectedLanguagesItem, Mode=TwoWay}"
+                          Style="{DynamicResource ModernFlatComboBox}"
+                          Grid.Column="1"
+                          Grid.Row="2"
+                          Width="Auto"
+                          Height="Auto"
+                          Margin="5,0,0,0"
+                          
+                          VerticalAlignment="Center"
+                          HorizontalAlignment="Left"/>
+
 
                 <TextBlock Text="{Binding ValidationMessage}" 
                      Foreground="Red" 
@@ -92,22 +111,6 @@
                      Grid.Column="0"
                      Grid.Row="6"
                      Grid.ColumnSpan="2"/>
-
-
-                <!--<StackPanel Orientation="Horizontal" 
-                      HorizontalAlignment="Center" 
-                      Margin="0,8,0,0"
-                      Grid.Row="5"
-                      Grid.Column="0"
-                      Grid.ColumnSpan="2">
-
-                    <Button x:Name="btnSave"
-                            Content="Save"
-                            IsEnabled="{Binding IsFormValid}"
-                            Style="{StaticResource SaveButton}"
-                            Command="{Binding CommandSave}"/>-->
-
-                <!--</StackPanel>-->
 
             </Grid>
 

@@ -5,14 +5,16 @@
       xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:BodyTracker.Views"
+      xmlns:loc="clr-namespace:BodyTracker.Services.Localization"
       mc:Ignorable="d"
       ScrollViewer.HorizontalScrollBarVisibility="Auto"
-ScrollViewer.VerticalScrollBarVisibility="Auto"
+      ScrollViewer.VerticalScrollBarVisibility="Auto"
       Background="{StaticResource AppBackgroundBrush}">
 
     <ScrollViewer VerticalScrollBarVisibility="Auto"  Padding="0"
-                  HorizontalScrollBarVisibility="Auto">
-        <Grid MaxWidth="1550"
+                  HorizontalScrollBarVisibility="Auto"
+                   >
+        <Grid MaxWidth="1550" 
               Margin="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -23,7 +25,7 @@ ScrollViewer.VerticalScrollBarVisibility="Auto"
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="267"/>
+                <ColumnDefinition Width="280"/>
                 <ColumnDefinition Width="240"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
@@ -41,14 +43,14 @@ ScrollViewer.VerticalScrollBarVisibility="Auto"
                     Grid.Row="0">
                     <StackPanel Orientation="Vertical">
 
-                        <TextBlock Text="🛠️ Actions"
+                        <TextBlock Text="{loc:Translate TxtActions}"
                                Style="{DynamicResource TextBlockDashBoardTitle}"/>
 
                         <StackPanel Orientation="Horizontal">
 
 
                             <Button Content="🔄"
-                                ToolTip="Refresh Dashboard without AI Result"
+                                ToolTip="{loc:Translate ToolTipRefreshDashboard}"
                                 Command="{Binding CommandRefresh}"
                                 Style="{DynamicResource IconStandardButton}" 
                                 Margin="0,0,15,0"/>
@@ -71,18 +73,14 @@ ScrollViewer.VerticalScrollBarVisibility="Auto"
                             VerticalAlignment="Center" 
                             HorizontalAlignment="Center">
 
-                        <Border Background="#F9F9F9" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Padding="010" Width="215" Height="Auto" Margin="0,0,0,0">
+                        <Border Background="#F9F9F9" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" 
+                                Padding="10" Width="Auto" Height="Auto" Margin="0,0,0,0">
                             <StackPanel Orientation="Vertical">
 
-                                <TextBlock FontSize="12" 
+                                <TextBlock Text="{Binding HeaderTotalWorkouts}"
+                                           FontSize="12" 
                                            Foreground="Gray" 
-                                           HorizontalAlignment="Center">
-                                    
-                                        <Run Text="🏋️"/>
-                                        <Run Text="{Binding HeaderTotalWorkouts}"/>
-                                    
-                                    
-                                </TextBlock>
+                                           HorizontalAlignment="Center"/>
 
                                 <TextBlock Text="{Binding TotalWorkouts}" 
                                             FontSize="18" 
@@ -91,14 +89,10 @@ ScrollViewer.VerticalScrollBarVisibility="Auto"
                                             HorizontalAlignment="Center" 
                                             Margin="0,0,0,0"/>
 
-                                <TextBlock FontSize="12" 
+                                <TextBlock Text="{Binding HeaderTotalVolume}"
+                                           FontSize="12" 
                                            Foreground="Gray" 
-                                           HorizontalAlignment="Center">
-  
-                                    <Run Text="📊"/>
-                                    <Run Text="{Binding HeaderTotalVolume}"/>
-
-                                </TextBlock>
+                                           HorizontalAlignment="Center"/>
 
                                 <TextBlock Text="{Binding TotalWorkoutsVolume}" 
                                            FontSize="18" 
@@ -106,7 +100,7 @@ ScrollViewer.VerticalScrollBarVisibility="Auto"
                                            Foreground="#2ECC71" 
                                            HorizontalAlignment="Center" Margin="0,0,0,0"/>
 
-                                
+
                             </StackPanel>
                         </Border>
                     </StackPanel>
@@ -125,7 +119,7 @@ ScrollViewer.VerticalScrollBarVisibility="Auto"
 
                 <StackPanel Margin="0">
 
-                    <TextBlock Text="📊 Body Progress" 
+                    <TextBlock Text="{loc:Translate TxtBodyProgress}" 
                                Style="{DynamicResource TextBlockDashBoardTitle}" 
                                Margin="0,0,0,12"/>
 
@@ -158,7 +152,7 @@ ScrollViewer.VerticalScrollBarVisibility="Auto"
                     <StackPanel Margin="0,0,0,10">
                         <Grid Margin="0,0,0,5">
 
-                            <TextBlock Text="Weight (kg)" 
+                            <TextBlock Text="{loc:Translate TxtWeightKg}" 
                            Style="{DynamicResource TextBlockDescribing}"/>
 
                             <StackPanel Orientation="Horizontal" 
@@ -190,7 +184,7 @@ ScrollViewer.VerticalScrollBarVisibility="Auto"
                     <StackPanel Margin="0,0,0,10">
                         <Grid Margin="0,0,0,5">
 
-                            <TextBlock Text="Body Fat (%)" 
+                            <TextBlock Text="{loc:Translate TxtBodyFatPct}" 
                            Style="{DynamicResource TextBlockDescribing}"/>
 
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
@@ -222,7 +216,7 @@ ScrollViewer.VerticalScrollBarVisibility="Auto"
                     <StackPanel Margin="0,0,0,10">
                         <Grid Margin="0,0,0,5">
 
-                            <TextBlock Text="Muscle Mass (%)" 
+                            <TextBlock Text="{loc:Translate TxtMuscleMassPct}" 
                            Style="{DynamicResource TextBlockDescribing}"/>
 
                             <StackPanel Orientation="Horizontal" 
@@ -252,7 +246,7 @@ ScrollViewer.VerticalScrollBarVisibility="Auto"
                     <!-- 4. Body Water -->
                     <StackPanel>
                         <Grid Margin="0,0,0,4">
-                            <TextBlock Text="Body Water (%)" 
+                            <TextBlock Text="{loc:Translate TxtBodyWaterPct}" 
                            Style="{DynamicResource TextBlockDescribing}"/>
 
                             <StackPanel Orientation="Horizontal" 
@@ -296,7 +290,7 @@ ScrollViewer.VerticalScrollBarVisibility="Auto"
 
                     <StackPanel Orientation="Vertical">
 
-                        <TextBlock Text="📐 Average Body Measurements" 
+                        <TextBlock Text="{loc:Translate TxtAverageBodyMeasurements}" 
                                                Style="{DynamicResource TextBlockDashBoardTitle}"
                                                Margin="0,0,0,10"/>
 
@@ -313,18 +307,14 @@ ScrollViewer.VerticalScrollBarVisibility="Auto"
 
                             <StackPanel>
 
-                                <!--<TextBlock Text="📅 Timespan" 
-                                Style="{DynamicResource TextBlockDashBoardTitle}" 
-                                Margin="0,0,0,10"/>-->
-
                                 <!-- Datepickers -->
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
 
-                                    <TextBlock Text="From:" VerticalAlignment="Center" Margin="0,0,10,0" Style="{DynamicResource TextBlockDescribing}"/>
+                                    <TextBlock Text="{loc:Translate TxtFrom}" VerticalAlignment="Center" Margin="0,0,10,0" Style="{DynamicResource TextBlockDescribing}"/>
                                     <DatePicker SelectedDate="{Binding MeanStartDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      Style="{DynamicResource ModernFlatDatePicker}"/>
 
-                                    <TextBlock Text="To:" VerticalAlignment="Center" Margin="10,0,10,0" Style="{DynamicResource TextBlockDescribing}"/>
+                                    <TextBlock Text="{loc:Translate TxtTo}" VerticalAlignment="Center" Margin="10,0,10,0" Style="{DynamicResource TextBlockDescribing}"/>
 
                                     <DatePicker SelectedDate="{Binding MeanEndDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                      Style="{DynamicResource ModernFlatDatePicker}"/>
@@ -332,9 +322,9 @@ ScrollViewer.VerticalScrollBarVisibility="Auto"
                                     <!-- ================= TOGGLE BUTTON QUICK DATE RANGES ================= -->
                                     <ToggleButton x:Name="DateShortCuts"
                                        Style="{DynamicResource ModernStandardToggleButton}"
-                                       Content="📅 Quick Ranges ▼ "
+                                       Content="{loc:Translate ToggleQuickRanges}"
                                        Margin="10,0,0,0"          
-                                       ToolTip="Filters the chart to show data exclusively for the current year."/>
+                                       ToolTip="{loc:Translate ToolTipQuickRanges}"/>
 
                                     <!-- ================= POPUP QUICK DATE RANGES ================= -->
                                     <Popup PlacementTarget="{Binding ElementName=DateShortCuts}"
@@ -348,25 +338,25 @@ ScrollViewer.VerticalScrollBarVisibility="Auto"
 
                                             <StackPanel>
 
-                                                <Button Content="📅 Year" 
+                                                <Button Content="{loc:Translate BtnYear}" 
                                                          Style="{StaticResource ModernStandardButton}" 
                                                          Command="{Binding CommandSetActualYearMeanValue}" 
-                                                         ToolTip="Filter chart data for the current year."
+                                                         ToolTip="{loc:Translate ToolTipYear}"
                                                          Margin="0,0,0,0"/>
 
-                                                <Button Content="📆 Week" 
+                                                <Button Content="{loc:Translate BtnWeek}" 
                                                          Style="{StaticResource ModernStandardButton}" 
                                                          Command="{Binding CommandSetActualWeekMeanValue}" 
-                                                         ToolTip="Filter chart data for the current week."
+                                                         ToolTip="{loc:Translate ToolTipWeek}"
                                                          Margin="0,5,0,0"/>
 
-                                                <Button Content="🗓️ Month" 
+                                                <Button Content="{loc:Translate BtnMonth}" 
                                                          Style="{StaticResource ModernStandardButton}" 
                                                          Command="{Binding CommandSetActualMonthMeanValue}" 
-                                                         ToolTip="Filter chart data for the current month."
+                                                         ToolTip="{loc:Translate ToolTipMonth}"
                                                          Margin="0,5,0,0"/>
 
-                                                
+
                                             </StackPanel>
                                         </Border>
                                     </Popup>
@@ -398,7 +388,7 @@ ScrollViewer.VerticalScrollBarVisibility="Auto"
 
                                 <!-- ================= Weight ================= -->
 
-                                <TextBlock Text="⚖️ Weight:"
+                                <TextBlock Text="{loc:Translate TxtWeight}"
                                            x:Name="tbWeight"
                                            FontSize="14"
                                            Style="{DynamicResource TextBlockDescribing}"
@@ -414,7 +404,7 @@ ScrollViewer.VerticalScrollBarVisibility="Auto"
 
                                 <!-- ================= BMI ================= -->
 
-                                <TextBlock Text="📐 BMI:"
+                                <TextBlock Text="{loc:Translate TxtBmi}"
                                            FontSize="14"
                                            Style="{DynamicResource TextBlockDescribing}"
                                            VerticalAlignment="Center"
@@ -430,7 +420,7 @@ ScrollViewer.VerticalScrollBarVisibility="Auto"
 
                                 <!-- ================= FFM ================= -->
 
-                                <TextBlock Text="💪 FFM:"
+                                <TextBlock Text="{loc:Translate TxtFfm}"
                                            FontSize="14"
                                            Style="{DynamicResource TextBlockDescribing}"
                                            VerticalAlignment="Center"
@@ -445,7 +435,7 @@ ScrollViewer.VerticalScrollBarVisibility="Auto"
 
                                 <!-- ================= FFM Describing ================= -->
 
-                                <TextBlock Text="💪 FFMI: "
+                                <TextBlock Text="{loc:Translate TxtFfmi}"
                                            FontSize="14"
                                            Style="{DynamicResource TextBlockDescribing}"
                                            VerticalAlignment="Center"
@@ -466,7 +456,7 @@ ScrollViewer.VerticalScrollBarVisibility="Auto"
 
                                 <!-- ================= Body Fat ================= -->
 
-                                <TextBlock Text="💧 Fat:"
+                                <TextBlock Text="{loc:Translate TxtFat}"
                                            FontSize="14"
                                            Style="{DynamicResource TextBlockDescribing}"
                                            VerticalAlignment="Center"
@@ -481,7 +471,7 @@ ScrollViewer.VerticalScrollBarVisibility="Auto"
 
                                 <!-- ================= Caliper 7 Point ================= -->
 
-                                <TextBlock Text="🗜️ Caliper:"
+                                <TextBlock Text="{loc:Translate TxtCaliper}"
                                            FontSize="14"
                                            Style="{DynamicResource TextBlockDescribing}"
                                            VerticalAlignment="Center"
@@ -496,7 +486,7 @@ ScrollViewer.VerticalScrollBarVisibility="Auto"
 
                                 <!-- ================= Body Muscle ================= -->
 
-                                <TextBlock Text="🧬 Muscle:"
+                                <TextBlock Text="{loc:Translate TxtMuscle}"
                                            FontSize="14"
                                            Style="{DynamicResource TextBlockDescribing}"
                                            VerticalAlignment="Center"
@@ -511,7 +501,7 @@ ScrollViewer.VerticalScrollBarVisibility="Auto"
 
                                 <!-- ================= Body Water  ================= -->
 
-                                <TextBlock Text="💧 Water:"
+                                <TextBlock Text="{loc:Translate TxtWater}"
                                            FontSize="14"
                                            Style="{DynamicResource TextBlockDescribing}"
                                            VerticalAlignment="Center"
@@ -526,7 +516,7 @@ ScrollViewer.VerticalScrollBarVisibility="Auto"
 
                                 <!-- ================= Chest Circumference  ================= -->
 
-                                <TextBlock Text="📏 Chest:"
+                                <TextBlock Text="{loc:Translate TxtChest}"
                                            FontSize="14"
                                            Style="{DynamicResource TextBlockDescribing}"
                                            VerticalAlignment="Center"
@@ -541,7 +531,7 @@ ScrollViewer.VerticalScrollBarVisibility="Auto"
 
                                 <!-- ================= Waist Circumference  ================= -->
 
-                                <TextBlock Text="📏 Waist:"
+                                <TextBlock Text="{loc:Translate TxtWaist}"
                                            FontSize="14"
                                            Style="{DynamicResource TextBlockDescribing}"
                                            VerticalAlignment="Center"
@@ -556,7 +546,7 @@ ScrollViewer.VerticalScrollBarVisibility="Auto"
 
                                 <!-- ================= Hip Circumference  ================= -->
 
-                                <TextBlock Text="📏 Hip:"
+                                <TextBlock Text="{loc:Translate TxtHip}"
                                            FontSize="14"
                                            Style="{DynamicResource TextBlockDescribing}"
                                            VerticalAlignment="Center"
@@ -608,15 +598,15 @@ ScrollViewer.VerticalScrollBarVisibility="Auto"
                         </Grid.ColumnDefinitions>
 
                         <TextBlock Grid.Column="0"
-               Text="🧠 AI Insights" 
-               Style="{DynamicResource TextBlockDashBoardTitle}" 
-               VerticalAlignment="Center"
-               Margin="0,0,0,10"/>
+                                   Text="{loc:Translate TxtAiInsights}" 
+                                   Style="{DynamicResource TextBlockDashBoardTitle}" 
+                                   VerticalAlignment="Center"         
+                                   Margin="0,0,0,10"/>
 
                         <Button Grid.Column="1"
                                 Style="{DynamicResource IconStandardButton}"
                                 Content="🔄"
-                                ToolTip="Refresh AI Result"
+                                ToolTip="{loc:Translate ToolTipRefreshAi}"
                                 Command="{Binding CommandRefreshAI}"
                                 Margin="0,0,0,10"
                                 BorderBrush="Transparent"
@@ -655,16 +645,11 @@ ScrollViewer.VerticalScrollBarVisibility="Auto"
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Column="0"
+                    <TextBlock Text="{Binding HeaderBodyMeasurements}"
+                               Grid.Column="0"
                                Grid.Row="0"
                                Style="{DynamicResource TextBlockDashBoardTitle}" 
-                               Margin="0,0,0,10">
-                        
-
-                        <Run Text="📈 "/>
-                        <Run Text="{Binding HeaderBodyMeasurements}"/>
-
-                    </TextBlock>
+                               Margin="0,0,0,10"/>
 
                     <lvc:CartesianChart Grid.Column="0"
                                         Grid.Row="1"
@@ -678,9 +663,6 @@ ScrollViewer.VerticalScrollBarVisibility="Auto"
                                         LegendPosition="Bottom"/>
                 </Grid>
 
-
-
-               
             </Border>
 
             <!-- ================= MONTH WORKOUT OVERVIEW ================= -->
@@ -701,15 +683,11 @@ ScrollViewer.VerticalScrollBarVisibility="Auto"
 
 
 
-                    <TextBlock Grid.Column="0"
+                    <TextBlock Text="{Binding HeaderTrainingsVolume}"
+                               Grid.Column="0"
                                Grid.Row="0"
                                Style="{DynamicResource TextBlockDashBoardTitle}" 
-                               Margin="0,0,0,12">
-                        
-                        <Run Text="📈 "/>
-                        <Run Text="{Binding HeaderTrainingsVolume}"/>
-
-                    </TextBlock>
+                               Margin="0,0,0,12"/>
 
                     <lvc:CartesianChart Grid.Column="0"
                                         Grid.Row="1"
@@ -745,7 +723,7 @@ ScrollViewer.VerticalScrollBarVisibility="Auto"
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Text="💪 Workout Muscle Distribution"
+                    <TextBlock Text="{loc:Translate TxtWorkoutMuscleDistribution}"
                                Grid.Column="0"
                                Grid.Row="0"
                                Style="{DynamicResource TextBlockDashBoardTitle}" 
@@ -756,9 +734,10 @@ ScrollViewer.VerticalScrollBarVisibility="Auto"
                                Grid.Row="1"
                                Style="{DynamicResource TextBlockDashBoardTitle}" 
                                FontSize="12"
-                               VerticalAlignment="Top"/>
-     
-                        <lvc:PolarChart Grid.Column="0"
+                               VerticalAlignment="Top"
+                               HorizontalAlignment="Center"/>
+
+                    <lvc:PolarChart Grid.Column="0"
                                         Grid.Row="2"
                                         MinHeight="1"
                                         MinWidth="1"
@@ -786,13 +765,9 @@ ScrollViewer.VerticalScrollBarVisibility="Auto"
                 <StackPanel HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch">
 
-                    <TextBlock Style="{DynamicResource TextBlockDashBoardTitle}" 
-                               Margin="0,0,0,20">
-                        
-                        <Run Text="🏋️‍ "/>
-                        <Run Text="{Binding HeaderMostDoneExercises}"/>
-
-                    </TextBlock>
+                    <TextBlock  Text="{Binding HeaderMostDoneExercises}"
+                                Style="{DynamicResource TextBlockDashBoardTitle}" 
+                                Margin="0,0,0,20"/>
 
                     <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="200">
 

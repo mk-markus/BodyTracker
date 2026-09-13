@@ -54,7 +54,7 @@ namespace BodyTracker.ViewModels
 
         /// <summary>
         /// Gets or sets the X-axes configuration for the Cartesian chart.
-        /// This property defines the horizontal scale, including labels (e.g., dates), 
+        /// This property defines the horizontal scale, including Lbls (e.g., dates), 
         /// unit spacing, and title formatting.
         /// </summary>
         [ObservableProperty] private ICartesianAxis[] xAxesBodyWeight = Array.Empty<ICartesianAxis>();
@@ -68,7 +68,7 @@ namespace BodyTracker.ViewModels
 
         /// <summary>
         /// Gets or sets the X-axes configuration for the Cartesian chart.
-        /// This property defines the horizontal scale, including labels (e.g., dates), 
+        /// This property defines the horizontal scale, including Lbls (e.g., dates), 
         /// unit spacing, and title formatting.
         /// </summary>
         [ObservableProperty] private ICartesianAxis[] xAxesBodyFatMuscle = Array.Empty<ICartesianAxis>();
@@ -82,7 +82,7 @@ namespace BodyTracker.ViewModels
 
         /// <summary>
         /// Gets or sets the X-axes configuration for the Cartesian chart.
-        /// This property defines the horizontal scale, including labels (e.g., dates), 
+        /// This property defines the horizontal scale, including Lbls (e.g., dates), 
         /// unit spacing, and title formatting.
         /// </summary>
         [ObservableProperty] private ICartesianAxis[] xAxesBodyWater = Array.Empty<ICartesianAxis>();

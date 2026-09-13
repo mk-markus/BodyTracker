@@ -176,7 +176,7 @@ namespace BodyTracker.ViewModels
 
         /// <summary>
         /// Gets or sets the X-axes configuration for the Cartesian chart.
-        /// This property defines the horizontal scale, including labels (e.g., dates), 
+        /// This property defines the horizontal scale, including Lbls (e.g., dates), 
         /// unit spacing, and title formatting.
         /// </summary>
         [ObservableProperty] 
@@ -200,7 +200,7 @@ namespace BodyTracker.ViewModels
 
         /// <summary>
         /// Gets or sets the X-axes configuration for the Cartesian chart.
-        /// This property defines the horizontal scale, including labels (e.g., dates), 
+        /// This property defines the horizontal scale, including Lbls (e.g., dates), 
         /// unit spacing, and title formatting.
         /// </summary>
         [ObservableProperty] 
@@ -224,7 +224,7 @@ namespace BodyTracker.ViewModels
 
         /// <summary>
         /// Gets or sets the X-axes configuration for the Cartesian chart.
-        /// This property defines the horizontal scale, including labels (e.g., dates), 
+        /// This property defines the horizontal scale, including Lbls (e.g., dates), 
         /// unit spacing, and title formatting.
         /// </summary>
         [ObservableProperty] 
@@ -248,7 +248,7 @@ namespace BodyTracker.ViewModels
 
         /// <summary>
         /// Gets or sets the X-axes configuration for the Cartesian chart.
-        /// This property defines the horizontal scale, including labels (e.g., dates), 
+        /// This property defines the horizontal scale, including Lbls (e.g., dates), 
         /// unit spacing, and title formatting.
         /// </summary>
         [ObservableProperty]
@@ -348,14 +348,14 @@ namespace BodyTracker.ViewModels
         private bool isRefreshing = false;
 
         /// <summary>
-        /// Stores the label string representing the current time period for charts.
+        /// Stores the Lbl string representing the current time period for charts.
         /// </summary>
-        private string labelChartCurr = string.Empty;
+        private string LblChartCurr = string.Empty;
 
         /// <summary>
-        /// Stores the label string representing the previous comparison period for charts.
+        /// Stores the Lbl string representing the previous comparison period for charts.
         /// </summary>
-        private string labelChartPrev = string.Empty;
+        private string LblChartPrev = string.Empty;
 
         /// <summary>
         /// Stores the active filter name string.
@@ -505,16 +505,16 @@ namespace BodyTracker.ViewModels
 
             var actualMuscleDistribution = analyzer.CalculateMuscleSplit(analyzer.WorkoutEntries, startDate: StartDate, endDate: EndDate);
             var previousMuscleDistribution = analyzer.CalculateMuscleSplit(analyzer.WorkoutEntries, startDate: PrevStartDate, endDate: PrevEndDate);
-            string currlabel = "";
-            string prevlabel = "";
-            if (!previousMuscleDistribution.Any()) { prevlabel = ""; }
-            else { currlabel = labelChartCurr; prevlabel = labelChartPrev; }
+            string currLbl = "";
+            string prevLbl = "";
+            if (!previousMuscleDistribution.Any()) { prevLbl = ""; }
+            else { currLbl = LblChartCurr; prevLbl = LblChartPrev; }
 
 
             (SeriesMuscleDistributionSpiderChart, AngleAxisMuscleDistirbutionSpiderChart, RadiusAxisMuscleDistirbutionSpiderChart) =
                     ChartTemplateService.CreateWorkloadMuscleSpiderChart(
                         actualMuscleDistribution, previousMuscleDistribution,
-                        currlabel, prevlabel, geometrySize: 0, strokeThickness: 1);
+                        currLbl, prevLbl, geometrySize: 0, strokeThickness: 1);
         }
 
         /// <summary>
@@ -632,9 +632,9 @@ namespace BodyTracker.ViewModels
             PrevStartDate = StartDate.AddYears(-1);
             PrevEndDate = EndDate.AddYears(-1);
 
-            // Labels (e.g., "2026" and "2025" or custom format depending on your preference)
-            labelChartCurr = StartDate.ToString("yyyy", CultureInfo.InvariantCulture);
-            labelChartPrev = PrevStartDate.ToString("yyyy", CultureInfo.InvariantCulture);
+            // Lbls (e.g., "2026" and "2025" or custom format depending on your preference)
+            LblChartCurr = StartDate.ToString("yyyy", CultureInfo.InvariantCulture);
+            LblChartPrev = PrevStartDate.ToString("yyyy", CultureInfo.InvariantCulture);
             _ = RefreshChartAsync();
         }
 
@@ -653,9 +653,9 @@ namespace BodyTracker.ViewModels
             PrevStartDate = StartDate.AddMonths(-1);
             PrevEndDate = EndDate.AddMonths(-1);
 
-            // Labels formatted without dots (e.g., "August 2026" and "July 2026")
-            labelChartCurr = StartDate.ToString("MMMM yyyy", CultureInfo.InvariantCulture);
-            labelChartPrev = PrevStartDate.ToString("MMMM yyyy", CultureInfo.InvariantCulture);
+            // Lbls formatted without dots (e.g., "August 2026" and "July 2026")
+            LblChartCurr = StartDate.ToString("MMMM yyyy", CultureInfo.InvariantCulture);
+            LblChartPrev = PrevStartDate.ToString("MMMM yyyy", CultureInfo.InvariantCulture);
             _ = RefreshChartAsync();
         }
 
@@ -675,28 +675,28 @@ namespace BodyTracker.ViewModels
             PrevStartDate = StartDate.AddDays(-7);
             PrevEndDate = EndDate.AddDays(-7);
 
-            // Labels showing the date span or custom week representation
-            labelChartCurr = $"{StartDate:dd MMM} - {EndDate:dd MMM yyyy}";
-            labelChartPrev = $"{PrevStartDate:dd MMM} - {PrevEndDate:dd MMM yyyy}";
+            // Lbls showing the date span or custom week representation
+            LblChartCurr = $"{StartDate:dd MMM} - {EndDate:dd MMM yyyy}";
+            LblChartPrev = $"{PrevStartDate:dd MMM} - {PrevEndDate:dd MMM yyyy}";
             _ = RefreshChartAsync();
         }
 
         /// <summary>
-        /// Configures the current and previous date ranges and chart labels while suppressing intermediate reloads, then triggers an asynchronous chart refresh.
+        /// Configures the current and previous date ranges and chart Lbls while suppressing intermediate reloads, then triggers an asynchronous chart refresh.
         /// </summary>
         /// <param name="start">The start date for the current period.</param>
         /// <param name="end">The end date for the current period.</param>
-        /// <param name="currentLabel">The label identifier for the current period.</param>
-        /// <param name="prevLabel">The label identifier for the previous comparison period.</param>
-        private void SetDateRange(DateTime start, DateTime end, string currentLabel, string prevLabel)
+        /// <param name="currentLbl">The Lbl identifier for the current period.</param>
+        /// <param name="prevLbl">The Lbl identifier for the previous comparison period.</param>
+        private void SetDateRange(DateTime start, DateTime end, string currentLbl, string prevLbl)
         {
             suppressReload = true;
             StartDate = start;
             EndDate = end;
             PrevStartDate = start.AddYears(start == StartDate ? -1 : 0);
             PrevEndDate = end.AddYears(end == EndDate ? -1 : 0);
-            labelChartCurr = currentLabel;
-            labelChartPrev = prevLabel;
+            LblChartCurr = currentLbl;
+            LblChartPrev = prevLbl;
             suppressReload = false;
 
             _ = RefreshChartAsync();

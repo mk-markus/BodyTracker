@@ -18,7 +18,7 @@ namespace BodyTracker.Services
         /// Gets or sets the absolute or relative file path pointing to the exercise configuration JSON file.
         /// </summary>
         /// <remarks>Used by data loading routines to locate and read exercise metadata definitions from disk.</remarks>
-        private readonly string JsonFilePath = ".\\Ressources\\JsonFiles\\Database_Exercises.json";
+        private readonly string JsonFilePath = ".\\Resources\\JsonFiles\\Database_Exercises.json";
 
         /// <summary>
         /// Gets the dictionary mapping exercise names to their corresponding JSON configuration models.
