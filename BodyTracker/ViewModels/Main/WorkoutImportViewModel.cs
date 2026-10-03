@@ -338,9 +338,7 @@ namespace BodyTracker.ViewModels
             }
             catch (Exception ex)
             {
-                //Debug.WriteLine("Error fetching workouts: " + ex.Message);
-                //MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-
+            
                 if (ex.InnerException != null) GeneralInfoMessage = $"{ex.Source} | {ex.InnerException.Message}";
                 else GeneralInfoMessage = $"{ex.TargetSite?.Name} | {ex.Message}";
 

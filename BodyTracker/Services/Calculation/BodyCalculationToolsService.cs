@@ -1,6 +1,7 @@
 ﻿using BodyTracker.Models;
 using BodyTracker.Models.Calculation;
 using BodyTracker.Models.FullBodyMeasurement;
+using BodyTracker.Resources.Languages;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -195,7 +196,7 @@ namespace BodyTracker.Services
         /// <returns>The calculated BMI value as a floating-point number.</returns>
         public static float CalculateBmi(float weight, float height)
         {
-            if (height <= 0) MessageBox.Show("Height must be greater than zero.", nameof(height), MessageBoxButton.OK, MessageBoxImage.Error);
+            if (height <= 0) MessageBox.Show(UiStrings.Dialog_Height_GreaterThanZero, nameof(height), MessageBoxButton.OK, MessageBoxImage.Error);
             return weight / (height * height);
         }
 

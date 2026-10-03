@@ -1,14 +1,23 @@
+using BF105;
+using BF105.Bluetooth.Model;
 using BodyTracker.Models;
+using BodyTracker.Models.FullBodyMeasurement;
 using BodyTracker.Services;
 using BodyTracker.State;
+using BodyTracker.Views.Pages.Main;
+using BodyTracker.Views.windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media.Media3D;
 
 namespace BodyTracker.ViewModels
 {
@@ -31,7 +40,9 @@ namespace BodyTracker.ViewModels
         /// operations initiated by the ViewModel.
         /// </summary>
         private readonly DatabaseService databaseService;
-                
+
+        #region Observable Properties Members
+
         /// <summary>
         /// Gets or sets the date of the bodyMeasurement. Defaults to the current system date.
         /// </summary>
@@ -213,6 +224,9 @@ namespace BodyTracker.ViewModels
         [ObservableProperty]
         private string validationMessage = string.Empty;
 
+        #endregion
+
+        #region Members
 
         /// <summary>
         /// Backing field for the general error message string.
@@ -233,6 +247,457 @@ namespace BodyTracker.ViewModels
         }
 
         /// <summary>
+        /// Gets a value indicating whether the body weight input is valid.
+        /// Parses the string representation to a floating-point number and validates its range.
+        /// </summary>
+        bool IsBodyWeightValid => TryParseFloat(BodyWeight, out var v) && IsNumberValid(v);
+
+        /// <summary>
+        /// Gets a value indicating whether the BMI value is valid. 
+        /// Currently returns true by default without performing underlying validation.
+        /// </summary>
+        bool IsBmiValid => true;
+
+        /// <summary>
+        /// Gets a value indicating whether the body fat percentage input is valid.
+        /// Parses the string representation to a floating-point number and validates its range.
+        /// </summary>
+        bool IsBodyFatPercentageValid => TryParseFloat(BodyFatPercentage, out var v) && IsNumberValid(v);
+
+        /// <summary>
+        /// Gets a value indicating whether the top body fat percentage input is valid.
+        /// Parses the string representation to a floating-point number and validates its range.
+        /// </summary>
+        bool IsBodyFatPercentageTopValid => TryParseFloat(BodyFatPercentageTop, out var v) && IsNumberValid(v);
+
+        /// <summary>
+        /// Gets a value indicating whether the bottom body fat percentage input is valid.
+        /// Parses the string representation to a floating-point number and validates its range.
+        /// </summary>
+        bool IsBodyFatPercentageBottomValid => TryParseFloat(BodyFatPercentageBottom, out var v) && IsNumberValid(v);
+
+        /// <summary>
+        /// Gets a value indicating whether the body muscle percentage input is valid.
+        /// Parses the string representation to a floating-point number and validates its range.
+        /// </summary>
+        bool IsBodyMusclePercentageValid => TryParseFloat(BodyMusclePercentage, out var v) && IsNumberValid(v);
+
+        /// <summary>
+        /// Gets a value indicating whether the top body muscle percentage input is valid.
+        /// Parses the string representation to a floating-point number and validates its range.
+        /// </summary>
+        bool IsBodyMusclePercentageTopValid => TryParseFloat(BodyMusclePercentageTop, out var v) && IsNumberValid(v);
+
+        /// <summary>
+        /// Gets a value indicating whether the bottom body muscle percentage input is valid.
+        /// Parses the string representation to a floating-point number and validates its range.
+        /// </summary>
+        bool IsBodyMusclePercentageBottomValid => TryParseFloat(BodyMusclePercentageBottom, out var v) && IsNumberValid(v);
+
+        /// <summary>
+        /// Gets a value indicating whether the body water percentage input is valid.
+        /// Parses the string representation to a floating-point number and validates its range.
+        /// </summary>
+        bool IsBodyWaterPercentageValid => TryParseFloat(BodyWaterPercentage, out var v) && IsNumberValid(v);
+
+        /// <summary>
+        /// Gets a value indicating whether the body bone mass input is valid.
+        /// Parses the string representation to a floating-point number and validates its range.
+        /// </summary>
+        bool IsBodyBoneMassValid => TryParseFloat(BodyBoneMass, out var v) && IsNumberValid(v);
+
+        /// <summary>
+        /// Gets a value indicating whether the body visceral fat input is valid.
+        /// Parses the string representation to a floating-point number and validates its range.
+        /// </summary>
+        bool IsBodyVisceralFatValid => TryParseFloat(BodyVisceralFat, out var v) && IsNumberValid(v);
+
+        /// <summary>
+        /// Gets a value indicating whether the chest circumference input is valid.
+        /// Parses the string representation to a floating-point number and validates its range.
+        /// </summary>
+        bool IsChestCircumferenceValid => TryParseFloat(ChestCircumference, out var v) && IsNumberValid(v);
+
+        /// <summary>
+        /// Gets a value indicating whether the waist circumference input is valid.
+        /// Parses the string representation to a floating-point number and validates its range.
+        /// </summary>
+        bool IsWaistCircumferenceValid => TryParseFloat(WaistCircumference, out var v) && IsNumberValid(v);
+
+        /// <summary>
+        /// Gets a value indicating whether the hips circumference input is valid.
+        /// Parses the string representation to a floating-point number and validates its range.
+        /// </summary>
+        bool IsHipsCircumferenceValid => TryParseFloat(HipsCircumference, out var v) && IsNumberValid(v);
+        /// <summary>
+        /// Gets a value indicating whether the breast skinfold bodyMeasurement is valid and can be parsed as a float.
+        /// </summary>
+        bool IsFatTongBreastCreaseValid => TryParseFloat(FatTongBreastCrease, out var v) && IsNumberValid(v);
+
+        /// <summary>
+        /// Gets a value indicating whether the armpit skinfold bodyMeasurement is valid and can be parsed as a float.
+        /// </summary>
+        bool IsFatTongArmpitCreaseValid => TryParseFloat(FatTongArmpitCrease, out var v) && IsNumberValid(v);
+
+        /// <summary>
+        /// Gets a value indicating whether the abdominal skinfold bodyMeasurement is valid and can be parsed as a float.
+        /// </summary>
+        bool IsFatTongAbdominalCreaseValid => TryParseFloat(FatTongAbdominalCrease, out var v) && IsNumberValid(v);
+
+        /// <summary>
+        /// Gets a value indicating whether the hip skinfold bodyMeasurement is valid and can be parsed as a float.
+        /// </summary>
+        bool IsFatTongHipCreaseValid => TryParseFloat(FatTongHipCrease, out var v) && IsNumberValid(v);
+
+        /// <summary>
+        /// Gets a value indicating whether the thigh skinfold bodyMeasurement is valid and can be parsed as a float.
+        /// </summary>
+        bool IsFatTongThighCreaseValid => TryParseFloat(FatTongThighCrease, out var v) && IsNumberValid(v);
+
+        /// <summary>
+        /// Gets a value indicating whether the back skinfold bodyMeasurement is valid and can be parsed as a float.
+        /// </summary>
+        bool IsFatTongBackCreaseValid => TryParseFloat(FatTongBackCrease, out var v) && IsNumberValid(v);
+
+        /// <summary>
+        /// Gets a value indicating whether the triceps skinfold bodyMeasurement is valid and can be parsed as a float.
+        /// </summary>
+        bool IsFatTongTricepsCreaseValid => TryParseFloat(FatTongTricepsCrease, out var v) && IsNumberValid(v);
+
+        /// <summary>
+        /// Gets a value indicating whether the entire form is valid.
+        /// </summary>
+        public bool IsNewEntryPageFormValid => IsBodyWeightValid && IsBmiValid && IsBodyFatPercentageValid &&
+                                               IsBodyFatPercentageTopValid && IsBodyFatPercentageBottomValid &&
+                                               IsBodyMusclePercentageValid && IsBodyMusclePercentageTopValid &&
+                                               IsBodyMusclePercentageBottomValid && IsBodyWaterPercentageValid &&
+                                               IsBodyBoneMassValid && IsBodyVisceralFatValid &&
+                                               IsChestCircumferenceValid && IsWaistCircumferenceValid &&
+                                               IsHipsCircumferenceValid && IsFatTongBreastCreaseValid &&
+                                               IsFatTongArmpitCreaseValid && IsFatTongAbdominalCreaseValid &&
+                                               IsFatTongHipCreaseValid && IsFatTongThighCreaseValid &&
+                                               IsFatTongBackCreaseValid && IsFatTongTricepsCreaseValid;
+
+        #endregion
+
+        #region Relay Commands
+
+        /// <summary>
+        /// Gets the command that triggers the asynchronous saving of entered data.
+        /// </summary>
+        public IAsyncRelayCommand CommandSaveNewDatas { get; }
+
+
+        /// <summary>
+        /// Gets the asynchronous command that triggers the full body automated scale measurement scan.
+        /// </summary>
+        public IAsyncRelayCommand CommandStartFullBodyAutomaticScan { get; }
+
+        /// <summary>
+        /// Gets the asynchronous command that triggers the standard body weight and basic composition scan.
+        /// </summary>
+        public IAsyncRelayCommand CommandStartBodyWeightAndComponentScan { get; }
+
+        /// <summary>
+        /// Gets the asynchronous command that triggers the specialized segmental body composition measurement scan.
+        /// </summary>
+        public IAsyncRelayCommand CommandStartSegmentalBodyComponentScan { get; }
+
+
+        #endregion
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NewDataEntryPageViewModel"/> class.
+        /// </summary>
+        /// <param name="db">
+        /// An instance of the <see cref="DatabaseService"/>, injected to provide access 
+        /// to the underlying database operations.
+        /// </param>
+        /// <remarks>
+        /// The constructor performs dependency injection for the database service and 
+        /// initializes the <see cref="CommandSaveNewDatas"/> as an <see cref="AsyncRelayCommand"/> 
+        /// to enable asynchronous data persistence from the UI.
+        /// </remarks>
+        public NewDataEntryPageViewModel(DatabaseService db) 
+        { 
+            databaseService = db;
+           
+            CommandSaveNewDatas = new AsyncRelayCommand(SaveAsync);
+
+            CommandStartFullBodyAutomaticScan = new AsyncRelayCommand(StartAutomaticFullBodyScanAsync);
+            CommandStartBodyWeightAndComponentScan = new AsyncRelayCommand(StartBodyWeightAndCompositionScaleScanasync);
+            CommandStartSegmentalBodyComponentScan = new AsyncRelayCommand(StartSegmentalBodyCompostionScanAsync);
+
+        }
+
+        /// <summary>
+        /// Asynchronously prepares the ViewModel for user interaction by loading 
+        /// historical data from the database.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous initialization operation.</returns>
+        /// <remarks>
+        /// This method retrieves the most recent record for both body metrics and dimensions 
+        /// based on the <see cref="AppState.SelectedPersonId"/>. 
+        /// If no historical data is found, the properties remain at their default values (null).
+        /// </remarks>
+        public async Task InitializeAsync()
+        {
+            try
+            {
+                var pid = AppState.SelectedPersonId;
+                var lastM = await databaseService.GetLatestBodyMetricAsync(pid, DateTime.Today);
+                var height = AppState.SelectedPersonHeight;
+                var weight = lastM?.BodyWeight ?? 0f;
+
+                BodyWeight = weight.ToString();
+                Bmi = BodyCalculationToolsService.CalculateBmi(weight, (float)height).ToString("F2");
+                BodyFatPercentage = lastM?.BodyFatPercentage.ToString() ?? string.Empty;
+                BodyFatPercentageTop = lastM?.BodyFatPercentageTop.ToString() ?? string.Empty;
+                BodyFatPercentageBottom = lastM?.BodyFatPercentageBottom.ToString() ?? string.Empty;
+                BodyMusclePercentage = lastM?.BodyMusclePercentage.ToString() ?? string.Empty;
+                BodyMusclePercentageTop = lastM?.BodyMusclePercentageTop.ToString() ?? string.Empty;
+                BodyMusclePercentageBottom = lastM?.BodyMusclePercentageBottom.ToString() ?? string.Empty;
+                BodyWaterPercentage = lastM?.BodyWaterPercentage.ToString() ?? string.Empty;
+                BodyBoneMass = lastM?.BodyBoneMass.ToString() ?? string.Empty;
+                BodyVisceralFat = lastM?.BodyVisceralFat.ToString() ?? string.Empty;
+
+                var lastA = await databaseService.GetLatestBodyDimensionsAsync(pid, DateTime.Today);
+                ChestCircumference = lastA?.ChestCircumference.ToString() ?? string.Empty;
+                WaistCircumference = lastA?.WaistCircumference.ToString() ?? string.Empty;
+                HipsCircumference = lastA?.HipsCircumference.ToString() ?? string.Empty;
+                FatTongBreastCrease = lastA?.FatTongBreastCrease.ToString() ?? string.Empty;
+                FatTongArmpitCrease = lastA?.FatTongArmpitCrease.ToString() ?? string.Empty;
+                FatTongAbdominalCrease = lastA?.FatTongAbdominalCrease.ToString() ?? string.Empty;
+                FatTongHipCrease = lastA?.FatTongHipCrease.ToString() ?? string.Empty;
+                FatTongThighCrease = lastA?.FatTongThighCrease.ToString() ?? string.Empty;
+                FatTongBackCrease = lastA?.FatTongBackCrease.ToString() ?? string.Empty;
+                FatTongTricepsCrease = lastA?.FatTongTricepsCrease.ToString() ?? string.Empty;
+
+            }
+          
+            catch(Exception ex)
+            {
+                GeneralInfoMessage = "An error occurred while initializing the data entry form: " + ex.Message;
+            }
+        }
+
+        /// <summary>
+        /// Asynchronously initiates a full body automated scale measurement scan, requesting 
+        /// both standard composition and segmental breakdown data from the device.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation, containing a boolean value indicating whether the scan and data mapping succeeded.</returns>
+        public async Task<bool> StartAutomaticFullBodyScanAsync()
+        {
+            return await StartScaleScan(BodyScanMode.ScanMode.FullBodyScan);
+        }
+
+        /// <summary>
+        /// Asynchronously initiates a standard body weight and basic composition measurement scan on the scale.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation, containing a boolean value indicating whether the scan and data mapping succeeded.</returns>
+        public async Task<bool> StartBodyWeightAndCompositionScaleScanasync()
+        {
+            return await StartScaleScan(BodyScanMode.ScanMode.BodyWeightAndCompositionScan);
+        }
+
+        /// <summary>
+        /// Asynchronously initiates a specialized segmental body composition measurement scan on the scale.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation, containing a boolean value indicating whether the scan and data mapping succeeded.</returns>
+        public async Task<bool> StartSegmentalBodyCompostionScanAsync()
+        {
+            return await StartScaleScan(BodyScanMode.ScanMode.SegmentalBodyCompisitionScan);
+        }
+
+        /// <summary>
+        /// Orchestrates the automated scale scan window lifecycle for the specified scan mode, 
+        /// retrieves the resulting body measurement model, computes overall metrics and percentages, 
+        /// and maps the results to view properties.
+        /// </summary>
+        /// <param name="bodyScanMode">The specific scanning mode configuration (e.g., FullBodyScan, SegmentalBodyCompisitionScan).</param>
+        /// <returns>A task representing the asynchronous operation, containing a boolean value indicating success or failure.</returns>
+        public async Task<bool> StartScaleScan(BodyScanMode.ScanMode bodyScanMode)
+        {
+            try
+            {
+                var automaticScaleMeasurmentWindow = new AutomaticScaleMeasurementWindow(bodyScanMode);
+
+                automaticScaleMeasurmentWindow.ShowDialog();
+
+                if (automaticScaleMeasurmentWindow == null ||
+                    automaticScaleMeasurmentWindow.MeasurementResult == null) return false;
+
+                var result = automaticScaleMeasurmentWindow.MeasurementResult;
+
+                var weight = result.BodyWeightMeasurement?.Weight ?? 0.0;
+                var height = AppState.SelectedPersonHeight;
+
+                float musclePercentage = 0.0f;
+                float fatPercentage = 0.0f;
+
+                if (bodyScanMode == BodyScanMode.ScanMode.FullBodyScan ||
+                    bodyScanMode == BodyScanMode.ScanMode.SegmentalBodyCompisitionScan)
+                {
+                    var fatPercentageTop = result.SegmentalBodyCompositionMeasurement?.UpperBodyFatPercentage ?? 0.0f;
+                    var fatPercentageBottom = result.SegmentalBodyCompositionMeasurement?.LowerBodyFatPercentage ?? 0.0f;
+
+                    var musclePercentageTop = result.SegmentalBodyCompositionMeasurement?.UpperBodyMusclePercentage ?? 0.0f;
+                    var musclePercentageBottom = result.SegmentalBodyCompositionMeasurement?.LowerBodyMusclePercentage ?? 0.0f;
+
+                    BodyFatPercentageTop = fatPercentageTop.ToString("F2");
+                    BodyFatPercentageBottom = fatPercentageBottom.ToString("F2");
+
+                    BodyMusclePercentageTop = musclePercentageTop.ToString("F2");
+                    BodyMusclePercentageBottom = musclePercentageBottom.ToString("F2");
+
+                    if (bodyScanMode == BodyScanMode.ScanMode.FullBodyScan)
+                    {
+                        musclePercentage = ((musclePercentageBottom + musclePercentageTop) / 2);
+                        fatPercentage = ((fatPercentageBottom + fatPercentageTop) / 2);
+                    }
+                    else
+                    {
+                        musclePercentage = result.BodyCompositionMeasurement?.BodyMusclePercentage ?? 0.0f;
+                        fatPercentage = result.BodyCompositionMeasurement?.BodyFatPercentage ?? 0.0f;
+                    }
+                }
+
+                BodyMusclePercentage = musclePercentage.ToString("F2");
+                BodyFatPercentage = fatPercentage.ToString("F2");
+
+                BodyWaterPercentage = result.BodyCompositionMeasurement?.BodyWaterPercentage?.ToString("F2") ?? string.Empty;
+
+                BodyWeight = result.BodyWeightMeasurement?.Weight?.ToString("F2") ?? string.Empty;
+                Bmi = BodyCalculationToolsService.CalculateBmi((float)weight, (float)height).ToString("F2");
+
+                await Task.Delay(1);
+            }
+            catch (Exception ex)
+            {
+                GeneralInfoMessage = "An error occurred while starting the automatic scale scan: " + ex.Message;
+                return false;
+            }
+
+            return true;
+        }
+
+
+
+
+        /// <summary>
+        /// Asynchronously persists the current bodyMeasurement data to the database.
+        /// This method synchronizes both physiological metrics and physical dimensions.
+        /// </summary>
+        /// <returns>A task representing the asynchronous save operation.</returns>
+        /// <remarks>
+        /// The method extracts the currently selected person's ID from <see cref="AppState"/> 
+        /// and performs two separate insert operations. It maps the ViewModel properties 
+        /// to their respective data models (<see cref="BodyMetricModel"/> and <see cref="BodyDimensionsModel"/>).
+        /// Note: This operation currently lacks a database transaction; an error in the second 
+        /// insert will not roll back the first one.
+        /// </remarks>
+        public async Task<bool> SaveAsync()
+        {
+            try
+            {
+                
+                var pid = AppState.SelectedPersonId;
+
+                if (TryParseFloat(BodyWeight, out var weight) &&
+                   TryParseFloat(Bmi, out var bmi) &&
+                   TryParseFloat(BodyFatPercentage, out var fatPercentage) &&
+                   TryParseFloat(BodyFatPercentageTop, out var fatPercentageTop) &&
+                   TryParseFloat(BodyFatPercentageBottom, out var fatPercentageBottom) &&
+                   TryParseFloat(BodyMusclePercentage, out var musclePercentage) &&
+                   TryParseFloat(BodyMusclePercentageTop, out var musclePercentageTop) &&
+                   TryParseFloat(BodyMusclePercentageBottom, out var musclePercentageBottom) &&
+                   TryParseFloat(BodyWaterPercentage, out var waterPercentage) &&
+                   TryParseFloat(BodyBoneMass, out var boneMass) &&
+                   int.TryParse(BodyVisceralFat, out var visceralFat) &&
+                   TryParseFloat(ChestCircumference, out var chestCircumference) &&
+                   TryParseFloat(WaistCircumference, out var waistCircumference) &&
+                   TryParseFloat(HipsCircumference, out var hipsCircumference) &&
+                   TryParseFloat(FatTongBreastCrease, out var fatTongBreastCrease) &&
+                   TryParseFloat(FatTongTricepsCrease, out var fatTongTricepsCrease) &&
+                   TryParseFloat(FatTongArmpitCrease, out var fatTongArmpitCrease) &&
+                   TryParseFloat(FatTongAbdominalCrease, out var fatTongAbdominalCrease) &&
+                   TryParseFloat(FatTongHipCrease, out var fatTongHipCrease) &&
+                   TryParseFloat(FatTongThighCrease, out var fatTongThighCrease) &&
+                   TryParseFloat(FatTongBackCrease, out var fatTongBackCrease))
+                {
+                    var bodyMetric = new BodyMetricModel
+                    {
+                        PersonID = pid,
+                        MeasurementDate = MeasurementDate,
+                        BodyWeight = weight,
+                        BMI = bmi,
+                        BodyFatPercentage = fatPercentage,
+                        BodyFatPercentageTop = fatPercentageTop,
+                        BodyFatPercentageBottom = fatPercentageBottom,
+                        BodyMusclePercentage = musclePercentage,
+                        BodyMusclePercentageTop = musclePercentageTop,
+                        BodyMusclePercentageBottom = musclePercentageBottom,
+                        BodyWaterPercentage = waterPercentage,
+                        BodyBoneMass = boneMass,
+                        BodyVisceralFat = visceralFat
+                    };
+
+                    var bodyDimension = new BodyDimensionsModel
+                    {
+                        PersonID = pid,
+                        MeasurementDate = MeasurementDate,
+                        ChestCircumference = chestCircumference,
+                        WaistCircumference = waistCircumference,
+                        HipsCircumference = hipsCircumference,
+                        FatTongBreastCrease = fatTongBreastCrease,
+                        FatTongTricepsCrease = fatTongTricepsCrease,
+                        FatTongArmpitCrease = fatTongArmpitCrease,
+                        FatTongAbdominalCrease = fatTongAbdominalCrease,
+                        FatTongHipCrease = fatTongHipCrease,
+                        FatTongThighCrease = fatTongThighCrease,
+                        FatTongBackCrease = fatTongBackCrease
+                    };
+                    bool measurementAlreadyExists = await databaseService.GetMeasurementExistsSqlAsync(bodyMetric.MeasurementDate, bodyMetric.PersonID);
+
+                    if (measurementAlreadyExists)
+                    {
+                        GeneralInfoMessage= $"A bodyMeasurement for the date {bodyMetric.MeasurementDate.ToString("d")} already exists. Please choose a different date.";
+                    }
+
+                    else
+                    {
+                        await databaseService.InsertBodyMetricSqlAsync(bodyMetric);
+
+                        await databaseService.InsertBodyDimensionSqlAsync(bodyDimension);
+
+                        WeakReferenceMessenger.Default.Send(new NavigationMessage(NavigationMessage.ShowDashboard));
+
+                    }
+
+                    return measurementAlreadyExists;
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                GeneralInfoMessage = "An error occurred while saving the data: " + ex.Message;
+            }
+
+            return false;
+        }
+
+        #region Validation Logic Methods
+
+        /// <summary>
+        /// Validates whether the specified floating-point value falls within the acceptable range.
+        /// Returns true if the value is not null and is between 0 and 300 (inclusive).
+        /// </summary>
+        /// <param name="value">The nullable floating-point value to validate.</param>
+        /// <returns><c>true</c> if the value is within the range [0, 300]; otherwise, <c>false</c>.</returns>
+        private bool IsNumberValid(float? value) => value.HasValue && value.Value >= 0 && value.Value <= 300;
+
+        /// <summary>
         /// Handles changes to the body weight input value. Validates that the input is a valid floating-point number, 
         /// automatically recalculates and formats the BMI if a valid height is available in the application state, 
         /// updates the validation message, and notifies the system of changes to the form validity state.
@@ -242,7 +707,7 @@ namespace BodyTracker.ViewModels
         {
             if (TryParseFloat(value, out var v))
             {
-                if (AppState.SelectedPersonHeight > 0) Bmi = CalculateBmi(v, (float)AppState.SelectedPersonHeight).ToString("F2");
+                if (AppState.SelectedPersonHeight > 0) Bmi = BodyCalculationToolsService.CalculateBmi(v, (float)AppState.SelectedPersonHeight).ToString("F2");
                 ValidationMessage = string.Empty;
             }
             else
@@ -474,337 +939,6 @@ namespace BodyTracker.ViewModels
             OnPropertyChanged(nameof(IsNewEntryPageFormValid));
         }
 
-        /// <summary>
-        /// Gets a value indicating whether the body weight input is valid.
-        /// Parses the string representation to a floating-point number and validates its range.
-        /// </summary>
-        bool IsBodyWeightValid => TryParseFloat(BodyWeight, out var v) && IsNumberValid(v);
-
-        /// <summary>
-        /// Gets a value indicating whether the BMI value is valid. 
-        /// Currently returns true by default without performing underlying validation.
-        /// </summary>
-        bool IsBmiValid => true;
-
-        /// <summary>
-        /// Gets a value indicating whether the body fat percentage input is valid.
-        /// Parses the string representation to a floating-point number and validates its range.
-        /// </summary>
-        bool IsBodyFatPercentageValid => TryParseFloat(BodyFatPercentage, out var v) && IsNumberValid(v);
-
-        /// <summary>
-        /// Gets a value indicating whether the top body fat percentage input is valid.
-        /// Parses the string representation to a floating-point number and validates its range.
-        /// </summary>
-        bool IsBodyFatPercentageTopValid => TryParseFloat(BodyFatPercentageTop, out var v) && IsNumberValid(v);
-
-        /// <summary>
-        /// Gets a value indicating whether the bottom body fat percentage input is valid.
-        /// Parses the string representation to a floating-point number and validates its range.
-        /// </summary>
-        bool IsBodyFatPercentageBottomValid => TryParseFloat(BodyFatPercentageBottom, out var v) && IsNumberValid(v);
-
-        /// <summary>
-        /// Gets a value indicating whether the body muscle percentage input is valid.
-        /// Parses the string representation to a floating-point number and validates its range.
-        /// </summary>
-        bool IsBodyMusclePercentageValid => TryParseFloat(BodyMusclePercentage, out var v) && IsNumberValid(v);
-
-        /// <summary>
-        /// Gets a value indicating whether the top body muscle percentage input is valid.
-        /// Parses the string representation to a floating-point number and validates its range.
-        /// </summary>
-        bool IsBodyMusclePercentageTopValid => TryParseFloat(BodyMusclePercentageTop, out var v) && IsNumberValid(v);
-
-        /// <summary>
-        /// Gets a value indicating whether the bottom body muscle percentage input is valid.
-        /// Parses the string representation to a floating-point number and validates its range.
-        /// </summary>
-        bool IsBodyMusclePercentageBottomValid => TryParseFloat(BodyMusclePercentageBottom, out var v) && IsNumberValid(v);
-
-        /// <summary>
-        /// Gets a value indicating whether the body water percentage input is valid.
-        /// Parses the string representation to a floating-point number and validates its range.
-        /// </summary>
-        bool IsBodyWaterPercentageValid => TryParseFloat(BodyWaterPercentage, out var v) && IsNumberValid(v);
-
-        /// <summary>
-        /// Gets a value indicating whether the body bone mass input is valid.
-        /// Parses the string representation to a floating-point number and validates its range.
-        /// </summary>
-        bool IsBodyBoneMassValid => TryParseFloat(BodyBoneMass, out var v) && IsNumberValid(v);
-
-        /// <summary>
-        /// Gets a value indicating whether the body visceral fat input is valid.
-        /// Parses the string representation to a floating-point number and validates its range.
-        /// </summary>
-        bool IsBodyVisceralFatValid => TryParseFloat(BodyVisceralFat, out var v) && IsNumberValid(v);
-
-        /// <summary>
-        /// Gets a value indicating whether the chest circumference input is valid.
-        /// Parses the string representation to a floating-point number and validates its range.
-        /// </summary>
-        bool IsChestCircumferenceValid => TryParseFloat(ChestCircumference, out var v) && IsNumberValid(v);
-
-        /// <summary>
-        /// Gets a value indicating whether the waist circumference input is valid.
-        /// Parses the string representation to a floating-point number and validates its range.
-        /// </summary>
-        bool IsWaistCircumferenceValid => TryParseFloat(WaistCircumference, out var v) && IsNumberValid(v);
-
-        /// <summary>
-        /// Gets a value indicating whether the hips circumference input is valid.
-        /// Parses the string representation to a floating-point number and validates its range.
-        /// </summary>
-        bool IsHipsCircumferenceValid => TryParseFloat(HipsCircumference, out var v) && IsNumberValid(v);
-        /// <summary>
-        /// Gets a value indicating whether the breast skinfold bodyMeasurement is valid and can be parsed as a float.
-        /// </summary>
-        bool IsFatTongBreastCreaseValid => TryParseFloat(FatTongBreastCrease, out var v) && IsNumberValid(v);
-
-        /// <summary>
-        /// Gets a value indicating whether the armpit skinfold bodyMeasurement is valid and can be parsed as a float.
-        /// </summary>
-        bool IsFatTongArmpitCreaseValid => TryParseFloat(FatTongArmpitCrease, out var v) && IsNumberValid(v);
-
-        /// <summary>
-        /// Gets a value indicating whether the abdominal skinfold bodyMeasurement is valid and can be parsed as a float.
-        /// </summary>
-        bool IsFatTongAbdominalCreaseValid => TryParseFloat(FatTongAbdominalCrease, out var v) && IsNumberValid(v);
-
-        /// <summary>
-        /// Gets a value indicating whether the hip skinfold bodyMeasurement is valid and can be parsed as a float.
-        /// </summary>
-        bool IsFatTongHipCreaseValid => TryParseFloat(FatTongHipCrease, out var v) && IsNumberValid(v);
-
-        /// <summary>
-        /// Gets a value indicating whether the thigh skinfold bodyMeasurement is valid and can be parsed as a float.
-        /// </summary>
-        bool IsFatTongThighCreaseValid => TryParseFloat(FatTongThighCrease, out var v) && IsNumberValid(v);
-
-        /// <summary>
-        /// Gets a value indicating whether the back skinfold bodyMeasurement is valid and can be parsed as a float.
-        /// </summary>
-        bool IsFatTongBackCreaseValid => TryParseFloat(FatTongBackCrease, out var v) && IsNumberValid(v);
-
-        /// <summary>
-        /// Gets a value indicating whether the triceps skinfold bodyMeasurement is valid and can be parsed as a float.
-        /// </summary>
-        bool IsFatTongTricepsCreaseValid => TryParseFloat(FatTongTricepsCrease, out var v) && IsNumberValid(v);
-
-        /// <summary>
-        /// Gets a value indicating whether the entire form is valid.
-        /// </summary>
-        public bool IsNewEntryPageFormValid => IsBodyWeightValid && IsBmiValid && IsBodyFatPercentageValid &&
-                                               IsBodyFatPercentageTopValid && IsBodyFatPercentageBottomValid &&
-                                               IsBodyMusclePercentageValid && IsBodyMusclePercentageTopValid &&
-                                               IsBodyMusclePercentageBottomValid && IsBodyWaterPercentageValid &&
-                                               IsBodyBoneMassValid && IsBodyVisceralFatValid &&
-                                               IsChestCircumferenceValid && IsWaistCircumferenceValid &&
-                                               IsHipsCircumferenceValid && IsFatTongBreastCreaseValid &&
-                                               IsFatTongArmpitCreaseValid && IsFatTongAbdominalCreaseValid &&
-                                               IsFatTongHipCreaseValid && IsFatTongThighCreaseValid &&
-                                               IsFatTongBackCreaseValid && IsFatTongTricepsCreaseValid;
-
-        /// <summary>
-        /// Validates whether the specified floating-point value falls within the acceptable range.
-        /// Returns true if the value is not null and is between 0 and 300 (inclusive).
-        /// </summary>
-        /// <param name="value">The nullable floating-point value to validate.</param>
-        /// <returns><c>true</c> if the value is within the range [0, 300]; otherwise, <c>false</c>.</returns>
-        private bool IsNumberValid(float? value) => value.HasValue && value.Value >= 0 && value.Value <= 300;
-
-        /// <summary>
-        /// Gets the command that triggers the asynchronous saving of entered data.
-        /// </summary>
-        public IAsyncRelayCommand CommandSaveNewDatas { get; }
-
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="NewDataEntryPageViewModel"/> class.
-        /// </summary>
-        /// <param name="db">
-        /// An instance of the <see cref="DatabaseService"/>, injected to provide access 
-        /// to the underlying database operations.
-        /// </param>
-        /// <remarks>
-        /// The constructor performs dependency injection for the database service and 
-        /// initializes the <see cref="CommandSaveNewDatas"/> as an <see cref="AsyncRelayCommand"/> 
-        /// to enable asynchronous data persistence from the UI.
-        /// </remarks>
-        public NewDataEntryPageViewModel(DatabaseService db) 
-        { 
-            databaseService = db;
-           
-            CommandSaveNewDatas = new AsyncRelayCommand(SaveAsync); 
-        }
-
-        /// <summary>
-        /// Asynchronously prepares the ViewModel for user interaction by loading 
-        /// historical data from the database.
-        /// </summary>
-        /// <returns>A task that represents the asynchronous initialization operation.</returns>
-        /// <remarks>
-        /// This method retrieves the most recent record for both body metrics and dimensions 
-        /// based on the <see cref="AppState.SelectedPersonId"/>. 
-        /// If no historical data is found, the properties remain at their default values (null).
-        /// </remarks>
-        public async Task InitializeAsync()
-        {
-
-            try
-            {
-                var pid = AppState.SelectedPersonId;
-                var lastM = await databaseService.GetLatestBodyMetricAsync(pid, DateTime.Today);
-                var height = AppState.SelectedPersonHeight;
-                var weight = lastM?.BodyWeight ?? 0f;
-
-                BodyWeight = weight.ToString();
-                Bmi = CalculateBmi(weight, (float)height).ToString("F2");
-                BodyFatPercentage = lastM?.BodyFatPercentage.ToString() ?? string.Empty;
-                BodyFatPercentageTop = lastM?.BodyFatPercentageTop.ToString() ?? string.Empty;
-                BodyFatPercentageBottom = lastM?.BodyFatPercentageBottom.ToString() ?? string.Empty;
-                BodyMusclePercentage = lastM?.BodyMusclePercentage.ToString() ?? string.Empty;
-                BodyMusclePercentageTop = lastM?.BodyMusclePercentageTop.ToString() ?? string.Empty;
-                BodyMusclePercentageBottom = lastM?.BodyMusclePercentageBottom.ToString() ?? string.Empty;
-                BodyWaterPercentage = lastM?.BodyWaterPercentage.ToString() ?? string.Empty;
-                BodyBoneMass = lastM?.BodyBoneMass.ToString() ?? string.Empty;
-                BodyVisceralFat = lastM?.BodyVisceralFat.ToString() ?? string.Empty;
-
-                var lastA = await databaseService.GetLatestBodyDimensionsAsync(pid, DateTime.Today);
-                ChestCircumference = lastA?.ChestCircumference.ToString() ?? string.Empty;
-                WaistCircumference = lastA?.WaistCircumference.ToString() ?? string.Empty;
-                HipsCircumference = lastA?.HipsCircumference.ToString() ?? string.Empty;
-                FatTongBreastCrease = lastA?.FatTongBreastCrease.ToString() ?? string.Empty;
-                FatTongArmpitCrease = lastA?.FatTongArmpitCrease.ToString() ?? string.Empty;
-                FatTongAbdominalCrease = lastA?.FatTongAbdominalCrease.ToString() ?? string.Empty;
-                FatTongHipCrease = lastA?.FatTongHipCrease.ToString() ?? string.Empty;
-                FatTongThighCrease = lastA?.FatTongThighCrease.ToString() ?? string.Empty;
-                FatTongBackCrease = lastA?.FatTongBackCrease.ToString() ?? string.Empty;
-                FatTongTricepsCrease = lastA?.FatTongTricepsCrease.ToString() ?? string.Empty;
-            }
-          
-            catch(Exception ex)
-            {
-                GeneralInfoMessage = "An error occurred while initializing the data entry form: " + ex.Message;
-            }
-        }
-
-        /// <summary>
-        /// Asynchronously persists the current bodyMeasurement data to the database.
-        /// This method synchronizes both physiological metrics and physical dimensions.
-        /// </summary>
-        /// <returns>A task representing the asynchronous save operation.</returns>
-        /// <remarks>
-        /// The method extracts the currently selected person's ID from <see cref="AppState"/> 
-        /// and performs two separate insert operations. It maps the ViewModel properties 
-        /// to their respective data models (<see cref="BodyMetricModel"/> and <see cref="BodyDimensionsModel"/>).
-        /// Note: This operation currently lacks a database transaction; an error in the second 
-        /// insert will not roll back the first one.
-        /// </remarks>
-        public async Task<bool> SaveAsync()
-        {
-            try
-            {
-                
-                var pid = AppState.SelectedPersonId;
-
-                if (TryParseFloat(BodyWeight, out var weight) &&
-                   TryParseFloat(Bmi, out var bmi) &&
-                   TryParseFloat(BodyFatPercentage, out var fatPercentage) &&
-                   TryParseFloat(BodyFatPercentageTop, out var fatPercentageTop) &&
-                   TryParseFloat(BodyFatPercentageBottom, out var fatPercentageBottom) &&
-                   TryParseFloat(BodyMusclePercentage, out var musclePercentage) &&
-                   TryParseFloat(BodyMusclePercentageTop, out var musclePercentageTop) &&
-                   TryParseFloat(BodyMusclePercentageBottom, out var musclePercentageBottom) &&
-                   TryParseFloat(BodyWaterPercentage, out var waterPercentage) &&
-                   TryParseFloat(BodyBoneMass, out var boneMass) &&
-                   int.TryParse(BodyVisceralFat, out var visceralFat) &&
-                   TryParseFloat(ChestCircumference, out var chestCircumference) &&
-                   TryParseFloat(WaistCircumference, out var waistCircumference) &&
-                   TryParseFloat(HipsCircumference, out var hipsCircumference) &&
-                   TryParseFloat(FatTongBreastCrease, out var fatTongBreastCrease) &&
-                   TryParseFloat(FatTongTricepsCrease, out var fatTongTricepsCrease) &&
-                   TryParseFloat(FatTongArmpitCrease, out var fatTongArmpitCrease) &&
-                   TryParseFloat(FatTongAbdominalCrease, out var fatTongAbdominalCrease) &&
-                   TryParseFloat(FatTongHipCrease, out var fatTongHipCrease) &&
-                   TryParseFloat(FatTongThighCrease, out var fatTongThighCrease) &&
-                   TryParseFloat(FatTongBackCrease, out var fatTongBackCrease))
-                {
-                    var bodyMetric = new BodyMetricModel
-                    {
-                        PersonID = pid,
-                        MeasurementDate = MeasurementDate,
-                        BodyWeight = weight,
-                        BMI = bmi,
-                        BodyFatPercentage = fatPercentage,
-                        BodyFatPercentageTop = fatPercentageTop,
-                        BodyFatPercentageBottom = fatPercentageBottom,
-                        BodyMusclePercentage = musclePercentage,
-                        BodyMusclePercentageTop = musclePercentageTop,
-                        BodyMusclePercentageBottom = musclePercentageBottom,
-                        BodyWaterPercentage = waterPercentage,
-                        BodyBoneMass = boneMass,
-                        BodyVisceralFat = visceralFat
-                    };
-
-                    var bodyDimension = new BodyDimensionsModel
-                    {
-                        PersonID = pid,
-                        MeasurementDate = MeasurementDate,
-                        ChestCircumference = chestCircumference,
-                        WaistCircumference = waistCircumference,
-                        HipsCircumference = hipsCircumference,
-                        FatTongBreastCrease = fatTongBreastCrease,
-                        FatTongTricepsCrease = fatTongTricepsCrease,
-                        FatTongArmpitCrease = fatTongArmpitCrease,
-                        FatTongAbdominalCrease = fatTongAbdominalCrease,
-                        FatTongHipCrease = fatTongHipCrease,
-                        FatTongThighCrease = fatTongThighCrease,
-                        FatTongBackCrease = fatTongBackCrease
-                    };
-                    bool measurementAlreadyExists = await databaseService.GetMeasurementExistsSqlAsync(bodyMetric.MeasurementDate, bodyMetric.PersonID);
-
-                    if (measurementAlreadyExists)
-                    {
-                        GeneralInfoMessage= $"A bodyMeasurement for the date {bodyMetric.MeasurementDate.ToString("d")} already exists. Please choose a different date.";
-                    }
-
-                    else
-                    {
-                        await databaseService.InsertBodyMetricSqlAsync(bodyMetric);
-
-                        await databaseService.InsertBodyDimensionSqlAsync(bodyDimension);
-
-                        WeakReferenceMessenger.Default.Send(new NavigationMessage(NavigationMessage.ShowDashboard));
-
-                    }
-
-                    return measurementAlreadyExists;
-                }
-
-
-            }
-            catch (Exception ex)
-            {
-                GeneralInfoMessage = "An error occurred while saving the data: " + ex.Message;
-            }
-
-            return false;
-        }
-
-
-        /// <summary>
-        /// Calculates the Body Mass Index (BMI) based on the specified weight and height.
-        /// </summary>
-        /// <param name="weight">The weight of the individual, in kilograms.</param>
-        /// <param name="height">The height of the individual, in meters. Must be greater than zero.</param>
-        /// <returns>The calculated BMI value as a floating-point number.</returns>
-        public float CalculateBmi(float weight, float height)
-        {
-            if (height <= 0) MessageBox.Show("Height must be greater than zero.", nameof(height),MessageBoxButton.OK, MessageBoxImage.Error);
-            return weight / (height * height);
-        }
 
         /// <summary>
         /// Determines whether all elements in the specified array can be parsed as valid double-precision
@@ -837,6 +971,9 @@ namespace BodyTracker.ViewModels
 
             return float.TryParse(text, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.CurrentCulture, out value);
         }
+
+        #endregion
+
 
         #region Disposal Pattern
 

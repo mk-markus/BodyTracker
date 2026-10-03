@@ -1,4 +1,5 @@
 ﻿using BodyTracker.Models;
+using BodyTracker.Resources.Languages;
 using BodyTracker.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -59,12 +60,6 @@ namespace BodyTracker.ViewModels
         private string personHeight = string.Empty;
 
         /// <summary>
-        /// Backing field and generated property for the current validation error message displayed in the user interface, utilizing the CommunityToolkit.Mvvm ObservableProperty attribute.
-        /// </summary>
-        [ObservableProperty]
-        private string validationMessage = string.Empty;
-
-        /// <summary>
         /// Gets a value indicating whether all required input fields have been filled with non-empty and valid data.
         /// </summary>
         public bool AreFieldsFilled => !string.IsNullOrWhiteSpace(FirstName) &&
@@ -85,9 +80,9 @@ namespace BodyTracker.ViewModels
         partial void OnFirstNameChanged(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
-                ValidationMessage = "First name cannot be empty.";
+                GeneralInfoMessage = UiStrings.Validation_FirstName_Required;
             else
-                ValidationMessage = string.Empty;
+                GeneralInfoMessage = string.Empty;
 
             UpdateValidation();
         }
@@ -99,9 +94,9 @@ namespace BodyTracker.ViewModels
         partial void OnLastNameChanged(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
-                ValidationMessage = "Last name cannot be empty.";
+                GeneralInfoMessage = UiStrings.Validation_LastName_Required;
             else
-                ValidationMessage = string.Empty;
+                GeneralInfoMessage = string.Empty;
 
             UpdateValidation();
         }
@@ -113,9 +108,9 @@ namespace BodyTracker.ViewModels
         partial void OnBirthDateChanged(DateTime value)
         {
             if (value == default)
-                ValidationMessage = "Enter birth date.";
+                GeneralInfoMessage = UiStrings.Validation_BirthDate_Required;
             else
-                ValidationMessage = string.Empty;
+                GeneralInfoMessage = string.Empty;
 
             UpdateValidation();
         }
@@ -127,9 +122,9 @@ namespace BodyTracker.ViewModels
         partial void OnPersonHeightChanged(string value)
         {
             if (!double.TryParse(value, out double height) || height <= 0)
-                ValidationMessage = "Height must be a positive number.";
+                GeneralInfoMessage = UiStrings.Validation_Height_Positive;
             else
-                ValidationMessage = string.Empty;
+                GeneralInfoMessage = string.Empty;
 
             UpdateValidation();
         }
@@ -138,6 +133,24 @@ namespace BodyTracker.ViewModels
         /// Gets the command responsible for asynchronously creating and saving a new user record.
         /// </summary>
         public IAsyncRelayCommand NewUserCommand { get; }
+
+        /// <summary>
+        /// Backing field for the general error message string.
+        /// </summary>
+        private string generalInfoMessage = "";
+
+        /// <summary>
+        /// Gets or sets the general error message, sending a database error message via the messenger when the value changes.
+        /// </summary>
+        public string GeneralInfoMessage
+        {
+            get => generalInfoMessage;
+            set
+            {
+                generalInfoMessage = value;
+                WeakReferenceMessenger.Default.Send(new DatabaseErrorMessage(generalInfoMessage));
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the LauncherNewDatabasePersonPageViewModel class, loading database configuration settings, instantiating the database service and new user command, and updating validation state.
@@ -166,18 +179,18 @@ namespace BodyTracker.ViewModels
         }
 
         /// <summary>
-        /// Synchronizes the <see cref="ValidationMessage"/> state based on field completion status and forces property change notifications for dependent validation flags to ensure the user interface stays updated.
+        /// Synchronizes the <see cref="GeneralInfoMessage"/> state based on field completion status and forces property change notifications for dependent validation flags to ensure the user interface stays updated.
         /// </summary>
         private void UpdateValidation()
         {
             if (!AreFieldsFilled)
             {
-                if (string.IsNullOrEmpty(ValidationMessage))
-                    ValidationMessage = "All fields must be filled in.";
+                if (string.IsNullOrEmpty(GeneralInfoMessage))
+                    GeneralInfoMessage = UiStrings.Validation_AllFields_Required;
             }
             else
             {
-                ValidationMessage = string.Empty;
+                GeneralInfoMessage = string.Empty;
             }
             OnPropertyChanged(nameof(AreFieldsFilled));
             OnPropertyChanged(nameof(IsNewPersonFormValid));

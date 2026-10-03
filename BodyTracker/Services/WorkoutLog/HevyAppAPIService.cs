@@ -144,6 +144,11 @@ namespace BodyTracker.Services.WorkoutLog
         /// </remarks>
         public void Save(HevyAppAPIConfigurationModel cfg)
         {
+            if (!string.IsNullOrEmpty(cfg.ApiKey))
+            {
+                cfg.ApiKey = CryptoHelper.Protect(cfg.ApiKey);
+            }
+
             var json = JsonSerializer.Serialize(cfg, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(AppSettingsPath, json);
         }

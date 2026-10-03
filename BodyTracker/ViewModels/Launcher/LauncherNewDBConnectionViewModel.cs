@@ -1,4 +1,5 @@
-﻿using BodyTracker.Services;
+﻿using BodyTracker.Resources.Languages;
+using BodyTracker.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -55,12 +56,6 @@ namespace BodyTracker.ViewModels
         private string sqlDatabaseName = string.Empty;
 
         /// <summary>
-        /// Backing field and generated property for the validation message displayed to the user, utilizing the CommunityToolkit.Mvvm ObservableProperty attribute for change notification.
-        /// </summary>
-        [ObservableProperty]
-        private string validationMessage = string.Empty;
-
-        /// <summary>
         /// Gets a value indicating whether the SQL Server IP address entered by the user is valid.
         /// </summary>
         public bool IsIpValid => IPAddress.TryParse(SqlIpAddress, out _);
@@ -96,8 +91,8 @@ namespace BodyTracker.ViewModels
         /// <param name="value">The new IP address value.</param>
         partial void OnSqlIpAddressChanged(string value)
         {
-            if (!IsIpValid) ValidationMessage = "Invalid IP address.";
-            else ValidationMessage = string.Empty;
+            if (!IsIpValid) GeneralInfoMessage = UiStrings.Validation_Database_IpAddressInvalid;
+            else GeneralInfoMessage = string.Empty;
             UpdateValidation();
         }
 
@@ -107,8 +102,8 @@ namespace BodyTracker.ViewModels
         /// <param name="value">The new port value.</param>
         partial void OnSqlPortChanged(string value)
         {
-            if (!IsPortValid) ValidationMessage = "Invalid port number (1–65535).";
-            else ValidationMessage = string.Empty;
+            if (!IsPortValid) GeneralInfoMessage = UiStrings.Validation_Database_PortInvalid;
+            else GeneralInfoMessage = string.Empty;
             UpdateValidation();
         }
 
@@ -118,8 +113,8 @@ namespace BodyTracker.ViewModels
         /// <param name="value">The new username value.</param>
         partial void OnSqlUsernameChanged(string value)
         {
-            if (string.IsNullOrWhiteSpace(value)) ValidationMessage = "Username cannot be empty.";
-            else ValidationMessage = string.Empty;
+            if (string.IsNullOrWhiteSpace(value)) GeneralInfoMessage = UiStrings.Validation_Database_UsernameRequired;
+            else GeneralInfoMessage = string.Empty;
             UpdateValidation();
         }
 
@@ -129,8 +124,8 @@ namespace BodyTracker.ViewModels
         /// <param name="value">The new password value.</param>
         partial void OnSqlPasswordChanged(string value)
         {
-            if (string.IsNullOrWhiteSpace(value)) ValidationMessage = "Password cannot be empty.";
-            else ValidationMessage = string.Empty;
+            if (string.IsNullOrWhiteSpace(value)) GeneralInfoMessage = UiStrings.Validation_Database_PasswordRequired;
+            else GeneralInfoMessage = string.Empty;
             UpdateValidation();
         }
 
@@ -140,8 +135,8 @@ namespace BodyTracker.ViewModels
         /// <param name="value">The new database name value.</param>
         partial void OnSqlDatabaseNameChanged(string value)
         {
-            if (string.IsNullOrWhiteSpace(value)) ValidationMessage = "Database name cannot be empty.";
-            else ValidationMessage = string.Empty;
+            if (string.IsNullOrWhiteSpace(value)) GeneralInfoMessage = UiStrings.Validation_DatabaseName_Required;
+            else GeneralInfoMessage = string.Empty;
             UpdateValidation();
         }
 
@@ -149,6 +144,24 @@ namespace BodyTracker.ViewModels
         /// Service responsible for managing application configuration settings, including loading and saving database connection strings from the configuration file.
         /// </summary>
         private DatabaseConfigrationService configurationService = new DatabaseConfigrationService();
+
+        /// <summary>
+        /// Backing field for the general error message string.
+        /// </summary>
+        private string generalInfoMessage = "";
+
+        /// <summary>
+        /// Gets or sets the general error message, sending a database error message via the messenger when the value changes.
+        /// </summary>
+        public string GeneralInfoMessage
+        {
+            get => generalInfoMessage;
+            set
+            {
+                generalInfoMessage = value;
+                WeakReferenceMessenger.Default.Send(new DatabaseErrorMessage(generalInfoMessage));
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the LauncherNewDatabaseConnectionPageViewModel class, instantiating the login command, loading persisted configuration credentials, and updating form validation state.
@@ -176,12 +189,12 @@ namespace BodyTracker.ViewModels
             // Behalte bereits gesetzte feldspezifische Meldungen, ansonsten generische Meldung setzen
             if (!IsFormValid)
             {
-                if (string.IsNullOrEmpty(ValidationMessage))
-                    ValidationMessage = "All fields must be filled in or corrected.";
+                if (string.IsNullOrEmpty(GeneralInfoMessage))
+                    GeneralInfoMessage = UiStrings.Validation_AllFields_Required;
             }
             else
             {
-                ValidationMessage = string.Empty;
+                GeneralInfoMessage = string.Empty;
             }
 
             // Benachrichtige alle abgeleiteten Properties, damit die UI (IsEnabled) aktualisiert wird
@@ -199,11 +212,11 @@ namespace BodyTracker.ViewModels
         {
             if (!IsFormValid)
             {
-                ValidationMessage = "The form contains errors.";
+                GeneralInfoMessage = UiStrings.Validation_Form_HasErrors;
                 return;
             }
 
-            ValidationMessage = string.Empty;
+            GeneralInfoMessage = string.Empty;
 
             configurationService.SaveCredentials(SqlUsername, SqlPassword, SqlIpAddress, Convert.ToInt16(SqlPort), SqlDatabaseName);
 

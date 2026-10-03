@@ -13,95 +13,176 @@
       d:DesignWidth="800"
       Title="{loc:Translate LauncherSettingsViewTitle}">
 
-    <Grid>
+    <ScrollViewer >
         <Border Style="{DynamicResource BorderDashboardCardStyle}">
 
-            <Grid>
+            <Grid ScrollViewer.VerticalScrollBarVisibility="Auto"
+                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                  Height="450">
 
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="40"/>
-                    <RowDefinition Height="40"/>
-                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Text="{loc:Translate TxtApiKey}"
-                           Style="{DynamicResource TextBlockDescribing}"
-                           Grid.Column="0"
-                           Grid.Row="0"/>
+                <Border Grid.Column="0"
+                        Grid.Row="0"
+                        Style="{DynamicResource BorderDashboardCardStyle}"
+                        Margin="0,0,0,10">
 
+                    <StackPanel Grid.Column="1"
+                                Grid.Row="0"
+                                Orientation="Horizontal">
 
-                <StackPanel Grid.Column="1"
-                            Grid.Row="0"
-                            Orientation="Horizontal">
+                        <TextBlock Text="{loc:Translate TxtApiKey}"
+                                   Style="{DynamicResource TextBlockDescribing}"
+                                   Grid.Column="0"
+                                   Grid.Row="0"
+                                   Width="130"/>
 
-                    <TextBox Text="{Binding ApiKey, UpdateSourceTrigger=PropertyChanged}" 
-                             Grid.Column="1" Grid.Row="0"
-                             Width="250"
-                             TextAlignment="Center"
-                             Style="{StaticResource ValidatableTextBoxStyle}"
-                             localError:ValidationProperties.HasError="{Binding HasApiKeyError}"
-                             localError:ValidationProperties.ErrorMessage="{Binding ApiKeyError}"/>
+                        <TextBox Text="{Binding ApiKey, UpdateSourceTrigger=PropertyChanged}" 
+                                 Grid.Column="1" Grid.Row="0" Width="250"
+                                 TextAlignment="Center"
+                                 Style="{StaticResource ValidatableTextBoxStyle}"
+                                 localError:ValidationProperties.HasError="{Binding HasApiKeyError}"
+                                 localError:ValidationProperties.ErrorMessage="{Binding ApiKeyError}"/>
 
-                    <Button Content="💾"
-                            ToolTip="{loc:Translate BtnSaveApiKeyToolTip}"
-                            FontSize="15"
-                            Height="25"
-                            Width="25"
-                            Command="{Binding CommandSaveApiKey}"
-                            Style="{DynamicResource IconStandardButton}"
-                            Margin="10,0,0,0"/>
-                </StackPanel>
+                        <Button Content="💾"
+                                ToolTip="{loc:Translate BtnSaveApiKeyToolTip}"
+                                FontSize="15" Height="25" Width="25"
+                                Command="{Binding CommandSaveApiKey}"
+                                Style="{DynamicResource IconStandardButton}"
+                                Margin="10,0,0,0"/>
+                    </StackPanel>
 
+                </Border>
 
-                <TextBlock Text="{loc:Translate TxtDefaultImportFolder}"
-                           Style="{DynamicResource TextBlockDescribing}"
-                           Grid.Column="0"
-                           Grid.Row="1"/>
+                <Border Grid.Column="0" Grid.Row="1" Margin="0,0,0,10"
+                        Style="{DynamicResource BorderDashboardCardStyle}">
 
+                    <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
 
-                <StackPanel Grid.Column="1"
-                            Grid.Row="1"
-                            Orientation="Horizontal">
+                        <TextBlock Text="{loc:Translate TxtDefaultImportFolder}"
+                                   Style="{DynamicResource TextBlockDescribing}"
+                                   Grid.Column="0" Grid.Row="1"
+                                    Width="130"/>
 
-                    <TextBox Text="{Binding DefaultImportShortPath, Mode=TwoWay, 
-                             UpdateSourceTrigger=PropertyChanged}"
-                             Style="{DynamicResource StandardTextBox}"
-                             Width="250"
-                             TextAlignment="Center"/>
+                        <TextBox Text="{Binding DefaultImportShortPath, Mode=TwoWay,
+                            UpdateSourceTrigger=PropertyChanged}"
+                            Style="{DynamicResource StandardTextBox}"
+                            Width="250"
+                            TextAlignment="Center"/>
 
-                    <Button Content="..."
+                        <Button Content="..."
                             ToolTip="{loc:Translate BtnOpenDefaultFolderToolTip}"
                             FontSize="15"  Height="25" Width="25"
                             Command="{Binding CommandSelectDefaultImportFolder}"
                             Style="{DynamicResource IconStandardButton}"
                             Margin="10,0,0,0"/>
 
-                </StackPanel>
 
-                <TextBlock Text="{loc:Translate TxtLanguage}"
-                           Style="{DynamicResource TextBlockDescribing}"
-                           Grid.Column="0" Grid.Row="2"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="0" Grid.Row="2" Style="{DynamicResource BorderDashboardCardStyle}"
+                        Margin="0,0,0,10">
+
+                    <StackPanel Grid.Column="1"
+                                Grid.Row="2"
+                                Orientation="Vertical">
+                        
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{loc:Translate TxtScaleUser}"
+                                    Style="{DynamicResource TextBlockDescribing}"
+                                    Grid.Column="0"
+                                    Grid.Row="2"
+                                    Width="130"/>
+
+                            <TextBox Text="{Binding ScaleUser, UpdateSourceTrigger=PropertyChanged}" 
+                                    Grid.Column="1" Grid.Row="0"
+                                    Width="250"
+                                    TextAlignment="Center"
+                                    Style="{StaticResource ValidatableTextBoxStyle}"/>
+                        </StackPanel>
+                        
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{loc:Translate TxtScaleUserPin}"
+                                       Style="{DynamicResource TextBlockDescribing}"
+                                       Grid.Column="0"
+                                       Grid.Row="3"
+                                        Width="130"/>
+
+
+                            <StackPanel Grid.Column="1"
+                                        Grid.Row="3"
+                                        Orientation="Horizontal">
+
+                                <PasswordBox pswd:PasswordBoxHelper.BindPassword="True"
+                                            pswd:PasswordBoxHelper.BoundPassword="{Binding ScaleUserPin, Mode=TwoWay, 
+                                            UpdateSourceTrigger=PropertyChanged}"
+                                            Style="{StaticResource StandardPasswordBox}"
+                                            PasswordChar="*"
+                                            Width="250"
+                                            Grid.Row="1"
+                                            Grid.Column="1"
+                                            HorizontalContentAlignment="Center"/>
+
+                                <!--<Button Content="💾"
+                                    ToolTip="{loc:Translate BtnSaveScaleUserPinToolTip}"
+                                    FontSize="15"
+                                    Height="25"
+                                    Width="25"
+                                    Command="{Binding CommandSaveScaleUserPin}"
+                                    Style="{DynamicResource IconStandardButton}"
+                                    Margin="10,0,0,0"/>-->
+                            </StackPanel>
+                        </StackPanel>
+                        
+                        <Button Content="{loc:Translate BtnSave}"
+                                ToolTip="{loc:Translate BtnSaveScaleUserToolTip}"
+                                FontSize="15"
+                                Width="100"
+                                Command="{Binding CommandSaveScaleUser}"
+                                Style="{DynamicResource SaveButton}"
+                                Margin="0,10,0,0"/>
+                    </StackPanel>
+                </Border>
+
+
+
+                <Border Grid.Column="0" Grid.Row="3" Style="{DynamicResource BorderDashboardCardStyle}"
+                        Margin="0">
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{loc:Translate TxtLanguage}"
+                                    Style="{DynamicResource TextBlockDescribing}"
+                                    Grid.Column="0" Grid.Row="4"  Width="130"/>
+
+                        <ComboBox ItemsSource="{Binding LanguagesList}"
+                                   SelectedItem="{Binding SelectedLanguagesItem, Mode=TwoWay}"
+                                   Style="{DynamicResource ModernFlatComboBox}"
+                                   Grid.Column="1"
+                                   Grid.Row="4"
+                                   Width="Auto"
+                                  MinWidth="100"
+                                   Height="Auto"
+                                   Margin="5,0,0,0"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Left"/>
+                    </StackPanel>
+                   
+                </Border>
+
                 
-                <ComboBox ItemsSource="{Binding LanguagesList}"
-                          SelectedItem="{Binding SelectedLanguagesItem, Mode=TwoWay}"
-                          Style="{DynamicResource ModernFlatComboBox}"
-                          Grid.Column="1"
-                          Grid.Row="2"
-                          Width="Auto"
-                          Height="Auto"
-                          Margin="5,0,0,0"
-                          
-                          VerticalAlignment="Center"
-                          HorizontalAlignment="Left"/>
 
 
                 <TextBlock Text="{Binding ValidationMessage}" 
@@ -115,5 +196,5 @@
             </Grid>
 
         </Border>
-    </Grid>
+    </ScrollViewer>
 </Page>

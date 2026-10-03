@@ -97,15 +97,6 @@
 
                 </StackPanel>
 
-                <TextBlock Text="{Binding ValidationMessage}"
-                   Foreground="Red" 
-                   Margin="8" 
-                   TextWrapping="Wrap"
-                   FontSize="20"
-                   Grid.Column="0"
-                   Grid.Row="5"
-                   Grid.ColumnSpan="2"/>
-
             </Grid>
 
         </Border>

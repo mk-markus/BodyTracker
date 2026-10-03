@@ -79,6 +79,24 @@ namespace BodyTracker.Resources.Languages {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Cancel ähnelt.
+        /// </summary>
+        public static string BtnCancel {
+            get {
+                return ResourceManager.GetString("BtnCancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Confirm ähnelt.
+        /// </summary>
+        public static string BtnConfirm {
+            get {
+                return ResourceManager.GetString("BtnConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Connect ähnelt.
         /// </summary>
         public static string BtnConnect {
@@ -151,6 +169,33 @@ namespace BodyTracker.Resources.Languages {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Saves the entered body measurements. ähnelt.
+        /// </summary>
+        public static string BtnSaveBodyMeasurementsToolTip {
+            get {
+                return ResourceManager.GetString("BtnSaveBodyMeasurementsToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Save the scale&apos;s user and PIN. ähnelt.
+        /// </summary>
+        public static string BtnSaveScaleUserToolTip {
+            get {
+                return ResourceManager.GetString("BtnSaveScaleUserToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Save the scale&apos;s user PIN. ähnelt.
+        /// </summary>
+        public static string BtnSaveUserPinToolTip {
+            get {
+                return ResourceManager.GetString("BtnSaveUserPinToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die 📈 Show Measurement ▼ ähnelt.
         /// </summary>
         public static string BtnShowMeasurement {
@@ -174,6 +219,69 @@ namespace BodyTracker.Resources.Languages {
         public static string BtnShowTrends {
             get {
                 return ResourceManager.GetString("BtnShowTrends", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die ⚖️ Weight &amp; Comp. ähnelt.
+        /// </summary>
+        public static string BtnStartBodyWeightAndCompositionScan {
+            get {
+                return ResourceManager.GetString("BtnStartBodyWeightAndCompositionScan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die ⚡ Full Scan ähnelt.
+        /// </summary>
+        public static string BtnStartFullBodyAutomaticScan {
+            get {
+                return ResourceManager.GetString("BtnStartFullBodyAutomaticScan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die 🦾 Segmental Scan ähnelt.
+        /// </summary>
+        public static string BtnStartSegmentalBodyCompositionScan {
+            get {
+                return ResourceManager.GetString("BtnStartSegmentalBodyCompositionScan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Starts the scale&apos;s automatic scan. ähnelt.
+        /// </summary>
+        public static string BtnToolTipAutomaticScan {
+            get {
+                return ResourceManager.GetString("BtnToolTipAutomaticScan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Starts a comprehensive measurement to determine current body weight and key body composition metrics (such as fat and muscle mass) via the scale. ähnelt.
+        /// </summary>
+        public static string BtnToolTipStartBodyWeightAndCompositionScan {
+            get {
+                return ResourceManager.GetString("BtnToolTipStartBodyWeightAndCompositionScan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Executes a fully automatic scan of the entire body to capture all configured measurement parameters in a seamless workflow. ähnelt.
+        /// </summary>
+        public static string BtnToolTipStartFullBodyAutomaticScan {
+            get {
+                return ResourceManager.GetString("BtnToolTipStartFullBodyAutomaticScan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Measures body composition broken down by individual body segments (torso, arms, and legs) to analyze targeted imbalances and distributions. ähnelt.
+        /// </summary>
+        public static string BtnToolTipStartSegmentalBodyCompositionScan {
+            get {
+                return ResourceManager.GetString("BtnToolTipStartSegmentalBodyCompositionScan", resourceCulture);
             }
         }
         
@@ -2032,6 +2140,123 @@ namespace BodyTracker.Resources.Languages {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Are you sure you want to delete the selected data? ähnelt.
+        /// </summary>
+        public static string Dialog_DeleteData_Message {
+            get {
+                return ResourceManager.GetString("Dialog_DeleteData_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Confirm Deletion ähnelt.
+        /// </summary>
+        public static string Dialog_DeleteData_Title {
+            get {
+                return ResourceManager.GetString("Dialog_DeleteData_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Are you sure you want to delete the selected measurement? ähnelt.
+        /// </summary>
+        public static string Dialog_DeleteMeasurement_Message {
+            get {
+                return ResourceManager.GetString("Dialog_DeleteMeasurement_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Confirm Deletion ähnelt.
+        /// </summary>
+        public static string Dialog_DeleteMeasurement_Title {
+            get {
+                return ResourceManager.GetString("Dialog_DeleteMeasurement_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Height must be greater than zero. ähnelt.
+        /// </summary>
+        public static string Dialog_Height_GreaterThanZero {
+            get {
+                return ResourceManager.GetString("Dialog_Height_GreaterThanZero", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die The values are not valid. Check if some value boxes has an red frame and correct the value ähnelt.
+        /// </summary>
+        public static string Dialog_InvalidValues_Message {
+            get {
+                return ResourceManager.GetString("Dialog_InvalidValues_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die The application must be restarted for the changes to take effect. Would you like to restart now? ähnelt.
+        /// </summary>
+        public static string Dialog_RestartPromptMessage {
+            get {
+                return ResourceManager.GetString("Dialog_RestartPromptMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Warning ähnelt.
+        /// </summary>
+        public static string Dialog_RestartPromptTitle {
+            get {
+                return ResourceManager.GetString("Dialog_RestartPromptTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Changes will take effect only after restarting the application. ähnelt.
+        /// </summary>
+        public static string Dialog_RestartRequiredMessage {
+            get {
+                return ResourceManager.GetString("Dialog_RestartRequiredMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Warning ähnelt.
+        /// </summary>
+        public static string Dialog_Warning_Title {
+            get {
+                return ResourceManager.GetString("Dialog_Warning_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die NO API KEY SAVED ähnelt.
+        /// </summary>
+        public static string Error_ApiKeyNotSaved {
+            get {
+                return ResourceManager.GetString("Error_ApiKeyNotSaved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die NO SCALE USER SAVED ähnelt.
+        /// </summary>
+        public static string Error_ScaleUserNotSaved {
+            get {
+                return ResourceManager.GetString("Error_ScaleUserNotSaved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die NO SCALE USER PIN SAVED ähnelt.
+        /// </summary>
+        public static string Error_ScaleUserPinNotSaved {
+            get {
+                return ResourceManager.GetString("Error_ScaleUserPinNotSaved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Birthdate ähnelt.
         /// </summary>
         public static string GridHeaderBirthdate {
@@ -2734,6 +2959,24 @@ namespace BodyTracker.Resources.Languages {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Scale Initial Measurement ähnelt.
+        /// </summary>
+        public static string NavScaleInitial {
+            get {
+                return ResourceManager.GetString("NavScaleInitial", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Scale Segment Analysis ähnelt.
+        /// </summary>
+        public static string NavScaleSegment {
+            get {
+                return ResourceManager.GetString("NavScaleSegment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die SpO₂ ähnelt.
         /// </summary>
         public static string NavSpO2 {
@@ -2815,29 +3058,29 @@ namespace BodyTracker.Resources.Languages {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die The application must be restarted for the changes to take effect. Would you like to restart now? ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Connected ähnelt.
         /// </summary>
-        public static string RestartPromptMessage {
+        public static string Status_Database_Connected {
             get {
-                return ResourceManager.GetString("RestartPromptMessage", resourceCulture);
+                return ResourceManager.GetString("Status_Database_Connected", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Warning ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Connecting ähnelt.
         /// </summary>
-        public static string RestartPromptTitle {
+        public static string Status_Database_Connecting {
             get {
-                return ResourceManager.GetString("RestartPromptTitle", resourceCulture);
+                return ResourceManager.GetString("Status_Database_Connecting", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Changes will take effect only after restarting the application. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Not Connected ähnelt.
         /// </summary>
-        public static string RestartRequiredMessage {
+        public static string Status_Database_NotConnected {
             get {
-                return ResourceManager.GetString("RestartRequiredMessage", resourceCulture);
+                return ResourceManager.GetString("Status_Database_NotConnected", resourceCulture);
             }
         }
         
@@ -3085,7 +3328,7 @@ namespace BodyTracker.Resources.Languages {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die API Key: ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Hevy APP API Key: ähnelt.
         /// </summary>
         public static string TxtApiKey {
             get {
@@ -3328,6 +3571,276 @@ namespace BodyTracker.Resources.Languages {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die SCALE CONNECTION ähnelt.
+        /// </summary>
+        public static string TxtScaleConnectionBadge {
+            get {
+                return ResourceManager.GetString("TxtScaleConnectionBadge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Please ensure the following requirements are met for a stable connection: ähnelt.
+        /// </summary>
+        public static string TxtScaleConnectionIntro {
+            get {
+                return ResourceManager.GetString("TxtScaleConnectionIntro", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Establishing connection to scale... ähnelt.
+        /// </summary>
+        public static string TxtScaleConnectionStatus {
+            get {
+                return ResourceManager.GetString("TxtScaleConnectionStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Establishing Bluetooth Connection to Scale ähnelt.
+        /// </summary>
+        public static string TxtScaleConnectionTitle {
+            get {
+                return ResourceManager.GetString("TxtScaleConnectionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Turn on scale and handheld device ähnelt.
+        /// </summary>
+        public static string TxtScaleConnText1 {
+            get {
+                return ResourceManager.GetString("TxtScaleConnText1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Enable Bluetooth on your device ähnelt.
+        /// </summary>
+        public static string TxtScaleConnText2 {
+            get {
+                return ResourceManager.GetString("TxtScaleConnText2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Wait for the successful pairing signal ähnelt.
+        /// </summary>
+        public static string TxtScaleConnText3 {
+            get {
+                return ResourceManager.GetString("TxtScaleConnText3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Window closes automatically in ähnelt.
+        /// </summary>
+        public static string TxtScaleCountdown {
+            get {
+                return ResourceManager.GetString("TxtScaleCountdown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die SCALE RESULTS ähnelt.
+        /// </summary>
+        public static string TxtScaleFinishedBadge {
+            get {
+                return ResourceManager.GetString("TxtScaleFinishedBadge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Your personal results are now available on your handheld and in the app. ähnelt.
+        /// </summary>
+        public static string TxtScaleFinishedDesc {
+            get {
+                return ResourceManager.GetString("TxtScaleFinishedDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Preparing final scale analysis... ähnelt.
+        /// </summary>
+        public static string TxtScaleFinishedStatus {
+            get {
+                return ResourceManager.GetString("TxtScaleFinishedStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Measurement Completed ähnelt.
+        /// </summary>
+        public static string TxtScaleFinishedTitle {
+            get {
+                return ResourceManager.GetString("TxtScaleFinishedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die SCALE INITIAL MEASUREMENT ähnelt.
+        /// </summary>
+        public static string TxtScaleInitialBadge {
+            get {
+                return ResourceManager.GetString("TxtScaleInitialBadge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Follow these simple steps for an accurate initial measurement of your body metrics: ähnelt.
+        /// </summary>
+        public static string TxtScaleInitialIntro {
+            get {
+                return ResourceManager.GetString("TxtScaleInitialIntro", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Analyzing body composition on scale... ähnelt.
+        /// </summary>
+        public static string TxtScaleInitialStatus {
+            get {
+                return ResourceManager.GetString("TxtScaleInitialStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Body Composition Measurement ähnelt.
+        /// </summary>
+        public static string TxtScaleInitialTitle {
+            get {
+                return ResourceManager.GetString("TxtScaleInitialTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Select your personal profile on the scale ähnelt.
+        /// </summary>
+        public static string TxtScaleInitText1 {
+            get {
+                return ResourceManager.GetString("TxtScaleInitText1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Step barefoot onto the scale ähnelt.
+        /// </summary>
+        public static string TxtScaleInitText2 {
+            get {
+                return ResourceManager.GetString("TxtScaleInitText2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Hold the display device steady and firmly in your hands ähnelt.
+        /// </summary>
+        public static string TxtScaleInitText3 {
+            get {
+                return ResourceManager.GetString("TxtScaleInitText3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die SCALE SEGMENTAL ANALYSIS ähnelt.
+        /// </summary>
+        public static string TxtScaleSegmentBadge {
+            get {
+                return ResourceManager.GetString("TxtScaleSegmentBadge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die For the detailed segmental analysis, please perform the following steps sequentially: ähnelt.
+        /// </summary>
+        public static string TxtScaleSegmentIntro {
+            get {
+                return ResourceManager.GetString("TxtScaleSegmentIntro", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Calculating segmental composition... ähnelt.
+        /// </summary>
+        public static string TxtScaleSegmentStatus {
+            get {
+                return ResourceManager.GetString("TxtScaleSegmentStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Segmental Body Composition ähnelt.
+        /// </summary>
+        public static string TxtScaleSegmentTitle {
+            get {
+                return ResourceManager.GetString("TxtScaleSegmentTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Turn off the scale briefly ähnelt.
+        /// </summary>
+        public static string TxtScaleSegText1 {
+            get {
+                return ResourceManager.GetString("TxtScaleSegText1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Turn the scale back on ähnelt.
+        /// </summary>
+        public static string TxtScaleSegText2 {
+            get {
+                return ResourceManager.GetString("TxtScaleSegText2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Select your profile again ähnelt.
+        /// </summary>
+        public static string TxtScaleSegText3 {
+            get {
+                return ResourceManager.GetString("TxtScaleSegText3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Step onto the scale once more ähnelt.
+        /// </summary>
+        public static string TxtScaleSegText4 {
+            get {
+                return ResourceManager.GetString("TxtScaleSegText4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Keep the display unit steady during analysis ähnelt.
+        /// </summary>
+        public static string TxtScaleSegText5 {
+            get {
+                return ResourceManager.GetString("TxtScaleSegText5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Scale user: ähnelt.
+        /// </summary>
+        public static string TxtScaleUser {
+            get {
+                return ResourceManager.GetString("TxtScaleUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Scale User PIN: ähnelt.
+        /// </summary>
+        public static string TxtScaleUserPin {
+            get {
+                return ResourceManager.GetString("TxtScaleUserPin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die SQL Server IP: ähnelt.
         /// </summary>
         public static string TxtSqlServerIp {
@@ -3414,6 +3927,150 @@ namespace BodyTracker.Resources.Languages {
         public static string TxtWorkoutMuscleDistribution {
             get {
                 return ResourceManager.GetString("TxtWorkoutMuscleDistribution", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die All fields must be filled in or corrected. ähnelt.
+        /// </summary>
+        public static string Validation_AllFields_FilledOrCorrected {
+            get {
+                return ResourceManager.GetString("Validation_AllFields_FilledOrCorrected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die All fields must be filled in. ähnelt.
+        /// </summary>
+        public static string Validation_AllFields_Required {
+            get {
+                return ResourceManager.GetString("Validation_AllFields_Required", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Please enter a correct API Key ähnelt.
+        /// </summary>
+        public static string Validation_ApiKey_Invalid {
+            get {
+                return ResourceManager.GetString("Validation_ApiKey_Invalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Enter birth date. ähnelt.
+        /// </summary>
+        public static string Validation_BirthDate_Required {
+            get {
+                return ResourceManager.GetString("Validation_BirthDate_Required", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Invalid database IP address. ähnelt.
+        /// </summary>
+        public static string Validation_Database_IpAddressInvalid {
+            get {
+                return ResourceManager.GetString("Validation_Database_IpAddressInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Database password cannot be empty. ähnelt.
+        /// </summary>
+        public static string Validation_Database_PasswordRequired {
+            get {
+                return ResourceManager.GetString("Validation_Database_PasswordRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Invalid database port number (1–65535). ähnelt.
+        /// </summary>
+        public static string Validation_Database_PortInvalid {
+            get {
+                return ResourceManager.GetString("Validation_Database_PortInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Database username cannot be empty. ähnelt.
+        /// </summary>
+        public static string Validation_Database_UsernameRequired {
+            get {
+                return ResourceManager.GetString("Validation_Database_UsernameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Database name cannot be empty. ähnelt.
+        /// </summary>
+        public static string Validation_DatabaseName_Required {
+            get {
+                return ResourceManager.GetString("Validation_DatabaseName_Required", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die First name cannot be empty. ähnelt.
+        /// </summary>
+        public static string Validation_FirstName_Required {
+            get {
+                return ResourceManager.GetString("Validation_FirstName_Required", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die The form contains errors. ähnelt.
+        /// </summary>
+        public static string Validation_Form_HasErrors {
+            get {
+                return ResourceManager.GetString("Validation_Form_HasErrors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Height must be a positive number. ähnelt.
+        /// </summary>
+        public static string Validation_Height_Positive {
+            get {
+                return ResourceManager.GetString("Validation_Height_Positive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Last name cannot be empty. ähnelt.
+        /// </summary>
+        public static string Validation_LastName_Required {
+            get {
+                return ResourceManager.GetString("Validation_LastName_Required", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die User must be a number between 0 and 10. ähnelt.
+        /// </summary>
+        public static string Validation_User_InvalidRange {
+            get {
+                return ResourceManager.GetString("Validation_User_InvalidRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die No user has been selected. Please select a user! ähnelt.
+        /// </summary>
+        public static string Validation_User_NotSelected {
+            get {
+                return ResourceManager.GetString("Validation_User_NotSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die PIN must be a number between 0 and 9999. ähnelt.
+        /// </summary>
+        public static string Validation_UserPin_InvalidRange {
+            get {
+                return ResourceManager.GetString("Validation_UserPin_InvalidRange", resourceCulture);
             }
         }
     }

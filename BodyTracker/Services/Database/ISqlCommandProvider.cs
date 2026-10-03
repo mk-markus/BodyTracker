@@ -31,7 +31,7 @@
         string GetLastPersonMetricsSql();
 
         /// <summary>
-        /// Provides the SQL command to insert new physiological data (Weight, BMI, BodyFat, etc.) 
+        /// Provides the SQL command to insert new physiological data (Weight, BMI, BodyFatPercentage, etc.) 
         /// into 'tbl_KoerperMetriken' for a specific person.
         /// </summary>
         /// <returns>SQL INSERT command for metric data.</returns>

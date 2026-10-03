@@ -483,7 +483,6 @@ namespace BodyTracker.ViewModels
             catch (Exception ex)
             {
                 GeneralInfoMessage = $"Error refreshing dashboard: {ex.Message}";
-                MessageBox.Show(ex.Message);
             }
             finally
             {

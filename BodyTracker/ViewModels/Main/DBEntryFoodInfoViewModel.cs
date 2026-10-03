@@ -1,4 +1,5 @@
 ﻿using BodyTracker.Models;
+using BodyTracker.Resources.Languages;
 using BodyTracker.Services;
 using BodyTracker.State;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -216,7 +217,7 @@ namespace BodyTracker.ViewModels.Main
         {
             try
             {
-                var result = MessageBox.Show("Are you sure you want to delete the selected data?", "Confirm Deletion", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                var result = MessageBox.Show(UiStrings.Dialog_DeleteData_Message, UiStrings.Dialog_DeleteData_Title, MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 if (result != MessageBoxResult.Yes) return;
                 if (SelectedData == null) return;
                 if (SelectedData.FoodInfoID.HasValue) await databaseService.GetFoodInfoDeleteSqlAsync(SelectedData.FoodInfoID.Value);

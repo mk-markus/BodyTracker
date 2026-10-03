@@ -5,7 +5,7 @@
     <!-- Standard button style configuring margins, size restrictions, bold typography, border settings, and custom control templates with hover triggers. -->
     <Style x:Key="StandardButton" TargetType="Button">
         <Setter Property="Margin" Value="5"/>
-        <Setter Property="MaxWidth" Value="200"/>
+        <Setter Property="MaxWidth" Value="250"/>
         <Setter Property="MaxHeight" Value="100"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="FontFamily" Value="Arial"/>

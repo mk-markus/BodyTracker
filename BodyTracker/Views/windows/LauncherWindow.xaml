@@ -8,8 +8,8 @@
         xmlns:s="clr-namespace:BodyTracker.Resources.Languages"
         xmlns:loc="clr-namespace:BodyTracker.Services.Localization"
         Title="{loc:Translate LauncherWindowTitle}" 
-        Height="450" 
-        Width="800"
+        Height="500" 
+        Width="1000"
         Icon="/Resources/Icon/ProgramIcon_GymRunning.ico">
     <Grid Background="{StaticResource AppBackgroundBrush}">
         <Grid.ColumnDefinitions>

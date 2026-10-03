@@ -1,4 +1,5 @@
-﻿using BodyTracker.Services;
+﻿using BodyTracker.Resources.Languages;
+using BodyTracker.Services;
 using BodyTracker.State;
 using BodyTracker.ViewModels;
 using System;
@@ -25,9 +26,9 @@ namespace BodyTracker.Views
         /// <see cref="NewEntryPage"/>, ensuring that user input is immediately captured and processed.
         /// </remarks>
         private readonly NewDataEntryPageViewModel dataEntryViewModel;
-        
+
         /// <summary>
-        /// 
+        /// Holds a read-only reference to the main application window shell instance.
         /// </summary>
         private readonly MainWindow _shell;
 
@@ -86,7 +87,7 @@ namespace BodyTracker.Views
                 }
                else
                 {
-                    MessageBox.Show("The values are not valid. Check if some value boxes has an red frame and correct the value", "Waring",
+                    MessageBox.Show(UiStrings.Dialog_InvalidValues_Message, UiStrings.Dialog_Warning_Title,
                     MessageBoxButton.OK, MessageBoxImage.Error);
                 }
         }
@@ -138,7 +139,7 @@ namespace BodyTracker.Views
         {
             if (float.TryParse(tbWeight.Text, out float w))
             {
-                tbBMI.Text = dataEntryViewModel.CalculateBmi(w, AppState.SelectedPersonHeight).ToString("0.00");
+                tbBMI.Text = BodyCalculationToolsService.CalculateBmi(w, AppState.SelectedPersonHeight).ToString("0.00");
             }
             
         }

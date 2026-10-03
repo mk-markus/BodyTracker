@@ -36,5 +36,3 @@ Download Bild am: 12.09.2026
 KI-System: ChatGPT / OpenAI Image Generation
 Grundlage: Nutzerbereitgestellte Bildreferenzen und Informationen zur Jackson-&-Pollock-7-Punkte-Hautfaltenmessmethode
 Kennzeichnung: AI GENERATED / KI-generiert
-
-

@@ -723,8 +723,8 @@ namespace BodyTracker.ViewModels
 
             var timeRange = TimeFrameCalculator.GetComparisonPeriodForToday(2);
 
-            PeriodMonthBefore = timeRange.CurStartDate.ToString("MMMM yyyy", CultureInfo.CurrentCulture);
-            PeriodTwoMonthsBefore = timeRange.PrevStartDate.ToString("MMMM yyyy", CultureInfo.CurrentCulture);
+            PeriodMonthBefore = timeRange.CurStartDate.ToString("MMM yyyy", CultureInfo.CurrentCulture);
+            PeriodTwoMonthsBefore = timeRange.PrevStartDate.ToString("MMM yyyy", CultureInfo.CurrentCulture);
 
             // Application for the BodyCalculationToolsService
             var currentPeriodAverages = BodyCalculationToolsService.GetAverageValues(timeRange.CurStartDate, timeRange.CurEndDate, BodyMeasurement);

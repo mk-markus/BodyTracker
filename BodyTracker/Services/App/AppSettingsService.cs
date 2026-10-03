@@ -61,6 +61,8 @@ namespace BodyTracker.Services.WorkoutLog
         /// </remarks>
         public void Save(AppSettingsModel cfg)
         {
+            if (!string.IsNullOrEmpty(cfg.ScaleUserPin)) cfg.ScaleUserPin = CryptoHelper.Protect(cfg.ScaleUserPin);
+
             var json = JsonSerializer.Serialize(cfg, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(AppSettingsPath, json);
         }

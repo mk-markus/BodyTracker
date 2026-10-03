@@ -1,4 +1,5 @@
 using BodyTracker.Models;
+using BodyTracker.Resources.Languages;
 using BodyTracker.Services;
 using BodyTracker.State;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -274,7 +275,7 @@ namespace BodyTracker.ViewModels
         {
             try
             {
-                var result = MessageBox.Show("Are you sure you want to delete the selected measurement?", "Confirm Deletion", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                var result = MessageBox.Show(UiStrings.Dialog_DeleteMeasurement_Message, UiStrings.Dialog_DeleteMeasurement_Title, MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 if (result != MessageBoxResult.Yes) return;
                 if (SelectedMeasurement == null) return;
                 if (SelectedMeasurement.MetricID.HasValue) await databaseService.GetBodyMetricDeleteSqlAsync(SelectedMeasurement.MetricID.Value);

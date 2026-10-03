@@ -1,4 +1,5 @@
 ﻿using BodyTracker.Models;
+using BodyTracker.Resources.Languages;
 using BodyTracker.Services;
 using BodyTracker.Services.SamsungHelath;
 using BodyTracker.State;
@@ -53,6 +54,8 @@ namespace BodyTracker.ViewModels
         /// Backing field for the current logged-in user name shown in the UI.
         /// </summary>
         private string actualUser = string.Empty;
+
+
 
         /// <summary>
         /// Gets or sets the current logged-in user name shown in the UI, sending a logged-in database user message via the messenger when the value changes.
@@ -191,7 +194,7 @@ namespace BodyTracker.ViewModels
             try
             {
                 SelectedPerson = null;
-                databaseAdditonalConncetionStateInfo = "Connecting";
+                databaseAdditonalConncetionStateInfo = UiStrings.Status_Database_Connecting;
 
 
 
@@ -201,7 +204,7 @@ namespace BodyTracker.ViewModels
                     ActualUser = databaseService.DatabaseUser;
                     ActualDatabase = databaseService.DatabaseName;
 
-                    databaseAdditonalConncetionStateInfo = databaseService.IsConnected ? "Connected" : "Not Connected";
+                    databaseAdditonalConncetionStateInfo = databaseService.IsConnected ? UiStrings.Status_Database_Connected : UiStrings.Status_Database_NotConnected;
 
                     if (!databaseService.IsConnected)
                     {
@@ -215,7 +218,7 @@ namespace BodyTracker.ViewModels
                 catch (Exception ex)
                 {
                     GeneralInfoMessage = $"Initialization error: {ex}";
-                    ActualConnectionState = "Not Connected";
+                    ActualConnectionState = UiStrings.Status_Database_NotConnected;
                     return false;
                 }
             }
@@ -289,7 +292,7 @@ namespace BodyTracker.ViewModels
         {
             if (AppState.SelectedPersonId <= 0)
             {
-                GeneralInfoMessage = "No user has been selected. Please select a user!";
+                GeneralInfoMessage = UiStrings.Validation_User_NotSelected;
                 return;
             }
 
