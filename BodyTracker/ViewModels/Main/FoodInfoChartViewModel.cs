@@ -1,4 +1,5 @@
-﻿using BodyTracker.Models;
+﻿using ABI.Windows.AI.MachineLearning;
+using BodyTracker.Models;
 using BodyTracker.Services;
 using BodyTracker.State;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -12,6 +13,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace BodyTracker.ViewModels.Main
 {
@@ -81,103 +83,133 @@ namespace BodyTracker.ViewModels.Main
 
         /// <summary>Gets or sets the X-axis configuration for the calories chart.</summary>
         [ObservableProperty] private ICartesianAxis[] xAxesCalories = Array.Empty<ICartesianAxis>();
+
         /// <summary>Gets or sets the Y-axis configuration for the calories chart.</summary>
         [ObservableProperty] private ICartesianAxis[] yAxesCalories = Array.Empty<ICartesianAxis>();
+
         /// <summary>Gets or sets the X-axis configuration for the protein chart.</summary>
         [ObservableProperty] private ICartesianAxis[] xAxesProtein = Array.Empty<ICartesianAxis>();
+
         /// <summary>Gets or sets the Y-axis configuration for the protein chart.</summary>
         [ObservableProperty] private ICartesianAxis[] yAxesProtein = Array.Empty<ICartesianAxis>();
+
         /// <summary>Gets or sets the X-axis configuration for the carbohydrates chart.</summary>
         [ObservableProperty] private ICartesianAxis[] xAxesCarbs = Array.Empty<ICartesianAxis>();
+
         /// <summary>Gets or sets the Y-axis configuration for the carbohydrates chart.</summary>
         [ObservableProperty] private ICartesianAxis[] yAxesCarbs = Array.Empty<ICartesianAxis>();
+
         /// <summary>Gets or sets the X-axis configuration for the fat chart.</summary>
         [ObservableProperty] private ICartesianAxis[] xAxesFat = Array.Empty<ICartesianAxis>();
+
         /// <summary>Gets or sets the Y-axis configuration for the fat chart.</summary>
         [ObservableProperty] private ICartesianAxis[] yAxesFat = Array.Empty<ICartesianAxis>();
 
         /// <summary>Gets or sets the X-axis configuration for the Vitamin A chart.</summary>
         [ObservableProperty] private ICartesianAxis[] xAxesVitaminA = Array.Empty<ICartesianAxis>();
+
         /// <summary>Gets or sets the Y-axis configuration for the Vitamin A chart.</summary>
         [ObservableProperty] private ICartesianAxis[] yAxesVitaminA = Array.Empty<ICartesianAxis>();
+
         /// <summary>Gets or sets the X-axis configuration for the Vitamin C chart.</summary>
         [ObservableProperty] private ICartesianAxis[] xAxesVitaminC = Array.Empty<ICartesianAxis>();
+
         /// <summary>Gets or sets the Y-axis configuration for the Vitamin C chart.</summary>
         [ObservableProperty] private ICartesianAxis[] yAxesVitaminC = Array.Empty<ICartesianAxis>();
+
         /// <summary>Gets or sets the X-axis configuration for the Vitamin D chart.</summary>
         [ObservableProperty] private ICartesianAxis[] xAxesVitaminD = Array.Empty<ICartesianAxis>();
+
         /// <summary>Gets or sets the Y-axis configuration for the Vitamin D chart.</summary>
         [ObservableProperty] private ICartesianAxis[] yAxesVitaminD = Array.Empty<ICartesianAxis>();
 
         /// <summary>Gets or sets the X-axis configuration for the iron chart.</summary>
         [ObservableProperty] private ICartesianAxis[] xAxesIron = Array.Empty<ICartesianAxis>();
+
         /// <summary>Gets or sets the Y-axis configuration for the iron chart.</summary>
         [ObservableProperty] private ICartesianAxis[] yAxesIron = Array.Empty<ICartesianAxis>();
+
         /// <summary>Gets or sets the X-axis configuration for the calcium chart.</summary>
         [ObservableProperty] private ICartesianAxis[] xAxesCalcium = Array.Empty<ICartesianAxis>();
+
         /// <summary>Gets or sets the Y-axis configuration for the calcium chart.</summary>
         [ObservableProperty] private ICartesianAxis[] yAxesCalcium = Array.Empty<ICartesianAxis>();
+
         /// <summary>Gets or sets the X-axis configuration for the sodium chart.</summary>
         [ObservableProperty] private ICartesianAxis[] xAxesNatrium = Array.Empty<ICartesianAxis>();
+
         /// <summary>Gets or sets the Y-axis configuration for the sodium chart.</summary>
         [ObservableProperty] private ICartesianAxis[] yAxesNatrium = Array.Empty<ICartesianAxis>();
+
         /// <summary>Gets or sets the X-axis configuration for the potassium chart.</summary>
         [ObservableProperty] private ICartesianAxis[] xAxesKalium = Array.Empty<ICartesianAxis>();
+
         /// <summary>Gets or sets the Y-axis configuration for the potassium chart.</summary>
         [ObservableProperty] private ICartesianAxis[] yAxesKalium = Array.Empty<ICartesianAxis>();
 
-        /// <summary>Gets or sets a value indicating whether the calories series is displayed.</summary>
+        /// <summary>Gets or sets a value indicating whether the calories series is displayed </summary>
         [ObservableProperty] private bool showCalories = true;
+
         /// <summary>Gets or sets a value indicating whether the calories trend line is displayed.</summary>
         [ObservableProperty] private bool showCaloriesTrend = false;
 
         /// <summary>Gets or sets a value indicating whether the protein series is displayed.</summary>
         [ObservableProperty] private bool showProtein = true;
+
         /// <summary>Gets or sets a value indicating whether the protein trend line is displayed.</summary>
         [ObservableProperty] private bool showProteinTrend = false;
 
         /// <summary>Gets or sets a value indicating whether the carbohydrates series is displayed.</summary>
         [ObservableProperty] private bool showCarbs = true;
+
         /// <summary>Gets or sets a value indicating whether the carbohydrates trend line is displayed.</summary>
         [ObservableProperty] private bool showCarbsTrend = false;
 
         /// <summary>Gets or sets a value indicating whether the fat series is displayed.</summary>
         [ObservableProperty] private bool showFat = true;
+
         /// <summary>Gets or sets a value indicating whether the fat trend line is displayed.</summary>
         [ObservableProperty] private bool showFatTrend = false;
 
         /// <summary>Gets or sets a value indicating whether the Vitamin A series is displayed.</summary>
         [ObservableProperty] private bool showVitaminA = true;
+
         /// <summary>Gets or sets a value indicating whether the Vitamin A trend line is displayed.</summary>
         [ObservableProperty] private bool showVitaminATrend = false;
 
         /// <summary>Gets or sets a value indicating whether the Vitamin C series is displayed.</summary>
         [ObservableProperty] private bool showVitaminC = true;
+
         /// <summary>Gets or sets a value indicating whether the Vitamin C trend line is displayed.</summary>
         [ObservableProperty] private bool showVitaminCTrend = false;
 
         /// <summary>Gets or sets a value indicating whether the Vitamin D series is displayed.</summary>
         [ObservableProperty] private bool showVitaminD = true;
+
         /// <summary>Gets or sets a value indicating whether the Vitamin D trend line is displayed.</summary>
         [ObservableProperty] private bool showVitaminDTrend = false;
 
         /// <summary>Gets or sets a value indicating whether the iron series is displayed.</summary>
         [ObservableProperty] private bool showIron = true;
+
         /// <summary>Gets or sets a value indicating whether the iron trend line is displayed.</summary>
         [ObservableProperty] private bool showIronTrend = false;
 
         /// <summary>Gets or sets a value indicating whether the calcium series is displayed.</summary>
         [ObservableProperty] private bool showCalcium = true;
+
         /// <summary>Gets or sets a value indicating whether the calcium trend line is displayed.</summary>
         [ObservableProperty] private bool showCalciumTrend = false;
 
         /// <summary>Gets or sets a value indicating whether the sodium series is displayed.</summary>
         [ObservableProperty] private bool showNatrium = true;
+
         /// <summary>Gets or sets a value indicating whether the sodium trend line is displayed.</summary>
         [ObservableProperty] private bool showNatriumTrend = false;
 
         /// <summary>Gets or sets a value indicating whether the potassium series is displayed.</summary>
         [ObservableProperty] private bool showKalium = true;
+
         /// <summary>Gets or sets a value indicating whether the potassium trend line is displayed.</summary>
         [ObservableProperty] private bool showKaliumTrend = false;
 
@@ -195,6 +227,7 @@ namespace BodyTracker.ViewModels.Main
 
         /// <summary>The earliest recorded measurement date available in the dataset.</summary>
         public DateTime minMeasurementsDate;
+
         /// <summary>The latest recorded measurement date available in the dataset.</summary>
         public DateTime maxMeasurementsDate;
 
@@ -206,14 +239,19 @@ namespace BodyTracker.ViewModels.Main
 
         /// <summary>Gets the command to refresh chart data from the database.</summary>
         public IAsyncRelayCommand CommandRefreshAsync { get; }
+
         /// <summary>Gets the command to reload and recompute all chart views.</summary>
         public IAsyncRelayCommand CommandReloadChartsAsync { get; }
+
         /// <summary>Gets the command to set the date filter to the current year.</summary>
         public IRelayCommand CommandSetActualYear { get; }
+
         /// <summary>Gets the command to set the date filter to the current month.</summary>
         public IRelayCommand CommandSetActualMonth { get; }
+
         /// <summary>Gets the command to set the date filter to the current calendar week.</summary>
         public IRelayCommand CommandSetActualWeek { get; }
+
         /// <summary>Gets the command to expand the date filter to show all available data records.</summary>
         public IRelayCommand CommandShowAllData { get; }
 
@@ -330,6 +368,27 @@ namespace BodyTracker.ViewModels.Main
                .Where(d => d.CreateTime >= StartDate && d.CreateTime <= EndDate)
                .OrderBy(d => d.CreateTime)
                .ToList();
+
+
+                source = source
+                    .GroupBy(x => x.CreateTime.Date)
+                    .Select(g => new SamsungFoodInfoModel
+                    {
+                        CreateTime = g.Key,
+                        Calorie = g.Sum(x => x.Calorie ?? 0.0),
+                        Protein = g.Sum(x => x.Protein ?? 0.0),
+                        Carbohydrate = g.Sum(x => x.Carbohydrate ?? 0.0),
+                        TotalFat = g.Sum(x => x.TotalFat ?? 0.0),
+                        VitaminA = g.Sum(x => x.VitaminA ?? 0.0),
+                        VitaminC = g.Sum(x => x.VitaminC ?? 0.0),
+                        VitaminD = g.Sum(x => x.VitaminD ?? 0.0),
+                        Iron = g.Sum(x => x.Iron ?? 0.0),
+                        Calcium = g.Sum(x => x.Calcium ?? 0.0),
+                        Cholesterol = g.Sum(x => x.Cholesterol ?? 0.0),
+                        Potassium = g.Sum(x => x.Potassium ?? 0.0)
+                    })
+                    .ToList();
+
 
                 var caloriesTask = Task.Run(() => ChartTemplateService.CreateFoodCaloriesChart(StartDate, EndDate, source,
                     isTrendLineLegendVisible, strokeThickness, geometrySize, LoessFraction, ShowCalories, ShowCaloriesTrend));

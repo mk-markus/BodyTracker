@@ -43,7 +43,15 @@ namespace BodyTracker.ViewModels
         /// This property is observable, meaning any changes to the series (e.g., adding or removing metrics) 
         /// will automatically trigger a UI update in the view.
         /// </summary>
-        [ObservableProperty] private ISeries[] seriesBodyFatMuscle = Array.Empty<ISeries>();
+        [ObservableProperty] private ISeries[] seriesBodyFat = Array.Empty<ISeries>();
+
+
+        /// <summary>
+        /// Gets or sets the collection of data series to be displayed in the chart.
+        /// This property is observable, meaning any changes to the series (e.g., adding or removing metrics) 
+        /// will automatically trigger a UI update in the view.
+        /// </summary>
+        [ObservableProperty] private ISeries[] seriesBodyMuscle = Array.Empty<ISeries>();
 
         /// <summary>
         /// Gets or sets the collection of data series to be displayed in the chart.
@@ -71,14 +79,28 @@ namespace BodyTracker.ViewModels
         /// This property defines the horizontal scale, including Lbls (e.g., dates), 
         /// unit spacing, and title formatting.
         /// </summary>
-        [ObservableProperty] private ICartesianAxis[] xAxesBodyFatMuscle = Array.Empty<ICartesianAxis>();
+        [ObservableProperty] private ICartesianAxis[] xAxesBodyFat = Array.Empty<ICartesianAxis>();
 
         /// <summary>
         /// Gets or sets the Y-axes configuration for the Cartesian chart.
         /// This property defines the vertical scale, including the numerical range, 
         /// value formatting (e.g., "kg" or "%"), and grid line intervals.
         /// </summary>
-        [ObservableProperty] private ICartesianAxis[] yAxesBodyFatMuscle = Array.Empty<ICartesianAxis>();
+        [ObservableProperty] private ICartesianAxis[] yAxesBodyFat = Array.Empty<ICartesianAxis>();
+
+        /// <summary>
+        /// Gets or sets the X-axes configuration for the Cartesian chart.
+        /// This property defines the horizontal scale, including Lbls (e.g., dates), 
+        /// unit spacing, and title formatting.
+        /// </summary>
+        [ObservableProperty] private ICartesianAxis[] xAxesBodyMuscle = Array.Empty<ICartesianAxis>();
+
+        /// <summary>
+        /// Gets or sets the Y-axes configuration for the Cartesian chart.
+        /// This property defines the vertical scale, including the numerical range, 
+        /// value formatting (e.g., "kg" or "%"), and grid line intervals.
+        /// </summary>
+        [ObservableProperty] private ICartesianAxis[] yAxesBodyMuscle = Array.Empty<ICartesianAxis>();
 
         /// <summary>
         /// Gets or sets the X-axes configuration for the Cartesian chart.
@@ -369,11 +391,13 @@ namespace BodyTracker.ViewModels
                 .ToList();
 
                 var resultBodyWeight=ChartTemplateService.CreateWeightChart(StartDate, EndDate, source, isTrendLineLegendVisible,
-                                                                                           strokeThickness, geometrySize, loessFraction,
-                                                                                           ShowBodyWeight, ShowBodyWeightTrend);
+                    strokeThickness, geometrySize, loessFraction, ShowBodyWeight, ShowBodyWeightTrend);
 
-                var resultBodyFatMuscle = ChartTemplateService.CreateBodyMuscleFatPercantageChart(StartDate, EndDate, source, isTrendLineLegendVisible,
-                                                                                                      strokeThickness, geometrySize, loessFraction, ShowBodyFat, ShowBodyFatTrend, ShowBodyMuscle, ShowBodyMuscleTrend);
+                var resultBodyFat = ChartTemplateService.CreateBodyFatPercantageChart(StartDate, EndDate, source, isTrendLineLegendVisible,
+                    strokeThickness, geometrySize, loessFraction, ShowBodyFat, ShowBodyFatTrend);
+
+                var resultBodyMuscle = ChartTemplateService.CreateBodyMusclePercantageChart(StartDate, EndDate, source, isTrendLineLegendVisible,
+                  strokeThickness, geometrySize, loessFraction, ShowBodyMuscle, ShowBodyMuscleTrend);
 
 
                 var resultBodyWater = ChartTemplateService.CreateBodyWaterChart(StartDate, EndDate, source, isTrendLineLegendVisible,
@@ -384,9 +408,13 @@ namespace BodyTracker.ViewModels
                     XAxesBodyWeight = resultBodyWeight.XAxis;
                     YAxesBodyWeight = resultBodyWeight.YAxis;
 
-                    SeriesBodyFatMuscle = resultBodyFatMuscle.Series;
-                    XAxesBodyFatMuscle = resultBodyFatMuscle.XAxis;
-                    YAxesBodyFatMuscle = resultBodyFatMuscle.YAxis;
+                    SeriesBodyFat = resultBodyFat.Series;
+                    XAxesBodyFat = resultBodyFat.XAxis;
+                    YAxesBodyFat = resultBodyFat.YAxis;
+
+                    SeriesBodyMuscle = resultBodyMuscle.Series;
+                    XAxesBodyMuscle = resultBodyMuscle.XAxis;
+                    YAxesBodyMuscle = resultBodyMuscle.YAxis;
 
                     SeriesBodyWater = resultBodyWater.Series;
                     XAxesBodyWater = resultBodyWater.XAxis;

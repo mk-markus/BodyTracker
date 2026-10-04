@@ -280,5 +280,52 @@ namespace BodyTracker.Services
         }
 
 
+        /// <summary>
+        /// Asynchronously extracts and parses food and nutrition records from a specified CSV file.
+        /// </summary>
+        /// <param name="filePath">The path to the Samsung Health nutrition CSV export file.</param>
+        /// <param name="progress">An optional progress reporter for tracking percentage completion. Defaults to null.</param>
+        /// <param name="status">An optional progress reporter for tracking status messages. Defaults to null.</param>
+        /// <returns>A task representing the asynchronous operation, containing a list of extracted <see cref="SamsungNutritionModel"/> records.</returns>
+        public static async Task<List<SamsungFoodNutritionModel>> ParseFoodNutritionAsync(string filePath,
+            IProgress<double>? progress = null,
+            IProgress<string>? status = null)
+        {
+            var result = new List<SamsungFoodNutritionModel>();
+
+            // Ensure totalLines calculation is safe against empty or malformed files
+            var totalLines = Math.Max(1, File.ReadLines(filePath).Count() - 2);
+            var currentLine = 0;
+
+            using var reader = new StreamReader(filePath);
+
+            // The first line in the csv file can be ignored because it is just a description of the file.
+            // The second line is the header line, which will be used by CsvHelper to map the columns to the properties of the model.
+            await reader.ReadLineAsync();
+
+            var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                HasHeaderRecord = true
+            };
+
+            using var csv = new CsvReader(reader, config);
+
+            csv.Context.RegisterClassMap<SamsungFoodNutritionCSVMapping>();
+
+            await foreach (var record in csv.GetRecordsAsync<SamsungFoodNutritionModel>())
+            {
+                result.Add(record);
+
+                currentLine++;
+
+                double percentage = Math.Min(100.0, currentLine * 100.0 / totalLines);
+                progress?.Report(percentage);
+            }
+
+            status?.Report("Nutrition data parsing complete.");
+
+            return result;
+        }
+
     }
 }

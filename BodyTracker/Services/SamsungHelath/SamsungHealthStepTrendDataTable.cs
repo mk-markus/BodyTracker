@@ -13,58 +13,72 @@ namespace BodyTracker.Services.SamsungHealth
         {
             var table = new DataTable();
 
-            table.Columns.Add("person_id", typeof(int));
-            table.Columns.Add("binning_data", typeof(string));
-            table.Columns.Add("update_at", typeof(DateTime));
-            table.Columns.Add("create_at", typeof(DateTime));
-            table.Columns.Add("source_package", typeof(string));
-            table.Columns.Add("source_type", typeof(int));
+            table.Columns.Add("PersonID_FK", typeof(int));
 
-            table.Columns.Add("step_count_current", typeof(double));
-            table.Columns.Add("step_count_initial", typeof(double));
+            table.Columns.Add("BinningData", typeof(string));
 
-            table.Columns.Add("speed_current", typeof(double));
-            table.Columns.Add("speed_initial", typeof(double));
+            table.Columns.Add("UpdateTime", typeof(DateTime));
+            table.Columns.Add("CreateTime", typeof(DateTime));
 
-            table.Columns.Add("distance_current", typeof(double));
-            table.Columns.Add("distance_initial", typeof(double));
+            table.Columns.Add("SourcePkgName", typeof(string));
+            table.Columns.Add("SourceType", typeof(int));
 
-            table.Columns.Add("calories_current", typeof(double));
-            table.Columns.Add("calories_initial", typeof(double));
+            table.Columns.Add("StepCount", typeof(double));
 
-            table.Columns.Add("device_uuid", typeof(string));
-            table.Columns.Add("package_name", typeof(string));
-            table.Columns.Add("data_uuid", typeof(string));
-            table.Columns.Add("record_date", typeof(DateTime));
+            table.Columns.Add("Speed", typeof(double));
+
+            table.Columns.Add("Distance", typeof(double));
+
+            table.Columns.Add("Calorie", typeof(double));
+
+            table.Columns.Add("DeviceUuid", typeof(string));
+
+            table.Columns.Add("PkgName", typeof(string));
+
+            table.Columns.Add("DataUuid", typeof(string));
 
             foreach (var item in stepTrends)
             {
                 var row = table.NewRow();
 
-                row["person_id"] = personId;
-                row["binning_data"] = (object?)item.BinningData ?? DBNull.Value;
-                row["update_at"] = (object?)item.UpdateTime ?? DBNull.Value;
-                row["create_at"] = (object?)item.CreateTime ?? DBNull.Value;
-                row["source_package"] = (object?)item.SourcePkgName ?? DBNull.Value;
-                row["source_type"] = (object?)item.SourceType ?? DBNull.Value;
+                row["PersonID_FK"] =
+                    personId;
 
-                row["step_count_current"] = (object?)item.Count ?? DBNull.Value;
-                row["step_count_initial"] = (object?)item.Count ?? DBNull.Value;
+                row["BinningData"] =
+                    (object?)item.BinningData ?? DBNull.Value;
 
-                row["speed_current"] = (object?)item.Speed ?? DBNull.Value;
-                row["speed_initial"] = (object?)item.Speed ?? DBNull.Value;
+                row["UpdateTime"] =
+                    (object?)item.UpdateTime ?? DBNull.Value;
 
-                row["distance_current"] = (object?)item.Distance ?? DBNull.Value;
-                row["distance_initial"] = (object?)item.Distance ?? DBNull.Value;
+                row["CreateTime"] =
+                    (object?)item.CreateTime ?? DBNull.Value;
 
-                row["calories_current"] = (object?)item.Calorie ?? DBNull.Value;
-                row["calories_initial"] = (object?)item.Calorie ?? DBNull.Value;
+                row["SourcePkgName"] =
+                    (object?)item.SourcePkgName ?? DBNull.Value;
 
-                row["device_uuid"] = (object?)item.DeviceUuid ?? DBNull.Value;
-                row["package_name"] = (object?)item.PkgName ?? DBNull.Value;
-                row["data_uuid"] = (object?)item.DataUuid ?? DBNull.Value;
+                row["SourceType"] =
+                    (object?)item.SourceType ?? DBNull.Value;
 
-                row["record_date"] = DateTime.Now;
+                row["StepCount"] =
+                    (object?)item.Count ?? DBNull.Value;
+
+                row["Speed"] =
+                    (object?)item.Speed ?? DBNull.Value;
+
+                row["Distance"] =
+                    (object?)item.Distance ?? DBNull.Value;
+
+                row["Calorie"] =
+                    (object?)item.Calorie ?? DBNull.Value;
+
+                row["DeviceUuid"] =
+                    (object?)item.DeviceUuid ?? DBNull.Value;
+
+                row["PkgName"] =
+                    (object?)item.PkgName ?? DBNull.Value;
+
+                row["DataUuid"] =
+                    (object?)item.DataUuid ?? DBNull.Value;
 
                 table.Rows.Add(row);
             }

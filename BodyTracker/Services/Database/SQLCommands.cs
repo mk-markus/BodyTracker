@@ -622,6 +622,7 @@ namespace BodyTracker.Services
         public string GetHeartRateExistenceCheckSql()
         {
             return @"SELECT
+                heart_rate_id,
                data_uuid,
                update_time
                FROM tbl_HeartRate
@@ -828,6 +829,7 @@ namespace BodyTracker.Services
         public string GetSamsungOxygenSaturationExistenceCheckSql()
         {
             return @"SELECT
+                      oxygen_saturation_id,
                      data_uuid,
                      update_time
                      FROM tbl_OxygenSaturation
@@ -1087,6 +1089,7 @@ namespace BodyTracker.Services
         public string GetSamsungStepTrendExistenceCheckSql()
         {
             return @"SELECT
+               step_trend_id,
                data_uuid,
                update_at
                FROM tbl_StepTrend
@@ -1484,6 +1487,7 @@ namespace BodyTracker.Services
         public string GetSamsungExerciseExistenceCheckSql()
         {
             return @"SELECT
+               exercise_id,
                data_uuid,
                update_at
                FROM tbl_Exercise
@@ -1754,6 +1758,7 @@ namespace BodyTracker.Services
         public string GetFoodIntakeExistenceCheckSql()
         {
             return @"SELECT
+                food_intake_id,
                data_uuid,
                update_at
                FROM tbl_FoodIntake
@@ -1809,6 +1814,7 @@ namespace BodyTracker.Services
         public string GetFoodInfoExistenceCheckSql()
         {
             return @"SELECT
+                food_info_id,
                 data_uuid,
                 update_at
              FROM tbl_FoodInfo
@@ -2102,7 +2108,7 @@ namespace BodyTracker.Services
                     @description, @custom, @provider_food_id, @metric_serving_amount, @metric_serving_unit, 
                     @sodium, @dietary_fiber, @total_fat, @monosaturated_fat, @polysaturated_fat, 
                     @saturated_fat, @trans_fat, @protein, @iron, @sugar, @added_sugar, @calcium, 
-                    @calorie, @serving_description, info_provider, @name, @carbohydrate, 
+                    @calorie, @serving_description, @info_provider, @name, @carbohydrate, 
                     @unit_count_per_calorie, @default_number_of_serving_unit, @device_uuid, 
                     @pkg_name, @data_uuid, @update_at, @create_at
                 );";
@@ -2111,7 +2117,514 @@ namespace BodyTracker.Services
 
         #endregion
 
+        #region Samsung Health Nutrition SQL Commands
 
+        /// <summary>
+        /// Retrieves the SQL query used to check existing nutrition records for a person, 
+        /// returning their unique data identifiers and update timestamps.
+        /// </summary>
+        public string GetFoodNutritionExistenceCheckSql()
+        {
+            return @"SELECT
+                    food_nutrition_id,
+                    datauuid,
+                    update_time
+                 FROM tbl_FoodNutrition
+                 WHERE person_id = @PersonId;";
+        }
+
+        /// <summary>
+        /// Retrieves the SQL command to fully update an existing nutrition record in the database.
+        /// </summary>
+        public string GetSamsungNutritionUpdateSql()
+        {
+            return @"UPDATE tbl_FoodNutrition
+                     SET
+                        magnesium = @Magnesium,
+                        potassium = @Potassium,
+                        create_sh_ver = @CreateShVer,
+
+                        vitamin_a = @VitaminA,
+                        vitamin_c = @VitaminC,
+                        vitamin_d = @VitaminD,
+                        vitamin_e = @VitaminE,
+                        vitamin_k = @VitaminK,
+                        vitamin_b12 = @VitaminB12,
+
+                        cholesterol = @Cholesterol,
+
+                        start_time = @StartTime,
+
+                        biotin = @Biotin,
+                        phosphorus = @Phosphorus,
+                        copper = @Copper,
+
+                        custom = @Custom,
+
+                        thiamin = @Thiamin,
+                        folate = @Folate,
+                        iodine = @Iodine,
+                        niacin = @Niacin,
+                        sodium = @Sodium,
+                        molybdenum = @Molybdenum,
+                        folic_acid = @FolicAcid,
+
+                        modify_sh_ver = @ModifyShVer,
+
+                        dietary_fiber = @DietaryFiber,
+                        total_fat = @TotalFat,
+
+                        update_time = @UpdateTime,
+                        create_time = @CreateTime,
+
+                        meal_type = @MealType,
+
+                        caffeine = @Caffeine,
+                        monosaturated_fat = @MonosaturatedFat,
+                        protein = @Protein,
+                        manganese = @Manganese,
+                        polysaturated_fat = @PolysaturatedFat,
+                        iron = @Iron,
+                        zinc = @Zinc,
+                        riboflavin = @Riboflavin,
+                        sugar = @Sugar,
+
+                        title = @Title,
+
+                        added_sugar = @AddedSugar,
+                        calories_from_fat = @CaloriesFromFat,
+                        calcium = @Calcium,
+                        calorie = @Calorie,
+
+                        time_offset = @TimeOffset,
+
+                        deviceuuid = @DeviceUuid,
+
+                        polyunsaturated_fat = @PolyunsaturatedFat,
+                        saturated_fat = @SaturatedFat,
+                        trans_fat = @TransFat,
+
+                        pkg_name = @PkgName,
+
+                        selenium = @Selenium,
+                        vitamin_b6 = @VitaminB6,
+                        carbohydrate = @Carbohydrate,
+                        unsaturated_fat = @UnsaturatedFat,
+                        chloride = @Chloride,
+                        pantothenic_acid = @PantothenicAcid,
+
+                        chromium = @Chromium
+
+                     WHERE datauuid = @DataUuid
+                       AND person_id = @PersonID_FK;";
+        }
+
+        /// <summary>
+        /// Retrieves the MySQL-compatible UPSERT (INSERT ... ON DUPLICATE KEY UPDATE) statement 
+        /// for synchronizing Samsung Health nutrition records.
+        /// </summary>
+        public string GetSamsungNutritionUpsertSql()
+        {
+            return @"INSERT INTO tbl_FoodNutrition
+                    (
+                    person_id,
+
+                    magnesium,
+                    potassium,
+                    create_sh_ver,
+
+                    vitamin_a,
+                    vitamin_c,
+                    vitamin_d,
+                    vitamin_e,
+                    vitamin_k,
+                    vitamin_b12,
+
+                    cholesterol,
+
+                    start_time,
+
+                    biotin,
+                    phosphorus,
+                    copper,
+
+                    custom,
+
+                    thiamin,
+                    folate,
+                    iodine,
+                    niacin,
+                    sodium,
+                    molybdenum,
+                    folic_acid,
+
+                    modify_sh_ver,
+
+                    dietary_fiber,
+                    total_fat,
+
+                    update_time,
+                    create_time,
+
+                    meal_type,
+
+                    caffeine,
+                    monosaturated_fat,
+                    protein,
+                    manganese,
+                    polysaturated_fat,
+                    iron,
+                    zinc,
+                    riboflavin,
+                    sugar,
+
+                    title,
+
+                    added_sugar,
+                    calories_from_fat,
+                    calcium,
+                    calorie,
+
+                    time_offset,
+
+                    deviceuuid,
+
+                    polyunsaturated_fat,
+                    saturated_fat,
+                    trans_fat,
+
+                    pkg_name,
+
+                    selenium,
+                    vitamin_b6,
+                    carbohydrate,
+                    unsaturated_fat,
+                    chloride,
+                    pantothenic_acid,
+
+                    datauuid,
+                    chromium
+                    )
+                    VALUES
+                    (
+                    @PersonID_FK,
+
+                    @Magnesium,
+                    @Potassium,
+                    @CreateShVer,
+
+                    @VitaminA,
+                    @VitaminC,
+                    @VitaminD,
+                    @VitaminE,
+                    @VitaminK,
+                    @VitaminB12,
+
+                    @Cholesterol,
+
+                    @StartTime,
+
+                    @Biotin,
+                    @Phosphorus,
+                    @Copper,
+
+                    @Custom,
+
+                    @Thiamin,
+                    @Folate,
+                    @Iodine,
+                    @Niacin,
+                    @Sodium,
+                    @Molybdenum,
+                    @FolicAcid,
+
+                    @ModifyShVer,
+
+                    @DietaryFiber,
+                    @TotalFat,
+
+                    @UpdateTime,
+                    @CreateTime,
+
+                    @MealType,
+
+                    @Caffeine,
+                    @MonosaturatedFat,
+                    @Protein,
+                    @Manganese,
+                    @PolysaturatedFat,
+                    @Iron,
+                    @Zinc,
+                    @Riboflavin,
+                    @Sugar,
+
+                    @Title,
+
+                    @AddedSugar,
+                    @CaloriesFromFat,
+                    @Calcium,
+                    @Calorie,
+
+                    @TimeOffset,
+
+                    @DeviceUuid,
+
+                    @PolyunsaturatedFat,
+                    @SaturatedFat,
+                    @TransFat,
+
+                    @PkgName,
+
+                    @Selenium,
+                    @VitaminB6,
+                    @Carbohydrate,
+                    @UnsaturatedFat,
+                    @Chloride,
+                    @PantothenicAcid,
+
+                    @DataUuid,
+                    @Chromium
+                    )
+
+                    ON DUPLICATE KEY UPDATE
+
+                    magnesium = VALUES(magnesium),
+                    potassium = VALUES(potassium),
+                    vitamin_a = VALUES(vitamin_a),
+                    vitamin_c = VALUES(vitamin_c),
+                    vitamin_d = VALUES(vitamin_d),
+                    vitamin_e = VALUES(vitamin_e),
+                    vitamin_k = VALUES(vitamin_k),
+                    vitamin_b12 = VALUES(vitamin_b12),
+
+                    cholesterol = VALUES(cholesterol),
+
+                    biotin = VALUES(biotin),
+                    phosphorus = VALUES(phosphorus),
+                    copper = VALUES(copper),
+
+                    sodium = VALUES(sodium),
+
+                    dietary_fiber = VALUES(dietary_fiber),
+                    total_fat = VALUES(total_fat),
+
+                    monosaturated_fat = VALUES(monosaturated_fat),
+                    polysaturated_fat = VALUES(polysaturated_fat),
+                    saturated_fat = VALUES(saturated_fat),
+                    trans_fat = VALUES(trans_fat),
+
+                    protein = VALUES(protein),
+                    iron = VALUES(iron),
+                    zinc = VALUES(zinc),
+
+                    sugar = VALUES(sugar),
+                    added_sugar = VALUES(added_sugar),
+
+                    calcium = VALUES(calcium),
+                    calorie = VALUES(calorie),
+
+                    caffeine = VALUES(caffeine),
+
+                    carbohydrate = VALUES(carbohydrate),
+
+                    selenium = VALUES(selenium),
+                    chromium = VALUES(chromium),
+
+                    title = VALUES(title),
+
+                    update_time = VALUES(update_time);";
+        }
+
+        /// <summary>
+        /// Retrieves the SQL query to fetch all nutrition records for a specific person, ordered by start time descending.
+        /// </summary>
+        public string GetSamsungNutritionSql()
+        {
+            return @"SELECT *
+                  FROM tbl_FoodNutrition
+                  WHERE person_id = @PersonId
+                  ORDER BY start_time DESC;";
+        }
+
+        /// <summary>
+        /// Retrieves the SQL command to delete a specific nutrition record by its primary identifier.
+        /// </summary>
+        public string GetNutritionDeleteSql()
+        {
+            return @"DELETE
+                FROM tbl_FoodNutrition
+                WHERE food_nutrition_id = @Id;";
+        }
+
+        /// <summary>
+        /// Retrieves the SQL command to insert a new nutrition record into the database.
+        /// </summary>
+        public string GetSamsungNutritionInsertSql()
+        {
+            return @"INSERT INTO tbl_FoodNutrition
+                    (
+                        person_id,
+
+                        magnesium,
+                        potassium,
+                        create_sh_ver,
+
+                        vitamin_a,
+                        vitamin_c,
+                        vitamin_d,
+                        vitamin_e,
+                        vitamin_k,
+                        vitamin_b12,
+
+                        cholesterol,
+
+                        start_time,
+
+                        biotin,
+                        phosphorus,
+                        copper,
+
+                        custom,
+
+                        thiamin,
+                        folate,
+                        iodine,
+                        niacin,
+                        sodium,
+                        molybdenum,
+                        folic_acid,
+
+                        modify_sh_ver,
+
+                        dietary_fiber,
+                        total_fat,
+
+                        update_time,
+                        create_time,
+
+                        meal_type,
+
+                        caffeine,
+                        monosaturated_fat,
+                        protein,
+                        manganese,
+                        polysaturated_fat,
+                        iron,
+                        zinc,
+                        riboflavin,
+
+                        sugar,
+                        title,
+
+                        added_sugar,
+                        calories_from_fat,
+                        calcium,
+                        calorie,
+
+                        time_offset,
+
+                        deviceuuid,
+
+                        polyunsaturated_fat,
+                        saturated_fat,
+                        trans_fat,
+
+                        pkg_name,
+
+                        selenium,
+                        vitamin_b6,
+                        carbohydrate,
+                        unsaturated_fat,
+                        chloride,
+                        pantothenic_acid,
+
+                        datauuid,
+                        chromium
+                    )
+                    VALUES
+                    (
+                        @person_id,
+
+                        @magnesium,
+                        @potassium,
+                        @create_sh_ver,
+
+                        @vitamin_a,
+                        @vitamin_c,
+                        @vitamin_d,
+                        @vitamin_e,
+                        @vitamin_k,
+                        @vitamin_b12,
+
+                        @cholesterol,
+
+                        @start_time,
+
+                        @biotin,
+                        @phosphorus,
+                        @copper,
+
+                        @custom,
+
+                        @thiamin,
+                        @folate,
+                        @iodine,
+                        @niacin,
+                        @sodium,
+                        @molybdenum,
+                        @folic_acid,
+
+                        @modify_sh_ver,
+
+                        @dietary_fiber,
+                        @total_fat,
+
+                        @update_time,
+                        @create_time,
+
+                        @meal_type,
+
+                        @caffeine,
+                        @monosaturated_fat,
+                        @protein,
+                        @manganese,
+                        @polysaturated_fat,
+                        @iron,
+                        @zinc,
+                        @riboflavin,
+
+                        @sugar,
+                        @title,
+
+                        @added_sugar,
+                        @calories_from_fat,
+                        @calcium,
+                        @calorie,
+
+                        @time_offset,
+
+                        @deviceuuid,
+
+                        @polyunsaturated_fat,
+                        @saturated_fat,
+                        @trans_fat,
+
+                        @pkg_name,
+
+                        @selenium,
+                        @vitamin_b6,
+                        @carbohydrate,
+                        @unsaturated_fat,
+                        @chloride,
+                        @pantothenic_acid,
+
+                        @datauuid,
+                        @chromium
+                    );";
+        }
+
+
+        #endregion
 
 
         #region WorkoutLog SQL Commands

@@ -1,4 +1,5 @@
-﻿using BodyTracker.Services;
+﻿using BodyTracker.Resources.Languages;
+using BodyTracker.Services;
 using BodyTracker.Services.WorkoutLog;
 using BodyTracker.State;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -39,7 +40,7 @@ namespace BodyTracker.ViewModels.Main
         /// Service responsible for loading, managing, and persisting general application settings configurations.
         /// </summary>
         private AppSettingsService appSettingsService = new AppSettingsService();
-        
+
         /// <summary>
         /// Gets the command that triggers the file auto-load mechanism.
         /// </summary>
@@ -131,7 +132,7 @@ namespace BodyTracker.ViewModels.Main
         {
             if (HeartRateDatas == null || HeartRateDatas.Count == 0)
             {
-                GeneralInfoMessage = "No uploading data available.";
+                GeneralInfoMessage = UiStrings.Status_Database_NoUploadingDatas;
                 return;
             }
 
@@ -143,7 +144,7 @@ namespace BodyTracker.ViewModels.Main
 
             dispatcher.Interval = TimeSpan.FromSeconds(1);
 
-            dispatcher.Tick += (s, e) => TimeElapse = $"Time Elapse: {watch.Elapsed.ToString(@"mm\:ss")}";
+            dispatcher.Tick += (s, e) => TimeElapse = $"{UiStrings.Status_Database_TimeElapsed} {watch.Elapsed.ToString(@"mm\:ss")}";
 
             dispatcher.Start();
 
@@ -163,9 +164,9 @@ namespace BodyTracker.ViewModels.Main
 
 
                 await databaseService.UpsertHeartRatesSqlAsync(pid, HeartRateDatas, progress);
-               
 
-                ProgressText = $"Uploaded {HeartRateDatas.Count} Datas";
+
+                ProgressText = $"{UiStrings.Status_Database_UploadedCount} {HeartRateDatas.Count}";
             }
             catch (Exception ex)
             {
@@ -176,11 +177,11 @@ namespace BodyTracker.ViewModels.Main
                 IsLoading = false;
                 dispatcher.Stop();
                 watch.Stop();
-                TimeElapse = $"Total Upload Time: {watch.Elapsed.ToString(@"mm\:ss")}";
+                TimeElapse = $"{UiStrings.Status_Database_TotalUploadTime} {watch.Elapsed.ToString(@"mm\:ss")}";
 
             }
         }
-        
+
         /// <summary>
         /// Asynchronously opens a file dialog allowing the user to select a export file, 
         /// then parses and imports the data entries while updating progress indicators.
@@ -188,7 +189,7 @@ namespace BodyTracker.ViewModels.Main
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task OpenAsync()
         {
-          
+
             try
             {
                 var settings = appSettingsService.LoadConfigurationFile();
@@ -212,7 +213,7 @@ namespace BodyTracker.ViewModels.Main
                 var progress = new Progress<double>(value =>
                 {
                     ProgressValue = value * 100;
-                    ProgressText = $"Imported: {value:F0}%";
+                    ProgressText = $"{UiStrings.Status_FileImport_Progress} {value:F0}%"; ;
                 });
 
                 var list = await SamsungDataCsvExtractor.ParseHeartRateAsync(
@@ -222,7 +223,7 @@ namespace BodyTracker.ViewModels.Main
 
                 HeartRateDatas = new ObservableCollection<SamsungHeartRateModel>(list);
 
-                ProgressText = $"Imported {list.Count} Datas";
+                ProgressText = $"{UiStrings.Status_FileImport_Count} {list.Count}";
             }
             catch (Exception ex)
             {
@@ -256,13 +257,13 @@ namespace BodyTracker.ViewModels.Main
 
                 if (!path.Any())
                 {
-                    GeneralInfoMessage = "No Files were found";
+                    GeneralInfoMessage = UiStrings.Info_FileImport_NoFilesFound;
                     return;
                 }
 
                 if (path.Count() > 1)
                 {
-                    GeneralInfoMessage = "Several were found. Please select one of the dialog files.";
+                    GeneralInfoMessage = UiStrings.Info_FileImport_MultipleFound;
                     _ = OpenAsync();
                     return;
                 }
@@ -275,7 +276,7 @@ namespace BodyTracker.ViewModels.Main
                 var progress = new Progress<double>(value =>
                 {
                     ProgressValue = value * 100;
-                    ProgressText = $"Imported: {value:F0}%";
+                    ProgressText = $"{UiStrings.Status_FileImport_Progress} {value:F0}%"; ;
                 });
 
                 var list = await SamsungDataCsvExtractor.ParseHeartRateAsync(
@@ -285,7 +286,7 @@ namespace BodyTracker.ViewModels.Main
 
                 HeartRateDatas = new ObservableCollection<SamsungHeartRateModel>(list);
 
-                ProgressText = $"Imported {list.Count} Datas";
+                ProgressText = $"{UiStrings.Status_FileImport_Count} {list.Count}";
             }
             catch (Exception ex)
             {

@@ -140,7 +140,7 @@ namespace BodyTracker.Services
 
                 DateSelector = x => x.MeasurementDate,
                 ValueSelector = x => (double?)x.BodyMusclePercentage,
-                
+
                 TrendLineStyle = new float[] { 0, 0 }
 
             },
@@ -226,11 +226,11 @@ namespace BodyTracker.Services
         /// <param name="showBodyWaterTrend">A value indicating whether the body water trend line is displayed.</param>
         /// <returns>A tuple containing the generated array of chart series, X-axes, and Y-axes.</returns>
         public static ChartResult CreateWeightChart(DateTime startDate,
-                                                                                                   DateTime endDate,
-                                                                                                   List<FullBodyMeasurementDatasModel> data,
-                                                                                                   bool isTrendLineLegendVisible,
-                                                                                                   float strokeThickness, float geometrySize, double loessFraction,
-                                                                                                   bool showBodyWeight, bool showBodyWeightTrend)
+            DateTime endDate,
+            List<FullBodyMeasurementDatasModel> data,
+            bool isTrendLineLegendVisible,
+            float strokeThickness, float geometrySize, double loessFraction,
+            bool showBodyWeight, bool showBodyWeightTrend)
         {
 
 
@@ -325,12 +325,12 @@ namespace BodyTracker.Services
         /// <param name="showBodyWaterTrend">A value indicating whether the body water trend line is displayed.</param>
         /// <returns>A tuple containing the generated array of chart series, X-axes, and Y-axes.</returns>
         public static ChartResult CreateBodyMuscleFatPercantageChart(DateTime startDate,
-                                                                                                   DateTime endDate,
-                                                                                                   List<FullBodyMeasurementDatasModel> data,
-                                                                                                   bool isTrendLineLegendVisible,
-                                                                                                   float strokeThickness, float geometrySize, double loessFraction,
-                                                                                                   bool showBodyFat, bool showBodyFatTrend,
-                                                                                                   bool showBodyMuscle, bool showBodyMuscleTrend)
+            DateTime endDate,
+            List<FullBodyMeasurementDatasModel> data,
+            bool isTrendLineLegendVisible,
+            float strokeThickness, float geometrySize, double loessFraction,
+            bool showBodyFat, bool showBodyFatTrend,
+            bool showBodyMuscle, bool showBodyMuscleTrend)
         {
 
             float maxFat = 0;
@@ -434,6 +434,197 @@ namespace BodyTracker.Services
             return new ChartResult { Series = series, XAxis = XAxis, YAxis = YAxes };
         }
 
+
+        /// <summary>
+        /// Generates and configures chart series, X-axis, and Y-axes for body fat percentage data visualization.
+        /// </summary>
+        /// <remarks>Filters and orders the measurement data by the specified date range, calculates dynamic axis scaling limits for body fat percentage, builds the series definitions incorporating trend lines and styling parameters, and constructs the final cartesian axes and series arrays.</remarks>
+        /// <param name="startDate">The start date for filtering measurement records.</param>
+        /// <param name="endDate">The end date for filtering measurement records.</param>
+        /// <param name="data">The collection of full body measurement models to be visualized.</param>
+        /// <param name="isTrendLineLegendVisible">A value indicating whether trend lines are visible in the chart legend.</param>
+        /// <param name="strokeThickness">The stroke thickness applied to the chart lines.</param>
+        /// <param name="geometrySize">The point geometry size used for data markers.</param>
+        /// <param name="loessFraction">The smoothing fraction parameter used for LOESS trend calculations.</param>
+        /// <param name="showBodyFat">A value indicating whether the body fat percentage series is visible.</param>
+        /// <param name="showBodyFatTrend">A value indicating whether the body fat trend line is displayed.</param>
+        /// <returns>A chart result containing the generated array of chart series, X-axes, and Y-axes.</returns>
+        public static ChartResult CreateBodyFatPercantageChart(DateTime startDate,
+            DateTime endDate,
+            List<FullBodyMeasurementDatasModel> data,
+            bool isTrendLineLegendVisible,
+            float strokeThickness, float geometrySize, double loessFraction,
+            bool showBodyFat, bool showBodyFatTrend)
+        {
+            if (data == null || data.Count == 0)
+            {
+                return new ChartResult
+                {
+                    Series = Array.Empty<ISeries>(),
+                    XAxis = Array.Empty<ICartesianAxis>(),
+                    YAxis = Array.Empty<ICartesianAxis>()
+                };
+            }
+
+            float maxFat = data.Max(d => d.BodyFatPercentage ?? 0.0f);
+            float minFat = data.Min(d => d.BodyFatPercentage ?? 0.0f);
+
+            maxFat += maxFat * 0.01f;
+            minFat -= minFat * 0.01f;
+
+            var chartDefinitions = new[]
+            {
+                new ChartSeriesModel<FullBodyMeasurementDatasModel>
+                {
+                    Name = "Body Fat (%)",
+                    TrendName = "Body Fat Trend (%)",
+                    Color = SKColors.Red,
+                    YAxisIndex = 0,
+
+                    IsVisible = showBodyFat,
+                    ShowTrend = showBodyFatTrend,
+                    IsTrendLineVisible = isTrendLineLegendVisible,
+
+                    StrokeThickness = strokeThickness,
+                    GeometrySize = geometrySize,
+
+                    DateSelector = x => x.MeasurementDate,
+                    ValueSelector = x => (double?)x.BodyFatPercentage,
+                }
+            };
+
+            var series = ChartSeriesBuilder.CreateSeries(data,
+                                                         chartDefinitions,
+                                                         loessFraction).ToArray();
+
+            var XAxis = new ICartesianAxis[]
+            {
+                new DateTimeAxis(
+                    TimeSpan.FromDays(1),
+                    date => date.ToString("dd.MM.yyyy"))
+                {
+                        SeparatorsPaint = new SolidColorPaint(SKColors.LightGray)
+                        {
+                            StrokeThickness = strokeThickness,
+                            PathEffect = new DashEffect(new float[] { 4, 4 })
+                        },
+                ShowSeparatorLines = true,
+                }
+            };
+
+
+            var yAxisDefinitions = new[]
+            {
+        new ChartYAxisModel
+        {
+            Name = "%",
+            Position = AxisPosition.Start,
+            ShowSeparatorLines = true,
+            MinLimit = minFat,
+            MaxLimit = maxFat,
+        }
+    };
+
+            var YAxes = yAxisDefinitions.Select(ChartAxisBuilder.Create).ToArray();
+
+            return new ChartResult { Series = series, XAxis = XAxis, YAxis = YAxes };
+        }
+
+        /// <summary>
+        /// Generates and configures chart series, X-axis, and Y-axes for body muscle percentage data visualization.
+        /// </summary>
+        /// <remarks>Filters and orders the measurement data by the specified date range, calculates dynamic axis scaling limits for body muscle percentage based on correct property selectors, builds the series definitions incorporating trend lines and styling parameters, and constructs the final cartesian axes and series arrays.</remarks>
+        /// <param name="startDate">The start date for filtering measurement records.</param>
+        /// <param name="endDate">The end date for filtering measurement records.</param>
+        /// <param name="data">The collection of full body measurement models to be visualized.</param>
+        /// <param name="isTrendLineLegendVisible">A value indicating whether trend lines are visible in the chart legend.</param>
+        /// <param name="strokeThickness">The stroke thickness applied to the chart lines.</param>
+        /// <param name="geometrySize">The point geometry size used for data markers.</param>
+        /// <param name="loessFraction">The smoothing fraction parameter used for LOESS trend calculations.</param>
+        /// <param name="showBodyMuscle">A value indicating whether the body muscle percentage series is visible.</param>
+        /// <param name="showBodyMuscleTrend">A value indicating whether the body muscle trend line is displayed.</param>
+        /// <returns>A chart result containing the generated array of chart series, X-axes, and Y-axes.</returns>
+        public static ChartResult CreateBodyMusclePercantageChart(DateTime startDate,
+            DateTime endDate,
+            List<FullBodyMeasurementDatasModel> data,
+            bool isTrendLineLegendVisible,
+            float strokeThickness, float geometrySize, double loessFraction,
+            bool showBodyMuscle, bool showBodyMuscleTrend)
+        {
+            if (data == null || data.Count == 0)
+            {
+                return new ChartResult
+                {
+                    Series = Array.Empty<ISeries>(),
+                    XAxis = Array.Empty<ICartesianAxis>(),
+                    YAxis = Array.Empty<ICartesianAxis>()
+                };
+            }
+
+            float maxMuscle = data.Max(d => d.BodyMusclePercentage ?? 0.0f);
+            float minMuscle = data.Min(d => d.BodyMusclePercentage ?? 0.0f);
+
+            maxMuscle += maxMuscle * 0.01f;
+            minMuscle -= minMuscle * 0.01f;
+
+            var chartDefinitions = new[]
+            {
+                new ChartSeriesModel<FullBodyMeasurementDatasModel>
+                {
+                    Name = "Body Muscle (%)",
+                    TrendName = "Body Muscle Trend (%)",
+                    Color = SKColors.Green,
+                    YAxisIndex = 0,
+
+                    IsVisible = showBodyMuscle,
+                    ShowTrend = showBodyMuscleTrend,
+                    IsTrendLineVisible = isTrendLineLegendVisible,
+
+                    StrokeThickness = strokeThickness,
+                    GeometrySize = geometrySize,
+
+                    DateSelector = x => x.MeasurementDate,
+                    ValueSelector = x => (double?)x.BodyMusclePercentage
+                }
+            };
+
+            var series = ChartSeriesBuilder.CreateSeries(data,
+                                                         chartDefinitions,
+                                                         loessFraction).ToArray();
+
+            var XAxis = new ICartesianAxis[]
+            {
+            new DateTimeAxis(
+                TimeSpan.FromDays(1),
+                date => date.ToString("dd.MM.yyyy"))
+            {
+                 SeparatorsPaint = new SolidColorPaint(SKColors.LightGray)
+                 {
+                     StrokeThickness = strokeThickness,
+                     PathEffect = new DashEffect(new float[] { 4, 4 })
+                 },
+                ShowSeparatorLines = true,
+                }
+            };
+
+
+            var yAxisDefinitions = new[]
+            {
+        new ChartYAxisModel
+        {
+            Name = "%",
+            Position = AxisPosition.Start,
+            ShowSeparatorLines = true,
+            MinLimit = minMuscle,
+            MaxLimit = maxMuscle,
+        }
+    };
+
+            var YAxes = yAxisDefinitions.Select(ChartAxisBuilder.Create).ToArray();
+
+            return new ChartResult { Series = series, XAxis = XAxis, YAxis = YAxes };
+        }
+        
         /// <summary>
         /// Generates and configures chart series, X-axis, and Y-axes for body bodyMeasurement data visualization.
         /// </summary>
@@ -455,11 +646,11 @@ namespace BodyTracker.Services
         /// <param name="showBodyWaterTrend">A value indicating whether the body water trend line is displayed.</param>
         /// <returns>A tuple containing the generated array of chart series, X-axes, and Y-axes.</returns>
         public static ChartResult CreateBodyWaterChart(DateTime startDate,
-                                                                                                   DateTime endDate,
-                                                                                                   List<FullBodyMeasurementDatasModel> data,
-                                                                                                   bool isTrendLineLegendVisible,
-                                                                                                   float strokeThickness, float geometrySize, double loessFraction,
-                                                                                                   bool showBodyWater, bool showBodyWaterTrend)
+            DateTime endDate,
+            List<FullBodyMeasurementDatasModel> data,
+            bool isTrendLineLegendVisible,
+            float strokeThickness, float geometrySize, double loessFraction,
+            bool showBodyWater, bool showBodyWaterTrend)
         {
 
             float max = 0;
@@ -2513,7 +2704,7 @@ namespace BodyTracker.Services
               .Max(d => d.PercentageShare) ?? 0;
 
 
-           
+
 
 
             if (results.Any())
@@ -2618,7 +2809,7 @@ namespace BodyTracker.Services
                 {
                     if (value == null) break;
                     prevMuscleDistributionSpiderChartValues.Add(value.PercentageShare ?? 0);
-                    if(!actResults.Any()) actMuscleDistributionSpiderChartAxisName.Add(value.MuscleGroup);
+                    if (!actResults.Any()) actMuscleDistributionSpiderChartAxisName.Add(value.MuscleGroup);
                 }
             }
 

@@ -24,6 +24,7 @@
                 <RowDefinition Height="300"/>
                 <RowDefinition Height="300"/>
                 <RowDefinition Height="300"/>
+                <RowDefinition Height="300"/>
             </Grid.RowDefinitions>
 
 
@@ -264,7 +265,7 @@
                 </Grid>
             </Border>
 
-            <!-- ================= POPUP BODY FAT MUSCLE CHART ================= -->
+            <!-- ================= POPUP BODY MUSCLE CHART ================= -->
             <Border Style="{StaticResource BorderDashboardCardStyle}"
                     Grid.Column="0"
                     Grid.Row="2"
@@ -280,16 +281,15 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Text="{loc:Translate ChartTitleBodyComposition}"
+                    <TextBlock Text="{loc:Translate ChartTitleBodyCompositionMuscle}"
                          Style="{DynamicResource TextBlockDashBoardTitle}"
                          Grid.Column="0"
                          Grid.Row="0"
                          Margin="0,0,0,12"/>
 
-                    <lvc:CartesianChart x:Name="BodyFatMuscleChart"
-                              Series="{Binding SeriesBodyFatMuscle}" 
-                              XAxes="{Binding XAxesBodyFatMuscle}" 
-                              YAxes="{Binding YAxesBodyFatMuscle}" 
+                    <lvc:CartesianChart Series="{Binding SeriesBodyMuscle}" 
+                              XAxes="{Binding XAxesBodyMuscle}" 
+                              YAxes="{Binding YAxesBodyMuscle}" 
                               LegendPosition="Bottom"
                               Background="Transparent"
                               Grid.Column="0"
@@ -299,10 +299,47 @@
                 </Grid>
             </Border>
 
-            <!-- ================= POPUP BODY WATER CHART ================= -->
+
+            <!-- ================= POPUP BODY FAT CHART ================= -->
             <Border Style="{StaticResource BorderDashboardCardStyle}"
                     Grid.Column="0"
                     Grid.Row="3"
+                    Margin="0,12,0,0">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="{loc:Translate ChartTitleBodyComposition Fat}"
+                         Style="{DynamicResource TextBlockDashBoardTitle}"
+                         Grid.Column="0"
+                         Grid.Row="0"
+                         Margin="0,0,0,12"/>
+
+                    <lvc:CartesianChart Series="{Binding SeriesBodyFat}" 
+                              XAxes="{Binding XAxesBodyFat}" 
+                              YAxes="{Binding YAxesBodyFat}" 
+                              LegendPosition="Bottom"
+                              Background="Transparent"
+                              Grid.Column="0"
+                              Grid.Row="1">
+                    </lvc:CartesianChart>
+
+                </Grid>
+            </Border>
+
+
+
+            <!-- ================= POPUP BODY WATER CHART ================= -->
+            <Border Style="{StaticResource BorderDashboardCardStyle}"
+                    Grid.Column="0"
+                    Grid.Row="4"
                     Margin="0,12,0,0">
 
                 <Grid>

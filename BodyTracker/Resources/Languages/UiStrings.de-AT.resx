@@ -544,7 +544,7 @@
     <value>VO2 Max</value>
   </data>
   <data name="ColTimeOffset" xml:space="preserve">
-    <value>Zeitversatz</value>
+    <value>Zeitzonenversatz</value>
   </data>
   <data name="ColMaxRpm" xml:space="preserve">
     <value>Max. RPM</value>
@@ -676,7 +676,7 @@
     <value>Protein</value>
   </data>
   <data name="ColTotalFat" xml:space="preserve">
-    <value>Fett gesamt</value>
+    <value>Gesamtfett</value>
   </data>
   <data name="ColSaturatedFat" xml:space="preserve">
     <value>Gesättigte Fettsäuren</value>
@@ -694,7 +694,7 @@
     <value>Zucker</value>
   </data>
   <data name="ColAddedSugar" xml:space="preserve">
-    <value>Zugefügter Zucker</value>
+    <value>Zugesetzter Zucker</value>
   </data>
   <data name="ColDietaryFiber" xml:space="preserve">
     <value>Ballaststoffe</value>
@@ -972,8 +972,8 @@
   <data name="ChartTitleBodyWater" xml:space="preserve">
     <value>💧 Körperwasseranalyse</value>
   </data>
-  <data name="ChartTitleBodyComposition" xml:space="preserve">
-    <value>🧬 Körperzusammensetzung (Fett | Muskeln)</value>
+  <data name="ChartTitleBodyCompositionMuscle" xml:space="preserve">
+    <value>🧬 Körperzusammensetzung Muskeln</value>
   </data>
   <data name="NavBodyMeasurement" xml:space="preserve">
     <value>📋 Körpermessung</value>
@@ -1224,11 +1224,11 @@
   <data name="ImgCaliperMeasurement" xml:space="preserve">
     <value>pack://application:,,,/Resources/Images/Caliper_Female_Male_de.png</value>
   </data>
-  <data name="Dialog_RestartRequiredMessage" xml:space="preserve">
-    <value>Die vorgenommenen Änderungen werden erst nach einem Neustart der Anwendung wirksam.</value>
-  </data>
   <data name="InformationTitle" xml:space="preserve">
     <value>Information</value>
+  </data>
+  <data name="Dialog_RestartRequiredMessage" xml:space="preserve">
+    <value>Die vorgenommenen Änderungen werden erst nach einem Neustart der Anwendung wirksam.</value>
   </data>
   <data name="BtnCancel" xml:space="preserve">
     <value>Abbrechen</value>
@@ -1440,21 +1440,145 @@
   <data name="Dialog_RestartPromptTitle" xml:space="preserve">
     <value>Warnung</value>
   </data>
-
-	<data name="Dialog_Height_GreaterThanZero" xml:space="preserve">
+  <data name="Dialog_Height_GreaterThanZero" xml:space="preserve">
     <value>Die Größe muss größer als Null sein.</value>
   </data>
-
-	<data name="Dialog_DeleteData_Message" xml:space="preserve">
+  <data name="Dialog_DeleteData_Message" xml:space="preserve">
     <value>Möchten Sie die ausgewählten Daten wirklich löschen?</value>
   </data>
-	<data name="Dialog_DeleteData_Title" xml:space="preserve">
+  <data name="Dialog_DeleteData_Title" xml:space="preserve">
     <value>Löschen bestätigen</value>
   </data>
-	<data name="Dialog_InvalidValues_Message" xml:space="preserve">
+  <data name="Dialog_InvalidValues_Message" xml:space="preserve">
     <value>Die Werte sind ungültig. Bitte prüfen Sie, ob Eingabefelder rot markiert sind, und korrigieren Sie den Wert.</value>
   </data>
-	<data name="Dialog_Warning_Title" xml:space="preserve">
+  <data name="Dialog_Warning_Title" xml:space="preserve">
     <value>Warnung</value>
+  </data>
+  <data name="ChartTitleBodyCompositionFat" xml:space="preserve">
+    <value>🧬 Körperzusammensetzung Fett</value>
+  </data>
+  <data name="ColCarbohydrate" xml:space="preserve">
+    <value>Kohlenhydrate</value>
+  </data>
+  <data name="ColUnsaturatedFat" xml:space="preserve">
+    <value>Ungesättigte Fettsäuren</value>
+  </data>
+  <data name="ColPolyunsaturatedFat" xml:space="preserve">
+    <value>Mehrfach ungesättigte Fettsäuren</value>
+  </data>
+  <data name="ColMagnesium" xml:space="preserve">
+    <value>Magnesium</value>
+  </data>
+  <data name="ColPhosphorus" xml:space="preserve">
+    <value>Phosphor</value>
+  </data>
+  <data name="ColZinc" xml:space="preserve">
+    <value>Zink</value>
+  </data>
+  <data name="ColCopper" xml:space="preserve">
+    <value>Kupfer</value>
+  </data>
+  <data name="ColManganese" xml:space="preserve">
+    <value>Mangan</value>
+  </data>
+  <data name="ColSelenium" xml:space="preserve">
+    <value>Selen</value>
+  </data>
+  <data name="ColChromium" xml:space="preserve">
+    <value>Chrom</value>
+  </data>
+  <data name="ColMolybdenum" xml:space="preserve">
+    <value>Molybdän</value>
+  </data>
+  <data name="ColIodine" xml:space="preserve">
+    <value>Jod</value>
+  </data>
+  <data name="ColChloride" xml:space="preserve">
+    <value>Chlorid</value>
+  </data>
+  <data name="ColVitaminB6" xml:space="preserve">
+    <value>Vitamin B6</value>
+  </data>
+  <data name="ColVitaminB12" xml:space="preserve">
+    <value>Vitamin B12</value>
+  </data>
+  <data name="ColVitaminE" xml:space="preserve">
+    <value>Vitamin E</value>
+  </data>
+  <data name="ColVitaminK" xml:space="preserve">
+    <value>Vitamin K</value>
+  </data>
+  <data name="ColThiamin" xml:space="preserve">
+    <value>Thiamin (Vitamin B1)</value>
+  </data>
+  <data name="ColRiboflavin" xml:space="preserve">
+    <value>Riboflavin (Vitamin B2)</value>
+  </data>
+  <data name="ColNiacin" xml:space="preserve">
+    <value>Niacin (Vitamin B3)</value>
+  </data>
+  <data name="ColBiotin" xml:space="preserve">
+    <value>Biotin (Vitamin B7)</value>
+  </data>
+  <data name="ColFolate" xml:space="preserve">
+    <value>Folat</value>
+  </data>
+  <data name="ColFolicAcid" xml:space="preserve">
+    <value>Folsäure</value>
+  </data>
+  <data name="ColPantothenicAcid" xml:space="preserve">
+    <value>Pantothensäure (Vitamin B5)</value>
+  </data>
+  <data name="ColCaffeine" xml:space="preserve">
+    <value>Koffein</value>
+  </data>
+  <data name="ColCreateShVersion" xml:space="preserve">
+    <value>Erstellungsversion (SH)</value>
+  </data>
+  <data name="ColModifyShVersion" xml:space="preserve">
+    <value>Änderungsversion (SH)</value>
+  </data>
+  <data name="NavFoodNutrition" xml:space="preserve">
+    <value>🍽️ Nährstoffbilanz </value>
+  </data>
+  <data name="Status_Database_Updated" xml:space="preserve">
+    <value>Daten werden aktualisiert...</value>
+  </data>
+  <data name="Status_Database_Inserted" xml:space="preserve">
+    <value>Änderungen werden verarbeitet...</value>
+  </data>
+  <data name="Status_Database_TotalUploadTime" xml:space="preserve">
+    <value>Gesamte Upload-Zeit:</value>
+  </data>
+  <data name="Status_Database_UploadedCount" xml:space="preserve">
+    <value>Hochgeladene Datensätze:</value>
+  </data>
+  <data name="Status_Database_TimeElapsed" xml:space="preserve">
+    <value>Verstrichene Zeit:</value>
+  </data>
+  <data name="Status_FileImport_Count" xml:space="preserve">
+    <value>Importierte Dateneinträge:</value>
+  </data>
+  <data name="Info_FileImport_MultipleFound" xml:space="preserve">
+    <value>Es wurden mehrere gefunden. Bitte wählen Sie eine der Dateien aus.</value>
+  </data>
+  <data name="Info_FileImport_NoFilesFound" xml:space="preserve">
+    <value>Es wurden keine Dateien gefunden.</value>
+  </data>
+  <data name="Status_FileImport_Progress" xml:space="preserve">
+    <value>Importiert:</value>
+  </data>
+  <data name="Status_Database_Deleted" xml:space="preserve">
+    <value>Gelöscht...</value>
+  </data>
+  <data name="Status_Database_Finished" xml:space="preserve">
+    <value>Abgeschlossen...</value>
+  </data>
+  <data name="Status_Database_NoUploadingDatas" xml:space="preserve">
+    <value>Keine Upload-Daten verfügbar.</value>
+  </data>
+  <data name="Status_Workout_Download" xml:space="preserve">
+    <value>Heruntergeladen...</value>
   </data>
 </root>

@@ -1,4 +1,5 @@
 ﻿using BodyTracker.Models;
+using BodyTracker.Resources.Languages;
 using BodyTracker.Services;
 using BodyTracker.Services.WorkoutLog;
 using BodyTracker.State;
@@ -41,7 +42,7 @@ namespace BodyTracker.ViewModels
         /// Service responsible for loading, managing, and persisting general application settings configurations.
         /// </summary>
         private AppSettingsService appSettingsService = new AppSettingsService();
-        
+
         /// <summary>
         /// Gets the command that triggers the file auto-load mechanism.
         /// </summary>
@@ -83,7 +84,7 @@ namespace BodyTracker.ViewModels
         /// </summary>
         [ObservableProperty] private string timeElapse = string.Empty;
 
-            /// <summary>
+        /// <summary>
         /// A private string specifying the keyword or pattern used to filter file names during the search.
         /// </summary>
         private string searchTerm = "workout_data";
@@ -138,7 +139,7 @@ namespace BodyTracker.ViewModels
         {
             if (HevyAppDatas == null || HevyAppDatas.Count == 0)
             {
-                GeneralInfoMessage = "No uploading data available.";
+                GeneralInfoMessage = UiStrings.Status_Database_NoUploadingDatas;;
                 return;
             }
 
@@ -150,7 +151,7 @@ namespace BodyTracker.ViewModels
 
             dispatcher.Interval = TimeSpan.FromSeconds(1);
 
-            dispatcher.Tick += (s, e) => TimeElapse = $"Time Elapse: {watch.Elapsed.ToString(@"mm\:ss")}";
+            dispatcher.Tick += (s, e) => TimeElapse = $"{UiStrings.Status_Database_TimeElapsed} {watch.Elapsed.ToString(@"mm\:ss")}";
 
             dispatcher.Start();
 
@@ -170,7 +171,7 @@ namespace BodyTracker.ViewModels
 
                 await databaseService.SyncWorkoutLogAsync(pid, HevyAppDatas, progress);
 
-                ProgressText = $"Uploaded {HevyAppDatas.Count} Datas";
+                ProgressText = $"{UiStrings.Status_Database_UploadedCount} {HevyAppDatas.Count}";
             }
             catch (Exception ex)
             {
@@ -181,7 +182,7 @@ namespace BodyTracker.ViewModels
                 IsLoading = false;
                 dispatcher.Stop();
                 watch.Stop();
-                TimeElapse = $"Total Upload Time: {watch.Elapsed.ToString(@"mm\:ss")}";
+                TimeElapse = $"{UiStrings.Status_Database_TotalUploadTime} {watch.Elapsed.ToString(@"mm\:ss")}";
             }
         }
 
@@ -192,7 +193,7 @@ namespace BodyTracker.ViewModels
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task OpenAsync()
         {
-           
+
             try
             {
                 var settings = appSettingsService.LoadConfigurationFile();
@@ -216,7 +217,7 @@ namespace BodyTracker.ViewModels
                 var progress = new Progress<double>(value =>
                 {
                     ProgressValue = value * 100;
-                    ProgressText = $"Imported: {value:F0}%";
+                    ProgressText = $"{UiStrings.Status_FileImport_Progress} {value:F0}%"; ;
                 });
 
                 var list = await WorkoutLogImporter.ImportCSVAsync(filePath,
@@ -225,7 +226,7 @@ namespace BodyTracker.ViewModels
 
                 HevyAppDatas = new ObservableCollection<HevyAppCSVModel>(list);
 
-                ProgressText = $"Imported {list.Count} Datas)";
+                ProgressText = $"{UiStrings.Status_FileImport_Count} {list.Count}";
             }
             catch (Exception ex)
             {
@@ -259,13 +260,13 @@ namespace BodyTracker.ViewModels
 
                 if (!path.Any())
                 {
-                    GeneralInfoMessage = "No Files were found";
+                    GeneralInfoMessage = UiStrings.Info_FileImport_NoFilesFound;
                     return;
                 }
 
                 if (path.Count() > 1)
                 {
-                    GeneralInfoMessage = "Several were found. Please select one of the dialog files.";
+                    GeneralInfoMessage = UiStrings.Info_FileImport_MultipleFound;
                     _ = OpenAsync();
                     return;
                 }
@@ -277,7 +278,7 @@ namespace BodyTracker.ViewModels
                 var progress = new Progress<double>(value =>
                 {
                     ProgressValue = value * 100;
-                    ProgressText = $"Imported: {value:F0}%";
+                    ProgressText = $"{UiStrings.Status_FileImport_Progress} {value:F0}%"; ;
                 });
 
                 var list = await WorkoutLogImporter.ImportCSVAsync(filePath,
@@ -286,7 +287,7 @@ namespace BodyTracker.ViewModels
 
                 HevyAppDatas = new ObservableCollection<HevyAppCSVModel>(list);
 
-                ProgressText = $"Imported ({list.Count} Data entries)";
+                ProgressText = $"{UiStrings.Status_FileImport_Count} {list.Count}";
             }
             catch (Exception ex)
             {
@@ -315,7 +316,7 @@ namespace BodyTracker.ViewModels
 
             dispatcher.Interval = TimeSpan.FromSeconds(1);
 
-            dispatcher.Tick += (s, e) => TimeElapse = $"Time Elapse: {watch.Elapsed.ToString(@"mm\:ss")}";
+            dispatcher.Tick += (s, e) => TimeElapse = $"{UiStrings.Status_Database_TimeElapsed} {watch.Elapsed.ToString(@"mm\:ss")}";
 
             dispatcher.Start();
 
@@ -327,18 +328,18 @@ namespace BodyTracker.ViewModels
                 var progress = new Progress<(double value, string? ProgressText)>(value =>
                 {
                     ProgressValue = value.value;
-                    ProgressText = $"Downloaded: {ProgressValue:F0}%";
+                    ProgressText = $"{UiStrings.Status_Workout_Download} {ProgressValue:F0}%";
                 });
 
                 var list = await Task.Run(() => WorkoutLogImporter.ImportOnlineAsync(progress));
 
                 HevyAppDatas = new ObservableCollection<HevyAppCSVModel>(list);
 
-                ProgressText = $"Imported ({list.Count} Data entries)";
+                ProgressText = $"{UiStrings.Status_FileImport_Count} {list.Count}";
             }
             catch (Exception ex)
             {
-            
+
                 if (ex.InnerException != null) GeneralInfoMessage = $"{ex.Source} | {ex.InnerException.Message}";
                 else GeneralInfoMessage = $"{ex.TargetSite?.Name} | {ex.Message}";
 
@@ -348,7 +349,7 @@ namespace BodyTracker.ViewModels
                 IsLoading = false;
                 dispatcher.Stop();
                 watch.Stop();
-                TimeElapse = $"Total Upload Time: {watch.Elapsed.ToString(@"mm\:ss")}";
+                TimeElapse = $"{UiStrings.Status_Database_TotalUploadTime} {watch.Elapsed.ToString(@"mm\:ss")}";
             }
         }
 

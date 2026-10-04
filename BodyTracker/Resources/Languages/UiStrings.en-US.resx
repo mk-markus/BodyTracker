@@ -532,7 +532,7 @@
     <value>Max Caloric Burn Rate</value>
   </data>
   <data name="ColCalorie" xml:space="preserve">
-    <value>Calorie</value>
+    <value>Calories</value>
   </data>
   <data name="ColMaxCadence" xml:space="preserve">
     <value>Max Cadence</value>
@@ -972,8 +972,8 @@
   <data name="ChartTitleBodyWater" xml:space="preserve">
     <value>💧 Body Water Analysis</value>
   </data>
-  <data name="ChartTitleBodyComposition" xml:space="preserve">
-    <value>🧬 Body Composition (Fat | Muscle)</value>
+  <data name="ChartTitleBodyCompositionMuscle" xml:space="preserve">
+    <value>🧬 Body Composition Muscle</value>
   </data>
   <data name="NavBodyMeasurement" xml:space="preserve">
     <value>📋 Body Measurement</value>
@@ -997,7 +997,7 @@
     <value>💓 Heart Rate</value>
   </data>
   <data name="NavSpO2" xml:space="preserve">
-    <value>SpO₂</value>
+    <value>🫁 SpO₂</value>
   </data>
   <data name="NavGym" xml:space="preserve">
     <value>🏋️ Gym</value>
@@ -1224,11 +1224,11 @@
   <data name="ImgCaliperMeasurement" xml:space="preserve">
     <value>pack://application:,,,/Resources/Images/Caliper_Female_Male_en.png</value>
   </data>
-  <data name="Dialog_RestartRequiredMessage" xml:space="preserve">
-    <value>Changes will take effect only after restarting the application.</value>
-  </data>
   <data name="InformationTitle" xml:space="preserve">
     <value>Information</value>
+  </data>
+  <data name="Dialog_RestartRequiredMessage" xml:space="preserve">
+    <value>Changes will take effect only after restarting the application.</value>
   </data>
   <data name="BtnCancel" xml:space="preserve">
     <value>Cancel</value>
@@ -1440,21 +1440,145 @@
   <data name="Dialog_RestartPromptTitle" xml:space="preserve">
     <value>Warning</value>
   </data>
-	<data name="Dialog_Height_GreaterThanZero" xml:space="preserve">
+  <data name="Dialog_Height_GreaterThanZero" xml:space="preserve">
     <value>Height must be greater than zero.</value>
   </data>
-	<data name="Dialog_DeleteData_Message" xml:space="preserve">
+  <data name="Dialog_DeleteData_Message" xml:space="preserve">
     <value>Are you sure you want to delete the selected data?</value>
   </data>
-	<data name="Dialog_DeleteData_Title" xml:space="preserve">
+  <data name="Dialog_DeleteData_Title" xml:space="preserve">
     <value>Confirm Deletion</value>
   </data>
-
-	<data name="Dialog_InvalidValues_Message" xml:space="preserve">
+  <data name="Dialog_InvalidValues_Message" xml:space="preserve">
     <value>The values are not valid. Check if some value boxes has an red frame and correct the value</value>
   </data>
-	<data name="Dialog_Warning_Title" xml:space="preserve">
+  <data name="Dialog_Warning_Title" xml:space="preserve">
     <value>Warning</value>
   </data>
-	
+  <data name="ChartTitleBodyCompositionFat" xml:space="preserve">
+    <value>🧬 Body Composition Fat</value>
+  </data>
+  <data name="ColCarbohydrate" xml:space="preserve">
+    <value>Carbohydrates</value>
+  </data>
+  <data name="ColUnsaturatedFat" xml:space="preserve">
+    <value>Unsaturated Fat</value>
+  </data>
+  <data name="ColPolyunsaturatedFat" xml:space="preserve">
+    <value>Polyunsaturated Fat</value>
+  </data>
+  <data name="ColMagnesium" xml:space="preserve">
+    <value>Magnesium</value>
+  </data>
+  <data name="ColPhosphorus" xml:space="preserve">
+    <value>Phosphorus</value>
+  </data>
+  <data name="ColZinc" xml:space="preserve">
+    <value>Zinc</value>
+  </data>
+  <data name="ColCopper" xml:space="preserve">
+    <value>Copper</value>
+  </data>
+  <data name="ColManganese" xml:space="preserve">
+    <value>Manganese</value>
+  </data>
+  <data name="ColSelenium" xml:space="preserve">
+    <value>Selenium</value>
+  </data>
+  <data name="ColChromium" xml:space="preserve">
+    <value>Chromium</value>
+  </data>
+  <data name="ColMolybdenum" xml:space="preserve">
+    <value>Molybdenum</value>
+  </data>
+  <data name="ColIodine" xml:space="preserve">
+    <value>Iodine</value>
+  </data>
+  <data name="ColChloride" xml:space="preserve">
+    <value>Chloride</value>
+  </data>
+  <data name="ColVitaminB6" xml:space="preserve">
+    <value>Vitamin B6</value>
+  </data>
+  <data name="ColVitaminB12" xml:space="preserve">
+    <value>Vitamin B12</value>
+  </data>
+  <data name="ColVitaminE" xml:space="preserve">
+    <value>Vitamin E</value>
+  </data>
+  <data name="ColVitaminK" xml:space="preserve">
+    <value>Vitamin K</value>
+  </data>
+  <data name="ColThiamin" xml:space="preserve">
+    <value>Thiamin</value>
+  </data>
+  <data name="ColRiboflavin" xml:space="preserve">
+    <value>Riboflavin</value>
+  </data>
+  <data name="ColNiacin" xml:space="preserve">
+    <value>Niacin</value>
+  </data>
+  <data name="ColBiotin" xml:space="preserve">
+    <value>Biotin</value>
+  </data>
+  <data name="ColFolate" xml:space="preserve">
+    <value>Folate</value>
+  </data>
+  <data name="ColFolicAcid" xml:space="preserve">
+    <value>Folic Acid</value>
+  </data>
+  <data name="ColPantothenicAcid" xml:space="preserve">
+    <value>Pantothenic Acid</value>
+  </data>
+  <data name="ColCaffeine" xml:space="preserve">
+    <value>Caffeine</value>
+  </data>
+  <data name="ColCreateShVersion" xml:space="preserve">
+    <value>Create SH Version</value>
+  </data>
+  <data name="ColModifyShVersion" xml:space="preserve">
+    <value>Modify SH Version</value>
+  </data>
+  <data name="NavFoodNutrition" xml:space="preserve">
+    <value>🍽️ Nutrient balance</value>
+  </data>
+  <data name="Status_Database_Updated" xml:space="preserve">
+    <value>Updating data...</value>
+  </data>
+  <data name="Status_Database_Inserted" xml:space="preserve">
+    <value>Processing changes...</value>
+  </data>
+  <data name="Status_Database_TotalUploadTime" xml:space="preserve">
+    <value>Total upload time:</value>
+  </data>
+  <data name="Status_Database_UploadedCount" xml:space="preserve">
+    <value>Uploaded data count:</value>
+  </data>
+  <data name="Status_Database_TimeElapsed" xml:space="preserve">
+    <value>Time elapsed:</value>
+  </data>
+  <data name="Status_FileImport_Count" xml:space="preserve">
+    <value>Imported data entries:</value>
+  </data>
+  <data name="Info_FileImport_MultipleFound" xml:space="preserve">
+    <value>Several were found. Please select one of the dialog files.</value>
+  </data>
+  <data name="Info_FileImport_NoFilesFound" xml:space="preserve">
+    <value>No files were found.</value>
+  </data>
+  <data name="Status_FileImport_Progress" xml:space="preserve">
+    <value>Imported:</value>
+  </data>
+  <data name="Status_Database_Deleted" xml:space="preserve">
+    <value>Deleted...</value>
+  </data>
+  <data name="Status_Database_Finished" xml:space="preserve">
+    <value>Finished...</value>
+  </data>
+  <data name="Status_Database_NoUploadingDatas" xml:space="preserve">
+    <value>No uploading data available.</value>
+  </data>
+  <data name="Status_Workout_Download" xml:space="preserve">
+    <value>Downloaded...</value>
+  </data>
 </root>

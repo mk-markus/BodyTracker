@@ -331,11 +331,20 @@ namespace BodyTracker.Resources.Languages {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die 🧬 Body Composition (Fat | Muscle) ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die 🧬 Body Composition Fat ähnelt.
         /// </summary>
-        public static string ChartTitleBodyComposition {
+        public static string ChartTitleBodyCompositionFat {
             get {
-                return ResourceManager.GetString("ChartTitleBodyComposition", resourceCulture);
+                return ResourceManager.GetString("ChartTitleBodyCompositionFat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die 🧬 Body Composition Muscle ähnelt.
+        /// </summary>
+        public static string ChartTitleBodyCompositionMuscle {
+            get {
+                return ResourceManager.GetString("ChartTitleBodyCompositionMuscle", resourceCulture);
             }
         }
         
@@ -709,6 +718,15 @@ namespace BodyTracker.Resources.Languages {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Biotin ähnelt.
+        /// </summary>
+        public static string ColBiotin {
+            get {
+                return ResourceManager.GetString("ColBiotin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die BMI ähnelt.
         /// </summary>
         public static string ColBmi {
@@ -808,6 +826,15 @@ namespace BodyTracker.Resources.Languages {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Caffeine ähnelt.
+        /// </summary>
+        public static string ColCaffeine {
+            get {
+                return ResourceManager.GetString("ColCaffeine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Calcium ähnelt.
         /// </summary>
         public static string ColCalcium {
@@ -817,7 +844,7 @@ namespace BodyTracker.Resources.Languages {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Calorie ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Calories ähnelt.
         /// </summary>
         public static string ColCalorie {
             get {
@@ -831,6 +858,15 @@ namespace BodyTracker.Resources.Languages {
         public static string ColCalories {
             get {
                 return ResourceManager.GetString("ColCalories", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Carbohydrates ähnelt.
+        /// </summary>
+        public static string ColCarbohydrate {
+            get {
+                return ResourceManager.GetString("ColCarbohydrate", resourceCulture);
             }
         }
         
@@ -853,11 +889,29 @@ namespace BodyTracker.Resources.Languages {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Chloride ähnelt.
+        /// </summary>
+        public static string ColChloride {
+            get {
+                return ResourceManager.GetString("ColChloride", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Cholesterol ähnelt.
         /// </summary>
         public static string ColCholesterol {
             get {
                 return ResourceManager.GetString("ColCholesterol", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Chromium ähnelt.
+        /// </summary>
+        public static string ColChromium {
+            get {
+                return ResourceManager.GetString("ColChromium", resourceCulture);
             }
         }
         
@@ -894,6 +948,15 @@ namespace BodyTracker.Resources.Languages {
         public static string ColCompletionStatus {
             get {
                 return ResourceManager.GetString("ColCompletionStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Copper ähnelt.
+        /// </summary>
+        public static string ColCopper {
+            get {
+                return ResourceManager.GetString("ColCopper", resourceCulture);
             }
         }
         
@@ -948,6 +1011,15 @@ namespace BodyTracker.Resources.Languages {
         public static string ColCreateShVer {
             get {
                 return ResourceManager.GetString("ColCreateShVer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Create SH Version ähnelt.
+        /// </summary>
+        public static string ColCreateShVersion {
+            get {
+                return ResourceManager.GetString("ColCreateShVersion", resourceCulture);
             }
         }
         
@@ -1240,6 +1312,24 @@ namespace BodyTracker.Resources.Languages {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Folate ähnelt.
+        /// </summary>
+        public static string ColFolate {
+            get {
+                return ResourceManager.GetString("ColFolate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Folic Acid ähnelt.
+        /// </summary>
+        public static string ColFolicAcid {
+            get {
+                return ResourceManager.GetString("ColFolicAcid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Food Info ID ähnelt.
         /// </summary>
         public static string ColFoodInfoId {
@@ -1366,6 +1456,15 @@ namespace BodyTracker.Resources.Languages {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Iodine ähnelt.
+        /// </summary>
+        public static string ColIodine {
+            get {
+                return ResourceManager.GetString("ColIodine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Iron ähnelt.
         /// </summary>
         public static string ColIron {
@@ -1416,6 +1515,24 @@ namespace BodyTracker.Resources.Languages {
         public static string ColLowSpO2Duration {
             get {
                 return ResourceManager.GetString("ColLowSpO2Duration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Magnesium ähnelt.
+        /// </summary>
+        public static string ColMagnesium {
+            get {
+                return ResourceManager.GetString("ColMagnesium", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Manganese ähnelt.
+        /// </summary>
+        public static string ColManganese {
+            get {
+                return ResourceManager.GetString("ColManganese", resourceCulture);
             }
         }
         
@@ -1618,6 +1735,24 @@ namespace BodyTracker.Resources.Languages {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Modify SH Version ähnelt.
+        /// </summary>
+        public static string ColModifyShVersion {
+            get {
+                return ResourceManager.GetString("ColModifyShVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Molybdenum ähnelt.
+        /// </summary>
+        public static string ColMolybdenum {
+            get {
+                return ResourceManager.GetString("ColMolybdenum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Monounsaturated Fat ähnelt.
         /// </summary>
         public static string ColMonosaturatedFat {
@@ -1632,6 +1767,15 @@ namespace BodyTracker.Resources.Languages {
         public static string ColName {
             get {
                 return ResourceManager.GetString("ColName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Niacin ähnelt.
+        /// </summary>
+        public static string ColNiacin {
+            get {
+                return ResourceManager.GetString("ColNiacin", resourceCulture);
             }
         }
         
@@ -1663,11 +1807,29 @@ namespace BodyTracker.Resources.Languages {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Pantothenic Acid ähnelt.
+        /// </summary>
+        public static string ColPantothenicAcid {
+            get {
+                return ResourceManager.GetString("ColPantothenicAcid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Person ID ähnelt.
         /// </summary>
         public static string ColPersonId {
             get {
                 return ResourceManager.GetString("ColPersonId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Phosphorus ähnelt.
+        /// </summary>
+        public static string ColPhosphorus {
+            get {
+                return ResourceManager.GetString("ColPhosphorus", resourceCulture);
             }
         }
         
@@ -1686,6 +1848,15 @@ namespace BodyTracker.Resources.Languages {
         public static string ColPolysaturatedFat {
             get {
                 return ResourceManager.GetString("ColPolysaturatedFat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Polyunsaturated Fat ähnelt.
+        /// </summary>
+        public static string ColPolyunsaturatedFat {
+            get {
+                return ResourceManager.GetString("ColPolyunsaturatedFat", resourceCulture);
             }
         }
         
@@ -1762,6 +1933,15 @@ namespace BodyTracker.Resources.Languages {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Riboflavin ähnelt.
+        /// </summary>
+        public static string ColRiboflavin {
+            get {
+                return ResourceManager.GetString("ColRiboflavin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Routine Data UUID ähnelt.
         /// </summary>
         public static string ColRoutineDataUuid {
@@ -1785,6 +1965,15 @@ namespace BodyTracker.Resources.Languages {
         public static string ColSaturatedFat {
             get {
                 return ResourceManager.GetString("ColSaturatedFat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Selenium ähnelt.
+        /// </summary>
+        public static string ColSelenium {
+            get {
+                return ResourceManager.GetString("ColSelenium", resourceCulture);
             }
         }
         
@@ -1978,6 +2167,15 @@ namespace BodyTracker.Resources.Languages {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Thiamin ähnelt.
+        /// </summary>
+        public static string ColThiamin {
+            get {
+                return ResourceManager.GetString("ColThiamin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Time Offset ähnelt.
         /// </summary>
         public static string ColTimeOffset {
@@ -2050,6 +2248,15 @@ namespace BodyTracker.Resources.Languages {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Unsaturated Fat ähnelt.
+        /// </summary>
+        public static string ColUnsaturatedFat {
+            get {
+                return ResourceManager.GetString("ColUnsaturatedFat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Updated At ähnelt.
         /// </summary>
         public static string ColUpdateAt {
@@ -2086,6 +2293,24 @@ namespace BodyTracker.Resources.Languages {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Vitamin B12 ähnelt.
+        /// </summary>
+        public static string ColVitaminB12 {
+            get {
+                return ResourceManager.GetString("ColVitaminB12", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Vitamin B6 ähnelt.
+        /// </summary>
+        public static string ColVitaminB6 {
+            get {
+                return ResourceManager.GetString("ColVitaminB6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Vitamin C ähnelt.
         /// </summary>
         public static string ColVitaminC {
@@ -2100,6 +2325,24 @@ namespace BodyTracker.Resources.Languages {
         public static string ColVitaminD {
             get {
                 return ResourceManager.GetString("ColVitaminD", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Vitamin E ähnelt.
+        /// </summary>
+        public static string ColVitaminE {
+            get {
+                return ResourceManager.GetString("ColVitaminE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Vitamin K ähnelt.
+        /// </summary>
+        public static string ColVitaminK {
+            get {
+                return ResourceManager.GetString("ColVitaminK", resourceCulture);
             }
         }
         
@@ -2136,6 +2379,15 @@ namespace BodyTracker.Resources.Languages {
         public static string ColWorkout {
             get {
                 return ResourceManager.GetString("ColWorkout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Zinc ähnelt.
+        /// </summary>
+        public static string ColZinc {
+            get {
+                return ResourceManager.GetString("ColZinc", resourceCulture);
             }
         }
         
@@ -2307,6 +2559,24 @@ namespace BodyTracker.Resources.Languages {
         public static string ImgCaliperMeasurement {
             get {
                 return ResourceManager.GetString("ImgCaliperMeasurement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Several were found. Please select one of the dialog files. ähnelt.
+        /// </summary>
+        public static string Info_FileImport_MultipleFound {
+            get {
+                return ResourceManager.GetString("Info_FileImport_MultipleFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die No files were found. ähnelt.
+        /// </summary>
+        public static string Info_FileImport_NoFilesFound {
+            get {
+                return ResourceManager.GetString("Info_FileImport_NoFilesFound", resourceCulture);
             }
         }
         
@@ -2896,6 +3166,15 @@ namespace BodyTracker.Resources.Languages {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die 🍽️ Nutrient balance ähnelt.
+        /// </summary>
+        public static string NavFoodNutrition {
+            get {
+                return ResourceManager.GetString("NavFoodNutrition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Settings ähnelt.
         /// </summary>
         public static string NavGeneralSettingsToolTip {
@@ -2977,7 +3256,7 @@ namespace BodyTracker.Resources.Languages {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die SpO₂ ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die 🫁 SpO₂ ähnelt.
         /// </summary>
         public static string NavSpO2 {
             get {
@@ -3076,11 +3355,110 @@ namespace BodyTracker.Resources.Languages {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Deleted... ähnelt.
+        /// </summary>
+        public static string Status_Database_Deleted {
+            get {
+                return ResourceManager.GetString("Status_Database_Deleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Finished... ähnelt.
+        /// </summary>
+        public static string Status_Database_Finished {
+            get {
+                return ResourceManager.GetString("Status_Database_Finished", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Processing changes... ähnelt.
+        /// </summary>
+        public static string Status_Database_Inserted {
+            get {
+                return ResourceManager.GetString("Status_Database_Inserted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Not Connected ähnelt.
         /// </summary>
         public static string Status_Database_NotConnected {
             get {
                 return ResourceManager.GetString("Status_Database_NotConnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die No uploading data available. ähnelt.
+        /// </summary>
+        public static string Status_Database_NoUploadingDatas {
+            get {
+                return ResourceManager.GetString("Status_Database_NoUploadingDatas", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Time elapsed: ähnelt.
+        /// </summary>
+        public static string Status_Database_TimeElapsed {
+            get {
+                return ResourceManager.GetString("Status_Database_TimeElapsed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Total upload time: ähnelt.
+        /// </summary>
+        public static string Status_Database_TotalUploadTime {
+            get {
+                return ResourceManager.GetString("Status_Database_TotalUploadTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Updating data... ähnelt.
+        /// </summary>
+        public static string Status_Database_Updated {
+            get {
+                return ResourceManager.GetString("Status_Database_Updated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Uploaded data count: ähnelt.
+        /// </summary>
+        public static string Status_Database_UploadedCount {
+            get {
+                return ResourceManager.GetString("Status_Database_UploadedCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Imported data entries: ähnelt.
+        /// </summary>
+        public static string Status_FileImport_Count {
+            get {
+                return ResourceManager.GetString("Status_FileImport_Count", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Imported: ähnelt.
+        /// </summary>
+        public static string Status_FileImport_Progress {
+            get {
+                return ResourceManager.GetString("Status_FileImport_Progress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Downloaded... ähnelt.
+        /// </summary>
+        public static string Status_Workout_Download {
+            get {
+                return ResourceManager.GetString("Status_Workout_Download", resourceCulture);
             }
         }
         

@@ -39,14 +39,14 @@
                                Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
                 </RadioButton>
 
-                <!-- ================= SHOW IMPORT SAMSUNG FOOD INFO ================= -->
+                <!-- ================= SHOW IMPORT SAMSUNG FOOD NUTRITION ================= -->
                 <RadioButton Style="{StaticResource NavButtonTabStyle}"
-                             Command="{Binding CommandShowFoodInfoImportView}"
+                             Command="{Binding CommandShowFoodNutritionImportView}"
                              GroupName="ImportSelection"
                              IsChecked="False"
-                             ToolTip="{loc:Translate ToolTipFoodInfoImport}">
+                             ToolTip="{loc:Translate ToolTipFoodNutritionImport}">
 
-                    <TextBlock Text="{loc:Translate NavFoodInfo}"
+                    <TextBlock Text="{loc:Translate NavFoodNutrition}"
                                Style="{DynamicResource TextBlockNavButtonTabTitle}"/>
                 </RadioButton>
 

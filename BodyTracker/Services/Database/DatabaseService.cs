@@ -3,6 +3,7 @@ using BodyTracker.Models.Chart;
 using BodyTracker.Models.Export;
 using BodyTracker.Models.FullBodyMeasurement;
 using BodyTracker.Models.SamsungHealth;
+using BodyTracker.Resources.Languages;
 using BodyTracker.Services.SamsungHealth;
 using BodyTracker.Services.SamsungHelath;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -81,7 +82,7 @@ namespace BodyTracker.Services
         private readonly TimeSpan monitorInterval = TimeSpan.FromSeconds(10);
 
         /// <summary>
-        /// Gets the name of the database being utilized by the current service instance.
+        /// Gets the name of the database being utilized by the currentCount service instance.
         /// </summary>
         public string DatabaseName { private set; get; } = string.Empty;
 
@@ -409,7 +410,7 @@ namespace BodyTracker.Services
         }
 
         /// <summary>
-        /// Asynchronously inserts a new body metric record into the database.
+        /// Asynchronously insertsList a new body metric record into the database.
         /// This includes physiological data such as weight, BMI, and body fat percentages.
         /// </summary>
         /// <param name="m">The <see cref="BodyMetricModel"/> containing the data to be stored.</param>
@@ -448,7 +449,7 @@ namespace BodyTracker.Services
         }
 
         /// <summary>
-        /// Asynchronously inserts a new body dimension record (circumferences) into the database.
+        /// Asynchronously insertsList a new body dimension record (circumferences) into the database.
         /// </summary>
         /// <param name="a">The <see cref="BodyDimensionsModel"/> containing the measurements.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
@@ -993,7 +994,7 @@ namespace BodyTracker.Services
                     cmdUpdateDim.Parameters.AddWithValue("@fztricep", (object?)fatTongTricepsCrease ?? DBNull.Value);
                     await cmdUpdateDim.ExecuteNonQueryAsync();
                 }
-           
+
                 await tx.CommitAsync();
             }
             catch (Exception ex)
@@ -1069,32 +1070,38 @@ namespace BodyTracker.Services
             catch (Exception ex)
             {
                 throw new Exception($"Error Insert Food Intake: {ex.Message}", ex);
-            };
+            }
+            ;
         }
 
         /// <summary>
         /// Asynchronously synchronizes a collection of Samsung Health food intake records for a specific person into the database, 
-        /// performing bulk insertions for new entries and transactional updates for existing records based on unique data identifiers and update timestamps.
+        /// performing bulk insertions for new entries and transactional updatesList for existing records based on unique data identifiers and update timestamps.
         /// </summary>
         /// <param name="PersonId">The unique identifier of the person to whom the data belongs.</param>
         /// <param name="foodIntakeList">A collection of <see cref="SamsungFoodIntakeModel"/> objects containing the nutritional data to be stored.</param>
         /// <param name="progress">An optional progress indicator that reports the percentage of the insertion process.</param>
         /// <returns>Returns 'true' if the operation completes successfully.</returns>
-        public async Task<bool> UpsertFoodIntakeSqlAsync(int personId, ICollection<SamsungFoodIntakeModel> foodIntakeList,
-                                                  IProgress<(double value, string prgressText)>? progress = null)
+        public async Task<bool> UpsertFoodIntakeSqlAsync(
+          int personId,
+          ICollection<SamsungFoodIntakeModel> foodIntakeList,
+          IProgress<(double value, string prgressText)>? progress = null)
         {
             await using var sqlServerConnection = await OpenConnectionAsync();
 
-            if (!IsConnected) return false;
+            if (!IsConnected)
+                return false;
 
             try
             {
+                var existingEntries = new Dictionary<string, (
+                    int FoodIntakeId,
+                    string Uuid,
+                    DateTime? UpdateTime)>();
 
-                var existingEntries = new Dictionary<string, DateTime?>();
-
-                // Get the data_uuid and update_time from the exisiting food intake in the databasse tbl_FoodIntake 
-                await using var cmd = new MySqlCommand(DatabaseCommands.GetFoodIntakeExistenceCheckSql(),
-                                                        sqlServerConnection);
+                await using var cmd = new MySqlCommand(
+                    DatabaseCommands.GetFoodIntakeExistenceCheckSql(),
+                    sqlServerConnection);
 
                 cmd.Parameters.AddWithValue("@PersonId", personId);
 
@@ -1102,108 +1109,125 @@ namespace BodyTracker.Services
                 {
                     while (await reader.ReadAsync())
                     {
-                        existingEntries.Add(reader.GetString("data_uuid"),
-                                            reader.IsDBNull("update_at")
-                                                ? null
-                                                : reader.GetDateTime("update_at"));
+                        existingEntries.Add(
+                            reader.GetString("data_uuid"),
+                            (
+                                reader.GetInt32("food_intake_id"),
+                                reader.GetString("data_uuid"),
+                                reader.IsDBNull("update_at")
+                                    ? null
+                                    : reader.GetDateTime("update_at")
+                            ));
                     }
                 }
-                var inserts = new List<SamsungFoodIntakeModel>();
-                var updates = new List<SamsungFoodIntakeModel>();
 
-                // Compare the Exercise List with the existitng values in the database tbl_FoodIntake.
-                // If the value exist then we update the entries. Is the value new then we insert
-                // it in the table with bulk inserting.
+                var insertsList = new List<SamsungFoodIntakeModel>();
+                var updatesList = new List<SamsungFoodIntakeModel>();
+                var deleteList = new List<int>();
+
+                double percentage = 0;
+
                 foreach (var item in foodIntakeList)
                 {
-                    if (string.IsNullOrWhiteSpace(item.DataUuid)) continue;
+                    if (string.IsNullOrWhiteSpace(item.DataUuid))
+                        continue;
 
-                    if (!existingEntries.TryGetValue(item.DataUuid, out var dbUpdateTime))
+                    if (!existingEntries.TryGetValue(item.DataUuid, out var dbEntry))
                     {
-                        inserts.Add(item);
+                        insertsList.Add(item);
                         continue;
                     }
 
-                    if (item.UpdateTime.HasValue && (!dbUpdateTime.HasValue || item.UpdateTime > dbUpdateTime))
+                    if (item.UpdateTime.HasValue &&
+                        (!dbEntry.UpdateTime.HasValue ||
+                         item.UpdateTime > dbEntry.UpdateTime))
                     {
-                        updates.Add(item);
+                        updatesList.Add(item);
                     }
                 }
 
-                if (inserts.Count > 0)
+                // Retrieve entries for deleting
+                foreach (var dbEntry in existingEntries.Values)
                 {
-                    var table = SamsungFoodIntakeDataTable.CreateFoodIntakeDataTable(personId, inserts);
-
-                    var bulkCopy = new MySqlBulkCopy(sqlServerConnection)
+                    if (!foodIntakeList.Any(x => x.DataUuid == dbEntry.Uuid))
                     {
-                        DestinationTableName = "tbl_FoodIntake",
-                        NotifyAfter = 1000
-                    };
-
-                    bulkCopy.MySqlRowsCopied += (sender, e) =>
-                    {
-                        double percentage = (double)e.RowsCopied / inserts.Count * 100;
-
-                        progress?.Report((percentage, $"Inserted: "));
-                    };
-
-
-
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(0, "person_id"));
-
-                    #region ... rest of bulk inserting
-
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(1, "create_sync_version"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(2, "start_time"));
-
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(3, "amount_current"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(4, "amount_initial"));
-
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(5, "custom_text"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(6, "modify_sync_version"));
-
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(7, "update_at"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(8, "create_at"));
-
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(9, "meal_type"));
-
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(10, "client_data_id"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(11, "food_name"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(12, "unit_id"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(13, "client_data_version"));
-
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(14, "calories_current"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(15, "calories_initial"));
-
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(16, "time_offset"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(17, "device_uuid"));
-
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(18, "comment_text"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(19, "package_name"));
-
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(20, "data_uuid"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(21, "food_info_id"));
-
-                    #endregion
-
-                    await bulkCopy.WriteToServerAsync(table);
+                        deleteList.Add(dbEntry.FoodIntakeId);
+                    }
                 }
 
+                #region Inserts
 
-                int current = 0;
-                await using var transaction = await sqlServerConnection.BeginTransactionAsync();
+                await using var transactionInsert =
+                    await sqlServerConnection.BeginTransactionAsync();
 
-                int total = updates.Count();
-
-                // Update the exisiting datas in tbl_HeartRate
-                foreach (var item in updates)
+                if (insertsList.Count > 0)
                 {
-                    await using var command = new MySqlCommand(DatabaseCommands.GetSamsungHealthFoodIntakeUpdateSql(),
-                                                            sqlServerConnection, (MySqlTransaction)transaction);
+                    var table =
+                        SamsungFoodIntakeDataTable.CreateFoodIntakeDataTable(
+                            personId,
+                            insertsList);
+
+                    await using var commandInsert = new MySqlCommand(
+                        DatabaseCommands.GetSamsungFoodIntakeUpsertSql(),
+                        sqlServerConnection,
+                        (MySqlTransaction)transactionInsert);
+
+                    foreach (DataColumn column in table.Columns)
+                    {
+                        commandInsert.Parameters.Add(
+                            new MySqlParameter(
+                                "@" + column.ColumnName,
+                                null));
+                    }
+
+                    commandInsert.Prepare();
+
+                    int insertCount = 0;
+
+                    foreach (DataRow row in table.Rows)
+                    {
+                        foreach (DataColumn column in table.Columns)
+                        {
+                            commandInsert.Parameters["@" + column.ColumnName].Value =
+                                row[column] ?? DBNull.Value;
+                        }
+
+                        await commandInsert.ExecuteNonQueryAsync();
+
+                        insertCount++;
+
+                        if (insertCount % 100 == 0)
+                        {
+                            percentage =
+                                (double)insertCount / insertsList.Count * 100;
+
+                            progress?.Report(
+                                (percentage,
+                                 UiStrings.Status_Database_Inserted));
+                        }
+                    }
+                }
+
+                await transactionInsert.CommitAsync();
+
+                #endregion
+
+                #region Updates
+
+                int currentCount = 0;
+                int total = updatesList.Count;
+
+                await using var transactionUpdate =
+                    await sqlServerConnection.BeginTransactionAsync();
+
+                foreach (var item in updatesList)
+                {
+                    await using var command = new MySqlCommand(
+                        DatabaseCommands.GetSamsungHealthFoodIntakeUpdateSql(),
+                        sqlServerConnection,
+                        (MySqlTransaction)transactionUpdate);
 
                     command.Parameters.AddWithValue("@PersonID_FK", personId);
-
-                    #region ... rest of AddWithValue
 
                     command.Parameters.AddWithValue("@CreateShVer", (object?)item.CreateShVer ?? DBNull.Value);
                     command.Parameters.AddWithValue("@StartTime", (object?)item.StartTime ?? DBNull.Value);
@@ -1225,29 +1249,74 @@ namespace BodyTracker.Services
                     command.Parameters.AddWithValue("@FoodInfoId", (object?)item.FoodInfoId ?? DBNull.Value);
                     command.Parameters.AddWithValue("@DataUuid", item.DataUuid);
 
-                    #endregion
-
                     await command.ExecuteNonQueryAsync();
 
-                    current++;
+                    currentCount++;
 
-                    if (current % 100 == 0)
+                    if (currentCount % 100 == 0)
                     {
-                        double percentage = (double)current / total * 100;
+                        percentage =
+                            (double)currentCount / total * 100;
 
-                        progress?.Report((percentage, "Updated: "));
+                        progress?.Report(
+                            (percentage,
+                             UiStrings.Status_Database_Updated));
                     }
                 }
 
-                await transaction.CommitAsync();
+                await transactionUpdate.CommitAsync();
+
+                #endregion
+
+                #region Delete
+
+                int deleteCount = 0;
+
+                await using var transactionDelete =
+                    await sqlServerConnection.BeginTransactionAsync();
+
+                foreach (var foodIntakeId in deleteList)
+                {
+                    await using var command = new MySqlCommand(
+                        DatabaseCommands.GetFoodIntakeDeleteSql(),
+                        sqlServerConnection,
+                        (MySqlTransaction)transactionDelete);
+
+                    command.Parameters.AddWithValue("@id", foodIntakeId);
+
+                    await command.ExecuteNonQueryAsync();
+
+                    deleteCount++;
+
+                    if (deleteCount % 100 == 0)
+                    {
+                        percentage =
+                            (double)deleteCount / deleteList.Count * 100;
+
+                        progress?.Report(
+                            (percentage,
+                             UiStrings.Status_Database_Deleted));
+                    }
+                }
+
+                await transactionDelete.CommitAsync();
+
+                #endregion
+
+                percentage = 100;
+
+                progress?.Report(
+                    (percentage,
+                     UiStrings.Status_Database_Finished));
 
                 return true;
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error Insert Food Intake Datas: {ex.Message}", ex);
+                throw new Exception("Error Insert Food Intake Datas", ex);
             }
         }
+
         /// <summary>
         /// Asynchronously retrieves and returns Samsung food intake records for a specified person.
         /// </summary>
@@ -1315,7 +1384,7 @@ namespace BodyTracker.Services
             catch (Exception ex)
             {
                 throw new Exception($"Error Get Food Intake Async: {ex.Message}", ex);
-                
+
             }
 
             return result;
@@ -1350,26 +1419,32 @@ namespace BodyTracker.Services
 
         /// <summary>
         /// Asynchronously synchronizes a collection of Samsung Health food intake records for a specific person into the database, 
-        /// performing bulk insertions for new entries and transactional updates for existing records based on unique data identifiers and update timestamps.
+        /// performing bulk insertions for new entries and transactional updatesList for existing records based on unique data identifiers and update timestamps.
         /// </summary>
         /// <param name="PersonId">The unique identifier of the person to whom the data belongs.</param>
         /// <param name="foodInfoList">A collection of <see cref="SamsungFoodIntakeModel"/> objects containing the nutritional data to be stored.</param>
         /// <param name="progress">An optional progress indicator that reports the percentage of the insertion process.</param>
         /// <returns>Returns 'true' if the operation completes successfully.</returns>
-        public async Task<bool> UpsertFoodInfoSqlAsync(int personId, ICollection<SamsungFoodInfoModel> foodInfoList,
-                                                  IProgress<(double value, string prgressText)>? progress = null)
+        public async Task<bool> UpsertFoodInfoSqlAsync(
+            int personId,
+            ICollection<SamsungFoodInfoModel> foodInfoList,
+            IProgress<(double value, string prgressText)>? progress = null)
         {
             await using var sqlServerConnection = await OpenConnectionAsync();
 
-            if (!IsConnected) return false;
+            if (!IsConnected)
+                return false;
+
             try
             {
+                var existingEntries = new Dictionary<string, (
+                    int FoodInfoId,
+                    string Uuid,
+                    DateTime? UpdateTime)>();
 
-                var existingEntries = new Dictionary<string, DateTime?>();
-
-                // Get the data_uuid and update_time from the exisiting food intake in the databasse tbl_FoodIntake 
-                await using var cmd = new MySqlCommand(DatabaseCommands.GetFoodInfoExistenceCheckSql(),
-                                                        sqlServerConnection);
+                await using var cmd = new MySqlCommand(
+                    DatabaseCommands.GetFoodInfoExistenceCheckSql(),
+                    sqlServerConnection);
 
                 cmd.Parameters.AddWithValue("@PersonId", personId);
 
@@ -1377,91 +1452,123 @@ namespace BodyTracker.Services
                 {
                     while (await reader.ReadAsync())
                     {
-                        existingEntries.Add(reader.GetString("data_uuid"),
-                                            reader.IsDBNull("update_at")
-                                                ? null
-                                                : reader.GetDateTime("update_at"));
+                        existingEntries.Add(
+                            reader.GetString("data_uuid"),
+                            (
+                                reader.GetInt32("food_info_id"),
+                                reader.GetString("data_uuid"),
+                                reader.IsDBNull("update_at")
+                                    ? null
+                                    : reader.GetDateTime("update_at")
+                            ));
                     }
                 }
 
-                var inserts = new List<SamsungFoodInfoModel>();
-                var updates = new List<SamsungFoodInfoModel>();
+                var insertsList = new List<SamsungFoodInfoModel>();
+                var updatesList = new List<SamsungFoodInfoModel>();
+                var deleteList = new List<int>();
 
-                // Compare the Exercise List with the existitng values in the database tbl_FoodIntake.
-                // If the value exist then we update the entries. Is the value new then we insert
-                // it in the table with bulk inserting.
+                double percentage = 0;
+
                 foreach (var item in foodInfoList)
                 {
-                    if (string.IsNullOrWhiteSpace(item.DataUuid)) continue;
+                    if (string.IsNullOrWhiteSpace(item.DataUuid))
+                        continue;
 
-                    if (!existingEntries.TryGetValue(item.DataUuid, out var dbUpdateTime))
+                    if (!existingEntries.TryGetValue(item.DataUuid, out var dbEntry))
                     {
-                        inserts.Add(item);
+                        insertsList.Add(item);
                         continue;
                     }
 
-                    if (item.UpdateTime.HasValue && (!dbUpdateTime.HasValue || item.UpdateTime > dbUpdateTime))
+                    if (item.UpdateTime.HasValue &&
+                        (!dbEntry.UpdateTime.HasValue ||
+                         item.UpdateTime > dbEntry.UpdateTime))
                     {
-                        updates.Add(item);
+                        updatesList.Add(item);
                     }
                 }
 
-
-                await using var transactionInsert = await sqlServerConnection.BeginTransactionAsync();
-
-                if (inserts.Count > 0)
+                // Retrieve entries for deleting
+                foreach (var dbEntry in existingEntries.Values)
                 {
+                    if (!foodInfoList.Any(x => x.DataUuid == dbEntry.Uuid))
+                    {
+                        deleteList.Add(dbEntry.FoodInfoId);
+                    }
+                }
 
-                    var table = SamsungFoodInfoDataTable.CreateFoodInfoDataTable(personId, inserts);
+                #region Inserts
 
-                    await using var commandInsert = new MySqlCommand(DatabaseCommands.GetSamsungFoodInfoInsertSql(),
-                                                            sqlServerConnection, (MySqlTransaction)transactionInsert);
+                await using var transactionInsert =
+                    await sqlServerConnection.BeginTransactionAsync();
 
-                    // 1. Add parameters dynamically once based on the DataTable columns
+                if (insertsList.Count > 0)
+                {
+                    var table =
+                        SamsungFoodInfoDataTable.CreateFoodInfoDataTable(
+                            personId,
+                            insertsList);
+
+                    await using var commandInsert = new MySqlCommand(
+                        DatabaseCommands.GetSamsungFoodInfoInsertSql(),
+                        sqlServerConnection,
+                        (MySqlTransaction)transactionInsert);
+
                     foreach (DataColumn column in table.Columns)
                     {
-                        // Prefix with '@' to match your SQL placeholders (e.g., "@potassium")
-                        commandInsert.Parameters.Add(new MySqlParameter("@" + column.ColumnName, null));
+                        commandInsert.Parameters.Add(
+                            new MySqlParameter(
+                                "@" + column.ColumnName,
+                                null));
                     }
 
-                    // Optional for performance: Prepare the command execution plan
                     commandInsert.Prepare();
 
-                    int count = 0;
+                    int insertCount = 0;
 
-                    // 2. Loop through each row (DataRow) of the DataTable
                     foreach (DataRow row in table.Rows)
                     {
-                        // 3. Assign values dynamically for the current row
                         foreach (DataColumn column in table.Columns)
                         {
-                            commandInsert.Parameters["@" + column.ColumnName].Value = row[column] ?? DBNull.Value;
+                            commandInsert.Parameters["@" + column.ColumnName].Value =
+                                row[column] ?? DBNull.Value;
                         }
 
-                        // 4. Execute the SQL command for this row
                         await commandInsert.ExecuteNonQueryAsync();
 
-                        count++;
-                        if (count % 100 == 0)
+                        insertCount++;
+
+                        if (insertCount % 100 == 0)
                         {
-                            double percentage = (double)count / inserts.Count * 100;
-                            progress?.Report((percentage, "Inserted: "));
+                            percentage =
+                                (double)insertCount / insertsList.Count * 100;
+
+                            progress?.Report(
+                                (percentage,
+                                 UiStrings.Status_Database_Inserted));
                         }
                     }
                 }
+
                 await transactionInsert.CommitAsync();
 
-                int current = 0;
+                #endregion
 
-                int total = updates.Count();
-                await using var transactionUpdate = await sqlServerConnection.BeginTransactionAsync();
+                #region Updates
 
-                // Update the exisiting datas in tbl_HeartRate
-                foreach (var item in updates)
+                int currentCount = 0;
+                int total = updatesList.Count;
+
+                await using var transactionUpdate =
+                    await sqlServerConnection.BeginTransactionAsync();
+
+                foreach (var item in updatesList)
                 {
-
-                    await using var command = new MySqlCommand(DatabaseCommands.GetSamsungHealthFoodInfoUpdateSql(),
-                                                            sqlServerConnection, (MySqlTransaction)transactionUpdate);
+                    await using var command = new MySqlCommand(
+                        DatabaseCommands.GetSamsungHealthFoodInfoUpdateSql(),
+                        sqlServerConnection,
+                        (MySqlTransaction)transactionUpdate);
 
                     command.Parameters.AddWithValue("@Potassium", (object?)item.Potassium ?? DBNull.Value);
                     command.Parameters.AddWithValue("@VitaminA", (object?)item.VitaminA ?? DBNull.Value);
@@ -1516,23 +1623,67 @@ namespace BodyTracker.Services
 
                     await command.ExecuteNonQueryAsync();
 
-                    current++;
+                    currentCount++;
 
-                    if (current % 100 == 0)
+                    if (currentCount % 100 == 0)
                     {
-                        double percentage = (double)current / total * 100;
+                        percentage =
+                            (double)currentCount / total * 100;
 
-                        progress?.Report((percentage, "Updated: "));
+                        progress?.Report(
+                            (percentage,
+                             UiStrings.Status_Database_Updated));
                     }
                 }
 
                 await transactionUpdate.CommitAsync();
 
+                #endregion
+
+                #region Delete
+
+                int deleteCount = 0;
+
+                await using var transactionDelete =
+                    await sqlServerConnection.BeginTransactionAsync();
+
+                foreach (var foodInfoId in deleteList)
+                {
+                    await using var command = new MySqlCommand(
+                        DatabaseCommands.GetFoodInfoDeleteSql(),
+                        sqlServerConnection,
+                        (MySqlTransaction)transactionDelete);
+
+                    command.Parameters.AddWithValue("@id", foodInfoId);
+
+                    await command.ExecuteNonQueryAsync();
+
+                    deleteCount++;
+
+                    if (deleteCount % 100 == 0)
+                    {
+                        percentage =
+                            (double)deleteCount / deleteList.Count * 100;
+
+                        progress?.Report(
+                            (percentage,
+                             UiStrings.Status_Database_Deleted));
+                    }
+                }
+
+                await transactionDelete.CommitAsync();
+
+                #endregion
+
+                percentage = 100;
+
+                progress?.Report((percentage, UiStrings.Status_Database_Finished));
+
                 return true;
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error Insert Food Indo Async", ex);
+                throw new Exception("Error Insert Food Info Async", ex);
             }
         }
 
@@ -1629,8 +1780,486 @@ namespace BodyTracker.Services
             }
             catch (Exception ex)
             {
-             
+
                 throw new Exception($"Error Delete Food Info Async: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+        #region Samsung Food Nutrtion
+
+        public async Task<bool> UpsertFoodNutritionSqlAsync(
+            int personId,
+            ICollection<SamsungFoodNutritionModel> nutritionList,
+            IProgress<(double value, string progressText)>? progress = null)
+        {
+            await using var sqlServerConnection = await OpenConnectionAsync();
+
+            if (!IsConnected)
+                return false;
+
+            try
+            {
+                var existingEntries = new Dictionary<string, (int FoodNutritionId, string Uuid, DateTime? UpdateTime)>();
+
+                await using var cmd = new MySqlCommand(
+                    DatabaseCommands.GetFoodNutritionExistenceCheckSql(),
+                    sqlServerConnection);
+
+                cmd.Parameters.AddWithValue("@PersonId", personId);
+
+                await using (var reader = await cmd.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        existingEntries.Add(
+                            reader.GetString("datauuid"),
+                            (
+                                reader.GetInt16("food_nutrition_id"),
+                                 reader.GetString("datauuid"),
+
+                                reader.IsDBNull("update_time")
+                                    ? null
+                                    : reader.GetDateTime("update_time"))
+                            );
+
+                    }
+                }
+
+                var insertsList = new List<SamsungFoodNutritionModel>();
+                var updatesList = new List<SamsungFoodNutritionModel>();
+                var deleteList = new List<int>();
+                double percentage = 0;
+
+
+                foreach (var item in nutritionList)
+                {
+                    if (string.IsNullOrWhiteSpace(item.DataUuid))
+                        continue;
+
+                    if (!existingEntries.TryGetValue(item.DataUuid, out var _dbEntries))
+                    {
+                        insertsList.Add(item);
+                        continue;
+                    }
+
+                    if (item.UpdateTime.HasValue &&
+                        (!_dbEntries.UpdateTime.HasValue || item.UpdateTime > _dbEntries.UpdateTime))
+                    {
+                        updatesList.Add(item);
+                    }
+                }
+
+                // Retrieve entries for deleting
+                foreach (var dbEntry in existingEntries.Values)
+                {
+                    if (!nutritionList.Any(n => n.DataUuid == dbEntry.Uuid))
+                    {
+                        deleteList.Add(dbEntry.FoodNutritionId);
+                    }
+                }
+
+                #region Inserts
+
+                await using var transactionInsert =
+                    await sqlServerConnection.BeginTransactionAsync();
+
+                if (insertsList.Count > 0)
+                {
+                    var table =
+                        SamsungFoodNutritionDataTable.CreateFoodNutritionDataTable(personId, insertsList);
+
+                    await using var commandInsert = new MySqlCommand(
+                        DatabaseCommands.GetSamsungNutritionInsertSql(),
+                        sqlServerConnection,
+                        (MySqlTransaction)transactionInsert);
+
+                    foreach (DataColumn column in table.Columns)
+                    {
+                        commandInsert.Parameters.Add(new MySqlParameter("@" + column.ColumnName, null));
+                    }
+
+                    commandInsert.Prepare();
+
+                    int insertCount = 0;
+
+                    foreach (DataRow row in table.Rows)
+                    {
+                        foreach (DataColumn column in table.Columns)
+                        {
+                            commandInsert.Parameters["@" + column.ColumnName].Value =
+                                row[column] ?? DBNull.Value;
+                        }
+
+                        await commandInsert.ExecuteNonQueryAsync();
+
+                        insertCount++;
+
+                        if (insertCount % 100 == 0)
+                        {
+                            percentage = (double)insertCount / insertsList.Count * 100;
+                            progress?.Report((percentage, UiStrings.Status_Database_Inserted));
+                        }
+                    }
+                }
+
+                await transactionInsert.CommitAsync();
+
+                #endregion
+
+                #region Updates
+
+                int currentCount = 0;
+                int total = updatesList.Count;
+
+                await using var transactionUpdate =
+                    await sqlServerConnection.BeginTransactionAsync();
+
+                foreach (var item in updatesList)
+                {
+                    await using var command = new MySqlCommand(
+                        DatabaseCommands.GetSamsungNutritionUpdateSql(),
+                        sqlServerConnection,
+                        (MySqlTransaction)transactionUpdate);
+
+                    command.Parameters.AddWithValue("@Magnesium", (object?)item.Magnesium ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Potassium", (object?)item.Potassium ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@CreateShVer", (object?)item.CreateShVer ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@VitaminA", (object?)item.VitaminA ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@VitaminC", (object?)item.VitaminC ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@VitaminD", (object?)item.VitaminD ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@VitaminE", (object?)item.VitaminE ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@VitaminK", (object?)item.VitaminK ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@VitaminB12", (object?)item.VitaminB12 ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@Cholesterol", (object?)item.Cholesterol ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@StartTime", (object?)item.StartTime ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@Biotin", (object?)item.Biotin ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Phosphorus", (object?)item.Phosphorus ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Copper", (object?)item.Copper ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@Custom", (object?)item.Custom ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@Thiamin", (object?)item.Thiamin ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Folate", (object?)item.Folate ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Iodine", (object?)item.Iodine ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Niacin", (object?)item.Niacin ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Sodium", (object?)item.Sodium ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Molybdenum", (object?)item.Molybdenum ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@FolicAcid", (object?)item.FolicAcid ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@ModifyShVer", (object?)item.ModifyShVer ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@DietaryFiber", (object?)item.DietaryFiber ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@TotalFat", (object?)item.TotalFat ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@UpdateTime", (object?)item.UpdateTime ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@CreateTime", (object?)item.CreateTime ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@MealType", (object?)item.MealType ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@Caffeine", (object?)item.Caffeine ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@MonosaturatedFat", (object?)item.MonosaturatedFat ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Protein", (object?)item.Protein ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Manganese", (object?)item.Manganese ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@PolysaturatedFat", (object?)item.PolysaturatedFat ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Iron", (object?)item.Iron ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Zinc", (object?)item.Zinc ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Riboflavin", (object?)item.Riboflavin ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@Sugar", (object?)item.Sugar ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Title", (object?)item.Title ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@AddedSugar", (object?)item.AddedSugar ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@CaloriesFromFat", (object?)item.CaloriesFromFat ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Calcium", (object?)item.Calcium ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Calorie", (object?)item.Calorie ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@TimeOffset", (object?)item.TimeOffset ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@DeviceUuid", (object?)item.DeviceUuid ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@PolyunsaturatedFat", (object?)item.PolyunsaturatedFat ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@SaturatedFat", (object?)item.SaturatedFat ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@TransFat", (object?)item.TransFat ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@PkgName", (object?)item.PkgName ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@Selenium", (object?)item.Selenium ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@VitaminB6", (object?)item.VitaminB6 ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Carbohydrate", (object?)item.Carbohydrate ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@UnsaturatedFat", (object?)item.UnsaturatedFat ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Chloride", (object?)item.Chloride ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@PantothenicAcid", (object?)item.PantothenicAcid ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@Chromium", (object?)item.Chromium ?? DBNull.Value);
+
+                    command.Parameters.AddWithValue("@DataUuid", item.DataUuid);
+                    command.Parameters.AddWithValue("@PersonID_FK", personId);
+
+                    await command.ExecuteNonQueryAsync();
+
+                    currentCount++;
+
+                    if (currentCount % 100 == 0)
+                    {
+                        percentage = (double)currentCount / total * 100;
+                        progress?.Report((percentage, UiStrings.Status_Database_Updated));
+                    }
+                }
+
+                await transactionUpdate.CommitAsync();
+
+                #endregion
+
+                #region delete
+
+                int deleteCount = 0;
+
+                foreach (var nutritionID in deleteList)
+                {
+                    await using var sqlCommand = new MySqlCommand(
+                        DatabaseCommands.GetNutritionDeleteSql(),
+                        sqlServerConnection);
+
+                    sqlCommand.Parameters.AddWithValue("@Id", nutritionID);
+
+                    await sqlCommand.ExecuteNonQueryAsync();
+
+                    deleteCount++;
+
+                    if (deleteCount % 100 == 0)
+                    {
+                        percentage = (double)deleteCount / insertsList.Count * 100;
+                        progress?.Report((percentage, UiStrings.Status_Database_Deleted));
+                    }
+                }
+
+                #endregion
+
+
+
+                percentage = 100;
+
+                progress?.Report((percentage, UiStrings.Status_Database_Finished));
+
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error Insert Nutrition Async", ex);
+            }
+        }
+
+        /// <summary>
+        /// Asynchronously retrieves and returns Samsung nutrition records for a specified person.
+        /// </summary>
+        /// <param name="personId">The unique identifier of the person whose nutrition records are being requested.</param>
+        /// <returns>
+        /// A task representing the asynchronous operation, containing a list of
+        /// <see cref="SamsungFoodNutritionModel"/> objects.
+        /// </returns>
+        public async Task<List<SamsungFoodNutritionModel>> GetSamsungNutritionSqlAsync(int personId)
+        {
+            var result = new List<SamsungFoodNutritionModel>();
+
+            await using var sqlServerConnection = await OpenConnectionAsync();
+
+            if (!IsConnected)
+                return result;
+
+            try
+            {
+                var sqlCommand = new MySqlCommand(
+                    DatabaseCommands.GetSamsungNutritionSql(),
+                    sqlServerConnection);
+
+                sqlCommand.Parameters.AddWithValue("@PersonId", personId);
+
+                await using var reader = await sqlCommand.ExecuteReaderAsync();
+
+                result.Clear();
+
+                while (await reader.ReadAsync())
+                {
+                    result.Add(new SamsungFoodNutritionModel
+                    {
+                        FoodNutritionID = reader.GetInt32("nutrition_id"),
+
+                        Magnesium = reader.IsDBNull("magnesium") ? (double?)null : reader.GetDouble("magnesium"),
+                        Potassium = reader.IsDBNull("potassium") ? (double?)null : reader.GetDouble("potassium"),
+
+                        CreateShVer = reader.IsDBNull("create_sh_ver")
+                            ? null
+                            : reader.GetString("create_sh_ver"),
+
+                        VitaminA = reader.IsDBNull("vitamin_a") ? (double?)null : reader.GetDouble("vitamin_a"),
+                        VitaminC = reader.IsDBNull("vitamin_c") ? (double?)null : reader.GetDouble("vitamin_c"),
+                        VitaminD = reader.IsDBNull("vitamin_d") ? (double?)null : reader.GetDouble("vitamin_d"),
+                        VitaminE = reader.IsDBNull("vitamin_e") ? (double?)null : reader.GetDouble("vitamin_e"),
+                        VitaminK = reader.IsDBNull("vitamin_k") ? (double?)null : reader.GetDouble("vitamin_k"),
+
+                        Cholesterol = reader.IsDBNull("cholesterol") ? (double?)null : reader.GetDouble("cholesterol"),
+
+                        VitaminB12 = reader.IsDBNull("vitamin_b12") ? (double?)null : reader.GetDouble("vitamin_b12"),
+
+                        StartTime = reader.IsDBNull("start_time")
+                            ? (DateTime?)null
+                            : reader.GetDateTime("start_time"),
+
+                        Biotin = reader.IsDBNull("biotin") ? (double?)null : reader.GetDouble("biotin"),
+                        Phosphorus = reader.IsDBNull("phosphorus") ? (double?)null : reader.GetDouble("phosphorus"),
+                        Copper = reader.IsDBNull("copper") ? (double?)null : reader.GetDouble("copper"),
+
+                        Custom = reader.IsDBNull("custom")
+                            ? null
+                            : reader.GetString("custom"),
+
+                        Thiamin = reader.IsDBNull("thiamin") ? (double?)null : reader.GetDouble("thiamin"),
+                        Folate = reader.IsDBNull("folate") ? (double?)null : reader.GetDouble("folate"),
+                        Iodine = reader.IsDBNull("iodine") ? (double?)null : reader.GetDouble("iodine"),
+                        Niacin = reader.IsDBNull("niacin") ? (double?)null : reader.GetDouble("niacin"),
+                        Sodium = reader.IsDBNull("sodium") ? (double?)null : reader.GetDouble("sodium"),
+                        Molybdenum = reader.IsDBNull("molybdenum") ? (double?)null : reader.GetDouble("molybdenum"),
+                        FolicAcid = reader.IsDBNull("folic_acid") ? (double?)null : reader.GetDouble("folic_acid"),
+
+                        ModifyShVer = reader.IsDBNull("modify_sh_ver")
+                            ? null
+                            : reader.GetString("modify_sh_ver"),
+
+                        DietaryFiber = reader.IsDBNull("dietary_fiber") ? (double?)null : reader.GetDouble("dietary_fiber"),
+                        TotalFat = reader.IsDBNull("total_fat") ? (double?)null : reader.GetDouble("total_fat"),
+
+                        UpdateTime = reader.IsDBNull("update_time")
+                            ? (DateTime?)null
+                            : reader.GetDateTime("update_time"),
+
+                        CreateTime = reader.IsDBNull("create_time")
+                            ? (DateTime?)null
+                            : reader.GetDateTime("create_time"),
+
+                        MealType = reader.IsDBNull("meal_type")
+                            ? (int?)null
+                            : reader.GetInt32("meal_type"),
+
+                        Caffeine = reader.IsDBNull("caffeine") ? (double?)null : reader.GetDouble("caffeine"),
+                        MonosaturatedFat = reader.IsDBNull("monosaturated_fat") ? (double?)null : reader.GetDouble("monosaturated_fat"),
+                        Protein = reader.IsDBNull("protein") ? (double?)null : reader.GetDouble("protein"),
+                        Manganese = reader.IsDBNull("manganese") ? (double?)null : reader.GetDouble("manganese"),
+                        PolysaturatedFat = reader.IsDBNull("polysaturated_fat") ? (double?)null : reader.GetDouble("polysaturated_fat"),
+                        Iron = reader.IsDBNull("iron") ? (double?)null : reader.GetDouble("iron"),
+                        Zinc = reader.IsDBNull("zinc") ? (double?)null : reader.GetDouble("zinc"),
+                        Riboflavin = reader.IsDBNull("riboflavin") ? (double?)null : reader.GetDouble("riboflavin"),
+
+                        Sugar = reader.IsDBNull("sugar") ? (double?)null : reader.GetDouble("sugar"),
+
+                        Title = reader.IsDBNull("title")
+                            ? null
+                            : reader.GetString("title"),
+
+                        AddedSugar = reader.IsDBNull("added_sugar") ? (double?)null : reader.GetDouble("added_sugar"),
+                        CaloriesFromFat = reader.IsDBNull("calories_from_fat") ? (double?)null : reader.GetDouble("calories_from_fat"),
+                        Calcium = reader.IsDBNull("calcium") ? (double?)null : reader.GetDouble("calcium"),
+                        Calorie = reader.IsDBNull("calorie") ? (double?)null : reader.GetDouble("calorie"),
+
+                        TimeOffset = reader.IsDBNull("time_offset")
+                            ? (string?)null
+                            : reader.GetString("time_offset"),
+
+                        DeviceUuid = reader.IsDBNull("deviceuuid")
+                            ? null
+                            : reader.GetString("deviceuuid"),
+
+                        PolyunsaturatedFat = reader.IsDBNull("polyunsaturated_fat")
+                            ? (double?)null
+                            : reader.GetDouble("polyunsaturated_fat"),
+
+                        SaturatedFat = reader.IsDBNull("saturated_fat")
+                            ? (double?)null
+                            : reader.GetDouble("saturated_fat"),
+
+                        TransFat = reader.IsDBNull("trans_fat")
+                            ? (double?)null
+                            : reader.GetDouble("trans_fat"),
+
+                        PkgName = reader.IsDBNull("pkg_name")
+                            ? null
+                            : reader.GetString("pkg_name"),
+
+                        Selenium = reader.IsDBNull("selenium")
+                            ? (double?)null
+                            : reader.GetDouble("selenium"),
+
+                        VitaminB6 = reader.IsDBNull("vitamin_b6")
+                            ? (double?)null
+                            : reader.GetDouble("vitamin_b6"),
+
+                        Carbohydrate = reader.IsDBNull("carbohydrate")
+                            ? (double?)null
+                            : reader.GetDouble("carbohydrate"),
+
+                        UnsaturatedFat = reader.IsDBNull("unsaturated_fat")
+                            ? (double?)null
+                            : reader.GetDouble("unsaturated_fat"),
+
+                        Chloride = reader.IsDBNull("chloride")
+                            ? (double?)null
+                            : reader.GetDouble("chloride"),
+
+                        PantothenicAcid = reader.IsDBNull("pantothenic_acid")
+                            ? (double?)null
+                            : reader.GetDouble("pantothenic_acid"),
+
+                        DataUuid = reader.IsDBNull("datauuid")
+                            ? null
+                            : reader.GetString("datauuid"),
+
+                        Chromium = reader.IsDBNull("chromium")
+                            ? (double?)null
+                            : reader.GetDouble("chromium")
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error Get Nutrition Async", ex);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Asynchronously deletes a specific nutrition record from the database using its unique identifier.
+        /// </summary>
+        /// <param name="nutritionId">
+        /// The primary key (ID) of the nutrition record to be removed.
+        /// </param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task GetNutritionDeleteSqlAsync(int nutritionId)
+        {
+            await using var sqlServerConnection = await OpenConnectionAsync();
+
+            if (!IsConnected)
+                return;
+
+            try
+            {
+                var sqlCommand = new MySqlCommand(
+                    DatabaseCommands.GetNutritionDeleteSql(),
+                    sqlServerConnection);
+
+                sqlCommand.Parameters.AddWithValue("@id", nutritionId);
+
+                await sqlCommand.ExecuteNonQueryAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error Delete Nutrition Async: {ex.Message}", ex);
             }
         }
 
@@ -1782,27 +2411,32 @@ namespace BodyTracker.Services
 
         /// <summary>
         /// Asynchronously synchronizes a collection of Samsung Health exercise records for a specific person into the database, 
-        /// performing bulk insertions for new entries and transactional updates for existing records based on unique data identifiers and update timestamps.
+        /// performing bulk insertions for new entries and transactional updatesList for existing records based on unique data identifiers and update timestamps.
         /// </summary>
         /// <param name="personId">The unique identifier of the person associated with the exercise records.</param>
         /// <param name="exerciseList">The collection of Samsung exercise records to synchronize.</param>
         /// <param name="progress">An optional progress reporter for tracking completion percentages and status messages.</param>
         /// <returns>True if successful; otherwise false.</returns>
-        public async Task<bool> UpsertExerciseSqlAsync(int personId, ICollection<SamsungExerciseModel> exerciseList,
-                                                  IProgress<(double value, string prgressText)>? progress = null)
+        public async Task<bool> UpsertExerciseSqlAsync(
+            int personId,
+            ICollection<SamsungExerciseModel> exerciseList,
+            IProgress<(double value, string prgressText)>? progress = null)
         {
             await using var sqlServerConnection = await OpenConnectionAsync();
 
-            if (!IsConnected) return false;
+            if (!IsConnected)
+                return false;
 
             try
             {
+                var existingEntries = new Dictionary<string, (
+                    int ExerciseId,
+                    string Uuid,
+                    DateTime? UpdateTime)>();
 
-                var existingEntries = new Dictionary<string, DateTime?>();
-
-                // Get the data_uuid and update_time from the exisiting exercise in the databasse tbl_Exercise 
-                await using var cmd = new MySqlCommand(DatabaseCommands.GetSamsungExerciseExistenceCheckSql(),
-                                                        sqlServerConnection);
+                await using var cmd = new MySqlCommand(
+                    DatabaseCommands.GetSamsungExerciseExistenceCheckSql(),
+                    sqlServerConnection);
 
                 cmd.Parameters.AddWithValue("@PersonId", personId);
 
@@ -1812,153 +2446,123 @@ namespace BodyTracker.Services
                     {
                         existingEntries.Add(
                             reader.GetString("data_uuid"),
-                            reader.IsDBNull("update_at")
-                                ? null
-                                : reader.GetDateTime("update_at"));
+                            (
+                                reader.GetInt32("exercise_id"),
+                                reader.GetString("data_uuid"),
+                                reader.IsDBNull("update_at")
+                                    ? null
+                                    : reader.GetDateTime("update_at")
+                            ));
                     }
                 }
-                var inserts = new List<SamsungExerciseModel>();
-                var updates = new List<SamsungExerciseModel>();
 
-                // Compare the Exercise List with the existitng values in the database tbl_Exercise.
-                // If the value exist then we updarte the entrie. Is the value new then we insert
-                // it in the table with bulk inserting.
+                var insertsList = new List<SamsungExerciseModel>();
+                var updatesList = new List<SamsungExerciseModel>();
+                var deleteList = new List<int>();
+
+                double percentage = 0;
+
                 foreach (var item in exerciseList)
                 {
-                    if (string.IsNullOrWhiteSpace(item.DataUuid)) continue;
+                    if (string.IsNullOrWhiteSpace(item.DataUuid))
+                        continue;
 
-                    if (!existingEntries.TryGetValue(item.DataUuid, out var dbUpdateTime))
+                    if (!existingEntries.TryGetValue(item.DataUuid, out var dbEntry))
                     {
-                        inserts.Add(item);
+                        insertsList.Add(item);
                         continue;
                     }
 
-                    if (item.UpdateTime.HasValue && (!dbUpdateTime.HasValue || item.UpdateTime > dbUpdateTime))
+                    if (item.UpdateTime.HasValue &&
+                        (!dbEntry.UpdateTime.HasValue ||
+                         item.UpdateTime > dbEntry.UpdateTime))
                     {
-                        updates.Add(item);
+                        updatesList.Add(item);
                     }
                 }
 
-                if (inserts.Count > 0)
+                // Retrieve entries for deleting
+                foreach (var dbEntry in existingEntries.Values)
                 {
-                    var table = SamsungExerciseDataTable.CreateExerciseDataTable(personId, inserts);
-
-                    var bulkCopy = new MySqlBulkCopy(sqlServerConnection)
+                    if (!exerciseList.Any(x => x.DataUuid == dbEntry.Uuid))
                     {
-                        DestinationTableName = "tbl_Exercise",
-                        NotifyAfter = 1000
-                    };
-
-                    bulkCopy.MySqlRowsCopied += (sender, e) =>
-                    {
-                        double percentage = (double)e.RowsCopied / inserts.Count * 100;
-
-                        progress?.Report((percentage, $"Inserted: "));
-                    };
-
-
-
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(0, "person_id"));
-
-                    #region ... rest of bulk copy 
-
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(1, "live_data_internal"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(2, "mission_value"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(3, "race_target"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(4, "subset_data"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(5, "start_longitude"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(6, "routine_data_uuid"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(7, "total_calorie"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(8, "completion_status"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(9, "pace_info_id"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(10, "activity_type"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(11, "pace_live_data"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(12, "sensing_status"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(13, "source_type"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(14, "mission_type"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(15, "ftp"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(16, "tracking_status"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(17, "program_id"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(18, "title"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(19, "reward_status"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(20, "heart_rate_sample_count"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(21, "start_latitude"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(22, "mission_extra_value"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(23, "program_schedule_id"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(24, "heart_rate_device_uuid"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(25, "location_data_internal"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(26, "custom_id"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(27, "additional_internal"));
-
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(28, "duration"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(29, "additional"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(30, "create_sync_version"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(31, "mean_caloric_burn_rate"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(32, "location_data"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(33, "start_time"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(34, "exercise_type"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(35, "custom_text"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(36, "max_altitude"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(37, "incline_distance"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(38, "mean_heart_rate"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(39, "count_type"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(40, "mean_rpm"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(41, "min_altitude"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(42, "modify_sync_version"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(43, "max_heart_rate"));
-
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(44, "update_at"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(45, "create_at"));
-
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(46, "client_data_id"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(47, "max_power"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(48, "max_speed"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(49, "mean_cadence"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(50, "min_heart_rate"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(51, "client_data_version"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(52, "count_value"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(53, "distance"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(54, "max_caloric_burn_rate"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(55, "calorie"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(56, "max_cadence"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(57, "decline_distance"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(58, "vo2_max"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(59, "time_offset"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(60, "device_uuid"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(61, "max_rpm"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(62, "comment_text"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(63, "live_data"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(64, "mean_power"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(65, "mean_speed"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(66, "package_name"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(67, "altitude_gain"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(68, "altitude_loss"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(69, "exercise_custom_type"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(70, "auxiliary_devices"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(71, "end_time"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(72, "data_uuid"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(73, "sweat_loss"));
-
-                    #endregion
-
-                    await bulkCopy.WriteToServerAsync(table);
+                        deleteList.Add(dbEntry.ExerciseId);
+                    }
                 }
 
+                #region Inserts
 
-                int current = 0;
-                await using var transaction = await sqlServerConnection.BeginTransactionAsync();
+                await using var transactionInsert =
+                    await sqlServerConnection.BeginTransactionAsync();
 
-                int total = updates.Count();
-
-                // Update the exisiting datas in tbl_HeartRate
-                foreach (var item in updates)
+                if (insertsList.Count > 0)
                 {
-                    await using var command = new MySqlCommand(DatabaseCommands.GetExerciseUpdateSql(),
-                                                            sqlServerConnection, (MySqlTransaction)transaction);
+                    var table =
+                        SamsungExerciseDataTable.CreateExerciseDataTable(
+                            personId,
+                            insertsList);
+
+                    await using var commandInsert = new MySqlCommand(
+                        DatabaseCommands.GetSamsungExerciseUpsertSql(),
+                        sqlServerConnection,
+                        (MySqlTransaction)transactionInsert);
+
+                    foreach (DataColumn column in table.Columns)
+                    {
+                        commandInsert.Parameters.Add(
+                            new MySqlParameter(
+                                "@" + column.ColumnName,
+                                null));
+                    }
+
+                    commandInsert.Prepare();
+
+                    int insertCount = 0;
+
+                    foreach (DataRow row in table.Rows)
+                    {
+                        foreach (DataColumn column in table.Columns)
+                        {
+                            commandInsert.Parameters["@" + column.ColumnName].Value =
+                                row[column] ?? DBNull.Value;
+                        }
+
+                        await commandInsert.ExecuteNonQueryAsync();
+
+                        insertCount++;
+
+                        if (insertCount % 100 == 0)
+                        {
+                            percentage =
+                                (double)insertCount / insertsList.Count * 100;
+
+                            progress?.Report(
+                                (percentage,
+                                 UiStrings.Status_Database_Inserted));
+                        }
+                    }
+                }
+
+                await transactionInsert.CommitAsync();
+
+                #endregion
+
+                #region Updates
+
+                int currentCount = 0;
+                int total = updatesList.Count;
+
+                await using var transactionUpdate =
+                    await sqlServerConnection.BeginTransactionAsync();
+
+                foreach (var item in updatesList)
+                {
+                    await using var command = new MySqlCommand(
+                        DatabaseCommands.GetExerciseUpdateSql(),
+                        sqlServerConnection,
+                        (MySqlTransaction)transactionUpdate);
 
                     command.Parameters.AddWithValue("@LiveDataInternal", (object?)item.LiveDataInternal ?? DBNull.Value);
-
-                    #region ... rest of AddWithValue
 
                     command.Parameters.AddWithValue("@MissionValue", (object?)item.MissionValue ?? DBNull.Value);
                     command.Parameters.AddWithValue("@RaceTarget", (object?)item.RaceTarget ?? DBNull.Value);
@@ -2041,27 +2645,71 @@ namespace BodyTracker.Services
                     command.Parameters.AddWithValue("@DataUuid", item.DataUuid);
                     command.Parameters.AddWithValue("@SweatLoss", (object?)item.SweatLoss ?? DBNull.Value);
 
-                    #endregion
-
                     await command.ExecuteNonQueryAsync();
 
-                    current++;
+                    currentCount++;
 
-                    if (current % 100 == 0)
+                    if (currentCount % 100 == 0)
                     {
-                        double percentage = (double)current / total * 100;
+                        percentage =
+                            (double)currentCount / total * 100;
 
-                        progress?.Report((percentage, "Updated: "));
+                        progress?.Report(
+                            (percentage,
+                             UiStrings.Status_Database_Updated));
                     }
                 }
 
-                await transaction.CommitAsync();
+                await transactionUpdate.CommitAsync();
+
+                #endregion
+
+                #region Delete
+
+                int deleteCount = 0;
+
+                await using var transactionDelete =
+                    await sqlServerConnection.BeginTransactionAsync();
+
+                foreach (var exerciseId in deleteList)
+                {
+                    await using var command = new MySqlCommand(
+                        DatabaseCommands.GetSamsungExerciseDeleteSql(),
+                        sqlServerConnection,
+                        (MySqlTransaction)transactionDelete);
+
+                    command.Parameters.AddWithValue("@id", exerciseId);
+
+                    await command.ExecuteNonQueryAsync();
+
+                    deleteCount++;
+
+                    if (deleteCount % 100 == 0)
+                    {
+                        percentage =
+                            (double)deleteCount / deleteList.Count * 100;
+
+                        progress?.Report(
+                            (percentage,
+                             UiStrings.Status_Database_Deleted));
+                    }
+                }
+
+                await transactionDelete.CommitAsync();
+
+                #endregion
+
+                percentage = 100;
+
+                progress?.Report(
+                    (percentage,
+                     UiStrings.Status_Database_Finished));
 
                 return true;
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error Insert Samsung Exercises: {ex.Message}", ex);
+                throw new Exception("Error Insert Samsung Exercises", ex);
             }
         }
 
@@ -2444,27 +3092,32 @@ namespace BodyTracker.Services
 
         /// <summary>
         /// Asynchronously synchronizes a collection of Samsung Health Heart Rate records for a specific person into the database, 
-        /// performing bulk insertions for new entries and transactional updates for existing records based on unique data identifiers and update timestamps.
+        /// performing bulk insertions for new entries and transactional updatesList for existing records based on unique data identifiers and update timestamps.
         /// </summary>
         /// <param name="personId">The unique identifier of the person.</param>
         /// <param name="heartRates">The heart rate records to store.</param>
         /// <param name="progress">Optional progress reporter.</param>
         /// <returns>True if the operation succeeds; otherwise false.</returns>
-        public async Task<bool> UpsertHeartRatesSqlAsync(int personId, ICollection<SamsungHeartRateModel> heartRates,
-                                                    IProgress<(double value, string prgressText)>? progress = null)
+        public async Task<bool> UpsertHeartRatesSqlAsync(
+          int personId,
+          ICollection<SamsungHeartRateModel> heartRates,
+          IProgress<(double value, string prgressText)>? progress = null)
         {
             await using var sqlServerConnection = await OpenConnectionAsync();
 
-            if (!IsConnected) return false;
+            if (!IsConnected)
+                return false;
 
             try
             {
+                var existingEntries = new Dictionary<string, (
+                    int HeartRateId,
+                    string Uuid,
+                    DateTime? UpdateTime)>();
 
-                var existingEntries = new Dictionary<string, DateTime?>();
-
-                // Get the data_uuid and update_time from the exisiting heart rates in the databasse tbl_HeartRate 
-                await using var cmd = new MySqlCommand(DatabaseCommands.GetHeartRateExistenceCheckSql(),
-                                                        sqlServerConnection);
+                await using var cmd = new MySqlCommand(
+                    DatabaseCommands.GetHeartRateExistenceCheckSql(),
+                    sqlServerConnection);
 
                 cmd.Parameters.AddWithValue("@PersonId", personId);
 
@@ -2474,94 +3127,123 @@ namespace BodyTracker.Services
                     {
                         existingEntries.Add(
                             reader.GetString("data_uuid"),
-                            reader.IsDBNull("update_time")
-                                ? null
-                                : reader.GetDateTime("update_time"));
+                            (
+                                reader.GetInt32("heart_rate_id"),
+                                reader.GetString("data_uuid"),
+                                reader.IsDBNull("update_time")
+                                    ? null
+                                    : reader.GetDateTime("update_time")
+                            ));
                     }
                 }
-                var inserts = new List<SamsungHeartRateModel>();
-                var updates = new List<SamsungHeartRateModel>();
 
-                // Compare the heartRates List with the existitng values in the database tbl_HeartRate. If the value exist then we updarte the entrie.
-                // Is the value new then we insert
-                // it in the table with bulk inserting.
+                var insertsList = new List<SamsungHeartRateModel>();
+                var updatesList = new List<SamsungHeartRateModel>();
+                var deleteList = new List<int>();
+
+                double percentage = 0;
+
                 foreach (var item in heartRates)
                 {
-                    if (string.IsNullOrWhiteSpace(item.DataUuid)) continue;
+                    if (string.IsNullOrWhiteSpace(item.DataUuid))
+                        continue;
 
-                    if (!existingEntries.TryGetValue(item.DataUuid, out var dbUpdateTime))
+                    if (!existingEntries.TryGetValue(item.DataUuid, out var dbEntry))
                     {
-                        inserts.Add(item);
+                        insertsList.Add(item);
                         continue;
                     }
 
-                    if (item.UpdateTime.HasValue && (!dbUpdateTime.HasValue || item.UpdateTime > dbUpdateTime))
+                    if (item.UpdateTime.HasValue &&
+                        (!dbEntry.UpdateTime.HasValue ||
+                         item.UpdateTime > dbEntry.UpdateTime))
                     {
-                        updates.Add(item);
+                        updatesList.Add(item);
                     }
                 }
 
-                if (inserts.Count > 0)
+                // Retrieve entries for deleting
+                foreach (var dbEntry in existingEntries.Values)
                 {
-                    var table = SamsungHeartRateDataTable.CreateHeartRateDataTable(personId, inserts);
-
-                    var bulkCopy = new MySqlBulkCopy(sqlServerConnection)
+                    if (!heartRates.Any(x => x.DataUuid == dbEntry.Uuid))
                     {
-                        DestinationTableName = "tbl_HeartRate",
-                        NotifyAfter = 1000
-                    };
-
-                    bulkCopy.MySqlRowsCopied += (sender, e) =>
-                    {
-                        double percentage = (double)e.RowsCopied / inserts.Count * 100;
-
-                        progress?.Report((percentage,
-                            $"Inserted: "));
-                    };
-
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(0, "person_id"));
-                    #region ... rest of bulk copy
-
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(1, "source"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(2, "tag_id"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(3, "createShVer"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(4, "start_time"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(5, "end_time"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(6, "update_time"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(7, "create_time"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(8, "time_offset"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(9, "custom"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(10, "binning_data"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(11, "modify_shver"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(12, "client_data_id"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(13, "heart_rate"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(14, "heart_rate_max"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(15, "heart_rate_min"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(16, "heart_beat_count"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(17, "client_dataver"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(18, "comment"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(19, "package_name"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(20, "device_uuid"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(21, "data_uuid"));
-
-                    #endregion
-
-                    await bulkCopy.WriteToServerAsync(table);
+                        deleteList.Add(dbEntry.HeartRateId);
+                    }
                 }
 
+                #region Inserts
 
-                int current = 0;
-                await using var transaction = await sqlServerConnection.BeginTransactionAsync();
-                int total = updates.Count();
-                // Update the exisiting datas in tbl_HeartRate
-                foreach (var item in updates)
+                await using var transactionInsert =
+                    await sqlServerConnection.BeginTransactionAsync();
+
+                if (insertsList.Count > 0)
                 {
-                    await using var command = new MySqlCommand(DatabaseCommands.GetHeartRateUpdateSql(),
-                                                            sqlServerConnection, (MySqlTransaction)transaction);
+                    var table =
+                        SamsungHeartRateDataTable.CreateHeartRateDataTable(
+                            personId,
+                            insertsList);
+
+                    await using var commandInsert = new MySqlCommand(
+                        DatabaseCommands.GetSamsungHeartRateUpsertSql(),
+                        sqlServerConnection,
+                        (MySqlTransaction)transactionInsert);
+
+                    foreach (DataColumn column in table.Columns)
+                    {
+                        commandInsert.Parameters.Add(
+                            new MySqlParameter(
+                                "@" + column.ColumnName,
+                                null));
+                    }
+
+                    commandInsert.Prepare();
+
+                    int insertCount = 0;
+
+                    foreach (DataRow row in table.Rows)
+                    {
+                        foreach (DataColumn column in table.Columns)
+                        {
+                            commandInsert.Parameters["@" + column.ColumnName].Value =
+                                row[column] ?? DBNull.Value;
+                        }
+
+                        await commandInsert.ExecuteNonQueryAsync();
+
+                        insertCount++;
+
+                        if (insertCount % 100 == 0)
+                        {
+                            percentage =
+                                (double)insertCount / insertsList.Count * 100;
+
+                            progress?.Report(
+                                (percentage,
+                                 UiStrings.Status_Database_Inserted));
+                        }
+                    }
+                }
+
+                await transactionInsert.CommitAsync();
+
+                #endregion
+
+                #region Updates
+
+                int currentCount = 0;
+                int total = updatesList.Count;
+
+                await using var transactionUpdate =
+                    await sqlServerConnection.BeginTransactionAsync();
+
+                foreach (var item in updatesList)
+                {
+                    await using var command = new MySqlCommand(
+                        DatabaseCommands.GetHeartRateUpdateSql(),
+                        sqlServerConnection,
+                        (MySqlTransaction)transactionUpdate);
 
                     command.Parameters.AddWithValue("@Source", (object?)item.Source ?? DBNull.Value);
-                    #region ... rest of add with value
-
                     command.Parameters.AddWithValue("@TagId", (object?)item.TagId ?? DBNull.Value);
                     command.Parameters.AddWithValue("@CreateShVer", (object?)item.CreateShVer ?? DBNull.Value);
                     command.Parameters.AddWithValue("@StartTime", (object?)item.StartTime ?? DBNull.Value);
@@ -2583,30 +3265,75 @@ namespace BodyTracker.Services
                     command.Parameters.AddWithValue("@DeviceUuid", (object?)item.DeviceUuid ?? DBNull.Value);
                     command.Parameters.AddWithValue("@DataUuid", item.DataUuid);
 
-                    #endregion
-
                     await command.ExecuteNonQueryAsync();
 
-                    current++;
+                    currentCount++;
 
-                    if (current % 100 == 0)
+                    if (currentCount % 100 == 0)
                     {
-                        double percentage = (double)current / total * 100;
+                        percentage =
+                            (double)currentCount / total * 100;
 
-                        progress?.Report((percentage, "Updated: "));
+                        progress?.Report(
+                            (percentage,
+                             UiStrings.Status_Database_Updated));
                     }
                 }
 
-                await transaction.CommitAsync();
+                await transactionUpdate.CommitAsync();
+
+                #endregion
+
+                #region Delete
+
+                int deleteCount = 0;
+
+                await using var transactionDelete =
+                    await sqlServerConnection.BeginTransactionAsync();
+
+                foreach (var heartRateId in deleteList)
+                {
+                    await using var command = new MySqlCommand(
+                        DatabaseCommands.GetSamsungHeartRateDeleteSql(),
+                        sqlServerConnection,
+                        (MySqlTransaction)transactionDelete);
+
+                    command.Parameters.AddWithValue("@id", heartRateId);
+
+                    await command.ExecuteNonQueryAsync();
+
+                    deleteCount++;
+
+                    if (deleteCount % 100 == 0)
+                    {
+                        percentage =
+                            (double)deleteCount / deleteList.Count * 100;
+
+                        progress?.Report(
+                            (percentage,
+                             UiStrings.Status_Database_Deleted));
+                    }
+                }
+
+                await transactionDelete.CommitAsync();
+
+                #endregion
+
+                percentage = 100;
+
+                progress?.Report(
+                    (percentage,
+                     UiStrings.Status_Database_Finished));
 
                 return true;
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error inserting Samsung Heart Rates: {ex.Message}", ex);   
+                throw new Exception(
+                    "Error inserting Samsung Heart Rates",
+                    ex);
             }
         }
-
         /// <summary>
         /// Asynchronously retrieves a list of Samsung Health heart rate records for the specified person from the database.
         /// </summary>
@@ -2872,27 +3599,32 @@ namespace BodyTracker.Services
 
         /// <summary>
         /// Asynchronously synchronizes a collection of Samsung Health Step Trend records for a specific person into the database, 
-        /// performing bulk insertions for new entries and transactional updates for existing records based on unique data identifiers and update timestamps.
+        /// performing bulk insertions for new entries and transactional updatesList for existing records based on unique data identifiers and update timestamps.
         /// </summary>
         /// <param name="PersonId">The unique identifier of the person to whom the data belongs.</param>
         /// <param name="stepDailyTrendList">A collection of <see cref="SamsungStepTrendModel"/> objects containing the step trend data to be stored.</param>
         /// <param name="progress">An optional progress indicator that reports the percentage of the insertion process.</param>
         /// <returns>Returns 'true' if the operation completes successfully.</returns>
-        public async Task<bool> UpsertStepTrendSqlAsync(int personId, ICollection<SamsungStepTrendModel> stepDailyTrendList,
-                                                    IProgress<(double value, string prgressText)>? progress = null)
+        public async Task<bool> UpsertStepTrendSqlAsync(
+         int personId,
+         ICollection<SamsungStepTrendModel> stepDailyTrendList,
+         IProgress<(double value, string prgressText)>? progress = null)
         {
             await using var sqlServerConnection = await OpenConnectionAsync();
 
-            if (!IsConnected) return false;
+            if (!IsConnected)
+                return false;
 
             try
             {
+                var existingEntries = new Dictionary<string, (
+                    int StepTrendId,
+                    string Uuid,
+                    DateTime? UpdateTime)>();
 
-                var existingEntries = new Dictionary<string, DateTime?>();
-
-                // Get the data_uuid and update_time from the exisiting heart rates in the databasse tbl_HeartRate 
-                await using var cmd = new MySqlCommand(DatabaseCommands.GetSamsungStepTrendExistenceCheckSql(),
-                                                        sqlServerConnection);
+                await using var cmd = new MySqlCommand(
+                    DatabaseCommands.GetSamsungStepTrendExistenceCheckSql(),
+                    sqlServerConnection);
 
                 cmd.Parameters.AddWithValue("@PersonId", personId);
 
@@ -2902,90 +3634,128 @@ namespace BodyTracker.Services
                     {
                         existingEntries.Add(
                             reader.GetString("data_uuid"),
-                            reader.IsDBNull("update_at")
-                                ? null
-                                : reader.GetDateTime("update_at"));
+                            (
+                                reader.GetInt32("step_trend_id"),
+                                reader.GetString("data_uuid"),
+                                reader.IsDBNull("update_at")
+                                    ? null
+                                    : reader.GetDateTime("update_at")
+                            ));
                     }
                 }
-                var inserts = new List<SamsungStepTrendModel>();
-                var updates = new List<SamsungStepTrendModel>();
 
-                // Compare the stepTrendList List with the existitng values in the database tbl_StepTrend. If the value exist then we update the entrie.
-                // Is the value new then we insert
-                // it in the table with bulk inserting.
+                var insertsList = new List<SamsungStepTrendModel>();
+                var updatesList = new List<SamsungStepTrendModel>();
+                var deleteList = new List<int>();
+
+                double percentage = 0;
+
                 foreach (var item in stepDailyTrendList)
                 {
                     var uuid = item.DataUuid?.Trim();
-                    if (string.IsNullOrWhiteSpace(item.DataUuid)) continue;
 
-                    if (!existingEntries.TryGetValue(uuid, out var dbUpdateTime))
+                    if (string.IsNullOrWhiteSpace(uuid))
+                        continue;
+
+                    if (!existingEntries.TryGetValue(uuid, out var dbEntry))
                     {
-                        inserts.Add(item);
+                        insertsList.Add(item);
                         continue;
                     }
 
-                    if (item.UpdateTime.HasValue && (!dbUpdateTime.HasValue || item.UpdateTime > dbUpdateTime))
+                    if (item.UpdateTime.HasValue &&
+                        (!dbEntry.UpdateTime.HasValue ||
+                         item.UpdateTime > dbEntry.UpdateTime))
                     {
-                        updates.Add(item);
+                        updatesList.Add(item);
                     }
                 }
 
-                if (inserts.Count > 0)
+                // Retrieve entries for deleting
+                foreach (var dbEntry in existingEntries.Values)
                 {
-                    var table = SamsungHealthStepDailyTrendDataTable.CreateStepDailyTrendDataTable(personId, inserts);
-
-                    var bulkCopy = new MySqlBulkCopy(sqlServerConnection)
+                    if (!stepDailyTrendList.Any(x => x.DataUuid == dbEntry.Uuid))
                     {
-                        DestinationTableName = "tbl_StepTrend",
-                        NotifyAfter = 1000
-                    };
-
-                    bulkCopy.MySqlRowsCopied += (sender, e) =>
-                    {
-                        double percentage = (double)e.RowsCopied / inserts.Count * 100;
-
-                        progress?.Report((percentage,
-                            $"Inserted: "));
-                    };
-
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(0, "person_id"));
-                    #region ... rest of bulk copy
-
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(1, "binning_data"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(2, "update_at"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(3, "create_at"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(4, "source_package"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(5, "source_type"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(6, "step_count_current"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(7, "step_count_initial"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(8, "speed_current"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(9, "speed_initial"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(10, "distance_current"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(11, "distance_initial"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(12, "calories_current"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(13, "calories_initial"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(14, "device_uuid"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(15, "package_name"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(16, "data_uuid"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(17, "record_date"));
-
-                    #endregion
-
-                    await bulkCopy.WriteToServerAsync(table);
+                        deleteList.Add(dbEntry.StepTrendId);
+                    }
                 }
 
+                #region Inserts
 
-                int current = 0;
-                await using var transaction = await sqlServerConnection.BeginTransactionAsync();
-                int total = updates.Count();
-                // Update the exisiting datas in tbl_HeartRate
-                foreach (var item in updates)
+                await using var transactionInsert =
+                    await sqlServerConnection.BeginTransactionAsync();
+
+                if (insertsList.Count > 0)
                 {
-                    await using var command = new MySqlCommand(DatabaseCommands.GetSamsungStepTrendUpdateSql(),
-                                                            sqlServerConnection, (MySqlTransaction)transaction);
+                    var table =
+                        SamsungHealthStepDailyTrendDataTable
+                            .CreateStepDailyTrendDataTable(
+                                personId,
+                                insertsList);
+
+                    await using var commandInsert = new MySqlCommand(
+                        DatabaseCommands.GetSamsungStepTrendUpsertSql(),
+                        sqlServerConnection,
+                        (MySqlTransaction)transactionInsert);
+
+                    foreach (DataColumn column in table.Columns)
+                    {
+                        commandInsert.Parameters.Add(
+                            new MySqlParameter(
+                                "@" + column.ColumnName,
+                                null));
+                    }
+
+                    commandInsert.Prepare();
+
+                    int insertCount = 0;
+
+                    foreach (DataRow row in table.Rows)
+                    {
+                        foreach (DataColumn column in table.Columns)
+                        {
+                            commandInsert.Parameters["@" + column.ColumnName].Value =
+                                row[column] ?? DBNull.Value;
+                        }
+
+                        await commandInsert.ExecuteNonQueryAsync();
+
+                        insertCount++;
+
+                        if (insertCount % 100 == 0)
+                        {
+                            percentage =
+                                (double)insertCount / insertsList.Count * 100;
+
+                            progress?.Report(
+                                (
+                                    percentage,
+                                    UiStrings.Status_Database_Inserted
+                                ));
+                        }
+                    }
+                }
+
+                await transactionInsert.CommitAsync();
+
+                #endregion
+
+                #region Updates
+
+                int currentCount = 0;
+                int total = updatesList.Count;
+
+                await using var transactionUpdate =
+                    await sqlServerConnection.BeginTransactionAsync();
+
+                foreach (var item in updatesList)
+                {
+                    await using var command = new MySqlCommand(
+                        DatabaseCommands.GetSamsungStepTrendUpdateSql(),
+                        sqlServerConnection,
+                        (MySqlTransaction)transactionUpdate);
 
                     command.Parameters.AddWithValue("@PersonID_FK", personId);
-                    #region ... rest of add with value
 
                     command.Parameters.AddWithValue("@BinningData", (object?)item.BinningData ?? DBNull.Value);
                     command.Parameters.AddWithValue("@UpdateTime", (object?)item.UpdateTime ?? DBNull.Value);
@@ -3003,28 +3773,77 @@ namespace BodyTracker.Services
 
                     command.Parameters.AddWithValue("@DataUuid", item.DataUuid);
 
-                    #endregion
-
                     await command.ExecuteNonQueryAsync();
 
-                    current++;
+                    currentCount++;
 
-                    if (current % 100 == 0)
+                    if (currentCount % 100 == 0)
                     {
-                        double percentage = (double)current / total * 100;
+                        percentage =
+                            (double)currentCount / total * 100;
 
-                        progress?.Report((percentage, "Updated: "));
+                        progress?.Report(
+                            (
+                                percentage,
+                                UiStrings.Status_Database_Updated
+                            ));
                     }
                 }
 
-                await transaction.CommitAsync();
+                await transactionUpdate.CommitAsync();
+
+                #endregion
+
+                #region Delete
+
+                int deleteCount = 0;
+
+                await using var transactionDelete =
+                    await sqlServerConnection.BeginTransactionAsync();
+
+                foreach (var stepTrendId in deleteList)
+                {
+                    await using var command = new MySqlCommand(
+                        DatabaseCommands.GetSamsungStepTrendDeleteSql(),
+                        sqlServerConnection,
+                        (MySqlTransaction)transactionDelete);
+
+                    command.Parameters.AddWithValue("@id", stepTrendId);
+
+                    await command.ExecuteNonQueryAsync();
+
+                    deleteCount++;
+
+                    if (deleteCount % 100 == 0)
+                    {
+                        percentage =
+                            (double)deleteCount / deleteList.Count * 100;
+
+                        progress?.Report(
+                            (
+                                percentage,
+                                UiStrings.Status_Database_Deleted
+                            ));
+                    }
+                }
+
+                await transactionDelete.CommitAsync();
+
+                #endregion
+
+                percentage = 100;
+
+                progress?.Report(
+                    (
+                        percentage,
+                        UiStrings.Status_Database_Finished
+                    ));
 
                 return true;
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error Insert Step Trend Datas: {ex.Message}", ex);
-
+                throw new Exception("Error Insert Step Trend Datas", ex);
             }
         }
 
@@ -3270,27 +4089,32 @@ namespace BodyTracker.Services
 
         /// <summary>
         /// Asynchronously synchronizes a collection of Samsung Health Step Trend records for a specific person into the database, 
-        /// performing bulk insertions for new entries and transactional updates for existing records based on unique data identifiers and update timestamps.
+        /// performing bulk insertions for new entries and transactional updatesList for existing records based on unique data identifiers and update timestamps.
         /// </summary>
         /// <param name="PersonId">The unique identifier of the person to whom the data belongs.</param>
         /// <param name="stepDailyTrendList">A collection of <see cref="SamsungStepTrendModel"/> objects containing the step trend data to be stored.</param>
         /// <param name="progress">An optional progress indicator that reports the percentage of the insertion process.</param>
         /// <returns>Returns 'true' if the operation completes successfully.</returns>
-        public async Task<bool> UpsertSpO2SqlAsync(int personId, ICollection<SamsungOxygenSaturationModel> oxygenSaturation,
-                                                    IProgress<(double value, string prgressText)>? progress = null)
+        public async Task<bool> UpsertSpO2SqlAsync(
+          int personId,
+          ICollection<SamsungOxygenSaturationModel> oxygenSaturation,
+          IProgress<(double value, string prgressText)>? progress = null)
         {
             await using var sqlServerConnection = await OpenConnectionAsync();
 
-            if (!IsConnected) return false;
+            if (!IsConnected)
+                return false;
 
             try
             {
+                var existingEntries = new Dictionary<string, (
+                    int OxygenSaturationId,
+                    string Uuid,
+                    DateTime? UpdateTime)>();
 
-                var existingEntries = new Dictionary<string, DateTime?>();
-
-                // Get the data_uuid and update_time or update_at from the exisiting datas in the databasse table 
-                await using var cmd = new MySqlCommand(DatabaseCommands.GetSamsungOxygenSaturationExistenceCheckSql(),
-                                                        sqlServerConnection);
+                await using var cmd = new MySqlCommand(
+                    DatabaseCommands.GetSamsungOxygenSaturationExistenceCheckSql(),
+                    sqlServerConnection);
 
                 cmd.Parameters.AddWithValue("@PersonId", personId);
 
@@ -3300,110 +4124,127 @@ namespace BodyTracker.Services
                     {
                         existingEntries.Add(
                             reader.GetString("data_uuid"),
-                            reader.IsDBNull("update_time")
-                                ? null
-                                : reader.GetDateTime("update_time"));
+                            (
+                                reader.GetInt32("oxygen_saturation_id"),
+                                reader.GetString("data_uuid"),
+                                reader.IsDBNull("update_time")
+                                    ? null
+                                    : reader.GetDateTime("update_time")
+                            ));
                     }
                 }
-                var inserts = new List<SamsungOxygenSaturationModel>();
-                var updates = new List<SamsungOxygenSaturationModel>();
 
-                // Compare the current List with the existitng values in the database.
-                // If the value exist then we update the entrie.
-                // Is the value new then we insert it in the table with bulk inserting.
+                var insertsList = new List<SamsungOxygenSaturationModel>();
+                var updatesList = new List<SamsungOxygenSaturationModel>();
+                var deleteList = new List<int>();
+
+                double percentage = 0;
+
                 foreach (var item in oxygenSaturation)
                 {
                     var uuid = item.DataUuid?.Trim();
-                    if (string.IsNullOrWhiteSpace(item.DataUuid)) continue;
 
-                    if (!existingEntries.TryGetValue(uuid, out var dbUpdateTime))
+                    if (string.IsNullOrWhiteSpace(uuid))
+                        continue;
+
+                    if (!existingEntries.TryGetValue(uuid, out var dbEntry))
                     {
-                        inserts.Add(item);
+                        insertsList.Add(item);
                         continue;
                     }
 
-                    if (item.UpdateTime.HasValue && (!dbUpdateTime.HasValue || item.UpdateTime > dbUpdateTime))
+                    if (item.UpdateTime.HasValue &&
+                        (!dbEntry.UpdateTime.HasValue ||
+                         item.UpdateTime > dbEntry.UpdateTime))
                     {
-                        updates.Add(item);
+                        updatesList.Add(item);
                     }
                 }
 
-                if (inserts.Count > 0)
+                // Retrieve entries for deleting
+                foreach (var dbEntry in existingEntries.Values)
                 {
-                    var table = SamsungHealthOxygenDataTable.CreateOxygenDataTable(personId, inserts);
-
-                    var bulkCopy = new MySqlBulkCopy(sqlServerConnection)
+                    if (!oxygenSaturation.Any(x => x.DataUuid == dbEntry.Uuid))
                     {
-                        DestinationTableName = "tbl_OxygenSaturation",
-                        NotifyAfter = 10
-                    };
-
-                    bulkCopy.MySqlRowsCopied += (sender, e) =>
-                    {
-                        double percentage = (double)e.RowsCopied / inserts.Count * 100;
-
-                        progress?.Report((percentage, $"Inserted: "));
-                    };
-
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(0, "person_id"));
-                    #region ... rest of bulk copy
-
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(1, "integrated_id"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(2, "client_data_id"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(3, "tag_id"));
-
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(4, "start_time"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(5, "end_time"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(6, "update_time"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(7, "create_time"));
-
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(8, "time_offset"));
-
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(9, "custom"));
-
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(10, "spo2"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(11, "spo2_max"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(12, "spo2_min"));
-
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(13, "low_spo2duration"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(14, "coverage_rate"));
-
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(15, "heart_rate"));
-
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(16, "comment"));
-
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(17, "data_uuid"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(18, "device_uuid"));
-
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(19, "package_name"));
-
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(20, "createShVer"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(21, "modify_shver"));
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(22, "client_dataver"));
-
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(23, "source"));
-
-                    bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(24, "binning_data"));
-
-                    #endregion
-
-                    await bulkCopy.WriteToServerAsync(table);
+                        deleteList.Add(dbEntry.OxygenSaturationId);
+                    }
                 }
 
+                #region Inserts
 
-                int current = 0;
-                await using var transaction = await sqlServerConnection.BeginTransactionAsync();
-                int total = updates.Count();
+                await using var transactionInsert =
+                    await sqlServerConnection.BeginTransactionAsync();
 
-                // Update the exisiting datas in database table
-                foreach (var item in updates)
+                if (insertsList.Count > 0)
                 {
-                    await using var command = new MySqlCommand(DatabaseCommands.GetSamsungOxygenSaturationUpdateSql(),
-                                                            sqlServerConnection, (MySqlTransaction)transaction);
+                    var table =
+                        SamsungHealthOxygenDataTable.CreateOxygenDataTable(
+                            personId,
+                            insertsList);
+
+                    await using var commandInsert = new MySqlCommand(
+                        DatabaseCommands.GetSamsungOxygenSaturationUpsertSql(),
+                        sqlServerConnection,
+                        (MySqlTransaction)transactionInsert);
+
+                    foreach (DataColumn column in table.Columns)
+                    {
+                        commandInsert.Parameters.Add(
+                            new MySqlParameter(
+                                "@" + column.ColumnName,
+                                null));
+                    }
+
+                    commandInsert.Prepare();
+
+                    int insertCount = 0;
+
+                    foreach (DataRow row in table.Rows)
+                    {
+                        foreach (DataColumn column in table.Columns)
+                        {
+                            commandInsert.Parameters["@" + column.ColumnName].Value =
+                                row[column] ?? DBNull.Value;
+                        }
+
+                        await commandInsert.ExecuteNonQueryAsync();
+
+                        insertCount++;
+
+                        if (insertCount % 100 == 0)
+                        {
+                            percentage =
+                                (double)insertCount / insertsList.Count * 100;
+
+                            progress?.Report(
+                                (
+                                    percentage,
+                                    UiStrings.Status_Database_Inserted
+                                ));
+                        }
+                    }
+                }
+
+                await transactionInsert.CommitAsync();
+
+                #endregion
+
+                #region Updates
+
+                int currentCount = 0;
+                int total = updatesList.Count;
+
+                await using var transactionUpdate =
+                    await sqlServerConnection.BeginTransactionAsync();
+
+                foreach (var item in updatesList)
+                {
+                    await using var command = new MySqlCommand(
+                        DatabaseCommands.GetSamsungOxygenSaturationUpdateSql(),
+                        sqlServerConnection,
+                        (MySqlTransaction)transactionUpdate);
 
                     command.Parameters.AddWithValue("@PersonId", personId);
-
-                    #region ... rest of add with value
 
                     command.Parameters.AddWithValue("@IntegratedId", (object?)item.IntegratedId ?? DBNull.Value);
                     command.Parameters.AddWithValue("@ClientDataId", (object?)item.ClientDataId ?? DBNull.Value);
@@ -3441,30 +4282,80 @@ namespace BodyTracker.Services
                     command.Parameters.AddWithValue("@Source", (object?)item.Source ?? DBNull.Value);
                     command.Parameters.AddWithValue("@BinningData", (object?)item.Binning ?? DBNull.Value);
 
-                    #endregion
-
                     await command.ExecuteNonQueryAsync();
 
-                    current++;
+                    currentCount++;
 
-                    if (current % 100 == 0)
+                    if (currentCount % 100 == 0)
                     {
-                        double percentage = (double)current / total * 100;
+                        percentage =
+                            (double)currentCount / total * 100;
 
-                        progress?.Report((percentage, "Updated: "));
+                        progress?.Report(
+                            (
+                                percentage,
+                                UiStrings.Status_Database_Updated
+                            ));
                     }
                 }
 
-                await transaction.CommitAsync();
+                await transactionUpdate.CommitAsync();
+
+                #endregion
+
+                #region Delete
+
+                int deleteCount = 0;
+
+                await using var transactionDelete =
+                    await sqlServerConnection.BeginTransactionAsync();
+
+                foreach (var oxygenSaturationId in deleteList)
+                {
+                    await using var command = new MySqlCommand(
+                        DatabaseCommands.GetOxygenSaturationDeleteSql(),
+                        sqlServerConnection,
+                        (MySqlTransaction)transactionDelete);
+
+                    command.Parameters.AddWithValue("@id", oxygenSaturationId);
+
+                    await command.ExecuteNonQueryAsync();
+
+                    deleteCount++;
+
+                    if (deleteCount % 100 == 0)
+                    {
+                        percentage =
+                            (double)deleteCount / deleteList.Count * 100;
+
+                        progress?.Report(
+                            (
+                                percentage,
+                                UiStrings.Status_Database_Deleted
+                            ));
+                    }
+                }
+
+                await transactionDelete.CommitAsync();
+
+                #endregion
+
+                percentage = 100;
+
+                progress?.Report(
+                    (
+                        percentage,
+                        UiStrings.Status_Database_Finished
+                    ));
 
                 return true;
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error Insert SpO2 Datas: {ex.Message}", ex);
+                throw new Exception("Error Insert SpO2 Datas", ex);
             }
         }
-
+        
         /// <summary>
         /// Asynchronously retrieves a list of Samsung Health oxygen saturation records for the specified person.
         /// </summary>
@@ -3823,7 +4714,7 @@ namespace BodyTracker.Services
 
                     percentage = (double)current / total * 100;
 
-                    progress?.Report((percentage, "Inserted: "));
+                    progress?.Report((percentage, UiStrings.Status_Database_Inserted));
 
                 }
 
@@ -3859,7 +4750,7 @@ namespace BodyTracker.Services
                     current++;
                     percentage = (double)current / total * 100;
 
-                    progress?.Report((percentage, "Updated: "));
+                    progress?.Report((percentage, UiStrings.Status_Database_Updated));
                 }
 
 
@@ -3878,14 +4769,14 @@ namespace BodyTracker.Services
                     current++;
                     percentage = (double)current / total * 100;
 
-                    progress?.Report((percentage, "Deleted: "));
+                    progress?.Report((percentage, UiStrings.Status_Database_Deleted));
                 }
 
                 await tx.CommitAsync();
 
                 percentage = 100;
 
-                progress?.Report((percentage, "Finished: "));
+                progress?.Report((percentage, UiStrings.Status_Database_Finished));
 
                 return true;
             }
@@ -3963,7 +4854,7 @@ namespace BodyTracker.Services
 
         /// <summary>
         /// Asynchronously synchronizes a collection of Samsung workout records for a specific person into the database, 
-        /// performing bulk insertions for new entries and transactional updates for existing records based on unique data identifiers and update timestamps.
+        /// performing bulk insertions for new entries and transactional updatesList for existing records based on unique data identifiers and update timestamps.
         /// </summary>
         /// <param name="personId">ID of the selected person.</param>
         /// <param name="wokoutDatas">Hevy App workout data.</param>
@@ -4123,7 +5014,7 @@ namespace BodyTracker.Services
                     current++;
                     percentage = (double)current / total * 100;
 
-                    progress?.Report((percentage, "Updated: "));
+                    progress?.Report((percentage, UiStrings.Status_Database_Updated));
                 }
 
 
@@ -4143,14 +5034,14 @@ namespace BodyTracker.Services
                     current++;
                     percentage = (double)current / total * 100;
 
-                    progress?.Report((percentage, "Deleted: "));
+                    progress?.Report((percentage, UiStrings.Status_Database_Deleted));
                 }
 
                 await tx.CommitAsync();
 
                 percentage = 100;
 
-                progress?.Report((percentage, "Finished: "));
+                progress?.Report((percentage, UiStrings.Status_Database_Finished));
 
                 return true;
             }
@@ -4398,7 +5289,7 @@ namespace BodyTracker.Services
         /// Asynchronously retrieves the total number of records stored in the 'tbl_Persons' table.
         /// </summary>
         /// <remarks>
-        /// This method utilizes <see cref="MySqlCommand.ExecuteScalarAsync"/> to efficiently fetch the count result. 
+        /// This method utilizes <see cref="MySqlCommand.ExecuteScalarAsync"/> to efficiently fetch the insertCount result. 
         /// It includes validation logic to ensure that 0 is returned if the database result is null or non-positive, 
         /// preventing potential conversion errors.
         /// </remarks>
@@ -4418,7 +5309,7 @@ namespace BodyTracker.Services
                 await using var SqlCommand = new MySqlCommand(DatabaseCommands.GetPersonCountSql(), sqlServerConnection);
                 var result = await SqlCommand.ExecuteScalarAsync();
 
-                // Validation: If the result is null (DBNull), count is set to 0 to avoid exceptions
+                // Validation: If the result is null (DBNull), insertCount is set to 0 to avoid exceptions
                 int count = result != null ? Convert.ToInt32(result) : 0;
 
                 // Return logic: Ensures the method never returns negative values, maintaining UI consistency

@@ -58,6 +58,12 @@ namespace BodyTracker.ViewModels
         public IAsyncRelayCommand CommandShowFoodInfoImportView { get; }
 
         /// <summary>
+        /// Gets the command responsible for navigating to the food nutrition import view.
+        /// </summary>
+        /// <remarks>Triggers an asynchronous page transition to display the nutritional and food nutrition logging import interface.</remarks>
+        public IAsyncRelayCommand CommandShowFoodNutritionImportView { get; }
+
+        /// <summary>
         /// Gets the command responsible for navigating to the Hevy app workout data import view.
         /// </summary>
         /// <remarks>Triggers an asynchronous page transition to display the Hevy workout tracking data import interface.</remarks>
@@ -100,6 +106,12 @@ namespace BodyTracker.ViewModels
         private FoodInfoImportView foodInfoImportView;
 
         /// <summary>
+        /// A cached instance of the food intake import page.
+        /// </summary>
+        /// <remarks>Maintains a single instance in memory to preserve state and avoid redundant instantiation overhead during navigation.</remarks>
+        private FoodNutritionImportView foodNutritionImportView;
+
+        /// <summary>
         /// A cached instance of the Hevy app data import page.
         /// </summary>
         /// <remarks>Maintains a single instance in memory to preserve state and avoid redundant instantiation overhead during navigation.</remarks>
@@ -138,7 +150,7 @@ namespace BodyTracker.ViewModels
 
             CommandShowFoodIntakeImportView = new AsyncRelayCommand(ShowFoodIntakeImportPage);
 
-            CommandShowFoodInfoImportView = new AsyncRelayCommand(ShowFoodInfoImportPage);
+            CommandShowFoodNutritionImportView = new AsyncRelayCommand(ShowFoodNutritionImportPage);
 
             CommandShowHevyAppImportView = new AsyncRelayCommand(ShowHevyAppDatasAsync);
 
@@ -185,6 +197,17 @@ namespace BodyTracker.ViewModels
         {
             if (foodInfoImportView == null) foodInfoImportView = new FoodInfoImportView(databaseService);
             CurrentPage = foodInfoImportView;
+        }
+
+        /// <summary>
+        /// Asynchronously navigates to the food intake import view.
+        /// </summary>
+        /// <remarks>Instantiates the food intake import page lazily if not already cached, and sets it as the active content page.</remarks>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        private async Task ShowFoodNutritionImportPage()
+        {
+            if (foodNutritionImportView == null) foodNutritionImportView = new FoodNutritionImportView(databaseService);
+            CurrentPage = foodNutritionImportView;
         }
 
         /// <summary>

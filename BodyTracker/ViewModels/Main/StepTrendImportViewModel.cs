@@ -1,4 +1,5 @@
 ﻿using BodyTracker.Models;
+using BodyTracker.Resources.Languages;
 using BodyTracker.Services;
 using BodyTracker.Services.WorkoutLog;
 using BodyTracker.State;
@@ -152,7 +153,7 @@ namespace BodyTracker.ViewModels
                 var progress = new Progress<double>(value =>
                 {
                     ProgressValue = value * 100;
-                    ProgressText = $"Imported: {value:F0}%";
+                    ProgressText = $"{UiStrings.Status_FileImport_Progress} {value:F0}%"; ;
                 });
 
                 var list = await SamsungDataCsvExtractor.ParseStepTrendAsync(
@@ -162,7 +163,7 @@ namespace BodyTracker.ViewModels
 
                 StepTrendDatas = new ObservableCollection<SamsungStepTrendModel>(list);
 
-                ProgressText = $"Imported {list.Count} Datas";
+                                ProgressText = $"{UiStrings.Status_FileImport_Count} {list.Count}";
 
             }
             catch (Exception ex)
@@ -198,13 +199,13 @@ namespace BodyTracker.ViewModels
 
                 if (!path.Any())
                 {
-                    GeneralInfoMessage = "No Files were found";
+                    GeneralInfoMessage = UiStrings.Info_FileImport_NoFilesFound;
                     return;
                 }
 
                 if (path.Count() > 1)
                 {
-                    GeneralInfoMessage = "Several were found. Please select one of the dialog files.";
+                    GeneralInfoMessage = UiStrings.Info_FileImport_MultipleFound;
                     _ = OpenAsync();
                     return;
                 }
@@ -217,7 +218,7 @@ namespace BodyTracker.ViewModels
                 var progress = new Progress<double>(value =>
                 {
                     ProgressValue = value * 100;
-                    ProgressText = $"Imported: {value:F0}%";
+                    ProgressText = $"{UiStrings.Status_FileImport_Progress} {value:F0}%"; ;
                 });
 
                 var list = await SamsungDataCsvExtractor.ParseStepTrendAsync(
@@ -227,7 +228,7 @@ namespace BodyTracker.ViewModels
 
                 StepTrendDatas = new ObservableCollection<SamsungStepTrendModel>(list);
 
-                ProgressText = $"Imported {list.Count} Datas";
+                                ProgressText = $"{UiStrings.Status_FileImport_Count} {list.Count}";
 
             }
             catch (Exception ex)
@@ -250,7 +251,7 @@ namespace BodyTracker.ViewModels
         {
             if (StepTrendDatas == null || StepTrendDatas.Count == 0)
             {
-                GeneralInfoMessage = "No uploading data available.";
+                GeneralInfoMessage = UiStrings.Status_Database_NoUploadingDatas;;
                 return;
             }
 
@@ -262,7 +263,7 @@ namespace BodyTracker.ViewModels
 
             dispatcher.Interval = TimeSpan.FromSeconds(1);
 
-            dispatcher.Tick += (s, e) => TimeElapse = $"Time Elapse: {watch.Elapsed.ToString(@"mm\:ss")}";
+            dispatcher.Tick += (s, e) => TimeElapse = $"{UiStrings.Status_Database_TimeElapsed} {watch.Elapsed.ToString(@"mm\:ss")}";
 
             dispatcher.Start();
 
@@ -282,7 +283,7 @@ namespace BodyTracker.ViewModels
 
                 await databaseService.UpsertStepTrendSqlAsync(pid, StepTrendDatas, progress);
 
-                ProgressText = $"Uploaded {StepTrendDatas.Count} Datas";
+                ProgressText = $"{UiStrings.Status_Database_UploadedCount} {StepTrendDatas.Count}";
 
             }
             catch (Exception ex)
@@ -294,7 +295,7 @@ namespace BodyTracker.ViewModels
                 IsLoading = false;
                 dispatcher.Stop();
                 watch.Stop();
-                TimeElapse = $"Total Upload Time: {watch.Elapsed.ToString(@"mm\:ss")}";
+                TimeElapse = $"{UiStrings.Status_Database_TotalUploadTime} {watch.Elapsed.ToString(@"mm\:ss")}";
             }
         }
 
