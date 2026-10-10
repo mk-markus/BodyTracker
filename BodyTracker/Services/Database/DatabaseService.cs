@@ -1789,6 +1789,14 @@ namespace BodyTracker.Services
 
         #region Samsung Food Nutrtion
 
+        /// <summary>
+        /// Synchronizes food nutrition records with the database via upsert and delete operations.
+        /// </summary>
+        /// <param name="personId">The ID of the person.</param>
+        /// <param name="nutritionList">The list of nutrition records.</param>
+        /// <param name="progress">Optional progress reporter.</param>
+        /// <returns>True if successful.</returns>
+        /// <exception cref="Exception">Thrown when an error occurs during execution.</exception>
         public async Task<bool> UpsertFoodNutritionSqlAsync(
             int personId,
             ICollection<SamsungFoodNutritionModel> nutritionList,
@@ -1801,7 +1809,7 @@ namespace BodyTracker.Services
 
             try
             {
-                var existingEntries = new Dictionary<string, (int FoodNutritionId, string Uuid, DateTime? UpdateTime)>();
+                var existingEntries = new Dictionary<string, (int FoodNutritionId, string Uuid, DateTime UpdateTime)>();
 
                 await using var cmd = new MySqlCommand(
                     DatabaseCommands.GetFoodNutritionExistenceCheckSql(),
@@ -1819,9 +1827,7 @@ namespace BodyTracker.Services
                                 reader.GetInt16("food_nutrition_id"),
                                  reader.GetString("datauuid"),
 
-                                reader.IsDBNull("update_time")
-                                    ? null
-                                    : reader.GetDateTime("update_time"))
+                                reader.GetDateTime("update_time"))
                             );
 
                     }
@@ -1844,8 +1850,7 @@ namespace BodyTracker.Services
                         continue;
                     }
 
-                    if (item.UpdateTime.HasValue &&
-                        (!_dbEntries.UpdateTime.HasValue || item.UpdateTime > _dbEntries.UpdateTime))
+                    if (item.UpdateTime > _dbEntries.UpdateTime)
                     {
                         updatesList.Add(item);
                     }
@@ -2089,7 +2094,7 @@ namespace BodyTracker.Services
                 {
                     result.Add(new SamsungFoodNutritionModel
                     {
-                        FoodNutritionID = reader.GetInt32("nutrition_id"),
+                        FoodNutritionID = reader.GetInt32("food_nutrition_id"),
 
                         Magnesium = reader.IsDBNull("magnesium") ? (double?)null : reader.GetDouble("magnesium"),
                         Potassium = reader.IsDBNull("potassium") ? (double?)null : reader.GetDouble("potassium"),
@@ -2108,9 +2113,7 @@ namespace BodyTracker.Services
 
                         VitaminB12 = reader.IsDBNull("vitamin_b12") ? (double?)null : reader.GetDouble("vitamin_b12"),
 
-                        StartTime = reader.IsDBNull("start_time")
-                            ? (DateTime?)null
-                            : reader.GetDateTime("start_time"),
+                        StartTime = reader.GetDateTime("start_time"),
 
                         Biotin = reader.IsDBNull("biotin") ? (double?)null : reader.GetDouble("biotin"),
                         Phosphorus = reader.IsDBNull("phosphorus") ? (double?)null : reader.GetDouble("phosphorus"),
@@ -2135,13 +2138,9 @@ namespace BodyTracker.Services
                         DietaryFiber = reader.IsDBNull("dietary_fiber") ? (double?)null : reader.GetDouble("dietary_fiber"),
                         TotalFat = reader.IsDBNull("total_fat") ? (double?)null : reader.GetDouble("total_fat"),
 
-                        UpdateTime = reader.IsDBNull("update_time")
-                            ? (DateTime?)null
-                            : reader.GetDateTime("update_time"),
+                        UpdateTime = reader.GetDateTime("update_time"),
 
-                        CreateTime = reader.IsDBNull("create_time")
-                            ? (DateTime?)null
-                            : reader.GetDateTime("create_time"),
+                        CreateTime = reader.GetDateTime("create_time"),
 
                         MealType = reader.IsDBNull("meal_type")
                             ? (int?)null
@@ -2215,9 +2214,7 @@ namespace BodyTracker.Services
                             ? (double?)null
                             : reader.GetDouble("pantothenic_acid"),
 
-                        DataUuid = reader.IsDBNull("datauuid")
-                            ? null
-                            : reader.GetString("datauuid"),
+                        DataUuid = reader.GetString("datauuid"),
 
                         Chromium = reader.IsDBNull("chromium")
                             ? (double?)null
@@ -3334,6 +3331,7 @@ namespace BodyTracker.Services
                     ex);
             }
         }
+        
         /// <summary>
         /// Asynchronously retrieves a list of Samsung Health heart rate records for the specified person from the database.
         /// </summary>

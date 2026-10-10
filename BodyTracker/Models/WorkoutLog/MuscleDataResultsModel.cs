@@ -1,6 +1,6 @@
 ﻿namespace BodyTracker.Models
 {
-    public class MuscleDataResultsModel
+    public record MuscleDataResultsModel
     {
         /// <summary>
         /// Gets or sets the name of the muscle group associated with the volume and percentage metrics.

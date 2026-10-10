@@ -2,7 +2,7 @@
 
 namespace BodyTracker.Models
 {
-    public class GymWorkoutEntryModel
+    public record GymWorkoutEntryModel
     {
         /// <summary>
         /// Gets or sets the date and time when the exercise was performed.

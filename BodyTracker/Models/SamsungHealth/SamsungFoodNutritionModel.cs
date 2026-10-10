@@ -4,7 +4,7 @@ using System;
 /// <summary>
 /// Represents a comprehensive data model for nutritional information imported or synchronized from Samsung Health services.
 /// </summary>
-public class SamsungFoodNutritionModel
+public record SamsungFoodNutritionModel
 {
 
     /// <summary>
@@ -65,7 +65,7 @@ public class SamsungFoodNutritionModel
     /// <summary>
     /// Gets or sets the Unix timestamp (in milliseconds) representing the start time of the meal or nutrition entry.
     /// </summary>
-    public DateTime? StartTime { get; set; }
+    public DateTime StartTime { get; set; }
 
     /// <summary>
     /// Gets or sets the biotin content.
@@ -140,12 +140,12 @@ public class SamsungFoodNutritionModel
     /// <summary>
     /// Gets or sets the Unix timestamp (in milliseconds) of the last update.
     /// </summary>
-    public DateTime? UpdateTime { get; set; }
+    public DateTime UpdateTime { get; set; }
 
     /// <summary>
     /// Gets or sets the Unix timestamp (in milliseconds) of the record creation.
     /// </summary>
-    public DateTime? CreateTime { get; set; }
+    public DateTime CreateTime { get; set; }
 
     /// <summary>
     /// Gets or sets the type of meal (e.g., breakfast, lunch, dinner, snack).
@@ -286,7 +286,7 @@ public class SamsungFoodNutritionModel
     /// <summary>
     /// Gets or sets the unique identifier for the data entry record.
     /// </summary>
-    public string? DataUuid { get; set; }
+    public string DataUuid { get; set; }
 
     /// <summary>
     /// Gets or sets the chromium content (in micrograms).

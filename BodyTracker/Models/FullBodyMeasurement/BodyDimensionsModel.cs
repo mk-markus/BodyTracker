@@ -5,7 +5,7 @@ namespace BodyTracker.Models
     /// <summary>
     /// Represents the structure of a human person value like hips-, waist-, chest-circumfernce
     /// </summary>
-    public class BodyDimensionsModel
+    public record BodyDimensionsModel
     {
         /// <summary>
         /// Contains the Demension ID from the database table

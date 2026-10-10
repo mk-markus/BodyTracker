@@ -2,7 +2,7 @@
 
 namespace BodyTracker.Models
 {
-    public class HevyAppCSVModel
+    public record HevyAppCSVModel
     {
         /// <summary>
         /// Gets or sets the ID for the workout or data entry record.

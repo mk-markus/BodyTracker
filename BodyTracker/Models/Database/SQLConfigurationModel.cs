@@ -3,7 +3,7 @@ namespace BodyTracker.Models
     /// <summary>
     /// This class contains the structure of the json file that represents the configuration parameters for the connection string.
     /// </summary>
-    public class SQLConfigurationModel
+    public record SQLConfigurationModel
     {
         /// <summary>
         /// Contains the IP Adress ot he SQL Server

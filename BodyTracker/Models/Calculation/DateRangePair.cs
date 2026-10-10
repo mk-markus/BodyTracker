@@ -10,7 +10,7 @@ namespace BodyTracker.Models.Calculation
     /// Represents a pair of date ranges consisting of a current period and a previous comparison period, 
     /// used for analytical comparisons and historical evaluations.
     /// </summary>
-    public class DateRangePair
+    public record DateRangePair
     {
         /// <summary>
         /// Gets or sets the start date of the current period.

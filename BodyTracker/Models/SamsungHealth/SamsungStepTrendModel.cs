@@ -5,7 +5,7 @@ namespace BodyTracker.Models
     /// <summary>
     /// Represents a daily step trend record exported from Samsung Health.
     /// </summary>
-    public class SamsungStepTrendModel
+    public record SamsungStepTrendModel
     {
 
         /// <summary>

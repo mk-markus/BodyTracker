@@ -2,7 +2,7 @@
 
 namespace BodyTracker.Models.WorkoutLog
 {
-    public class HevyAppWorkoutSetJsonModel
+    public record HevyAppWorkoutSetJsonModel
     {
         /// <summary>
         /// Represents the chronological sequence or position of the specific set within an exercise block.

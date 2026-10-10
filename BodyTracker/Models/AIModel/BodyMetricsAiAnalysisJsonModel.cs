@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-public class BodyMetricsAiAnalysisJsonModel
+public record BodyMetricsAiAnalysisJsonModel
 {
     [JsonPropertyName("model")]
     public string? Model { get; set; }

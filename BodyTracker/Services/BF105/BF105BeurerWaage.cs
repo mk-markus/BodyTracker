@@ -23,6 +23,9 @@ namespace BF105
         /// </summary>
         private ulong? _bf105BluetoothAddress;
 
+        /// <summary>
+        /// Stores the file name used for logging operations.
+        /// </summary>
         private string _loggingFileName;
 
         /// <summary>
@@ -1715,6 +1718,27 @@ namespace BF105
             offset += 2;
 
             return true;
+        }
+
+        /// <summary>
+        /// Specifies the available body measurement and scan modes for diagnostic scale analysis.
+        /// </summary>
+        public enum ScanMode
+        {
+            /// <summary>
+            /// Represents a full body measurement scan.
+            /// </summary>
+            FullBodyScan,
+
+            /// <summary>
+            /// Represents a segmental body composition scan.
+            /// </summary>
+            SegmentalBodyCompisitionScan,
+
+            /// <summary>
+            /// Represents a combined body weight and composition scan.
+            /// </summary>
+            BodyWeightAndCompositionScan
         }
 
         /// <summary>

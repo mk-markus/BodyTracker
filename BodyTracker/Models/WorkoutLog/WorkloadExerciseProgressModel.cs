@@ -5,7 +5,7 @@ namespace BodyTracker.Models.WorkoutLog
     /// <summary>
     /// Represents the progress and performance metrics of a specific exercise on a given date.
     /// </summary>
-    public class WorkoutExerciseProgressModel
+    public record WorkoutExerciseProgressModel
     {
         /// <summary>
         /// Gets or sets the name of the exercise.

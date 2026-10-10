@@ -5,7 +5,7 @@ namespace BodyTracker.Models
     /// <summary>
     /// Represents the table structure of a human person's data for the view model.
     /// </summary
-    public class FullBodyMeasurementDatasModel
+    public record FullBodyMeasurementDatasModel
     {
         /// <summary>
         /// Contains the Metric ID from the database table

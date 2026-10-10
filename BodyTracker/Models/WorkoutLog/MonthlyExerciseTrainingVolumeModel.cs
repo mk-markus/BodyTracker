@@ -2,7 +2,7 @@
 
 namespace BodyTracker.Models
 {
-    public class MonthlyExerciseTrainingVolumeModel
+    public record MonthlyExerciseTrainingVolumeModel
     {
         /// <summary>
         /// Gets or sets the specific calendar date associated with the volume and activity record.

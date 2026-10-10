@@ -3,7 +3,7 @@ using System;
 
 namespace BodyTracker.Services;
 
-public class ChartSeriesModel<T>
+public record ChartSeriesModel<T>
 {
     /// <summary>
     /// Gets or sets the display name of the bodyMeasurement series.

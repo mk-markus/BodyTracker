@@ -5,7 +5,7 @@ namespace BodyTracker.Models
     /// <summary>
     /// Represents a dashboard record containing exercise metrics including heart rate statistics and timestamps.
     /// </summary>
-    public class SamsungHeartRateDashboardModel
+    public record SamsungHeartRateDashboardModel
     {
         /// <summary>
         /// Gets or sets the timestamp when the exercise or measurement was recorded.

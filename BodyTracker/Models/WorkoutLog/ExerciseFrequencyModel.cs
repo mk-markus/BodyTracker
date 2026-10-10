@@ -1,6 +1,6 @@
 ﻿namespace BodyTracker.Models
 {
-    public class ExerciseFrequencyModel
+    public record ExerciseFrequencyModel
     {
         /// <summary>
         /// Gets or sets the name of the exercise.

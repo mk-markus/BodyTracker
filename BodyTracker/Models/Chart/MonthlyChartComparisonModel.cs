@@ -2,7 +2,7 @@
 
 namespace BodyTracker.Models
 {
-    public class MonthlyChartComparisonModel
+    public record MonthlyChartComparisonModel
     {
 
         /// <summary>

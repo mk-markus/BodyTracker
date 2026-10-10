@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace BodyTracker.Models.WorkoutLog
 {
-    public class HevyAppWorkoutJsonModel
+    public record HevyAppWorkoutJsonModel
     {
         /// <summary>
         /// Represents the unique string identifier for the specific workout session as provided by the external platform.

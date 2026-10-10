@@ -5,7 +5,7 @@ namespace BodyTracker.Models
     /// <summary>
     /// Represents a Samsung Health food info record with all corresponding nutritional and metadata fields.
     /// </summary>
-    public class SamsungFoodInfoModel
+    public record SamsungFoodInfoModel
     {
         /// <summary>
         /// Gets or sets the unique exercise record identifier.

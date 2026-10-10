@@ -5,7 +5,7 @@ namespace BodyTracker.Models.Export
     /// <summary>
     /// Represents the export model containing initial and current general body metrics, composition data, and fitness indices.
     /// </summary>
-    public class BodyMetricsExportModel
+    public record BodyMetricsExportModel
     {
         /// <summary>
         /// Gets or sets the unique identifier for the body metrics record.

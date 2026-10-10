@@ -5,7 +5,7 @@ namespace BodyTracker.Models
     /// <summary>
     /// Represent the structure of a human person value like Weight, BMI, Muscle Percentage, Fat Percentage,...
     /// </summary>
-    public class BodyMetricModel
+    public record BodyMetricModel
     {
         /// <summary>
         /// Contains the Metric ID from the database table

@@ -4,7 +4,7 @@ using SkiaSharp;
 
 namespace BodyTracker.Services
 {
-    public class ChartXAxisModel
+    public record ChartXAxisModel
     {
         /// <summary>
         /// Gets or sets the name identifier of the axis.

@@ -5,7 +5,7 @@ namespace BodyTracker.Models.SamsungHealth
     /// <summary>
     /// Represents oxygen saturation and related respiratory metrics recorded from Samsung Health data exports.
     /// </summary>
-    public class SamsungOxygenSaturationDashboardModel
+    public record SamsungOxygenSaturationDashboardModel
     {
         /// <summary>
         /// Gets or sets the start timestamp when the oxygen saturation measurement interval began.

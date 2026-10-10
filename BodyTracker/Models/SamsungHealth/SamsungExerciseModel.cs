@@ -1,6 +1,6 @@
 ﻿using System;
 
-public class SamsungExerciseModel
+public record SamsungExerciseModel
 {
     /// <summary>
     /// Gets or sets the unique exercise record identifier.

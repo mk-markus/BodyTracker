@@ -107,7 +107,7 @@ public static class SamsungFoodNutritionDataTable
 
                 item.Cholesterol ?? (object)DBNull.Value,
 
-                item.StartTime ?? (object)DBNull.Value,
+                item.StartTime,
 
                 item.Biotin ?? (object)DBNull.Value,
                 item.Phosphorus ?? (object)DBNull.Value,
@@ -128,8 +128,8 @@ public static class SamsungFoodNutritionDataTable
                 item.DietaryFiber ?? (object)DBNull.Value,
                 item.TotalFat ?? (object)DBNull.Value,
 
-                item.UpdateTime ?? (object)DBNull.Value,
-                item.CreateTime ?? (object)DBNull.Value,
+                item.UpdateTime,
+                item.CreateTime,
 
                 item.MealType ?? (object)DBNull.Value,
 

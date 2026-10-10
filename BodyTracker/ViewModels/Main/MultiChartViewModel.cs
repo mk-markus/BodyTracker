@@ -113,6 +113,11 @@ namespace BodyTracker.ViewModels
         private FoodInfoChartView foodInfoChartView;
 
         /// <summary>
+        /// Stores the view instance responsible for rendering and displaying food and nutritional information charts.
+        /// </summary>
+        private FoodNutritionChartView foodNutritionChartView;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="MultiChartViewModel"/> class with the specified main window shell and database service.
         /// </summary>
         /// <remarks>Assigns window and database dependencies, initializes chart navigation commands, and loads the default body measurements chart view upon startup.</remarks>
@@ -129,7 +134,7 @@ namespace BodyTracker.ViewModels
             CommandShowExercise = new AsyncRelayCommand(ShowExerciseAsync);
             CommandShowHeartRate = new AsyncRelayCommand(ShowHeartRateAsync);
             CommandShowSpO2 = new AsyncRelayCommand(ShowSpO2Async);
-            CommandShowFoodInfo = new AsyncRelayCommand(ShowFoodInfoAsync);
+            CommandShowFoodInfo = new AsyncRelayCommand(ShowNutritionInfoAsync);
 
             _ = ShowMeasurementsAsync();
         }
@@ -210,6 +215,18 @@ namespace BodyTracker.ViewModels
 
         }
 
+
+        /// <summary>
+        /// Asynchronously navigates to the food information charts view.
+        /// </summary>
+        /// <remarks>Instantiates the food nutrition charts page and sets it as the active content page.</remarks>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        private async Task ShowNutritionInfoAsync()
+        {
+            if (foodNutritionChartView == null) foodNutritionChartView = new FoodNutritionChartView(databaseService);
+            CurrentPage = foodNutritionChartView;
+
+        }
 
         /// <summary>
         /// Asynchronously navigates to the personal workout insights charts view.

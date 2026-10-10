@@ -6,7 +6,7 @@ namespace BodyTracker.Models.FullBodyMeasurement
     /// <summary>
     /// Represents the data model for exporting complete body measurements, including physical dimensions and metrics.
     /// </summary>
-    public class FullBodyMeasurementExportModel
+    public record FullBodyMeasurementExportModel
     {
         /// <summary>
         /// Gets or sets the list of export models containing specific body dimensions.

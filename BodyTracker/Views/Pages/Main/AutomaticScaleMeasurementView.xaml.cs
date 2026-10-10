@@ -1,4 +1,8 @@
-﻿using System;
+﻿using BF105;
+using BodyTracker.Models.FullBodyMeasurement;
+using BodyTracker.ViewModels;
+using BodyTracker.ViewModels.Main;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,9 +16,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using BodyTracker.Models.FullBodyMeasurement;
-using BodyTracker.ViewModels;
-using BodyTracker.ViewModels.Main;
 
 namespace BodyTracker.Views.Pages.Main
 {
@@ -37,7 +38,7 @@ namespace BodyTracker.Views.Pages.Main
         /// </summary>
         /// <param name="shell">The parent window shell instance.</param>
         /// <param name="bodyScanMode">The specific body scan mode configuration for the measurement session.</param>
-        public AutomaticScaleMeasurementView(Window shell, BodyScanMode.ScanMode bodyScanMode)
+        public AutomaticScaleMeasurementView(Window shell, BF105BeurerWaage.ScanMode bodyScanMode)
         {
             _shell = shell;
 

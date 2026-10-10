@@ -1,6 +1,6 @@
 ﻿namespace BodyTracker.Models
 {
-    public class TotalWorkoutModel
+    public record TotalWorkoutModel
     {
         /// <summary>
         /// Gets or sets the total workout volume attributed to primary muscle groups.

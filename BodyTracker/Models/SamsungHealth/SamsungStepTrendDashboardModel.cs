@@ -3,7 +3,7 @@
 namespace BodyTracker.Models
 {
 
-    public class SamsungStepTrendDashboardModel
+    public record SamsungStepTrendDashboardModel
     {
         /// <summary>
         /// Gets or sets the timestamp indicating when the tracking entry or record was created.

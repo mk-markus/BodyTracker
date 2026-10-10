@@ -1,11 +1,12 @@
 ﻿using LiveChartsCore.Measure;
 using LiveChartsCore.SkiaSharpView.Painting;
+using OpenTK.Graphics.ES11;
 using SkiaSharp;
 using System.Globalization;
 
 namespace BodyTracker.Services
 {
-    public class ChartYAxisModel
+    public record ChartYAxisModel
     {
         /// <summary>
         /// Gets or sets the name identifier of the axis.
@@ -44,16 +45,30 @@ namespace BodyTracker.Services
         public SolidColorPaint SeparatorsPaint = new SolidColorPaint(SKColors.LightGray) { StrokeThickness = 1 };
 
         /// <summary>
-        /// Gets the formatting string applied to numerical values along the axis.
+        /// Gets or sets the minimum step value for scaling or axis partitioning.
         /// </summary>
-        /// <remarks>Retrieves the format string using invariant culture rules.</remarks>
-        public string Format => format.ToString(CultureInfo.InvariantCulture);
+        public double? MinStep { get; set; } = 1;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether step values should be forced to the minimum step limit.
+        /// </summary>
+        public bool ForceStepToMin { get; set; } = true;
+
+        /// <summary>
+        /// Formats a given numeric axis or data value into a string representation using the specified format.
+        /// </summary>
+        /// <param name="value">The numeric value to format.</param>
+        /// <param name="format">The format string.</param>
+        /// <returns>The formatted string representation of the value.</returns>
+        public string Labeler(double value, string format) => value.ToString(format);
 
         /// <summary>
         /// Gets or sets the internal backing string that defines the numeric format applied to axis values.
         /// </summary>
         /// <remarks>Defaults to <c>"N0"</c> for whole number formatting without decimal places.</remarks>
-        private string format = "N0";
+        public string Format = "N0";
+
+
 
 
       

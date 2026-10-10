@@ -1070,7 +1070,7 @@ namespace BodyTracker.ViewModels
                 BodyWeight = value[0].BodyWeight?.ToString("N2") ?? "0";
                 BMI = value[0].BMI?.ToString("N2") ?? "0";
                 FFM_kg = ffm.ToString("F2") ?? "0";
-                FFM_describing = $"{ffm_index.ToString("N2")} | {BodyCalculationToolsService.GetFFMIndexDescribing(ffm_index, BodyCalculationGenderModel.Gender.Male)}";
+                FFM_describing = $"{ffm_index.ToString("N2")} | {BodyCalculationToolsService.GetFFMIndexDescribing(ffm_index, BodyCalculationToolsService.Gender.Male)}";
                 BodyFatPercentage = value[0].BodyFatPercentage?.ToString("N2") ?? "0";
                 BodyFatCaliper = value[0].CaliperBodyFatPercentage?.ToString("N2") ?? "0";
                 BodyMusclePercentage = value[0].BodyMusclePercentage?.ToString("N2") ?? "0";

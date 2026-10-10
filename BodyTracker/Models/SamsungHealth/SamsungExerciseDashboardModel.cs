@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BodyTracker.Models.Chart
 {
-    public class SamsungExerciseDashboardModel
+    public record SamsungExerciseDashboardModel
     {
         /// <summary>
         /// Gets or sets the start date and time of the exercise session.

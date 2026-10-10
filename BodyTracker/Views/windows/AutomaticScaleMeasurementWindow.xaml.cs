@@ -1,9 +1,13 @@
-﻿using BodyTracker.ViewModels.Main;
+﻿using BF105;
+using BF105.Bluetooth.Model;
+using BodyTracker.Models.FullBodyMeasurement;
+using BodyTracker.ViewModels.Main;
 using BodyTracker.Views;
 using BodyTracker.Views.Pages.Main;
 using OpenTK.Platform.Windows;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,9 +19,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using BF105.Bluetooth.Model;
-using System.Diagnostics;
-using BodyTracker.Models.FullBodyMeasurement;
 
 namespace BodyTracker.Views.windows
 {
@@ -55,7 +56,7 @@ namespace BodyTracker.Views.windows
         /// and embeds it into the main content container.
         /// </summary>
         /// <param name="bodyScanMode">The specific body scan mode configuration for the measurement session.</param>
-        public AutomaticScaleMeasurementWindow(BodyScanMode.ScanMode bodyScanMode)
+        public AutomaticScaleMeasurementWindow(BF105BeurerWaage.ScanMode bodyScanMode)
         {
             InitializeComponent();
 

@@ -5,7 +5,7 @@ namespace BodyTracker.Models.Export
     /// <summary>
     /// Represents the export model containing initial and current body dimensions, skinfold measurements, and caliper-based body fat percentages.
     /// </summary>
-    public class BodyDimensionsExportModel
+    public record BodyDimensionsExportModel
     {
         /// <summary>
         /// Gets or sets the unique identifier for the body dimensions record.

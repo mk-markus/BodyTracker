@@ -7,12 +7,12 @@ namespace BodyTracker.Models
     /// Represents a data record exported from Samsung Health, typically containing 
     /// nutritional or health-related activity information.
     /// </summary>
-    public class SamsungFoodIntakeModel
+    public record SamsungFoodIntakeModel
     {
-            /// <summary>
-            /// Contains the Food Intake ID from the database table
-            /// </summary>
-            public int? FoodIntakeID { get; set; }
+        /// <summary>
+        /// Contains the Food Intake ID from the database table
+        /// </summary>
+        public int? FoodIntakeID { get; set; }
 
         /// <summary>
         /// The version of the Samsung Health app when the record was created.

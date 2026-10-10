@@ -20,7 +20,8 @@ namespace BodyTracker.Services
                 MaxLimit = definition.MaxLimit,
                 Position = definition.Position,
                 ShowSeparatorLines = definition.ShowSeparatorLines,
-                Labeler = value => value.ToString(definition.Format)
+                Labeler = value => value.ToString(definition.Format),
+                MinStep = definition.MinStep ?? 1.0
             };
         }
     }

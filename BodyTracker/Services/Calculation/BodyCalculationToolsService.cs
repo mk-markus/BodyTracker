@@ -229,10 +229,10 @@ namespace BodyTracker.Services
         /// <param name="iFFM_Index">The calculated Fat-Free Mass Index (FFMI) value.</param>
         /// <param name="gender">The gender model used to apply gender-specific classification thresholds.</param>
         /// <returns>A descriptive string classification of the FFMI value, or an empty string if no condition matches.</returns>
-        public static string GetFFMIndexDescribing(float iFFM_Index, BodyCalculationGenderModel.Gender gender)
+        public static string GetFFMIndexDescribing(float iFFM_Index, Gender gender)
         {
 
-            if (gender == BodyCalculationGenderModel.Gender.Male)
+            if (gender == Gender.Male)
             {
                 if (iFFM_Index < 18) return "Untrained";
                 else if (iFFM_Index >= 18 && iFFM_Index <= 20) return "Average";
@@ -241,7 +241,7 @@ namespace BodyTracker.Services
                 else if (iFFM_Index > 23) return "Natural Limit";
             }
 
-            if (gender == BodyCalculationGenderModel.Gender.Female)
+            if (gender == Gender.Female)
             {
                 if (iFFM_Index < 15) return "Untrained";
                 else if (iFFM_Index >= 15 && iFFM_Index <= 16) return "Average";
@@ -252,5 +252,16 @@ namespace BodyTracker.Services
 
             return string.Empty;
         }
+
+        /// <summary>
+        /// Specifies the gender options for user profile and demographic data configuration.
+        /// </summary>
+        public enum Gender
+        {
+            Male,
+            Female,
+            Diverse
+        };
+
     }
 }

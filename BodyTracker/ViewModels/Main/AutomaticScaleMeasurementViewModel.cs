@@ -143,7 +143,7 @@ namespace BodyTracker.ViewModels.Main
         /// <summary>
         /// 
         /// </summary>
-        private BodyScanMode.ScanMode _bodyScanMode;
+        private BF105BeurerWaage.ScanMode _bodyScanMode;
 
         #endregion
 
@@ -154,7 +154,7 @@ namespace BodyTracker.ViewModels.Main
         /// </summary>
         /// <param name="shell">The parent window shell instance.</param>
         /// <param name="bodyScanMode">The body scan mode enumeration value.</param>
-        public AutomaticScaleMeasurementViewModel(Window shell, BodyScanMode.ScanMode bodyScanMode)
+        public AutomaticScaleMeasurementViewModel(Window shell, BF105BeurerWaage.ScanMode bodyScanMode)
         {
             _shell = shell;
 
@@ -205,7 +205,7 @@ namespace BodyTracker.ViewModels.Main
 
             switch (_bodyScanMode)
             {
-                case BodyScanMode.ScanMode.BodyWeightAndCompositionScan:
+                case BF105BeurerWaage.ScanMode.BodyWeightAndCompositionScan:
                     LoadInitialMeasurementData();
                     await _scale.GetBodyCompositionAndWeightAsync(false);
 
@@ -213,7 +213,7 @@ namespace BodyTracker.ViewModels.Main
                         _scale.IsBodyCompositionMeasurementValid;
                     break;
 
-                case BodyScanMode.ScanMode.SegmentalBodyCompisitionScan:
+                case BF105BeurerWaage.ScanMode.SegmentalBodyCompisitionScan:
                     
                     LoadSegmentMeasurementData();
                     
@@ -224,7 +224,7 @@ namespace BodyTracker.ViewModels.Main
                     
                     break;
 
-                case BodyScanMode.ScanMode.FullBodyScan:
+                case BF105BeurerWaage.ScanMode.FullBodyScan:
                     
                     LoadInitialMeasurementData();
                     

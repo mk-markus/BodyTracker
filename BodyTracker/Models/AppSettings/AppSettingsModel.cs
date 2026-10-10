@@ -10,7 +10,7 @@ namespace BodyTracker.Models
     /// Represents the data model used for persisting general application settings, 
     /// including default import directories and language preferences.
     /// </summary>
-    public class AppSettingsModel
+    public record AppSettingsModel
     {
         /// <summary>
         /// Gets or sets the default file system path used as the initial directory for data imports.

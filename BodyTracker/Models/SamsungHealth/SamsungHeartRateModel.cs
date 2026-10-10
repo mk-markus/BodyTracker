@@ -1,6 +1,6 @@
 ﻿using System;
 
-public class SamsungHeartRateModel
+public record SamsungHeartRateModel
 {
 
     // <summary>

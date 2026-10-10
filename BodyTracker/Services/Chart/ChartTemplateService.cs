@@ -1772,18 +1772,18 @@ namespace BodyTracker.Services
         #region Samsung Food Info Chart Templates
 
         /// <summary>
-        /// 
+        /// Creates a cartesian chart configuration for food calorie info records within a specified date range, including optional trend lines.
         /// </summary>
-        /// <param name="startDate"></param>
-        /// <param name="endDate"></param>
-        /// <param name="data"></param>
-        /// <param name="isTrendLineLegendVisible"></param>
-        /// <param name="strokeThickness"></param>
-        /// <param name="geometrySize"></param>
-        /// <param name="loessFraction"></param>
-        /// <param name="showCalories"></param>
-        /// <param name="showCaloriesTrend"></param>
-        /// <returns></returns>
+        /// <param name="startDate">The start date for the chart period.</param>
+        /// <param name="endDate">The end date for the chart period.</param>
+        /// <param name="data">The collection of Samsung food info records.</param>
+        /// <param name="isTrendLineLegendVisible">A value indicating whether the trend line is visible in the legend.</param>
+        /// <param name="strokeThickness">The thickness of the chart series stroke.</param>
+        /// <param name="geometrySize">The size of the data point geometries.</param>
+        /// <param name="loessFraction">The smoothing fraction parameter for LOESS trend calculations.</param>
+        /// <param name="showCalories">A value indicating whether the calorie data series is visible.</param>
+        /// <param name="showCaloriesTrend">A value indicating whether the calorie trend line is displayed.</param>
+        /// <returns>A <see cref="ChartResult"/> containing the configured series, X-axis, and Y-axis definitions.</returns>
         public static ChartResult CreateFoodCaloriesChart(
                     DateTime startDate, DateTime endDate, List<SamsungFoodInfoModel> data,
                     bool isTrendLineLegendVisible, float strokeThickness, float geometrySize,
@@ -1795,21 +1795,21 @@ namespace BodyTracker.Services
 
             var chartDefinitions = new[]
             {
-            new ChartSeriesModel<SamsungFoodInfoModel>
-            {
-                Name = "Calories",
-                TrendName = "Calories Trend",
-                Color = SKColors.OrangeRed,
-                YAxisIndex = 0,
-                IsVisible = showCalories,
-                ShowTrend = showCaloriesTrend,
-                IsTrendLineVisible = isTrendLineLegendVisible,
-                StrokeThickness = strokeThickness,
-                GeometrySize = geometrySize,
-                DateSelector = x => x.CreateTime,
-                ValueSelector = x => x.Calorie
-            }
-        };
+                new ChartSeriesModel<SamsungFoodInfoModel>
+                {
+                    Name = "Calories",
+                    TrendName = "Calories Trend",
+                    Color = SKColors.OrangeRed,
+                    YAxisIndex = 0,
+                    IsVisible = showCalories,
+                    ShowTrend = showCaloriesTrend,
+                    IsTrendLineVisible = isTrendLineLegendVisible,
+                    StrokeThickness = strokeThickness,
+                    GeometrySize = geometrySize,
+                    DateSelector = x => x.CreateTime,
+                    ValueSelector = x => x.Calorie
+                }
+            };
 
             var series = ChartSeriesBuilder.CreateSeries(data, chartDefinitions, loessFraction).ToArray();
             var xAxis = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yy")) };
@@ -1818,6 +1818,19 @@ namespace BodyTracker.Services
             return new ChartResult { Series = series, XAxis = xAxis, YAxis = yAxes };
         }
 
+        /// <summary>
+        /// Creates a cartesian chart configuration for food protein info records within a specified date range, including optional trend lines.
+        /// </summary>
+        /// <param name="startDate">The start date for the chart period.</param>
+        /// <param name="endDate">The end date for the chart period.</param>
+        /// <param name="data">The collection of Samsung food info records.</param>
+        /// <param name="isTrendLineLegendVisible">A value indicating whether the trend line is visible in the legend.</param>
+        /// <param name="strokeThickness">The thickness of the chart series stroke.</param>
+        /// <param name="geometrySize">The size of the data point geometries.</param>
+        /// <param name="loessFraction">The smoothing fraction parameter for LOESS trend calculations.</param>
+        /// <param name="showProtein">A value indicating whether the protein data series is visible.</param>
+        /// <param name="showProteinTrend">A value indicating whether the protein trend line is displayed.</param>
+        /// <returns>A <see cref="ChartResult"/> containing the configured series, X-axis, and Y-axis definitions.</returns>
         public static ChartResult CreateFoodProteinChart(
             DateTime startDate, DateTime endDate, List<SamsungFoodInfoModel> data,
             bool isTrendLineLegendVisible, float strokeThickness, float geometrySize,
@@ -1829,21 +1842,21 @@ namespace BodyTracker.Services
 
             var chartDefinitions = new[]
             {
-            new ChartSeriesModel<SamsungFoodInfoModel>
-            {
-                Name = "Protein",
-                TrendName = "Protein Trend",
-                Color = SKColors.Crimson,
-                YAxisIndex = 0,
-                IsVisible = showProtein,
-                ShowTrend = showProteinTrend,
-                IsTrendLineVisible = isTrendLineLegendVisible,
-                StrokeThickness = strokeThickness,
-                GeometrySize = geometrySize,
-                DateSelector = x => x.CreateTime,
-                ValueSelector = x => x.Protein
-            }
-        };
+                new ChartSeriesModel<SamsungFoodInfoModel>
+                {
+                    Name = "Protein",
+                    TrendName = "Protein Trend",
+                    Color = SKColors.Crimson,
+                    YAxisIndex = 0,
+                    IsVisible = showProtein,
+                    ShowTrend = showProteinTrend,
+                    IsTrendLineVisible = isTrendLineLegendVisible,
+                    StrokeThickness = strokeThickness,
+                    GeometrySize = geometrySize,
+                    DateSelector = x => x.CreateTime,
+                    ValueSelector = x => x.Protein
+                }
+            };
 
             var series = ChartSeriesBuilder.CreateSeries(data, chartDefinitions, loessFraction).ToArray();
             var xAxis = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yy")) };
@@ -1852,6 +1865,19 @@ namespace BodyTracker.Services
             return new ChartResult { Series = series, XAxis = xAxis, YAxis = yAxes };
         }
 
+        /// <summary>
+        /// Creates a cartesian chart configuration for food carbohydrate info records within a specified date range, including optional trend lines.
+        /// </summary>
+        /// <param name="startDate">The start date for the chart period.</param>
+        /// <param name="endDate">The end date for the chart period.</param>
+        /// <param name="data">The collection of Samsung food info records.</param>
+        /// <param name="isTrendLineLegendVisible">A value indicating whether the trend line is visible in the legend.</param>
+        /// <param name="strokeThickness">The thickness of the chart series stroke.</param>
+        /// <param name="geometrySize">The size of the data point geometries.</param>
+        /// <param name="loessFraction">The smoothing fraction parameter for LOESS trend calculations.</param>
+        /// <param name="showCarbs">A value indicating whether the carbohydrate data series is visible.</param>
+        /// <param name="showCarbsTrend">A value indicating whether the carbohydrate trend line is displayed.</param>
+        /// <returns>A <see cref="ChartResult"/> containing the configured series, X-axis, and Y-axis definitions.</returns>
         public static ChartResult CreateFoodCarbsChart(
             DateTime startDate, DateTime endDate, List<SamsungFoodInfoModel> data,
             bool isTrendLineLegendVisible, float strokeThickness, float geometrySize,
@@ -1863,21 +1889,21 @@ namespace BodyTracker.Services
 
             var chartDefinitions = new[]
             {
-            new ChartSeriesModel<SamsungFoodInfoModel>
-            {
-                Name = "Carbohydrates",
-                TrendName = "Carbs Trend",
-                Color = SKColors.Goldenrod,
-                YAxisIndex = 0,
-                IsVisible = showCarbs,
-                ShowTrend = showCarbsTrend,
-                IsTrendLineVisible = isTrendLineLegendVisible,
-                StrokeThickness = strokeThickness,
-                GeometrySize = geometrySize,
-                DateSelector = x => x.CreateTime,
-                ValueSelector = x => x.Carbohydrate
-            }
-        };
+                new ChartSeriesModel<SamsungFoodInfoModel>
+                {
+                    Name = "Carbohydrates",
+                    TrendName = "Carbs Trend",
+                    Color = SKColors.Goldenrod,
+                    YAxisIndex = 0,
+                    IsVisible = showCarbs,
+                    ShowTrend = showCarbsTrend,
+                    IsTrendLineVisible = isTrendLineLegendVisible,
+                    StrokeThickness = strokeThickness,
+                    GeometrySize = geometrySize,
+                    DateSelector = x => x.CreateTime,
+                    ValueSelector = x => x.Carbohydrate
+                }
+            };
 
             var series = ChartSeriesBuilder.CreateSeries(data, chartDefinitions, loessFraction).ToArray();
             var xAxis = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yy")) };
@@ -1886,6 +1912,19 @@ namespace BodyTracker.Services
             return new ChartResult { Series = series, XAxis = xAxis, YAxis = yAxes };
         }
 
+        /// <summary>
+        /// Creates a cartesian chart configuration for dietary fat info records within a specified date range, including optional trend lines.
+        /// </summary>
+        /// <param name="startDate">The start date for the chart period.</param>
+        /// <param name="endDate">The end date for the chart period.</param>
+        /// <param name="data">The collection of Samsung food info records.</param>
+        /// <param name="isTrendLineLegendVisible">A value indicating whether the trend line is visible in the legend.</param>
+        /// <param name="strokeThickness">The thickness of the chart series stroke.</param>
+        /// <param name="geometrySize">The size of the data point geometries.</param>
+        /// <param name="loessFraction">The smoothing fraction parameter for LOESS trend calculations.</param>
+        /// <param name="showFat">A value indicating whether the fat data series is visible.</param>
+        /// <param name="showFatTrend">A value indicating whether the fat trend line is displayed.</param>
+        /// <returns>A <see cref="ChartResult"/> containing the configured series, X-axis, and Y-axis definitions.</returns>
         public static ChartResult CreateFoodFatChart(
             DateTime startDate, DateTime endDate, List<SamsungFoodInfoModel> data,
             bool isTrendLineLegendVisible, float strokeThickness, float geometrySize,
@@ -1897,21 +1936,21 @@ namespace BodyTracker.Services
 
             var chartDefinitions = new[]
             {
-            new ChartSeriesModel<SamsungFoodInfoModel>
-            {
-                Name = "Fat",
-                TrendName = "Fat Trend",
-                Color = SKColors.ForestGreen,
-                YAxisIndex = 0,
-                IsVisible = showFat,
-                ShowTrend = showFatTrend,
-                IsTrendLineVisible = isTrendLineLegendVisible,
-                StrokeThickness = strokeThickness,
-                GeometrySize = geometrySize,
-                DateSelector = x => x.CreateTime,
-                ValueSelector = x => x.TotalFat
-            }
-        };
+                new ChartSeriesModel<SamsungFoodInfoModel>
+                {
+                    Name = "Fat",
+                    TrendName = "Fat Trend",
+                    Color = SKColors.ForestGreen,
+                    YAxisIndex = 0,
+                    IsVisible = showFat,
+                    ShowTrend = showFatTrend,
+                    IsTrendLineVisible = isTrendLineLegendVisible,
+                    StrokeThickness = strokeThickness,
+                    GeometrySize = geometrySize,
+                    DateSelector = x => x.CreateTime,
+                    ValueSelector = x => x.TotalFat
+                }
+            };
 
             var series = ChartSeriesBuilder.CreateSeries(data, chartDefinitions, loessFraction).ToArray();
             var xAxis = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yy")) };
@@ -1920,6 +1959,19 @@ namespace BodyTracker.Services
             return new ChartResult { Series = series, XAxis = xAxis, YAxis = yAxes };
         }
 
+        /// <summary>
+        /// Creates a cartesian chart configuration for Vitamin A intake records within a specified date range, including optional trend lines.
+        /// </summary>
+        /// <param name="startDate">The start date for the chart period.</param>
+        /// <param name="endDate">The end date for the chart period.</param>
+        /// <param name="data">The collection of Samsung food info records.</param>
+        /// <param name="isTrendLineLegendVisible">A value indicating whether the trend line is visible in the legend.</param>
+        /// <param name="strokeThickness">The thickness of the chart series stroke.</param>
+        /// <param name="geometrySize">The size of the data point geometries.</param>
+        /// <param name="loessFraction">The smoothing fraction parameter for LOESS trend calculations.</param>
+        /// <param name="showVitaminA">A value indicating whether the Vitamin A data series is visible.</param>
+        /// <param name="showVitaminATrend">A value indicating whether the Vitamin A trend line is displayed.</param>
+        /// <returns>A <see cref="ChartResult"/> containing the configured series, X-axis, and Y-axis definitions.</returns>
         public static ChartResult CreateFoodVitaminAChart(
             DateTime startDate, DateTime endDate, List<SamsungFoodInfoModel> data,
             bool isTrendLineLegendVisible, float strokeThickness, float geometrySize, double loessFraction,
@@ -1931,21 +1983,21 @@ namespace BodyTracker.Services
 
             var chartDefinitions = new[]
             {
-            new ChartSeriesModel<SamsungFoodInfoModel>
-            {
-                Name = "Vitamin A",
-                TrendName = "Vitamin A Trend",
-                Color = SKColors.DarkOrange,
-                YAxisIndex = 0,
-                IsVisible = showVitaminA,
-                ShowTrend = showVitaminATrend,
-                IsTrendLineVisible = isTrendLineLegendVisible,
-                StrokeThickness = strokeThickness,
-                GeometrySize = geometrySize,
-                DateSelector = x => x.CreateTime,
-                ValueSelector = x => x.VitaminA
-            }
-        };
+                new ChartSeriesModel<SamsungFoodInfoModel>
+                {
+                    Name = "Vitamin A",
+                    TrendName = "Vitamin A Trend",
+                    Color = SKColors.DarkOrange,
+                    YAxisIndex = 0,
+                    IsVisible = showVitaminA,
+                    ShowTrend = showVitaminATrend,
+                    IsTrendLineVisible = isTrendLineLegendVisible,
+                    StrokeThickness = strokeThickness,
+                    GeometrySize = geometrySize,
+                    DateSelector = x => x.CreateTime,
+                    ValueSelector = x => x.VitaminA
+                }
+            };
 
             var series = ChartSeriesBuilder.CreateSeries(data, chartDefinitions, loessFraction).ToArray();
             var xAxis = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yy")) };
@@ -1954,6 +2006,19 @@ namespace BodyTracker.Services
             return new ChartResult { Series = series, XAxis = xAxis, YAxis = yAxes };
         }
 
+        /// <summary>
+        /// Creates a cartesian chart configuration for Vitamin C intake records within a specified date range, including optional trend lines.
+        /// </summary>
+        /// <param name="startDate">The start date for the chart period.</param>
+        /// <param name="endDate">The end date for the chart period.</param>
+        /// <param name="data">The collection of Samsung food info records.</param>
+        /// <param name="isTrendLineLegendVisible">A value indicating whether the trend line is visible in the legend.</param>
+        /// <param name="strokeThickness">The thickness of the chart series stroke.</param>
+        /// <param name="geometrySize">The size of the data point geometries.</param>
+        /// <param name="loessFraction">The smoothing fraction parameter for LOESS trend calculations.</param>
+        /// <param name="showVitaminC">A value indicating whether the Vitamin C data series is visible.</param>
+        /// <param name="showVitaminCTrend">A value indicating whether the Vitamin C trend line is displayed.</param>
+        /// <returns>A <see cref="ChartResult"/> containing the configured series, X-axis, and Y-axis definitions.</returns>
         public static ChartResult CreateFoodVitaminCChart(
             DateTime startDate, DateTime endDate, List<SamsungFoodInfoModel> data,
             bool isTrendLineLegendVisible, float strokeThickness, float geometrySize, double loessFraction,
@@ -1965,21 +2030,21 @@ namespace BodyTracker.Services
 
             var chartDefinitions = new[]
             {
-            new ChartSeriesModel<SamsungFoodInfoModel>
-            {
-                Name = "Vitamin C",
-                TrendName = "Vitamin C Trend",
-                Color = SKColors.Gold,
-                YAxisIndex = 0,
-                IsVisible = showVitaminC,
-                ShowTrend = showVitaminCTrend,
-                IsTrendLineVisible = isTrendLineLegendVisible,
-                StrokeThickness = strokeThickness,
-                GeometrySize = geometrySize,
-                DateSelector = x => x.CreateTime,
-                ValueSelector = x => x.VitaminC
-            }
-        };
+                new ChartSeriesModel<SamsungFoodInfoModel>
+                {
+                    Name = "Vitamin C",
+                    TrendName = "Vitamin C Trend",
+                    Color = SKColors.Gold,
+                    YAxisIndex = 0,
+                    IsVisible = showVitaminC,
+                    ShowTrend = showVitaminCTrend,
+                    IsTrendLineVisible = isTrendLineLegendVisible,
+                    StrokeThickness = strokeThickness,
+                    GeometrySize = geometrySize,
+                    DateSelector = x => x.CreateTime,
+                    ValueSelector = x => x.VitaminC
+                }
+            };
 
             var series = ChartSeriesBuilder.CreateSeries(data, chartDefinitions, loessFraction).ToArray();
             var xAxis = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yy")) };
@@ -1988,6 +2053,19 @@ namespace BodyTracker.Services
             return new ChartResult { Series = series, XAxis = xAxis, YAxis = yAxes };
         }
 
+        /// <summary>
+        /// Creates a cartesian chart configuration for Vitamin D intake records within a specified date range, including optional trend lines.
+        /// </summary>
+        /// <param name="startDate">The start date for the chart period.</param>
+        /// <param name="endDate">The end date for the chart period.</param>
+        /// <param name="data">The collection of Samsung food info records.</param>
+        /// <param name="isTrendLineLegendVisible">A value indicating whether the trend line is visible in the legend.</param>
+        /// <param name="strokeThickness">The thickness of the chart series stroke.</param>
+        /// <param name="geometrySize">The size of the data point geometries.</param>
+        /// <param name="loessFraction">The smoothing fraction parameter for LOESS trend calculations.</param>
+        /// <param name="showVitaminD">A value indicating whether the Vitamin D data series is visible.</param>
+        /// <param name="showVitaminDTrend">A value indicating whether the Vitamin D trend line is displayed.</param>
+        /// <returns>A <see cref="ChartResult"/> containing the configured series, X-axis, and Y-axis definitions.</returns>
         public static ChartResult CreateFoodVitaminDChart(
             DateTime startDate, DateTime endDate, List<SamsungFoodInfoModel> data,
             bool isTrendLineLegendVisible, float strokeThickness, float geometrySize, double loessFraction,
@@ -1999,21 +2077,21 @@ namespace BodyTracker.Services
 
             var chartDefinitions = new[]
             {
-            new ChartSeriesModel<SamsungFoodInfoModel>
-            {
-                Name = "Vitamin D",
-                TrendName = "Vitamin D Trend",
-                Color = SKColors.Orange,
-                YAxisIndex = 0,
-                IsVisible = showVitaminD,
-                ShowTrend = showVitaminDTrend,
-                IsTrendLineVisible = isTrendLineLegendVisible,
-                StrokeThickness = strokeThickness,
-                GeometrySize = geometrySize,
-                DateSelector = x => x.CreateTime,
-                ValueSelector = x => x.VitaminD
-            }
-        };
+                new ChartSeriesModel<SamsungFoodInfoModel>
+                {
+                    Name = "Vitamin D",
+                    TrendName = "Vitamin D Trend",
+                    Color = SKColors.Orange,
+                    YAxisIndex = 0,
+                    IsVisible = showVitaminD,
+                    ShowTrend = showVitaminDTrend,
+                    IsTrendLineVisible = isTrendLineLegendVisible,
+                    StrokeThickness = strokeThickness,
+                    GeometrySize = geometrySize,
+                    DateSelector = x => x.CreateTime,
+                    ValueSelector = x => x.VitaminD
+                }
+            };
 
             var series = ChartSeriesBuilder.CreateSeries(data, chartDefinitions, loessFraction).ToArray();
             var xAxis = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yy")) };
@@ -2022,6 +2100,19 @@ namespace BodyTracker.Services
             return new ChartResult { Series = series, XAxis = xAxis, YAxis = yAxes };
         }
 
+        /// <summary>
+        /// Creates a cartesian chart configuration for Iron intake records within a specified date range, including optional trend lines.
+        /// </summary>
+        /// <param name="startDate">The start date for the chart period.</param>
+        /// <param name="endDate">The end date for the chart period.</param>
+        /// <param name="data">The collection of Samsung food info records.</param>
+        /// <param name="isTrendLineLegendVisible">A value indicating whether the trend line is visible in the legend.</param>
+        /// <param name="strokeThickness">The thickness of the chart series stroke.</param>
+        /// <param name="geometrySize">The size of the data point geometries.</param>
+        /// <param name="loessFraction">The smoothing fraction parameter for LOESS trend calculations.</param>
+        /// <param name="showIron">A value indicating whether the Iron data series is visible.</param>
+        /// <param name="showIronTrend">A value indicating whether the Iron trend line is displayed.</param>
+        /// <returns>A <see cref="ChartResult"/> containing the configured series, X-axis, and Y-axis definitions.</returns>
         public static ChartResult CreateFoodIronChart(
             DateTime startDate, DateTime endDate, List<SamsungFoodInfoModel> data,
             bool isTrendLineLegendVisible, float strokeThickness, float geometrySize, double loessFraction,
@@ -2033,21 +2124,21 @@ namespace BodyTracker.Services
 
             var chartDefinitions = new[]
             {
-            new ChartSeriesModel<SamsungFoodInfoModel>
-            {
-                Name = "Iron",
-                TrendName = "Iron Trend",
-                Color = SKColors.SaddleBrown,
-                YAxisIndex = 0,
-                IsVisible = showIron,
-                ShowTrend = showIronTrend,
-                IsTrendLineVisible = isTrendLineLegendVisible,
-                StrokeThickness = strokeThickness,
-                GeometrySize = geometrySize,
-                DateSelector = x => x.CreateTime,
-                ValueSelector = x => x.Iron
-            }
-        };
+                new ChartSeriesModel<SamsungFoodInfoModel>
+                {
+                    Name = "Iron",
+                    TrendName = "Iron Trend",
+                    Color = SKColors.SaddleBrown,
+                    YAxisIndex = 0,
+                    IsVisible = showIron,
+                    ShowTrend = showIronTrend,
+                    IsTrendLineVisible = isTrendLineLegendVisible,
+                    StrokeThickness = strokeThickness,
+                    GeometrySize = geometrySize,
+                    DateSelector = x => x.CreateTime,
+                    ValueSelector = x => x.Iron
+                }
+            };
 
             var series = ChartSeriesBuilder.CreateSeries(data, chartDefinitions, loessFraction).ToArray();
             var xAxis = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yy")) };
@@ -2056,6 +2147,19 @@ namespace BodyTracker.Services
             return new ChartResult { Series = series, XAxis = xAxis, YAxis = yAxes };
         }
 
+        /// <summary>
+        /// Creates a cartesian chart configuration for Calcium intake records within a specified date range, including optional trend lines.
+        /// </summary>
+        /// <param name="startDate">The start date for the chart period.</param>
+        /// <param name="endDate">The end date for the chart period.</param>
+        /// <param name="data">The collection of Samsung food info records.</param>
+        /// <param name="isTrendLineLegendVisible">A value indicating whether the trend line is visible in the legend.</param>
+        /// <param name="strokeThickness">The thickness of the chart series stroke.</param>
+        /// <param name="geometrySize">The size of the data point geometries.</param>
+        /// <param name="loessFraction">The smoothing fraction parameter for LOESS trend calculations.</param>
+        /// <param name="showCalcium">A value indicating whether the Calcium data series is visible.</param>
+        /// <param name="showCalciumTrend">A value indicating whether the Calcium trend line is displayed.</param>
+        /// <returns>A <see cref="ChartResult"/> containing the configured series, X-axis, and Y-axis definitions.</returns>
         public static ChartResult CreateFoodCalciumChart(
             DateTime startDate, DateTime endDate, List<SamsungFoodInfoModel> data,
             bool isTrendLineLegendVisible, float strokeThickness, float geometrySize, double loessFraction,
@@ -2067,55 +2171,21 @@ namespace BodyTracker.Services
 
             var chartDefinitions = new[]
             {
-            new ChartSeriesModel<SamsungFoodInfoModel>
-            {
-                Name = "Calcium",
-                TrendName = "Calcium Trend",
-                Color = SKColors.SteelBlue,
-                YAxisIndex = 0,
-                IsVisible = showCalcium,
-                ShowTrend = showCalciumTrend,
-                IsTrendLineVisible = isTrendLineLegendVisible,
-                StrokeThickness = strokeThickness,
-                GeometrySize = geometrySize,
-                DateSelector = x => x.CreateTime,
-                ValueSelector = x => x.Calcium
-            }
-        };
-
-            var series = ChartSeriesBuilder.CreateSeries(data, chartDefinitions, loessFraction).ToArray();
-            var xAxis = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yy.yy")) };
-            var yAxes = new[] { ChartAxisBuilder.Create(new ChartYAxisModel { Name = "mg", MinLimit = min, MaxLimit = max }) };
-
-            return new ChartResult { Series = series, XAxis = xAxis, YAxis = yAxes };
-        }
-
-        public static ChartResult CreateFoodNatriumChart(
-            DateTime startDate, DateTime endDate, List<SamsungFoodInfoModel> data,
-            bool isTrendLineLegendVisible, float strokeThickness, float geometrySize, double loessFraction,
-            bool showNatrium, bool showNatriumTrend)
-        {
-            double max = data.Any() ? data.Max(x => x.Cholesterol ?? 0) : 100;
-            double min = data.Any() ? data.Min(x => x.Cholesterol ?? 0) : 0;
-            max += max * 0.05;
-
-            var chartDefinitions = new[]
-            {
-            new ChartSeriesModel<SamsungFoodInfoModel>
-            {
-                Name = "Sodium ",
-                TrendName = "Sodium Trend",
-                Color = SKColors.MediumPurple,
-                YAxisIndex = 0,
-                IsVisible = showNatrium,
-                ShowTrend = showNatriumTrend,
-                IsTrendLineVisible = isTrendLineLegendVisible,
-                StrokeThickness = strokeThickness,
-                GeometrySize = geometrySize,
-                DateSelector = x => x.CreateTime,
-                ValueSelector = x => x.Sodium
-            }
-        };
+                new ChartSeriesModel<SamsungFoodInfoModel>
+                {
+                    Name = "Calcium",
+                    TrendName = "Calcium Trend",
+                    Color = SKColors.SteelBlue,
+                    YAxisIndex = 0,
+                    IsVisible = showCalcium,
+                    ShowTrend = showCalciumTrend,
+                    IsTrendLineVisible = isTrendLineLegendVisible,
+                    StrokeThickness = strokeThickness,
+                    GeometrySize = geometrySize,
+                    DateSelector = x => x.CreateTime,
+                    ValueSelector = x => x.Calcium
+                }
+            };
 
             var series = ChartSeriesBuilder.CreateSeries(data, chartDefinitions, loessFraction).ToArray();
             var xAxis = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yy")) };
@@ -2124,6 +2194,66 @@ namespace BodyTracker.Services
             return new ChartResult { Series = series, XAxis = xAxis, YAxis = yAxes };
         }
 
+        /// <summary>
+        /// Creates a cartesian chart configuration for Sodium (Natrium) intake records within a specified date range, including optional trend lines.
+        /// </summary>
+        /// <param name="startDate">The start date for the chart period.</param>
+        /// <param name="endDate">The end date for the chart period.</param>
+        /// <param name="data">The collection of Samsung food info records.</param>
+        /// <param name="isTrendLineLegendVisible">A value indicating whether the trend line is visible in the legend.</param>
+        /// <param name="strokeThickness">The thickness of the chart series stroke.</param>
+        /// <param name="geometrySize">The size of the data point geometries.</param>
+        /// <param name="loessFraction">The smoothing fraction parameter for LOESS trend calculations.</param>
+        /// <param name="showNatrium">A value indicating whether the Sodium data series is visible.</param>
+        /// <param name="showNatriumTrend">A value indicating whether the Sodium trend line is displayed.</param>
+        /// <returns>A <see cref="ChartResult"/> containing the configured series, X-axis, and Y-axis definitions.</returns>
+        public static ChartResult CreateFoodNatriumChart(
+            DateTime startDate, DateTime endDate, List<SamsungFoodInfoModel> data,
+            bool isTrendLineLegendVisible, float strokeThickness, float geometrySize, double loessFraction,
+            bool showNatrium, bool showNatriumTrend)
+        {
+            double max = data.Any() ? data.Max(x => x.Sodium ?? 0) : 100;
+            double min = data.Any() ? data.Min(x => x.Sodium ?? 0) : 0;
+            max += max * 0.05;
+
+            var chartDefinitions = new[]
+            {
+                new ChartSeriesModel<SamsungFoodInfoModel>
+                {
+                    Name = "Sodium",
+                    TrendName = "Sodium Trend",
+                    Color = SKColors.MediumPurple,
+                    YAxisIndex = 0,
+                    IsVisible = showNatrium,
+                    ShowTrend = showNatriumTrend,
+                    IsTrendLineVisible = isTrendLineLegendVisible,
+                    StrokeThickness = strokeThickness,
+                    GeometrySize = geometrySize,
+                    DateSelector = x => x.CreateTime,
+                    ValueSelector = x => x.Sodium
+                }
+            };
+
+            var series = ChartSeriesBuilder.CreateSeries(data, chartDefinitions, loessFraction).ToArray();
+            var xAxis = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yy")) };
+            var yAxes = new[] { ChartAxisBuilder.Create(new ChartYAxisModel { Name = "mg", MinLimit = min, MaxLimit = max }) };
+
+            return new ChartResult { Series = series, XAxis = xAxis, YAxis = yAxes };
+        }
+
+        /// <summary>
+        /// Creates a cartesian chart configuration for Potassium (Kalium) intake records within a specified date range, including optional trend lines.
+        /// </summary>
+        /// <param name="startDate">The start date for the chart period.</param>
+        /// <param name="endDate">The end date for the chart period.</param>
+        /// <param name="data">The collection of Samsung food info records.</param>
+        /// <param name="isTrendLineLegendVisible">A value indicating whether the trend line is visible in the legend.</param>
+        /// <param name="strokeThickness">The thickness of the chart series stroke.</param>
+        /// <param name="geometrySize">The size of the data point geometries.</param>
+        /// <param name="loessFraction">The smoothing fraction parameter for LOESS trend calculations.</param>
+        /// <param name="showPotassium">A value indicating whether the Potassium data series is visible.</param>
+        /// <param name="showPotassiumTrend">A value indicating whether the Potassium trend line is displayed.</param>
+        /// <returns>A <see cref="ChartResult"/> containing the configured series, X-axis, and Y-axis definitions.</returns>
         public static ChartResult CreateFoodKaliumChart(
             DateTime startDate, DateTime endDate, List<SamsungFoodInfoModel> data,
             bool isTrendLineLegendVisible, float strokeThickness, float geometrySize, double loessFraction,
@@ -2135,25 +2265,547 @@ namespace BodyTracker.Services
 
             var chartDefinitions = new[]
             {
-            new ChartSeriesModel<SamsungFoodInfoModel>
-            {
-                Name = "Kalium",
-                TrendName = "Kalium Trend",
-                Color = SKColors.Teal,
-                YAxisIndex = 0,
-                IsVisible = showPotassium,
-                ShowTrend = showPotassiumTrend,
-                IsTrendLineVisible = isTrendLineLegendVisible,
-                StrokeThickness = strokeThickness,
-                GeometrySize = geometrySize,
-                DateSelector = x => x.CreateTime,
-                ValueSelector = x => x.Potassium
-            }
-        };
+                new ChartSeriesModel<SamsungFoodInfoModel>
+                {
+                    Name = "Kalium",
+                    TrendName = "Kalium Trend",
+                    Color = SKColors.Teal,
+                    YAxisIndex = 0,
+                    IsVisible = showPotassium,
+                    ShowTrend = showPotassiumTrend,
+                    IsTrendLineVisible = isTrendLineLegendVisible,
+                    StrokeThickness = strokeThickness,
+                    GeometrySize = geometrySize,
+                    DateSelector = x => x.CreateTime,
+                    ValueSelector = x => x.Potassium
+                }
+            };
 
             var series = ChartSeriesBuilder.CreateSeries(data, chartDefinitions, loessFraction).ToArray();
             var xAxis = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yy")) };
             var yAxes = new[] { ChartAxisBuilder.Create(new ChartYAxisModel { Name = "mg", MinLimit = min, MaxLimit = max }) };
+
+            return new ChartResult { Series = series, XAxis = xAxis, YAxis = yAxes };
+        }
+
+        #endregion
+
+        #region Samsung Food Nutrition Chart Templates
+
+        /// <summary>
+        /// Creates a cartesian chart configuration for food calorie info records within a specified date range, including optional trend lines.
+        /// </summary>
+        /// <param name="startDate">The start date for the chart period.</param>
+        /// <param name="endDate">The end date for the chart period.</param>
+        /// <param name="data">The collection of Samsung food info records.</param>
+        /// <param name="isTrendLineLegendVisible">A value indicating whether the trend line is visible in the legend.</param>
+        /// <param name="strokeThickness">The thickness of the chart series stroke.</param>
+        /// <param name="geometrySize">The size of the data point geometries.</param>
+        /// <param name="loessFraction">The smoothing fraction parameter for LOESS trend calculations.</param>
+        /// <param name="showCalories">A value indicating whether the calorie data series is visible.</param>
+        /// <param name="showCaloriesTrend">A value indicating whether the calorie trend line is displayed.</param>
+        /// <returns>A <see cref="ChartResult"/> containing the configured series, X-axis, and Y-axis definitions.</returns>
+        public static ChartResult CreateFoodCaloriesChart(
+                    DateTime startDate, DateTime endDate, List<SamsungFoodNutritionModel> data,
+                    bool isTrendLineLegendVisible, float strokeThickness, float geometrySize,
+                    double loessFraction, bool showCalories, bool showCaloriesTrend)
+        {
+            double max = data.Any() ? data.Max(x => x.Calorie ?? 0) : 100;
+            double min = data.Any() ? data.Min(x => x.Calorie ?? 0) : 0;
+            max += max * 0.05;
+
+            var chartDefinitions = new[]
+            {
+                new ChartSeriesModel<SamsungFoodNutritionModel>
+                {
+                    Name = "Calories",
+                    TrendName = "Calories Trend",
+                    Color = SKColors.OrangeRed,
+                    YAxisIndex = 0,
+                    IsVisible = showCalories,
+                    ShowTrend = showCaloriesTrend,
+                    IsTrendLineVisible = isTrendLineLegendVisible,
+                    StrokeThickness = strokeThickness,
+                    GeometrySize = geometrySize,
+                    DateSelector = x => x.CreateTime,
+                    ValueSelector = x => x.Calorie
+                }
+            };
+
+            var series = ChartSeriesBuilder.CreateSeries(data, chartDefinitions, loessFraction).ToArray();
+            var xAxis = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yy")) };
+            var yAxes = new[] { ChartAxisBuilder.Create(new ChartYAxisModel { Name = "kcal", MinLimit = min, MaxLimit = max }) };
+
+            return new ChartResult { Series = series, XAxis = xAxis, YAxis = yAxes };
+        }
+
+        /// <summary>
+        /// Creates a cartesian chart configuration for food protein info records within a specified date range, including optional trend lines.
+        /// </summary>
+        /// <param name="startDate">The start date for the chart period.</param>
+        /// <param name="endDate">The end date for the chart period.</param>
+        /// <param name="data">The collection of Samsung food info records.</param>
+        /// <param name="isTrendLineLegendVisible">A value indicating whether the trend line is visible in the legend.</param>
+        /// <param name="strokeThickness">The thickness of the chart series stroke.</param>
+        /// <param name="geometrySize">The size of the data point geometries.</param>
+        /// <param name="loessFraction">The smoothing fraction parameter for LOESS trend calculations.</param>
+        /// <param name="showProtein">A value indicating whether the protein data series is visible.</param>
+        /// <param name="showProteinTrend">A value indicating whether the protein trend line is displayed.</param>
+        /// <returns>A <see cref="ChartResult"/> containing the configured series, X-axis, and Y-axis definitions.</returns>
+        public static ChartResult CreateFoodProteinChart(
+            DateTime startDate, DateTime endDate, List<SamsungFoodNutritionModel> data,
+            bool isTrendLineLegendVisible, float strokeThickness, float geometrySize,
+            double loessFraction, bool showProtein, bool showProteinTrend)
+        {
+            double max = data.Any() ? data.Max(x => x.Protein ?? 0) : 100;
+            double min = data.Any() ? data.Min(x => x.Protein ?? 0) : 0;
+            max += max * 0.05;
+
+            var chartDefinitions = new[]
+            {
+                new ChartSeriesModel<SamsungFoodNutritionModel>
+                {
+                    Name = "Protein",
+                    TrendName = "Protein Trend",
+                    Color = SKColors.Crimson,
+                    YAxisIndex = 0,
+                    IsVisible = showProtein,
+                    ShowTrend = showProteinTrend,
+                    IsTrendLineVisible = isTrendLineLegendVisible,
+                    StrokeThickness = strokeThickness,
+                    GeometrySize = geometrySize,
+                    DateSelector = x => x.CreateTime,
+                    ValueSelector = x => x.Protein
+                }
+            };
+
+            var series = ChartSeriesBuilder.CreateSeries(data, chartDefinitions, loessFraction).ToArray();
+            var xAxis = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yy")) };
+            var yAxes = new[] { ChartAxisBuilder.Create(new ChartYAxisModel { Name = "g", MinLimit = min, MaxLimit = max }) };
+
+            return new ChartResult { Series = series, XAxis = xAxis, YAxis = yAxes };
+        }
+
+        /// <summary>
+        /// Creates a cartesian chart configuration for food carbohydrate info records within a specified date range, including optional trend lines.
+        /// </summary>
+        /// <param name="startDate">The start date for the chart period.</param>
+        /// <param name="endDate">The end date for the chart period.</param>
+        /// <param name="data">The collection of Samsung food info records.</param>
+        /// <param name="isTrendLineLegendVisible">A value indicating whether the trend line is visible in the legend.</param>
+        /// <param name="strokeThickness">The thickness of the chart series stroke.</param>
+        /// <param name="geometrySize">The size of the data point geometries.</param>
+        /// <param name="loessFraction">The smoothing fraction parameter for LOESS trend calculations.</param>
+        /// <param name="showCarbs">A value indicating whether the carbohydrate data series is visible.</param>
+        /// <param name="showCarbsTrend">A value indicating whether the carbohydrate trend line is displayed.</param>
+        /// <returns>A <see cref="ChartResult"/> containing the configured series, X-axis, and Y-axis definitions.</returns>
+        public static ChartResult CreateFoodCarbsChart(
+            DateTime startDate, DateTime endDate, List<SamsungFoodNutritionModel> data,
+            bool isTrendLineLegendVisible, float strokeThickness, float geometrySize,
+            double loessFraction, bool showCarbs, bool showCarbsTrend)
+        {
+            double max = data.Any() ? data.Max(x => x.Carbohydrate ?? 0) : 100;
+            double min = data.Any() ? data.Min(x => x.Carbohydrate ?? 0) : 0;
+            max += max * 0.05;
+
+            var chartDefinitions = new[]
+            {
+                new ChartSeriesModel<SamsungFoodNutritionModel>
+                {
+                    Name = "Carbohydrates",
+                    TrendName = "Carbs Trend",
+                    Color = SKColors.Goldenrod,
+                    YAxisIndex = 0,
+                    IsVisible = showCarbs,
+                    ShowTrend = showCarbsTrend,
+                    IsTrendLineVisible = isTrendLineLegendVisible,
+                    StrokeThickness = strokeThickness,
+                    GeometrySize = geometrySize,
+                    DateSelector = x => x.CreateTime,
+                    ValueSelector = x => x.Carbohydrate
+                }
+            };
+
+            var series = ChartSeriesBuilder.CreateSeries(data, chartDefinitions, loessFraction).ToArray();
+            var xAxis = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yy")) };
+            var yAxes = new[] { ChartAxisBuilder.Create(new ChartYAxisModel { Name = "g", MinLimit = min, MaxLimit = max }) };
+
+            return new ChartResult { Series = series, XAxis = xAxis, YAxis = yAxes };
+        }
+
+        /// <summary>
+        /// Creates a cartesian chart configuration for dietary fat info records within a specified date range, including optional trend lines.
+        /// </summary>
+        /// <param name="startDate">The start date for the chart period.</param>
+        /// <param name="endDate">The end date for the chart period.</param>
+        /// <param name="data">The collection of Samsung food info records.</param>
+        /// <param name="isTrendLineLegendVisible">A value indicating whether the trend line is visible in the legend.</param>
+        /// <param name="strokeThickness">The thickness of the chart series stroke.</param>
+        /// <param name="geometrySize">The size of the data point geometries.</param>
+        /// <param name="loessFraction">The smoothing fraction parameter for LOESS trend calculations.</param>
+        /// <param name="showFat">A value indicating whether the fat data series is visible.</param>
+        /// <param name="showFatTrend">A value indicating whether the fat trend line is displayed.</param>
+        /// <returns>A <see cref="ChartResult"/> containing the configured series, X-axis, and Y-axis definitions.</returns>
+        public static ChartResult CreateFoodFatChart(
+            DateTime startDate, DateTime endDate, List<SamsungFoodNutritionModel> data,
+            bool isTrendLineLegendVisible, float strokeThickness, float geometrySize,
+            double loessFraction, bool showFat, bool showFatTrend)
+        {
+            double max = data.Any() ? data.Max(x => x.TotalFat ?? 0) : 100;
+            double min = data.Any() ? data.Min(x => x.TotalFat ?? 0) : 0;
+            max += max * 0.05;
+
+            var chartDefinitions = new[]
+            {
+                new ChartSeriesModel<SamsungFoodNutritionModel>
+                {
+                    Name = "Fat",
+                    TrendName = "Fat Trend",
+                    Color = SKColors.ForestGreen,
+                    YAxisIndex = 0,
+                    IsVisible = showFat,
+                    ShowTrend = showFatTrend,
+                    IsTrendLineVisible = isTrendLineLegendVisible,
+                    StrokeThickness = strokeThickness,
+                    GeometrySize = geometrySize,
+                    DateSelector = x => x.CreateTime,
+                    ValueSelector = x => x.TotalFat
+                }
+            };
+
+            var series = ChartSeriesBuilder.CreateSeries(data, chartDefinitions, loessFraction).ToArray();
+            var xAxis = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yy")) };
+            var yAxes = new[] { ChartAxisBuilder.Create(new ChartYAxisModel { Name = "g", MinLimit = min, MaxLimit = max }) };
+
+            return new ChartResult { Series = series, XAxis = xAxis, YAxis = yAxes };
+        }
+
+        /// <summary>
+        /// Creates a cartesian chart configuration for Vitamin A intake records within a specified date range, including optional trend lines.
+        /// </summary>
+        /// <param name="startDate">The start date for the chart period.</param>
+        /// <param name="endDate">The end date for the chart period.</param>
+        /// <param name="data">The collection of Samsung food info records.</param>
+        /// <param name="isTrendLineLegendVisible">A value indicating whether the trend line is visible in the legend.</param>
+        /// <param name="strokeThickness">The thickness of the chart series stroke.</param>
+        /// <param name="geometrySize">The size of the data point geometries.</param>
+        /// <param name="loessFraction">The smoothing fraction parameter for LOESS trend calculations.</param>
+        /// <param name="showVitaminA">A value indicating whether the Vitamin A data series is visible.</param>
+        /// <param name="showVitaminATrend">A value indicating whether the Vitamin A trend line is displayed.</param>
+        /// <returns>A <see cref="ChartResult"/> containing the configured series, X-axis, and Y-axis definitions.</returns>
+        public static ChartResult CreateFoodVitaminAChart(
+            DateTime startDate, DateTime endDate, List<SamsungFoodNutritionModel> data,
+            bool isTrendLineLegendVisible, float strokeThickness, float geometrySize, double loessFraction,
+            bool showVitaminA, bool showVitaminATrend)
+        {
+            double max = data.Any() ? data.Max(x => x.VitaminA ?? 0) : 100;
+            double min = data.Any() ? data.Min(x => x.VitaminA ?? 0) : 0;
+            max += max * 0.05;
+
+            var chartDefinitions = new[]
+            {
+                new ChartSeriesModel<SamsungFoodNutritionModel>
+                {
+                    Name = "Vitamin A",
+                    TrendName = "Vitamin A Trend",
+                    Color = SKColors.DarkOrange,
+                    YAxisIndex = 0,
+                    IsVisible = showVitaminA,
+                    ShowTrend = showVitaminATrend,
+                    IsTrendLineVisible = isTrendLineLegendVisible,
+                    StrokeThickness = strokeThickness,
+                    GeometrySize = geometrySize,
+                    DateSelector = x => x.CreateTime,
+                    ValueSelector = x => x.VitaminA,
+           
+                }
+            };
+
+            var series = ChartSeriesBuilder.CreateSeries(data, chartDefinitions, loessFraction).ToArray();
+            var xAxis = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yy")) };
+            var yAxes = new[] { ChartAxisBuilder.Create(new ChartYAxisModel { Name = "µg", MinLimit = min, MaxLimit = max, MinStep=0.000001, Format= "0.00000" }) };
+
+            return new ChartResult { Series = series, XAxis = xAxis, YAxis = yAxes };
+        }
+
+        /// <summary>
+        /// Creates a cartesian chart configuration for Vitamin C intake records within a specified date range, including optional trend lines.
+        /// </summary>
+        /// <param name="startDate">The start date for the chart period.</param>
+        /// <param name="endDate">The end date for the chart period.</param>
+        /// <param name="data">The collection of Samsung food info records.</param>
+        /// <param name="isTrendLineLegendVisible">A value indicating whether the trend line is visible in the legend.</param>
+        /// <param name="strokeThickness">The thickness of the chart series stroke.</param>
+        /// <param name="geometrySize">The size of the data point geometries.</param>
+        /// <param name="loessFraction">The smoothing fraction parameter for LOESS trend calculations.</param>
+        /// <param name="showVitaminC">A value indicating whether the Vitamin C data series is visible.</param>
+        /// <param name="showVitaminCTrend">A value indicating whether the Vitamin C trend line is displayed.</param>
+        /// <returns>A <see cref="ChartResult"/> containing the configured series, X-axis, and Y-axis definitions.</returns>
+        public static ChartResult CreateFoodVitaminCChart(
+            DateTime startDate, DateTime endDate, List<SamsungFoodNutritionModel> data,
+            bool isTrendLineLegendVisible, float strokeThickness, float geometrySize, double loessFraction,
+            bool showVitaminC, bool showVitaminCTrend)
+        {
+            double max = data.Any() ? data.Max(x => x.VitaminC ?? 0) : 100;
+            double min = data.Any() ? data.Min(x => x.VitaminC ?? 0) : 0;
+            max += max * 0.05;
+
+            var chartDefinitions = new[]
+            {
+                new ChartSeriesModel<SamsungFoodNutritionModel>
+                {
+                    Name = "Vitamin C",
+                    TrendName = "Vitamin C Trend",
+                    Color = SKColors.Gold,
+                    YAxisIndex = 0,
+                    IsVisible = showVitaminC,
+                    ShowTrend = showVitaminCTrend,
+                    IsTrendLineVisible = isTrendLineLegendVisible,
+                    StrokeThickness = strokeThickness,
+                    GeometrySize = geometrySize,
+                    DateSelector = x => x.CreateTime,
+                    ValueSelector = x => x.VitaminC
+                }
+            };
+
+            var series = ChartSeriesBuilder.CreateSeries(data, chartDefinitions, loessFraction).ToArray();
+            var xAxis = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yy")) };
+            var yAxes = new[] { ChartAxisBuilder.Create(new ChartYAxisModel { Name = "mg", MinLimit = min, MaxLimit = max, MinStep = 0.0001, Format = "0.00000" }) };
+
+            return new ChartResult { Series = series, XAxis = xAxis, YAxis = yAxes };
+        }
+
+        /// <summary>
+        /// Creates a cartesian chart configuration for Vitamin D intake records within a specified date range, including optional trend lines.
+        /// </summary>
+        /// <param name="startDate">The start date for the chart period.</param>
+        /// <param name="endDate">The end date for the chart period.</param>
+        /// <param name="data">The collection of Samsung food info records.</param>
+        /// <param name="isTrendLineLegendVisible">A value indicating whether the trend line is visible in the legend.</param>
+        /// <param name="strokeThickness">The thickness of the chart series stroke.</param>
+        /// <param name="geometrySize">The size of the data point geometries.</param>
+        /// <param name="loessFraction">The smoothing fraction parameter for LOESS trend calculations.</param>
+        /// <param name="showVitaminD">A value indicating whether the Vitamin D data series is visible.</param>
+        /// <param name="showVitaminDTrend">A value indicating whether the Vitamin D trend line is displayed.</param>
+        /// <returns>A <see cref="ChartResult"/> containing the configured series, X-axis, and Y-axis definitions.</returns>
+        public static ChartResult CreateFoodVitaminDChart(
+            DateTime startDate, DateTime endDate, List<SamsungFoodNutritionModel> data,
+            bool isTrendLineLegendVisible, float strokeThickness, float geometrySize, double loessFraction,
+            bool showVitaminD, bool showVitaminDTrend)
+        {
+            double max = data.Any() ? data.Max(x => x.VitaminD ?? 0) : 100;
+            double min = data.Any() ? data.Min(x => x.VitaminD ?? 0) : 0;
+            max += max * 0.05;
+
+            var chartDefinitions = new[]
+            {
+                new ChartSeriesModel<SamsungFoodNutritionModel>
+                {
+                    Name = "Vitamin D",
+                    TrendName = "Vitamin D Trend",
+                    Color = SKColors.Orange,
+                    YAxisIndex = 0,
+                    IsVisible = showVitaminD,
+                    ShowTrend = showVitaminDTrend,
+                    IsTrendLineVisible = isTrendLineLegendVisible,
+                    StrokeThickness = strokeThickness,
+                    GeometrySize = geometrySize,
+                    DateSelector = x => x.CreateTime,
+                    ValueSelector = x => x.VitaminD
+                }
+            };
+
+            var series = ChartSeriesBuilder.CreateSeries(data, chartDefinitions, loessFraction).ToArray();
+            var xAxis = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yy")) };
+            var yAxes = new[] { ChartAxisBuilder.Create(new ChartYAxisModel { Name = "µg", MinLimit = min, MaxLimit = max, MinStep = 0.000001, Format = "0.00000" }) };
+
+            return new ChartResult { Series = series, XAxis = xAxis, YAxis = yAxes };
+        }
+
+        /// <summary>
+        /// Creates a cartesian chart configuration for Iron intake records within a specified date range, including optional trend lines.
+        /// </summary>
+        /// <param name="startDate">The start date for the chart period.</param>
+        /// <param name="endDate">The end date for the chart period.</param>
+        /// <param name="data">The collection of Samsung food info records.</param>
+        /// <param name="isTrendLineLegendVisible">A value indicating whether the trend line is visible in the legend.</param>
+        /// <param name="strokeThickness">The thickness of the chart series stroke.</param>
+        /// <param name="geometrySize">The size of the data point geometries.</param>
+        /// <param name="loessFraction">The smoothing fraction parameter for LOESS trend calculations.</param>
+        /// <param name="showIron">A value indicating whether the Iron data series is visible.</param>
+        /// <param name="showIronTrend">A value indicating whether the Iron trend line is displayed.</param>
+        /// <returns>A <see cref="ChartResult"/> containing the configured series, X-axis, and Y-axis definitions.</returns>
+        public static ChartResult CreateFoodIronChart(
+            DateTime startDate, DateTime endDate, List<SamsungFoodNutritionModel> data,
+            bool isTrendLineLegendVisible, float strokeThickness, float geometrySize, double loessFraction,
+            bool showIron, bool showIronTrend)
+        {
+            double max = data.Any() ? data.Max(x => x.Iron ?? 0) : 100;
+            double min = data.Any() ? data.Min(x => x.Iron ?? 0) : 0;
+            max += max * 0.05;
+
+            var chartDefinitions = new[]
+            {
+                new ChartSeriesModel<SamsungFoodNutritionModel>
+                {
+                    Name = "Iron",
+                    TrendName = "Iron Trend",
+                    Color = SKColors.SaddleBrown,
+                    YAxisIndex = 0,
+                    IsVisible = showIron,
+                    ShowTrend = showIronTrend,
+                    IsTrendLineVisible = isTrendLineLegendVisible,
+                    StrokeThickness = strokeThickness,
+                    GeometrySize = geometrySize,
+                    DateSelector = x => x.CreateTime,
+                    ValueSelector = x => x.Iron
+                }
+            };
+
+            var series = ChartSeriesBuilder.CreateSeries(data, chartDefinitions, loessFraction).ToArray();
+            var xAxis = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yy")) };
+            var yAxes = new[] { ChartAxisBuilder.Create(new ChartYAxisModel { Name = "mg", MinLimit = min, MaxLimit = max, MinStep = 0.0001, Format = "0.0000" }) };
+
+            return new ChartResult { Series = series, XAxis = xAxis, YAxis = yAxes };
+        }
+
+        /// <summary>
+        /// Creates a cartesian chart configuration for Calcium intake records within a specified date range, including optional trend lines.
+        /// </summary>
+        /// <param name="startDate">The start date for the chart period.</param>
+        /// <param name="endDate">The end date for the chart period.</param>
+        /// <param name="data">The collection of Samsung food info records.</param>
+        /// <param name="isTrendLineLegendVisible">A value indicating whether the trend line is visible in the legend.</param>
+        /// <param name="strokeThickness">The thickness of the chart series stroke.</param>
+        /// <param name="geometrySize">The size of the data point geometries.</param>
+        /// <param name="loessFraction">The smoothing fraction parameter for LOESS trend calculations.</param>
+        /// <param name="showCalcium">A value indicating whether the Calcium data series is visible.</param>
+        /// <param name="showCalciumTrend">A value indicating whether the Calcium trend line is displayed.</param>
+        /// <returns>A <see cref="ChartResult"/> containing the configured series, X-axis, and Y-axis definitions.</returns>
+        public static ChartResult CreateFoodCalciumChart(
+            DateTime startDate, DateTime endDate, List<SamsungFoodNutritionModel> data,
+            bool isTrendLineLegendVisible, float strokeThickness, float geometrySize, double loessFraction,
+            bool showCalcium, bool showCalciumTrend)
+        {
+            double max = data.Any() ? data.Max(x => x.Calcium ?? 0) : 100;
+            double min = data.Any() ? data.Min(x => x.Calcium ?? 0) : 0;
+            max += max * 0.05;
+
+            var chartDefinitions = new[]
+            {
+                new ChartSeriesModel<SamsungFoodNutritionModel>
+                {
+                    Name = "Calcium",
+                    TrendName = "Calcium Trend",
+                    Color = SKColors.SteelBlue,
+                    YAxisIndex = 0,
+                    IsVisible = showCalcium,
+                    ShowTrend = showCalciumTrend,
+                    IsTrendLineVisible = isTrendLineLegendVisible,
+                    StrokeThickness = strokeThickness,
+                    GeometrySize = geometrySize,
+                    DateSelector = x => x.CreateTime,
+                    ValueSelector = x => x.Calcium
+                }
+            };
+
+            var series = ChartSeriesBuilder.CreateSeries(data, chartDefinitions, loessFraction).ToArray();
+            var xAxis = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yy")) };
+            var yAxes = new[] { ChartAxisBuilder.Create(new ChartYAxisModel { Name = "mg", MinLimit = min, MaxLimit = max, MinStep = 0.0001, Format = "0.0000" }) };
+
+            return new ChartResult { Series = series, XAxis = xAxis, YAxis = yAxes };
+        }
+
+        /// <summary>
+        /// Creates a cartesian chart configuration for Sodium (Natrium) intake records within a specified date range, including optional trend lines.
+        /// </summary>
+        /// <param name="startDate">The start date for the chart period.</param>
+        /// <param name="endDate">The end date for the chart period.</param>
+        /// <param name="data">The collection of Samsung food info records.</param>
+        /// <param name="isTrendLineLegendVisible">A value indicating whether the trend line is visible in the legend.</param>
+        /// <param name="strokeThickness">The thickness of the chart series stroke.</param>
+        /// <param name="geometrySize">The size of the data point geometries.</param>
+        /// <param name="loessFraction">The smoothing fraction parameter for LOESS trend calculations.</param>
+        /// <param name="showNatrium">A value indicating whether the Sodium data series is visible.</param>
+        /// <param name="showNatriumTrend">A value indicating whether the Sodium trend line is displayed.</param>
+        /// <returns>A <see cref="ChartResult"/> containing the configured series, X-axis, and Y-axis definitions.</returns>
+        public static ChartResult CreateFoodNatriumChart(
+            DateTime startDate, DateTime endDate, List<SamsungFoodNutritionModel> data,
+            bool isTrendLineLegendVisible, float strokeThickness, float geometrySize, double loessFraction,
+            bool showNatrium, bool showNatriumTrend)
+        {
+            double max = data.Any() ? data.Max(x => x.Sodium ?? 0) : 100;
+            double min = data.Any() ? data.Min(x => x.Sodium ?? 0) : 0;
+            max += max * 0.05;
+
+            var chartDefinitions = new[]
+            {
+                new ChartSeriesModel<SamsungFoodNutritionModel>
+                {
+                    Name = "Sodium",
+                    TrendName = "Sodium Trend",
+                    Color = SKColors.MediumPurple,
+                    YAxisIndex = 0,
+                    IsVisible = showNatrium,
+                    ShowTrend = showNatriumTrend,
+                    IsTrendLineVisible = isTrendLineLegendVisible,
+                    StrokeThickness = strokeThickness,
+                    GeometrySize = geometrySize,
+                    DateSelector = x => x.CreateTime,
+                    ValueSelector = x => x.Sodium
+                }
+            };
+
+            var series = ChartSeriesBuilder.CreateSeries(data, chartDefinitions, loessFraction).ToArray();
+            var xAxis = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yy")) };
+            var yAxes = new[] { ChartAxisBuilder.Create(new ChartYAxisModel { Name = "mg", MinLimit = min, MaxLimit = max, MinStep = 0.0001, Format = "0.0000" }) };
+
+            return new ChartResult { Series = series, XAxis = xAxis, YAxis = yAxes };
+        }
+
+        /// <summary>
+        /// Creates a cartesian chart configuration for Potassium (Kalium) intake records within a specified date range, including optional trend lines.
+        /// </summary>
+        /// <param name="startDate">The start date for the chart period.</param>
+        /// <param name="endDate">The end date for the chart period.</param>
+        /// <param name="data">The collection of Samsung food info records.</param>
+        /// <param name="isTrendLineLegendVisible">A value indicating whether the trend line is visible in the legend.</param>
+        /// <param name="strokeThickness">The thickness of the chart series stroke.</param>
+        /// <param name="geometrySize">The size of the data point geometries.</param>
+        /// <param name="loessFraction">The smoothing fraction parameter for LOESS trend calculations.</param>
+        /// <param name="showPotassium">A value indicating whether the Potassium data series is visible.</param>
+        /// <param name="showPotassiumTrend">A value indicating whether the Potassium trend line is displayed.</param>
+        /// <returns>A <see cref="ChartResult"/> containing the configured series, X-axis, and Y-axis definitions.</returns>
+        public static ChartResult CreateFoodKaliumChart(
+            DateTime startDate, DateTime endDate, List<SamsungFoodNutritionModel> data,
+            bool isTrendLineLegendVisible, float strokeThickness, float geometrySize, double loessFraction,
+            bool showPotassium, bool showPotassiumTrend)
+        {
+            double max = data.Any() ? data.Max(x => x.Potassium ?? 0) : 100;
+            double min = data.Any() ? data.Min(x => x.Potassium ?? 0) : 0;
+            max += max * 0.05;
+
+            var chartDefinitions = new[]
+            {
+                new ChartSeriesModel<SamsungFoodNutritionModel>
+                {
+                    Name = "Kalium",
+                    TrendName = "Kalium Trend",
+                    Color = SKColors.Teal,
+                    YAxisIndex = 0,
+                    IsVisible = showPotassium,
+                    ShowTrend = showPotassiumTrend,
+                    IsTrendLineVisible = isTrendLineLegendVisible,
+                    StrokeThickness = strokeThickness,
+                    GeometrySize = geometrySize,
+                    DateSelector = x => x.CreateTime,
+                    ValueSelector = x => x.Potassium
+                }
+            };
+
+            var series = ChartSeriesBuilder.CreateSeries(data, chartDefinitions, loessFraction).ToArray();
+            var xAxis = new ICartesianAxis[] { new DateTimeAxis(TimeSpan.FromDays(1), date => date.ToString("dd.MM.yy")) };
+            var yAxes = new[] { ChartAxisBuilder.Create(new ChartYAxisModel { Name = "mg", MinLimit = min, MaxLimit = max, MinStep = 0.0001, Format = "0.0000" }) };
 
             return new ChartResult { Series = series, XAxis = xAxis, YAxis = yAxes };
         }

@@ -6,7 +6,7 @@ namespace BodyTracker.Models.SamsungHealth
     /// <summary>
     /// Represents a JSON data transfer model for heart rate records containing raw timestamps, average values, and computed offset properties.
     /// </summary>
-    public class JsonHeartRateModel
+    public record JsonHeartRateModel
     {
         /// <summary>
         /// Gets or sets the average heart rate value recorded during the session.

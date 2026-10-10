@@ -6,7 +6,7 @@ namespace BodyTracker.Models.FullBodyMeasurement
     /// Represents an aggregated data model containing weekly average body metrics, 
     /// calendar week information, and corresponding date boundaries.
     /// </summary>
-    public class WeeklyAverageBodyMetricModel
+    public record WeeklyAverageBodyMetricModel
     {
         /// <summary>
         /// Gets or sets the ISO calendar week number for the aggregated period.

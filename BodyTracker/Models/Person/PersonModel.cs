@@ -6,7 +6,7 @@ namespace BodyTracker.Models
     /// <summary>
     /// Represents the structure of a human person data
     /// </summary
-    public class PersonModel
+    public record PersonModel
     {
         /// <summary>
         /// Contains the PersonModel ID from the database table

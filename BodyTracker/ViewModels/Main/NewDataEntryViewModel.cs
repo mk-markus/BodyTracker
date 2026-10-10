@@ -488,7 +488,7 @@ namespace BodyTracker.ViewModels
         /// <returns>A task representing the asynchronous operation, containing a boolean value indicating whether the scan and data mapping succeeded.</returns>
         public async Task<bool> StartAutomaticFullBodyScanAsync()
         {
-            return await StartScaleScan(BodyScanMode.ScanMode.FullBodyScan);
+            return await StartScaleScan(BF105BeurerWaage.ScanMode.FullBodyScan);
         }
 
         /// <summary>
@@ -497,7 +497,7 @@ namespace BodyTracker.ViewModels
         /// <returns>A task representing the asynchronous operation, containing a boolean value indicating whether the scan and data mapping succeeded.</returns>
         public async Task<bool> StartBodyWeightAndCompositionScaleScanasync()
         {
-            return await StartScaleScan(BodyScanMode.ScanMode.BodyWeightAndCompositionScan);
+            return await StartScaleScan(BF105BeurerWaage.ScanMode.BodyWeightAndCompositionScan);
         }
 
         /// <summary>
@@ -506,7 +506,7 @@ namespace BodyTracker.ViewModels
         /// <returns>A task representing the asynchronous operation, containing a boolean value indicating whether the scan and data mapping succeeded.</returns>
         public async Task<bool> StartSegmentalBodyCompostionScanAsync()
         {
-            return await StartScaleScan(BodyScanMode.ScanMode.SegmentalBodyCompisitionScan);
+            return await StartScaleScan(BF105BeurerWaage.ScanMode.SegmentalBodyCompisitionScan);
         }
 
         /// <summary>
@@ -516,7 +516,7 @@ namespace BodyTracker.ViewModels
         /// </summary>
         /// <param name="bodyScanMode">The specific scanning mode configuration (e.g., FullBodyScan, SegmentalBodyCompisitionScan).</param>
         /// <returns>A task representing the asynchronous operation, containing a boolean value indicating success or failure.</returns>
-        public async Task<bool> StartScaleScan(BodyScanMode.ScanMode bodyScanMode)
+        public async Task<bool> StartScaleScan(BF105BeurerWaage.ScanMode bodyScanMode)
         {
             try
             {
@@ -535,8 +535,8 @@ namespace BodyTracker.ViewModels
                 float musclePercentage = 0.0f;
                 float fatPercentage = 0.0f;
 
-                if (bodyScanMode == BodyScanMode.ScanMode.FullBodyScan ||
-                    bodyScanMode == BodyScanMode.ScanMode.SegmentalBodyCompisitionScan)
+                if (bodyScanMode == BF105BeurerWaage.ScanMode.FullBodyScan ||
+                    bodyScanMode == BF105BeurerWaage.ScanMode.SegmentalBodyCompisitionScan)
                 {
                     var fatPercentageTop = result.SegmentalBodyCompositionMeasurement?.UpperBodyFatPercentage ?? 0.0f;
                     var fatPercentageBottom = result.SegmentalBodyCompositionMeasurement?.LowerBodyFatPercentage ?? 0.0f;
@@ -550,7 +550,7 @@ namespace BodyTracker.ViewModels
                     BodyMusclePercentageTop = musclePercentageTop.ToString("F2");
                     BodyMusclePercentageBottom = musclePercentageBottom.ToString("F2");
 
-                    if (bodyScanMode == BodyScanMode.ScanMode.FullBodyScan)
+                    if (bodyScanMode == BF105BeurerWaage.ScanMode.FullBodyScan)
                     {
                         musclePercentage = ((musclePercentageBottom + musclePercentageTop) / 2);
                         fatPercentage = ((fatPercentageBottom + fatPercentageTop) / 2);

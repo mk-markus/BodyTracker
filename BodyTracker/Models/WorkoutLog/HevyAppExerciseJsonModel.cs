@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace BodyTracker.Models.WorkoutLog
 {
-    public class HevyAppExerciseJsonModel
+    public record HevyAppExerciseJsonModel
     {
         /// <summary>
         /// Represents the chronological sequence or position of the exercise within the overall workout session.
